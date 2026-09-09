@@ -1,0 +1,276 @@
+"""Repository hygiene: the budget and boundary rules `AGENTS.md` makes non-negotiable.
+
+Every assertion is a plain `ast` or text scan over the repository's own files; nothing
+here imports `invoice_extractor`, so these checks still report a real result when the
+package itself is broken.
+"""
+
+from __future__ import annotations
+
+import ast
+import re
+from collections.abc import Iterator
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+SRC = REPO_ROOT / "src" / "invoice_extractor"
+
+MAX_SOURCE_LINES = 2200
+MAX_MODULE_LINES = 250
+MAX_FUNCTION_LINES = 40
+
+# Assembled from halves so this file, which `test_no_todo_markers` scans, is not itself
+# the violation it looks for.
+UNFINISHED_MARKERS = tuple(
+    head + tail for head, tail in (("TO", "DO"), ("FIX", "ME"), ("XX", "X"), ("HA", "CK"))
+)
+SUPPRESSION_MARKERS = ("# noqa", "# type: ignore")
+
+# Requiring a word character after the prefix is what separates a real leaked path from
+# a document quoting the rule itself, as Appendix A of the implementation plan does.
+ABSOLUTE_PATH_PATTERNS = (
+    re.compile(r"/home/\w"),
+    re.compile(r"/Users/\w"),
+    re.compile(r"C:\\\w"),
+)
+EMAIL_PATTERN = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
+URL_PATTERN = re.compile(r"https?://")
+
+TEXT_SUFFIXES = frozenset({".py", ".md", ".json", ".toml", ".yml", ".yaml", ".cfg", ".txt"})
+TEXT_FILENAMES = frozenset({"Makefile", "LICENSE", ".gitignore"})
+IGNORED_DIRS = frozenset(
+    {".git", ".venv", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache", "build", "dist"}
+)
+PROSE_ROOTS = ("src", "tests", "scripts", "docs")
+URL_ALLOWED_ROOTS = frozenset({"docs", ".github"})
+URL_ALLOWED_FILES = frozenset({"README.md", ".pre-commit-config.yaml", "pyproject.toml"})
+
+FROZEN_DATACLASS_TARGETS = (
+    "domain",
+    "layout/schema.py",
+    "extraction/spec.py",
+    "document/reader.py",
+)
+NO_ANY_TARGETS = ("__init__.py", "pipeline.py", "domain/models.py")
+
+
+def walk(root: Path) -> Iterator[Path]:
+    """Every file under `root`, skipping caches, virtualenvs and build output."""
+    if not root.is_dir():
+        return
+    for entry in sorted(root.iterdir()):
+        if entry.name in IGNORED_DIRS or entry.name.endswith(".egg-info"):
+            continue
+        if entry.is_dir():
+            yield from walk(entry)
+        elif entry.is_file():
+            yield entry
+
+
+def python_modules(root: Path) -> list[Path]:
+    return [path for path in walk(root) if path.suffix == ".py"]
+
+
+def source_modules() -> list[Path]:
+    return python_modules(SRC)
+
+
+def is_text(path: Path) -> bool:
+    return path.suffix in TEXT_SUFFIXES or path.name in TEXT_FILENAMES
+
+
+def prose_files() -> list[Path]:
+    """The set `test_no_absolute_paths` and `test_no_email_addresses` scan."""
+    files = [REPO_ROOT / "README.md"]
+    for root in PROSE_ROOTS:
+        files.extend(path for path in walk(REPO_ROOT / root) if is_text(path))
+    return files
+
+
+def repo_text_files() -> list[Path]:
+    return [path for path in walk(REPO_ROOT) if is_text(path)]
+
+
+def counted_lines(path: Path) -> int:
+    """Non-blank, non-comment lines — the unit `AGENTS.md` states the size budget in."""
+    stripped = (line.strip() for line in path.read_text(encoding="utf-8").splitlines())
+    return sum(1 for line in stripped if line and not line.startswith("#"))
+
+
+def parse(path: Path) -> ast.Module:
+    return ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+
+
+def numbered_lines(path: Path) -> Iterator[tuple[int, str]]:
+    return enumerate(path.read_text(encoding="utf-8").splitlines(), start=1)
+
+
+def where(path: Path) -> str:
+    return str(path.relative_to(REPO_ROOT))
+
+
+def call_sites(modules: list[Path], function_name: str) -> list[str]:
+    return [
+        f"{where(module)}:{node.lineno}"
+        for module in modules
+        for node in ast.walk(parse(module))
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == function_name
+    ]
+
+
+def imports_module(module: Path, name: str) -> bool:
+    for node in ast.walk(parse(module)):
+        if isinstance(node, ast.Import) and any(alias.name == name for alias in node.names):
+            return True
+        if isinstance(node, ast.ImportFrom) and node.module == name:
+            return True
+    return False
+
+
+def imports_name(module: Path, name: str) -> bool:
+    return any(
+        isinstance(node, ast.Import | ast.ImportFrom)
+        and any(alias.name == name for alias in node.names)
+        for node in ast.walk(parse(module))
+    )
+
+
+def existing_targets(targets: tuple[str, ...]) -> list[Path]:
+    found: list[Path] = []
+    for target in targets:
+        path = SRC / target
+        found.extend(python_modules(path) if path.is_dir() else [path] if path.exists() else [])
+    return found
+
+
+def decorator_name(node: ast.expr) -> str | None:
+    target = node.func if isinstance(node, ast.Call) else node
+    if isinstance(target, ast.Attribute):
+        return target.attr
+    return target.id if isinstance(target, ast.Name) else None
+
+
+def declares_frozen(decorator: ast.expr) -> bool:
+    if not isinstance(decorator, ast.Call):
+        return False
+    return any(
+        keyword.arg == "frozen"
+        and isinstance(keyword.value, ast.Constant)
+        and keyword.value.value is True
+        for keyword in decorator.keywords
+    )
+
+
+def test_source_within_line_budget() -> None:
+    total = sum(counted_lines(module) for module in source_modules())
+    assert total <= MAX_SOURCE_LINES, f"src/ counts {total} lines, budget is {MAX_SOURCE_LINES}"
+
+
+def test_no_module_over_250_lines() -> None:
+    sizes = {where(module): counted_lines(module) for module in source_modules()}
+    oversized = {name: size for name, size in sizes.items() if size > MAX_MODULE_LINES}
+    assert not oversized, f"modules over {MAX_MODULE_LINES} counted lines: {oversized}"
+
+
+def test_no_function_over_40_lines() -> None:
+    oversized = [
+        f"{where(module)}:{node.name} spans {node.end_lineno - node.lineno + 1} lines"
+        for module in source_modules()
+        for node in ast.walk(parse(module))
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef)
+        and node.end_lineno is not None
+        and node.end_lineno - node.lineno + 1 > MAX_FUNCTION_LINES
+    ]
+    assert not oversized, f"functions over {MAX_FUNCTION_LINES} lines: {oversized}"
+
+
+def test_fitz_imported_only_in_pymupdf_reader() -> None:
+    reader = SRC / "document" / "pymupdf_reader.py"
+    importers = {module for module in source_modules() if imports_module(module, "fitz")}
+    assert importers <= {reader}, f"fitz imported outside the reader: {sorted(importers)}"
+    # The reader arrives in PR2; until then the boundary holds vacuously.
+    if reader.exists():
+        assert reader in importers, "document/pymupdf_reader.py is the module that imports fitz"
+
+
+def test_no_float_calls_in_domain() -> None:
+    offenders = call_sites(python_modules(SRC / "domain"), "float")
+    assert not offenders, f"float() called in domain/: {offenders}"
+
+
+def test_no_print_in_source() -> None:
+    offenders = call_sites(source_modules(), "print")
+    assert not offenders, f"print() called in src/: {offenders}"
+
+
+def test_no_todo_markers() -> None:
+    scanned = source_modules() + python_modules(REPO_ROOT / "tests")
+    offenders = [
+        f"{where(path)}:{number}"
+        for path in scanned
+        for number, line in numbered_lines(path)
+        if any(marker in line for marker in UNFINISHED_MARKERS)
+    ]
+    assert not offenders, f"unfinished-work markers left behind: {offenders}"
+
+
+def test_suppressions_carry_justification() -> None:
+    offenders = [
+        f"{where(path)}:{number}"
+        for path in source_modules()
+        for number, line in numbered_lines(path)
+        for marker in SUPPRESSION_MARKERS
+        if marker in line and "#" not in line.split(marker, 1)[1]
+    ]
+    assert not offenders, f"suppressions with no stated reason: {offenders}"
+
+
+def test_no_absolute_paths() -> None:
+    offenders = [
+        f"{where(path)}:{number}"
+        for path in prose_files()
+        for number, line in numbered_lines(path)
+        if any(pattern.search(line) for pattern in ABSOLUTE_PATH_PATTERNS)
+    ]
+    assert not offenders, f"machine-specific absolute paths: {offenders}"
+
+
+def test_no_email_addresses() -> None:
+    offenders = [
+        where(path)
+        for path in prose_files()
+        if EMAIL_PATTERN.search(path.read_text(encoding="utf-8"))
+    ]
+    assert not offenders, f"email addresses committed: {offenders}"
+
+
+def test_no_urls_outside_docs() -> None:
+    offenders = [
+        where(path)
+        for path in repo_text_files()
+        if path.relative_to(REPO_ROOT).parts[0] not in URL_ALLOWED_ROOTS
+        and where(path) not in URL_ALLOWED_FILES
+        and URL_PATTERN.search(path.read_text(encoding="utf-8"))
+    ]
+    assert not offenders, f"URLs outside README, docs, CI config and packaging: {offenders}"
+
+
+def test_public_api_has_no_any() -> None:
+    offenders = [
+        where(module) for module in existing_targets(NO_ANY_TARGETS) if imports_name(module, "Any")
+    ]
+    assert not offenders, f"`Any` imported into the public API: {offenders}"
+
+
+def test_dataclasses_are_frozen() -> None:
+    offenders = [
+        f"{where(module)}:{node.name}"
+        for module in existing_targets(FROZEN_DATACLASS_TARGETS)
+        for node in ast.walk(parse(module))
+        if isinstance(node, ast.ClassDef)
+        for decorator in node.decorator_list
+        if decorator_name(decorator) == "dataclass" and not declares_frozen(decorator)
+    ]
+    assert not offenders, f"dataclasses declared without frozen=True: {offenders}"
