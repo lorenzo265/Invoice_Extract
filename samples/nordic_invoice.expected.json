@@ -1,0 +1,193 @@
+{
+  "fields": {
+    "invoice_number": {
+      "value": "2024-00873",
+      "raw_text": "Fakturanummer: 2024-00873",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 400.0,
+          "y0": 65.25,
+          "x1": 529.5,
+          "y1": 78.99
+        },
+        "matched_label": "Fakturanummer",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Fakturanummer: 2024-00873"
+      }
+    },
+    "invoice_date": {
+      "value": "2024-05-02",
+      "raw_text": "Fakturadatum: 2024-05-02",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 400.0,
+          "y0": 81.25,
+          "x1": 518.39,
+          "y1": 94.99
+        },
+        "matched_label": "Fakturadatum",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Fakturadatum: 2024-05-02"
+      }
+    },
+    "due_date": {
+      "value": "2024-06-01",
+      "raw_text": "Förfallodatum: 2024-06-01",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 400.0,
+          "y0": 97.25,
+          "x1": 517.83,
+          "y1": 110.99
+        },
+        "matched_label": "Förfallodatum",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Förfallodatum: 2024-06-01"
+      }
+    },
+    "supplier_vat_id": {
+      "value": "SE556123456701",
+      "raw_text": "Momsreg.nr: SE556123456701",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 56.0,
+          "y0": 113.25,
+          "x1": 194.96,
+          "y1": 126.99
+        },
+        "matched_label": "Momsreg.nr",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Momsreg.nr: SE556123456701"
+      }
+    },
+    "customer_vat_id": {
+      "value": "NO987654321MVA",
+      "raw_text": "Kundens momsreg.nr: NO987654321MVA",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 56.0,
+          "y0": 409.25,
+          "x1": 243.86,
+          "y1": 422.99
+        },
+        "matched_label": "Kundens momsreg.nr",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Kundens momsreg.nr: NO987654321MVA"
+      }
+    },
+    "currency": {
+      "value": "SEK",
+      "raw_text": "Valuta: SEK",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 400.0,
+          "y0": 113.25,
+          "x1": 453.92,
+          "y1": 126.99
+        },
+        "matched_label": "Valuta",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Valuta: SEK"
+      }
+    },
+    "vat_rate": {
+      "value": "25.00",
+      "raw_text": "Moms: 25,00%",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 400.0,
+          "y0": 627.25,
+          "x1": 466.69,
+          "y1": 640.99
+        },
+        "matched_label": "Moms",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Moms: 25,00%"
+      }
+    },
+    "subtotal": {
+      "value": "3216.00",
+      "raw_text": "Netto: 3 216,00",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 400.0,
+          "y0": 609.25,
+          "x1": 468.38,
+          "y1": 622.99
+        },
+        "matched_label": "Netto",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Netto: 3 216,00"
+      }
+    },
+    "vat_amount": {
+      "value": "804.00",
+      "raw_text": "Momsbelopp: 804,00",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 400.0,
+          "y0": 645.25,
+          "x1": 493.38,
+          "y1": 658.99
+        },
+        "matched_label": "Momsbelopp",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Momsbelopp: 804,00"
+      }
+    },
+    "total_amount": {
+      "value": "4020.00",
+      "raw_text": "Att betala: 4 020,00",
+      "valid": true,
+      "evidence": {
+        "page": 1,
+        "bbox": {
+          "x0": 400.0,
+          "y0": 663.25,
+          "x1": 486.73,
+          "y1": 676.99
+        },
+        "matched_label": "Att betala",
+        "strategy": "LABEL_RIGHT",
+        "raw_text": "Att betala: 4 020,00"
+      }
+    }
+  },
+  "line_items": [
+    {
+      "sku": "FJ-771",
+      "description": "Kabelkanal 40x60, 2 m",
+      "quantity": "30",
+      "unit_price": "89.00",
+      "net_amount": "2670.00"
+    },
+    {
+      "sku": "FJ-902",
+      "description": "Kopplingsdosa IP65",
+      "quantity": "12",
+      "unit_price": "45.50",
+      "net_amount": "546.00"
+    }
+  ],
+  "findings": [],
+  "layout_id": "nordic",
+  "source_path": "samples/nordic_invoice.pdf"
+}
