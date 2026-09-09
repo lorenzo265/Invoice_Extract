@@ -44,6 +44,16 @@ def test_scalar_fields_match_expected_json(layout_id: str) -> None:
 
 
 @pytest.mark.parametrize("layout_id", BUNDLED)
+def test_line_items_match_expected_json(layout_id: str) -> None:
+    assert extracted(layout_id)["line_items"] == golden(layout_id)["line_items"]
+
+
+@pytest.mark.parametrize("layout_id", BUNDLED)
+def test_clean_samples_report_no_table_findings(layout_id: str) -> None:
+    assert extracted(layout_id)["findings"] == golden(layout_id)["findings"]
+
+
+@pytest.mark.parametrize("layout_id", BUNDLED)
 def test_result_names_its_layout_and_source(layout_id: str) -> None:
     data = extracted(layout_id)
     assert data["layout_id"] == golden(layout_id)["layout_id"]

@@ -12,6 +12,7 @@ from invoice_extractor.document.pymupdf_reader import PyMuPDFReader
 from invoice_extractor.document.reader import DocumentReader, TextLine
 from invoice_extractor.domain.models import InvoiceResult
 from invoice_extractor.extraction.engine import run
+from invoice_extractor.extraction.line_items import extract_line_items
 from invoice_extractor.extraction.specs import FIELD_SPECS
 from invoice_extractor.layout.schema import Layout
 
@@ -21,10 +22,11 @@ def extract(pdf_path: Path, layout: Layout) -> InvoiceResult:
     with PyMuPDFReader(pdf_path) as reader:
         lines = _all_lines(reader)
     fields = {spec.name: run(spec, lines, layout).field for spec in FIELD_SPECS}
+    table = extract_line_items(lines, layout)
     return InvoiceResult(
         fields=fields,
-        line_items=(),
-        findings=(),
+        line_items=table.items,
+        findings=table.findings,
         layout_id=layout.id,
         source_path=pdf_path.as_posix(),
     )
