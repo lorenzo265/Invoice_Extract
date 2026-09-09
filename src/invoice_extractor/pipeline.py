@@ -15,18 +15,25 @@ from invoice_extractor.extraction.engine import run
 from invoice_extractor.extraction.line_items import extract_line_items
 from invoice_extractor.extraction.specs import FIELD_SPECS
 from invoice_extractor.layout.schema import Layout
+from invoice_extractor.validation.confidence import score
+from invoice_extractor.validation.invariants import check_all
 
 
 def extract(pdf_path: Path, layout: Layout) -> InvoiceResult:
     """Extract one invoice. Raises only for input the pipeline cannot start on (ADR-0005)."""
     with PyMuPDFReader(pdf_path) as reader:
         lines = _all_lines(reader)
-    fields = {spec.name: run(spec, lines, layout).field for spec in FIELD_SPECS}
+    extractions = {spec.name: run(spec, lines, layout) for spec in FIELD_SPECS}
     table = extract_line_items(lines, layout)
+    found = {name: extraction.field for name, extraction in extractions.items()}
+    findings = (*table.findings, *check_all(found, table.items))
     return InvoiceResult(
-        fields=fields,
+        fields={
+            name: score(extraction, layout.fields[name], findings)
+            for name, extraction in extractions.items()
+        },
         line_items=table.items,
-        findings=table.findings,
+        findings=findings,
         layout_id=layout.id,
         source_path=pdf_path.as_posix(),
     )
