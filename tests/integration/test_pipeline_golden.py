@@ -38,6 +38,10 @@ def projected_fields(data: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def projected(data: dict[str, Any]) -> dict[str, Any]:
+    return {**data, "fields": projected_fields(data)}
+
+
 @pytest.mark.parametrize("layout_id", BUNDLED)
 def test_scalar_fields_match_expected_json(layout_id: str) -> None:
     assert projected_fields(extracted(layout_id)) == projected_fields(golden(layout_id))
@@ -51,6 +55,11 @@ def test_line_items_match_expected_json(layout_id: str) -> None:
 @pytest.mark.parametrize("layout_id", BUNDLED)
 def test_clean_samples_report_no_table_findings(layout_id: str) -> None:
     assert extracted(layout_id)["findings"] == golden(layout_id)["findings"]
+
+
+@pytest.mark.parametrize("layout_id", BUNDLED)
+def test_full_result_matches_expected_json(layout_id: str) -> None:
+    assert projected(extracted(layout_id)) == projected(golden(layout_id))
 
 
 @pytest.mark.parametrize("layout_id", BUNDLED)
