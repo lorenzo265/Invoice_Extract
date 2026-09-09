@@ -60,13 +60,15 @@ classDiagram
     class Candidate {
         +str raw_text
         +Evidence evidence
+        +Zone zone
+        +float label_distance
     }
     class FieldSpec {
         +str name
         +Strategy strategy
         +Normalizer normalizer
         +Validator validator
-        +list~Ranker~ rankers
+        +tuple~Ranker~ rankers
         +OnAllInvalid on_all_invalid
     }
     class FieldResult {
@@ -99,8 +101,8 @@ classDiagram
     }
     class InvoiceResult {
         +Mapping~str, FieldResult~ fields
-        +list~LineItem~ line_items
-        +list~Finding~ findings
+        +tuple~LineItem~ line_items
+        +tuple~Finding~ findings
         +str layout_id
         +str source_path
         +to_dict() dict
@@ -128,16 +130,16 @@ classDiagram
 | 1 | PDF library | `fitz` is imported nowhere except `document/pymupdf_reader.py`. Every other module sees the `DocumentReader` protocol and plain `TextLine` / `BBox` values — swapping the PDF library touches one file. |
 | 2 | Layout format | Only `layout/loader.py` (guided by `layout/schema.py`) knows the JSON shape. Every other module receives a typed `Layout`, never a raw `dict`. |
 | 3 | Strategies & units | `extraction/strategies.py`, `normalizers.py`, `validators.py`, and `rankers.py` are pure functions: inputs to outputs, no I/O, no shared state — trivial to unit test and free to compose. |
-| 4 | Orchestration | `pipeline.py` is the only module that calls across `document/`, `layout/`, `extraction/`, `validation/`, and `domain/`. No other module reaches sideways into a peer package. |
+| 4 | Orchestration | `pipeline.py` is the only module that *runs* the stages across `document/`, `layout/`, `extraction/`, `validation/`, and `domain/`: nothing else opens a document, loops over the specs, or decides what happens next. Two modules import a name from a package they do not orchestrate — `validation/confidence.py` takes the `Extraction` the pipeline hands it, and `output/text_report.py` reads `INVARIANT_NAMES` to know which rows to print — and neither calls back into the package it names. |
 | 5 | Output | `output/json_writer.py` and `output/text_report.py` serialize an already-built `InvoiceResult`. They never compute a value, re-derive confidence, or re-run a strategy. |
 
 ## 4. Module responsibilities
 
 | Module | Responsibility | Depends on |
 |---|---|---|
-| `__init__.py` | Public API: `extract`, `load_layout`, `__version__`, `__all__`. | `pipeline`, `layout.loader` |
-| `cli.py` (+ `__main__.py`) | Parses arguments, calls `extract`, writes JSON and/or a text report; `__main__.py` makes it runnable as `python -m invoice_extractor`. | `pipeline` (via `__init__`), `output.json_writer`, `output.text_report` |
-| `pipeline.py` | The only orchestration: wires a reader, a layout, the extraction engine, invariants, and confidence into one `InvoiceResult`. | `document.pymupdf_reader`, `layout.loader`, `extraction.engine`, `extraction.specs`, `extraction.line_items`, `validation.invariants`, `validation.confidence`, `domain.models` |
+| `__init__.py` | Public API: `extract`, `load_layout`, `InvoiceResult`, `Layout`, `LayoutError`, `__version__`, `__all__`. | `pipeline`, `layout.loader`, `layout.schema`, `domain.models` |
+| `cli.py` (+ `__main__.py`) | Parses arguments, calls `extract`, writes JSON and/or a text report; `__main__.py` makes it runnable as `python -m invoice_extractor`. | `pipeline`, `layout.loader`, `layout.schema`, `output.json_writer`, `output.text_report` |
+| `pipeline.py` | The only orchestration: wires a reader, a layout, the extraction engine, invariants, and confidence into one `InvoiceResult`. | `document.pymupdf_reader`, `document.reader`, `layout.schema`, `extraction.engine`, `extraction.specs`, `extraction.line_items`, `validation.invariants`, `validation.confidence`, `domain.models` |
 | `domain/models.py` | Defines `Evidence`, `FieldResult`, `LineItem`, `InvoiceResult`, and their `to_dict` / `from_dict`. | `document.reader` (`BBox`), `domain.findings` (`Finding`) |
 | `domain/money.py` | `Decimal` rounding and tolerance helpers shared by normalizers and invariants. | — |
 | `domain/findings.py` | Defines `Finding` and its `Severity` (`INFO` / `WARNING` / `ERROR`). | — |
@@ -145,28 +147,30 @@ classDiagram
 | `document/pymupdf_reader.py` | The only module that imports `fitz`; implements `DocumentReader` over a real PDF. | `document.reader`, `document.zones` |
 | `document/zones.py` | Maps a `BBox` centre, normalised to page size, onto the 3x3 `Zone` grid. | `document.reader` |
 | `layout/schema.py` | The typed shape of a layout: field labels, zones, regex, line-item headers. | `document.reader` (`Zone`) |
-| `layout/loader.py` | Parses and validates a layout JSON file into a `Layout`; the only module that reads the JSON shape. | `layout.schema` |
-| `extraction/spec.py` | Defines `FieldSpec`, `Candidate`, `Evaluated` and the `OnAllInvalid` vocabulary; re-exports `Strategy`. | `domain.models` (`Evidence`, `Strategy`), `document.reader` (`Zone`) |
-| `extraction/strategies.py` | `label_right`, `label_below`, `regex_anchor` — pure functions from text lines to candidates. | `document.reader`, `extraction.spec`, `domain.models` |
-| `extraction/normalizers.py` (+ `validators.py`) | `strip_label`, `parse_date`, `parse_money`, `upper_alnum`, `parse_percent`; `validators.py` holds the matching predicates `matches_pattern`, `is_date`, `is_positive_money`, `is_currency_code`, `is_percent`. | `domain.money` |
-| `extraction/rankers.py` | `valid_first`, `zone_priority`, `closest_to_label`, `top_most` — order candidates. | `extraction.spec`, `document.reader` (`Zone`) |
+| `layout/loader.py` | Parses and validates a layout JSON file into a `Layout`; the only module that reads the JSON shape. | `layout.schema`, `document.reader` (`Zone`) |
+| `extraction/spec.py` | Defines `FieldSpec`, `Candidate`, `Evaluated` and the `OnAllInvalid` vocabulary; re-exports `Strategy`. | `domain.models` (`Evidence`, `FieldValue`, `Strategy`), `document.reader` (`Zone`), `layout.schema` (`FieldLayout`, `Layout`) |
+| `extraction/strategies.py` | `label_right`, `label_below`, `regex_anchor` — pure functions from text lines to candidates. | `document.reader`, `extraction.spec`, `domain.models`, `layout.schema` |
+| `extraction/normalizers.py` | `parse_number` — the one implementation of the layout's separator rules — and the five normalizers built on it: `strip_label`, `parse_date`, `parse_money`, `parse_percent`, `upper_alnum`. Each returns `None` on failure and never raises. | `extraction.spec`, `layout.schema` |
+| `extraction/validators.py` | The matching predicates `matches_pattern`, `is_date`, `is_positive_money`, `is_currency_code`, `is_percent`. | `extraction.spec`, `layout.schema`, `domain.models` (`FieldValue`) |
+| `extraction/rankers.py` | `valid_first`, `zone_priority`, `closest_to_label`, `top_most` — order candidates. | `extraction.spec`, `layout.schema` |
 | `extraction/engine.py` | Runs one `FieldSpec` against a `Layout` and a page's text lines to produce one `FieldResult`. | `extraction.*`, `document.reader`, `layout.schema`, `domain.models` |
-| `extraction/specs.py` | The 10 scalar `FieldSpec` instances, in field order. | `extraction.spec`, `extraction.strategies` / `.normalizers` / `.validators` / `.rankers` |
-| `extraction/line_items.py` | Extracts the line-item table using the layout's header and stop labels. | `document.reader`, `layout.schema`, `domain.models`, `extraction.normalizers` |
+| `extraction/specs.py` | The 10 scalar `FieldSpec` instances, in field order. | `extraction.spec`, `extraction.normalizers` / `.validators` / `.rankers`, `domain.models` (`Strategy`) |
+| `extraction/line_items.py` | Extracts the line-item table using the layout's header and stop labels. | `document.reader`, `layout.schema`, `domain.models`, `domain.findings`, `extraction.normalizers` |
 | `validation/invariants.py` | `totals_reconcile`, `line_items_sum`, `vat_rate_consistent` — each emits a `Finding`, never raises. | `domain.models`, `domain.findings`, `domain.money` |
-| `validation/confidence.py` | Combines named signals into a `FieldResult.confidence` and its breakdown. | `domain.models` |
-| `output/json_writer.py`, `output/text_report.py` | Serialize an already-built `InvoiceResult` — JSON (`Decimal` as string, `date` as ISO-8601) and a human-readable text report, respectively. | `domain.models` |
+| `validation/confidence.py` | Combines named signals into a `FieldResult.confidence` and its breakdown. | `domain.models`, `domain.findings`, `extraction.engine` (`Extraction`), `layout.schema` (`FieldLayout`) |
+| `output/json_writer.py` | Serializes an already-built `InvoiceResult` as JSON (`Decimal` as string, `date` as ISO-8601). | `domain.models` |
+| `output/text_report.py` | Renders the same result as the human-readable report in `README.md`. | `domain.models`, `domain.findings`, `layout.schema`, `validation.invariants` (`INVARIANT_NAMES`) |
 
 ## 5. How a field is extracted: `invoice_number` on the Acme sample
 
 1. `pipeline.extract("acme_invoice.pdf", layout="acme")` opens the PDF through `document/pymupdf_reader.py`, which yields one `TextLine` per line of text on page 1.
 2. `document/zones.py` stamps each `TextLine.zone` from its `BBox` centre, normalised against the page size — the line `"Invoice Number: INV-2024-0042"` lands in `Zone.TOP_RIGHT`.
 3. `layout/loader.py` has already parsed `layouts/acme.json` into a `Layout`; `layout.fields["invoice_number"]` holds `labels=["Invoice Number"]` and `zones=[Zone.TOP_RIGHT]` — no `regex`, a label match is enough.
-4. `extraction/specs.py` pairs the field name with behaviour: `FieldSpec(name="invoice_number", strategy=LABEL_RIGHT, normalizer=strip_label, validator=matches_pattern, rankers=[valid_first, zone_priority], on_all_invalid=NOT_FOUND)`.
+4. `extraction/specs.py` pairs the field name with behaviour: `FieldSpec(name="invoice_number", strategy=LABEL_RIGHT, normalizer=strip_label, validator=matches_pattern(r"[A-Z0-9][A-Z0-9/-]{2,}"), rankers=(valid_first, zone_priority, top_most), on_all_invalid=NOT_FOUND)`.
 5. `extraction/engine.py` restricts the search to `TextLine`s in `Zone.TOP_RIGHT` and calls `strategies.label_right()`, which finds the label and reads the text to its right, returning `Candidate(raw_text="Invoice Number: INV-2024-0042", evidence=...)`.
 6. `normalizers.strip_label()` reduces the raw text to `"INV-2024-0042"`; `validators.matches_pattern()` confirms it matches the invoice-number shape — the spec's default pattern, unless the layout's optional `regex` for this field overrides it.
-7. Only one candidate exists, so `rankers.valid_first` and `zone_priority` have nothing to break a tie on — it wins by default.
-8. `validation/confidence.py` scores the field: label matched exactly, zone matched, validator passed, single candidate, invariants agree — every signal lit, so confidence lands high.
+7. Only one candidate exists, so `valid_first`, `zone_priority` and `top_most` have nothing to break a tie on — it wins by default.
+8. `validation/confidence.py` scores the field: label matched exactly, zone matched, validator passed, single candidate, invariants agree — every signal lit, so confidence is exactly `1.00`, and the breakdown says which weight came from where.
 9. The engine emits:
 
 ```python
@@ -181,8 +185,14 @@ FieldResult(
         strategy=Strategy.LABEL_RIGHT,
         raw_text="Invoice Number: INV-2024-0042",
     ),
-    confidence=0.96,
-    confidence_breakdown={...},
+    confidence=1.0,
+    confidence_breakdown={
+        "label_exact_match": 0.25,
+        "in_expected_zone": 0.15,
+        "validator_passed": 0.30,
+        "single_candidate": 0.10,
+        "invariants_agree": 0.20,
+    },
     valid=True,
 )
 ```
@@ -201,13 +211,15 @@ Read outward to inward: **`output → pipeline → extraction / validation → d
 
 ```mermaid
 flowchart LR
-    CLI["cli.py (outer)"] --> PIPE["pipeline.py"] & OUT["output/*.py (outer)"]
-    PIPE --> EXT["extraction/*.py"] & VAL["validation/*.py"] & DOC["document/*.py (leaf)"] & LAY["layout/*.py (leaf)"]
-    EXT --> DOC & LAY & DOM["domain/*.py (innermost)"]
-    VAL --> DOM
-    OUT --> DOM
+    CLI["cli.py (outer)"] --> PIPE["pipeline.py"] & OUT["output/*.py (outer)"] & LAY["layout/*.py (leaf)"]
+    PIPE --> EXT["extraction/*.py"] & VAL["validation/*.py"] & DOC["document/*.py (leaf)"] & LAY & DOM["domain/*.py (innermost)"]
+    EXT --> DOC & LAY & DOM
+    VAL --> DOM & LAY & EXT
+    OUT --> DOM & LAY & VAL
     LAY --> DOC
     DOM -.->|"BBox only"| DOC
 ```
 
 No arrow points the other way: `document/reader.py` never imports `domain/`, `layout/`, `extraction/`, `validation/`, `pipeline.py`, or `output/`. The one exception is deliberate and narrow — `domain/models.py` reuses `document.reader.BBox` inside `Evidence` instead of redefining geometry, an edge that carries no dependency on `fitz`, which stays confined to `pymupdf_reader.py`.
+
+Two arrows are worth naming because they cross rings rather than descend one. `validation/confidence.py` imports `Extraction` from `extraction/engine.py`, and `output/text_report.py` imports `INVARIANT_NAMES` from `validation/invariants.py`. Both are the *name of a value the caller is handed*, not a call back into that package — `score` is given an `Extraction` by `pipeline.py`, and the report prints one row per invariant in the order that tuple fixes. Boundary 4 in §3 is about who runs the stages, and `pipeline.py` is still the only module that does.

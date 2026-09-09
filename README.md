@@ -143,9 +143,33 @@ docs/               architecture, layout format, ADRs, implementation plan
 formats (see [docs/LAYOUT_FORMAT.md](docs/LAYOUT_FORMAT.md)). `layout/loader.py`
 validates it and raises `LayoutError` naming the exact bad key. No Python change.
 
-**Add a field.** One `FieldSpec` entry in `extraction/specs.py` (strategy, normalizer,
-validator, rankers, `on_all_invalid`), the matching `labels`/`zones`/`regex` in every
-layout JSON, and a unit test. `engine.py` and `pipeline.py` stay untouched.
+**Add a field.** Three small edits and a test — `engine.py`, `pipeline.py` and every
+strategy stay untouched. Adding `purchase_order`, in full:
+
+1. `layout/schema.py` — add `"purchase_order"` to `FIELD_NAMES`, the closed vocabulary
+   `layout/loader.py` validates every layout against.
+2. `domain/models.py` — add `"purchase_order": str` to `VALUE_TYPES`, so `from_dict`
+   restores the value with the type `to_dict` wrote it as.
+3. `extraction/specs.py` — one entry, in the position the field should be reported in:
+
+   ```python
+   FieldSpec(
+       name="purchase_order",
+       strategy=Strategy.LABEL_RIGHT,
+       normalizer=strip_label,
+       validator=matches_pattern(r"PO-\d{4,}"),
+       rankers=BY_POSITION,
+       on_all_invalid=OnAllInvalid.NOT_FOUND,
+   )
+   ```
+
+4. Every `layouts/*.json` — `"purchase_order": {"labels": ["Purchase Order"], "zones":
+   ["TOP_RIGHT"]}`. A layout missing it now fails to load, by design.
+5. A unit test in `tests/unit/test_specs.py`, and a `FakeDocument` case for whichever
+   strategy is new to you.
+
+The field appears in the JSON, in the report and in `confidence_breakdown` with no other
+change: the engine already runs whatever `FIELD_SPECS` holds.
 
 ## Quality gates
 
@@ -157,17 +181,27 @@ pass — see [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 | `make lint` | `ruff check` + `ruff format --check` (E, F, I, N, UP, B, SIM, RUF; line length 100) |
 | `make typecheck` | `mypy --strict` on `src/` (`fitz` is the one ignored import) |
 | `make test` | `pytest --cov=invoice_extractor --cov-fail-under=90` |
-| hygiene test | `src/` <= 2200 non-blank/non-comment lines; no module > 250 lines; no function > 40 lines |
+| hygiene test | `src/` <= 2200 non-blank/non-comment lines; no module > 250 lines; no function > 40 lines; `fitz` in one module only; no `print`, no work markers, no unjustified suppressions, no absolute paths or e-mail addresses, every relative markdown link resolves |
 
 `.github/workflows/ci.yml` runs the same `make check` on every push and pull request.
 Nothing merges that hasn't passed it.
 
+**Supported Python:** 3.11 and 3.12 — the two versions CI runs, and the floor
+`requires-python` declares.
+
+**Running one test:** `pytest tests/unit/test_normalizers.py -k parse_money --no-cov`.
+`make test` measures coverage over the whole suite, so a single test needs `--no-cov` to
+skip the 90% floor it cannot meet on its own.
+
 ## Status
 
-v0.1.0 is in progress. This repository starts from a fully specified seed —
-architecture, ADRs, layout format, sample fixtures, CI — implemented afterward one gated
-pull request at a time. [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) is
-the source of truth for what's done and what's next.
+v0.1.0 is complete: ten scalar fields, the line-item table, three arithmetic invariants,
+explainable confidence, a JSON writer, a text report and a CLI — all of it green under
+`make check` on Python 3.11 and 3.12. This repository started from a fully specified
+seed — architecture, ADRs, layout format, sample fixtures, CI — implemented afterward
+one gated pull request at a time; [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)
+is the plan it was built to, PR0 through PR9, and
+[CHANGELOG.md](CHANGELOG.md) is what shipped.
 
 ## License
 

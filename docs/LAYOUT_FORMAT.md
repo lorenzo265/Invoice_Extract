@@ -62,11 +62,18 @@ real key unset with no signal beyond a confusing downstream extraction failure; 
 at load time, on the exact key, is the whole point of ADR-0004.
 
 Missing a required key: `"<key> is required"`. Wrong type: `"<key> must be a
-<expected type description>"` (the description in the table above — e.g.
+<expected type description>"` (the description in the table above — the eight in full:
+`"id must be a non-empty string"`, `"language must be a non-empty string"`,
 `"decimal_separator must be a single character"`,
+`"thousands_separator must be a single character or empty"`,
 `"date_formats must be a non-empty list of strings"`,
-`"currency_symbols must be an object mapping currency codes to symbols"`). Separator
+`"currency_symbols must be an object mapping currency codes to symbols"`,
+`"fields must be an object mapping field names to field layouts"`,
+`"line_items must be an object with header_labels and stop_labels"`). Separator
 collision: `"decimal_separator and thousands_separator must be different"`.
+
+Keys are validated in the order the table lists them, so the first error a reader meets
+is the first key that is wrong, not whichever check happened to run first.
 
 The keys of `currency_symbols` are validated as currency-code-shaped (`^[A-Z]{3}$`),
 not against a master ISO 4217 list — that list is a data dependency this project
@@ -94,7 +101,8 @@ Each value is a `FieldLayout`:
 | `zones` | `list[Zone name]`, non-empty | Yes | Where this field is expected to appear. Ranking prefers a candidate found in one of these zones (`extraction/rankers.py`'s `zone_priority`) and `validation/confidence.py`'s `in_expected_zone` signal reads it — it does not forbid a match elsewhere. |
 | `regex` | `str` | No | A field-specific pattern, only needed by a field whose `FieldSpec.strategy` is `REGEX_ANCHOR`, or one whose validator wants a shape check `matches_pattern` can't infer from labels alone. Neither seed layout uses it — `labels` and `zones` are enough for both `acme` and `nordic`. Compiled with `re.compile` at load time so a broken pattern fails immediately: `"fields.<name>.regex is not a valid regular expression: <re.error message>"`. |
 
-Validation messages: `"fields.<name>.labels must be a non-empty list of strings"` (the
+Validation messages: `"fields.<name> must be an object"` when the value under a field
+name is not one, `"fields.<name>.labels must be a non-empty list of strings"` (the
 literal example ADR-0004 cites), `"fields.<name>.zones must be a non-empty list of
 strings"`, `"fields.<name>.regex must be a string"`, and for an unrecognized key inside
 one field object, `"fields.<name>.<subkey> is not a recognized key"`.
@@ -175,9 +183,12 @@ own invoices actually use — `acme.json` maps only `GBP`, `nordic.json` only `S
 
 A missing column: `"line_items.header_labels.<column> is required"`. An extra column
 key: `"line_items.header_labels.<column> is not a recognized column"`. Wrong shape:
-`"line_items.header_labels.<column> must be a non-empty list of strings"`. Wrong shape
-for the sibling key: `"line_items.stop_labels must be a list of strings"` — empty is
-allowed here (a table with nothing printed after it still has an end: the page).
+`"line_items.header_labels.<column> must be a non-empty list of strings"`, and for the
+map itself, `"line_items.header_labels must be an object mapping columns to header
+words"`. Wrong shape for the sibling key:
+`"line_items.stop_labels must be a list of strings"` — empty is allowed here (a table
+with nothing printed after it still has an end: the page). An unrecognized key beside
+those two: `"line_items.<key> is not a recognized key"`.
 
 ### How `header_labels` and `stop_labels` drive the table extractor
 

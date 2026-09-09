@@ -36,6 +36,12 @@ ABSOLUTE_PATH_PATTERNS = (
 EMAIL_PATTERN = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
 URL_PATTERN = re.compile(r"https?://")
 
+# Markdown does not render a link inside a code span, so neither does the link check —
+# docs/IMPLEMENTATION_PLAN.md states this very rule with the syntax quoted in backticks.
+FENCED_CODE = re.compile(r"```.*?```", re.DOTALL)
+INLINE_CODE = re.compile(r"`[^`]*`")
+MARKDOWN_LINK = re.compile(r"\]\(([^)\s]+)")
+
 TEXT_SUFFIXES = frozenset({".py", ".md", ".json", ".toml", ".yml", ".yaml", ".cfg", ".txt"})
 TEXT_FILENAMES = frozenset({"Makefile", "LICENSE", ".gitignore"})
 IGNORED_DIRS = frozenset(
@@ -262,6 +268,25 @@ def test_public_api_has_no_any() -> None:
         where(module) for module in existing_targets(NO_ANY_TARGETS) if imports_name(module, "Any")
     ]
     assert not offenders, f"`Any` imported into the public API: {offenders}"
+
+
+def test_markdown_links_resolve() -> None:
+    offenders = [
+        f"{where(document)} -> {target}"
+        for document in repo_text_files()
+        if document.suffix == ".md"
+        for target in _link_targets(document)
+        if not (document.parent / target).exists()
+    ]
+    assert not offenders, f"markdown links pointing at nothing: {offenders}"
+
+
+def _link_targets(document: Path) -> list[str]:
+    """Every relative link target in a document, code spans and anchors excluded."""
+    text = document.read_text(encoding="utf-8")
+    prose = INLINE_CODE.sub("", FENCED_CODE.sub("", text))
+    found = (target.split("#")[0] for target in MARKDOWN_LINK.findall(prose))
+    return [target for target in found if target and "://" not in target]
 
 
 def test_dataclasses_are_frozen() -> None:
