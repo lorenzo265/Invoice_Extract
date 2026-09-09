@@ -1,0 +1,62 @@
+{
+  "id": "nordic",
+  "language": "sv",
+  "decimal_separator": ",",
+  "thousands_separator": " ",
+  "date_formats": ["%Y-%m-%d"],
+  "currency_symbols": {
+    "SEK": "kr"
+  },
+  "fields": {
+    "invoice_number": {
+      "labels": ["Fakturanummer"],
+      "zones": ["TOP_RIGHT"]
+    },
+    "invoice_date": {
+      "labels": ["Fakturadatum"],
+      "zones": ["TOP_RIGHT"]
+    },
+    "due_date": {
+      "labels": ["Förfallodatum"],
+      "zones": ["TOP_RIGHT"]
+    },
+    "supplier_vat_id": {
+      "labels": ["Momsreg.nr"],
+      "zones": ["TOP_LEFT"]
+    },
+    "customer_vat_id": {
+      "labels": ["Kundens momsreg.nr"],
+      "zones": ["MIDDLE_LEFT"]
+    },
+    "currency": {
+      "labels": ["Valuta"],
+      "zones": ["TOP_RIGHT"]
+    },
+    "vat_rate": {
+      "labels": ["Moms"],
+      "zones": ["BOTTOM_RIGHT"]
+    },
+    "subtotal": {
+      "labels": ["Netto"],
+      "zones": ["BOTTOM_RIGHT"]
+    },
+    "vat_amount": {
+      "labels": ["Momsbelopp"],
+      "zones": ["BOTTOM_RIGHT"]
+    },
+    "total_amount": {
+      "labels": ["Att betala"],
+      "zones": ["BOTTOM_RIGHT"]
+    }
+  },
+  "line_items": {
+    "header_labels": {
+      "sku": ["Artikelnr", "SKU"],
+      "description": ["Beskrivning"],
+      "quantity": ["Antal"],
+      "unit_price": ["Pris", "Styckpris"],
+      "net_amount": ["Belopp"]
+    },
+    "stop_labels": ["Netto"]
+  }
+}
