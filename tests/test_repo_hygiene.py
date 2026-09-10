@@ -9,10 +9,12 @@ from __future__ import annotations
 
 import ast
 import re
+import tomllib
 from collections.abc import Iterator
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+PYPROJECT = REPO_ROOT / "pyproject.toml"
 SRC = REPO_ROOT / "src"
 EXTRACTOR = SRC / "invoice_extractor"
 FORGE = SRC / "invoice_forge"
@@ -282,6 +284,32 @@ def _link_targets(document: Path) -> list[str]:
     prose = INLINE_CODE.sub("", FENCED_CODE.sub("", text))
     found = (target.split("#")[0] for target in MARKDOWN_LINK.findall(prose))
     return [target for target in found if target and "://" not in target]
+
+
+def test_every_declared_data_file_exists() -> None:
+    """A data glob that matches nothing is a file that will be missing from the wheel."""
+    config = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
+    declared = config["tool"]["setuptools"]["package-data"]
+    offenders = [
+        f"{package}: {pattern}"
+        for package, patterns in declared.items()
+        for pattern in patterns
+        if not list((SRC / package).glob(pattern))
+    ]
+    assert not offenders, f"package data declared but not present: {offenders}"
+
+
+def test_every_data_file_under_source_is_declared() -> None:
+    """The other direction: a JSON file inside a package that no glob ships."""
+    declared = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
+    packaged = {
+        path
+        for package, patterns in declared["tool"]["setuptools"]["package-data"].items()
+        for pattern in patterns
+        for path in (SRC / package).glob(pattern)
+    }
+    offenders = [where(path) for path in sorted(SRC.rglob("*.json")) if path not in packaged]
+    assert not offenders, f"data files that would not ship: {offenders}"
 
 
 def test_dataclasses_are_frozen() -> None:

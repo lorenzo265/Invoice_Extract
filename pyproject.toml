@@ -23,7 +23,14 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 invoice_extractor = ["py.typed"]
-invoice_forge = ["py.typed", "fonts/*.ttf", "fonts/LICENSE"]
+invoice_forge = [
+    "py.typed",
+    "fonts/*.ttf",
+    "fonts/LICENSE",
+    "profiles/*.json",
+    "lexicon/*.json",
+    "sample/catalogues/*.json",
+]
 
 [tool.ruff]
 line-length = 100

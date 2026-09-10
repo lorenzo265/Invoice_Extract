@@ -1,0 +1,100 @@
+{
+  "language": "de",
+  "document_titles": {
+    "invoice": ["RECHNUNG", "Rechnung"],
+    "credit_note": ["GUTSCHRIFT", "Gutschrift"]
+  },
+  "header_labels": {
+    "invoice_number": ["Rechnungsnummer", "Rechnungs-Nr.", "Beleg-Nr."],
+    "invoice_date": ["Rechnungsdatum", "Belegdatum", "Datum"],
+    "due_date": ["Fällig am", "Fälligkeitsdatum", "Zahlbar bis"],
+    "supplier_vat_id": ["USt-IdNr.", "Umsatzsteuer-ID", "MwSt-Nr."],
+    "customer_vat_id": ["USt-IdNr. des Kunden", "Kunden-USt-IdNr."],
+    "currency": ["Währung"],
+    "supply_date": ["Leistungsdatum", "Lieferdatum", "Leistungszeitraum"],
+    "order_number": ["Bestellnummer", "Auftragsnummer", "Ihre Bestellung"],
+    "customer_number": ["Kundennummer", "Kunden-Nr."],
+    "contract_number": ["Vertragsnummer", "Vertrags-Nr."],
+    "our_reference": ["Unser Zeichen", "Sachbearbeiter"],
+    "your_reference": ["Ihr Zeichen", "Ihre Referenz"],
+    "payment_terms": ["Zahlungsbedingungen", "Zahlungsziel"]
+  },
+  "totals_labels": {
+    "vat_rate": ["USt-Satz", "MwSt-Satz", "Steuersatz"],
+    "subtotal": ["Nettosumme", "Zwischensumme", "Nettobetrag"],
+    "vat_amount": ["Umsatzsteuer gesamt", "MwSt-Betrag", "Umsatzsteuer"],
+    "total_amount": ["Rechnungsbetrag", "Gesamtbetrag", "Endbetrag"]
+  },
+  "charge_labels": {
+    "SHIPPING": ["Versandkosten", "Fracht", "Lieferkosten"],
+    "ENVIRONMENTAL_FEE": ["Umweltabgabe", "Entsorgungsbeitrag"],
+    "SURCHARGE": ["Zuschlag", "Mindermengenzuschlag"],
+    "CONSOLIDATION_FEE": ["Bearbeitungsgebühr", "Handlingpauschale"],
+    "RECYCLING_FEE": ["Recyclinggebühr", "Rücknahmegebühr"],
+    "ROUNDING": ["Rundungsdifferenz", "Rundung"]
+  },
+  "column_headers": {
+    "sku": ["Artikel-Nr.", "Art.-Nr.", "Artikelnummer"],
+    "description": ["Beschreibung", "Bezeichnung", "Artikelbezeichnung"],
+    "quantity": ["Menge", "Anzahl"],
+    "unit_price": ["Einzelpreis", "Preis", "E-Preis"],
+    "net_amount": ["Betrag", "Nettobetrag", "Gesamt"],
+    "pos": ["Pos.", "Position", "Nr."],
+    "unit": ["Einheit", "ME"],
+    "discount": ["Rabatt", "Rabatt %"],
+    "vat_rate": ["USt %", "MwSt %", "Steuer"],
+    "subscription_id": ["Abo-Nr.", "Vertragsposition"],
+    "billing_cycle": ["Abrechnungszyklus", "Turnus"],
+    "period": ["Zeitraum", "Leistungszeitraum"],
+    "share": ["Anteil %", "Anteil"],
+    "remaining_term": ["Restlaufzeit", "Restdauer"]
+  },
+  "vat_summary_headers": {
+    "rate": ["Satz", "Steuersatz"],
+    "base": ["Netto", "Bemessungsgrundlage"],
+    "vat": ["USt", "Steuerbetrag"]
+  },
+  "party_headings": {
+    "bill_to": ["Rechnungsempfänger", "Rechnungsanschrift"],
+    "ship_to": ["Lieferanschrift", "Lieferadresse"],
+    "mail_to": ["Versandanschrift", "Postanschrift"]
+  },
+  "trap_labels": {
+    "order_date": ["Bestelldatum", "Auftragsdatum"],
+    "delivery_date": ["Lieferdatum", "Versanddatum"],
+    "print_date": ["Druckdatum", "Erstellt am"]
+  },
+  "carry_forward": {
+    "incoming": ["Übertrag von Vorseite", "Übertrag"],
+    "outgoing": ["Zwischensumme / Übertrag", "Übertrag auf Folgeseite"]
+  },
+  "exemption_sentences": {
+    "reverse_charge": ["Steuerschuldnerschaft des Leistungsempfängers (Reverse Charge)."],
+    "intra_community": ["Steuerfreie innergemeinschaftliche Lieferung."],
+    "export": ["Steuerfreie Ausfuhrlieferung nach § 6 UStG."]
+  },
+  "page_numbering": ["Seite {page} von {pages}", "Seite {page}/{pages}"],
+  "payment_terms": [
+    "Zahlbar innerhalb von 30 Tagen ohne Abzug.",
+    "Zahlbar innerhalb von 14 Tagen netto.",
+    "2 % Skonto bei Zahlung innerhalb von 10 Tagen."
+  ],
+  "legal_lines": [
+    "Es gelten unsere Allgemeinen Geschäftsbedingungen.",
+    "Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.",
+    "Gerichtsstand ist der Sitz des Verkäufers."
+  ],
+  "copy_stamps": ["KOPIE", "DUPLIKAT"],
+  "months": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+  "month_abbreviations": ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+  "diacritics": "äöüß ÄÖÜ µ ² ° –",
+  "amount_in_words": {
+    "style": "germanic_compound",
+    "units": ["null", "ein", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf", "zwölf", "dreizehn", "vierzehn", "fünfzehn", "sechzehn", "siebzehn", "achtzehn", "neunzehn"],
+    "tens": ["zwanzig", "dreißig", "vierzig", "fünfzig", "sechzig", "siebzig", "achtzig", "neunzig"],
+    "scales": ["hundert", "tausend", "Million"],
+    "joiner": "und",
+    "currency_unit": ["Euro", "Euro"],
+    "currency_fraction": ["Cent", "Cent"]
+  }
+}
