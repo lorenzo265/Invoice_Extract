@@ -31,7 +31,7 @@ $ make check
 - [ ] No `# noqa`, `# type: ignore`, or lowered coverage/size threshold was added without a same-line comment justifying it.
 - [ ] No new dependency — runtime or development — was added; `pyproject.toml`'s dependency lists are unchanged.
 - [ ] No file under `samples/*.expected.json` was edited.
-- [ ] Every new or changed function is ≤ 40 lines; every module is ≤ 250 lines; the `src/` total is still inside budget.
+- [ ] Every new or changed function is ≤ 40 lines and every module is ≤ 250 lines, in every package under `src/`.
 - [ ] Every new public function and class is fully typed; no `Any` leaked in.
 - [ ] No `TODO`, `FIXME`, or commented-out code in the diff.
 - [ ] Commit message(s) follow Conventional Commits.

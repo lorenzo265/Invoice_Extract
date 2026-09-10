@@ -9,11 +9,30 @@ in full before writing any code, and again before starting each new PR.
 result: ten scalar fields, a table of line items, and a `Finding` for every arithmetic
 invariant that disagrees — with every value traceable back to the exact text line,
 bounding box, and strategy that produced it. The goal is not to cover every invoice
-layout in the wild; it is to handle a small, fixed set of layouts with full rigor, so
-a reader can open the source, follow one field from PDF byte to JSON output, and trust
-every step in between. You are building this repository from an empty seed, one pull
-request at a time, against the plan in `docs/IMPLEMENTATION_PLAN.md`. This file is the
-rulebook you follow while you do it.
+layout in the wild; it is to handle each layout it claims with full rigor, so a reader
+can open the source, follow one field from PDF byte to JSON output, and trust every
+step in between.
+
+Alongside it, `invoice_forge` generates the corpus the extractor is measured against:
+realistic, multilingual, arithmetically consistent invoice PDFs with exact ground
+truth, from a seed. You are building this repository one pull request at a time, first
+against `docs/IMPLEMENTATION_PLAN.md` (the extractor, PR0–PR9) and then against
+`docs/FORGE_PLAN.md` (the generator, F0–F7). This file is the rulebook you follow while
+you do it.
+
+## Quality premise
+
+Quality over continuity. If something can be better — easier to maintain, more
+readable, simpler to extend — change it, without fear of touching code that works.
+Rebuilding a subsystem, or the whole project, from scratch is legitimate when it is
+the path to the best possible code.
+
+- Never patch a broken design or one built with limits that complicate expansion.
+  Diagnose the cause and rebuild the piece. A patch is acceptable only as a declared
+  containment, with the rebuild already planned in the PR description.
+- A refactor that leaves code worse "to avoid touching too much" is rejected in review.
+- Proof that a rebuild preserves behaviour is still measurement: gates, golden tests,
+  before/after snapshots. Rebuilding does not waive proving.
 
 ## Read order
 
@@ -27,6 +46,10 @@ area a document covers:
 | 3 | `docs/ARCHITECTURE.md` | The module boundaries and data flow the plan assumes. |
 | 4 | `docs/SAMPLES_SPEC.md` | The fixture data (`acme`, `nordic`) every golden test asserts against. |
 | 5 | `docs/LAYOUT_FORMAT.md` | The JSON schema that drives extraction — read before touching `layout/` or `extraction/`. |
+| 6 | `docs/FORGE_PLAN.md` | The generator's PRs, F0–F7, each with its exact scope and gate. |
+| 7 | `docs/FORGE_SPEC.md` | The generator's design — read before touching `invoice_forge/`. |
+| 8 | `docs/VARIATION_CATALOG.md` | What the corpus must vary, and the knob for each axis. |
+| 9 | `docs/GROUND_TRUTH_SCHEMA.md` | The ground-truth contract the benchmark compares against. |
 
 If a document and the code disagree, the document is out of date, not wrong: fix the
 document in the same PR that changes the behavior it describes.
@@ -82,16 +105,40 @@ branch as it is and stop working on this repository until a human has read
   tools already in hand — that need is not a reason to touch the dependency lists. If
   it is genuinely unsolvable that way, that is what the three-strikes rule above is
   for, not a workaround.
-- **Never exceed the size budget**: `src/` at or under 2200 non-blank, non-comment
-  lines; no module over 250 lines; no function over 40 lines.
-  `tests/test_repo_hygiene.py` checks this by parsing the AST, not by a rough count —
-  don't try to game it with dense single-line statements. Hitting the ceiling mid-PR
-  is a signal to extract a module, not a signal to ask for more room.
+- **Never exceed the size budget**: no module over 250 lines, no function over 40
+  lines, in every package under `src/`. `tests/test_repo_hygiene.py` checks this by
+  parsing the AST, not by a rough count — don't try to game it with dense single-line
+  statements. Hitting the ceiling mid-PR is a signal to extract a module, not a signal
+  to ask for more room. There is no repository-wide line total: the repository is
+  growing, and a cap on its size would be a cap on what it can do.
 - **Never leave a `TODO`, `FIXME`, or commented-out code block.** Work that is
   genuinely out of scope for this PR either already has a later PR in
   `docs/IMPLEMENTATION_PLAN.md` to hold it, or it doesn't belong in the repository.
 - **Stop and write `docs/BLOCKED.md` after three failed gate attempts** on the same
   PR — see The loop, above. Do not keep iterating past the third attempt.
+
+## Scope grows; the standards do not
+
+The repository is growing from a compact extractor into a full-capability one, with a
+corpus generator alongside it. Every standard in this file — names, function size,
+typing, `Decimal`, frozen records, findings-not-exceptions, evidence on every value,
+F.I.R.S.T. tests, Conventional Commits — applies unchanged to every new package.
+
+- **`src/invoice_forge/`** is that new package, with its own tests under `tests/forge/`,
+  the same tooling and the same hygiene checks.
+- **`fitz` may be imported by exactly two modules** in the repository:
+  `invoice_extractor/document/pymupdf_reader.py` and `invoice_forge/render/pdf.py`.
+- **No runtime dependency beyond PyMuPDF**, for either package. Fonts are bundled
+  files, not a dependency. Randomness is `random.Random(seed)` — never the `random`
+  module's own functions, never the clock.
+- **Fonts are embedded from `src/invoice_forge/fonts/`** (Liberation, OFL). Never rely
+  on a system font; the corpus must render identically on every machine.
+
+## Languages
+
+The corpus covers Latin- and Greek-script European languages. Right-to-left scripts
+(Arabic, Hebrew) are out of scope for this repository. Do not add profiles, fonts or
+code paths for them.
 
 ## Code standard
 
@@ -185,11 +232,17 @@ Run this against the real diff before opening every PR. The same list lives in
 - [ ] No `# noqa`, `# type: ignore`, or lowered coverage/size threshold was added without a same-line comment justifying it.
 - [ ] No new dependency — runtime or development — was added; `pyproject.toml`'s dependency lists are unchanged.
 - [ ] No file under `samples/*.expected.json` was edited.
-- [ ] Every new or changed function is ≤ 40 lines; every module is ≤ 250 lines; the `src/` total is still inside budget.
+- [ ] Every new or changed function is ≤ 40 lines and every module is ≤ 250 lines, in every package under `src/`.
 - [ ] Every new public function and class is fully typed; no `Any` leaked in.
 - [ ] No `TODO`, `FIXME`, or commented-out code in the diff.
 - [ ] Commit message(s) follow Conventional Commits.
 - [ ] The PR description's Decisions section records every judgment call made under uncertainty — or explicitly says there were none.
+
+## Working discipline for long tasks
+
+- Create every output file at the start of the work and append to it section by
+  section; never hold a whole document in memory until the end.
+- Do not launch sub-agents.
 
 ## What to do when uncertain
 
