@@ -106,7 +106,7 @@ def _cell_text(item: LineItem, column: str, wording: Wording) -> str:
         "sku": lambda: item.sku,
         "unit": lambda: item.unit,
         "quantity": lambda: fmt.quantity(item.quantity, number_format),
-        "unit_price": lambda: fmt.money(item.unit_price, number_format),
+        "unit_price": lambda: fmt.price(item.unit_price, number_format),
         "vat_rate": lambda: fmt.rate(item.vat_rate),
         "net_amount": lambda: fmt.money(item.net_amount, number_format),
     }.get(column)

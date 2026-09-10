@@ -33,6 +33,8 @@ FONT_NAMES = {Weight.REGULAR: "F", Weight.BOLD: "FB"}
 RULE_COLOUR = (0.3, 0.3, 0.3)
 BOX_COLOUR = (0.45, 0.45, 0.45)
 BOX_WIDTH = 0.6
+# How far outside its box a word may sit and still belong to it, in points.
+WORD_TOLERANCE = 0.5
 # A fixed instant, so two runs of the same seed differ in no byte at all.
 FIXED_METADATA = {
     "producer": "invoice_forge",
@@ -93,6 +95,14 @@ class Canvas:
         self._page(None).draw_rect(rect, width=BOX_WIDTH, color=BOX_COLOUR)
 
     def save(self, path: Path, title: str) -> None:
+        """Subset the fonts, fix the metadata, and write. Same input, same bytes.
+
+        Without subsetting every document carries both faces whole — half a megabyte of
+        font for a page that uses two hundred glyphs, and the same half megabyte in every
+        document of a corpus. Subsetting is deterministic and leaves the text layer intact,
+        which the golden images and `forge verify` both prove.
+        """
+        self._document.subset_fonts()
         self._document.set_metadata({**FIXED_METADATA, "title": title})
         self._document.save(str(path), garbage=4, deflate=True, no_new_id=True)
         self._document.close()
@@ -117,6 +127,58 @@ def locate_all(path: Path, queries: Sequence[tuple[int, str]]) -> tuple[tuple[BB
             tuple(_rounded(rect) for rect in document[page - 1].search_for(text))
             for page, text in queries
         )
+    finally:
+        document.close()
+
+
+def text_in(path: Path, boxes: Sequence[tuple[int, BBox]]) -> tuple[str, ...]:
+    """The text each box holds, read out of a finished PDF, in the order asked for.
+
+    This is the other direction from `locate_all`, and the one `forge verify` needs: not
+    "where is this string" but "what does this box actually say". A truth entry claiming a
+    box is proved by reading that box, never by trusting the renderer that wrote it.
+
+    Each page's words are extracted once and the boxes are answered from that, rather than
+    asking the page per box: a corpus asks hundreds of boxes per document, and re-reading
+    the page for each one costs seconds where this costs milliseconds.
+    """
+    document = fitz.open(str(path))
+    try:
+        pages = {page: _words(document, page) for page in {number for number, _ in boxes}}
+        return tuple(_within(pages[page], box) for page, box in boxes)
+    finally:
+        document.close()
+
+
+def _words(
+    document: fitz.Document, page: int
+) -> tuple[tuple[float, float, float, float, str], ...]:
+    """Every word on a page with its box, converted out of PyMuPDF's tuples at once."""
+    return tuple(
+        (float(word[0]), float(word[1]), float(word[2]), float(word[3]), str(word[4]))
+        for word in document[page - 1].get_text("words")
+    )
+
+
+def _within(words: Sequence[tuple[float, float, float, float, str]], box: BBox) -> str:
+    """The words whose centre falls inside the box, in reading order, joined by spaces.
+
+    A glyph's own box can overhang the line's by a hair, so a word belongs to the box its
+    middle is in rather than the one that encloses it completely.
+    """
+    x0, y0, x1, y1 = box
+    return " ".join(
+        word[4]
+        for word in words
+        if x0 - WORD_TOLERANCE <= (word[0] + word[2]) / 2 <= x1 + WORD_TOLERANCE
+        and y0 - WORD_TOLERANCE <= (word[1] + word[3]) / 2 <= y1 + WORD_TOLERANCE
+    )
+
+
+def pages_in(path: Path) -> int:
+    document = fitz.open(str(path))
+    try:
+        return int(document.page_count)
     finally:
         document.close()
 

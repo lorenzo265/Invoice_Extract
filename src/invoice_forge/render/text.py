@@ -21,6 +21,7 @@ from invoice_forge.model import to_cents
 from invoice_forge.profiles.schema import DateFormat
 
 GROUP = 3
+MONEY_DECIMALS = 2
 Measure = Callable[[str], float]
 
 
@@ -34,7 +35,19 @@ class NumberFormat:
 
 def money(value: Decimal, number_format: NumberFormat) -> str:
     """An amount at two decimals, grouped and separated the way the profile writes it."""
-    return _grouped(f"{to_cents(value):.2f}", number_format)
+    return _grouped(f"{to_cents(value):.{MONEY_DECIMALS}f}", number_format)
+
+
+def price(value: Decimal, number_format: NumberFormat) -> str:
+    """A unit price at its own precision, and never at fewer than two decimals.
+
+    A supplier that quotes 38.0450 per unit prints all four digits — that is what a
+    four-decimal price is for. Printing it as 38.05 would put a number on the page that
+    the truth, and the line's own arithmetic, disagree with.
+    """
+    exponent = value.as_tuple().exponent
+    places = max(-exponent, MONEY_DECIMALS) if isinstance(exponent, int) else MONEY_DECIMALS
+    return _grouped(f"{value:.{places}f}", number_format)
 
 
 def quantity(value: Decimal, number_format: NumberFormat) -> str:

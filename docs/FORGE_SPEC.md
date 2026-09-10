@@ -27,8 +27,9 @@ is recorded) and `docs/reference/forge/prototype/` (what "realistic" looks like)
 
 ```
 src/invoice_forge/
-  __init__.py            generate(), catalog(), verify(), __version__
-  cli.py                 forge generate | catalog | verify | render-one
+  __init__.py            Knob, __version__
+  cli.py                 forge generate | catalog | verify | render-one (the argument surface)
+  commands.py            what each subcommand does, once its arguments are parsed
   profiles/              one JSON per vendor profile (+ profiles/schema.py, loader.py)
   lexicon/               per-language label lexicons (JSON) + lexicon/loader.py
   model/                 DocumentModel: parties, identifiers, dates, money, items, charges, vat, payment
@@ -37,7 +38,9 @@ src/invoice_forge/
   render/                pdf.py (the only fitz importer besides the extractor's reader), sheet.py,
                          text.py, wording.py, table.py, pagination.py, blocks.py, totals.py,
                          placement.py, context.py, renderer.py
-  truth/                 truth builder (builder.py, values.py) + readback (locate.py)
+  truth/                 builder.py, values.py, locate.py (writing) + verify.py, checks.py,
+                         readback.py, reading.py (proving)
+  corpus/                plan.py (forge-plan/1), generate.py, survey.py, catalog.py
   produce.py             one cell of a corpus: sample, render, read back, write both files
   fonts/                 Liberation Sans/Serif + LICENSE
   knobs.py               the closed vocabulary of difficulty knobs
@@ -161,6 +164,17 @@ forge catalog corpus/                            # coverage against VARIATION_CA
 forge verify corpus/                             # readback + arithmetic + determinism; non-zero exit on any failure
 forge render-one --profile de-DE --family classic --knobs multi_page,dual_currency_echo --seed 7 --out one.pdf
 ```
+
+A plan is `forge-plan/1`: one cell per document, so a corpus is a manifest rather than
+a recipe with a random element.
+
+```jsonc
+{ "schema": "forge-plan/1",
+  "cells": [ { "profile": "de-DE", "family": "classic", "seed": 7, "knobs": ["multi_page"] } ] }
+```
+
+`--profiles/--families/--count/--seed` builds the same plan in memory from the cross
+product, and `generate` leaves the plan it ran beside the documents either way.
 
 `make corpus` generates the base corpus into `corpus/` from `corpus/plan.json` (the
 plan is committed; the PDFs are not — they are reproducible). `make bench` runs the

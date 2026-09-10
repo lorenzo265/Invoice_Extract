@@ -34,26 +34,9 @@ def test_help_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
     assert "forge" in capsys.readouterr().out
 
 
-@pytest.mark.parametrize(
-    "argv",
-    [
-        ["generate", "--plan", "corpus/plan.json", "--out", "corpus/"],
-        ["generate", "--profiles", "de-DE", "--out", "corpus/"],
-        ["catalog", "corpus/"],
-        ["verify", "corpus/"],
-    ],
-)
-def test_a_command_not_built_yet_names_the_pull_request_that_builds_it(
-    argv: list[str], capsys: pytest.CaptureFixture[str]
-) -> None:
-    assert main(argv) == 1
-    message = capsys.readouterr().err
-    assert f"PR {BUILT_BY[argv[0]]}" in message
-    assert "docs/FORGE_PLAN.md" in message
-
-
-def test_render_one_is_built_and_no_longer_claims_otherwise() -> None:
-    assert "render-one" not in BUILT_BY
+def test_every_command_the_specification_names_is_built() -> None:
+    """`BUILT_BY` is empty: nothing is left claiming a pull request will bring it."""
+    assert BUILT_BY == {}
 
 
 def test_generate_requires_a_plan_or_profiles() -> None:
@@ -133,3 +116,80 @@ def test_the_module_entry_point_runs(
         runpy.run_module("invoice_forge", run_name="__main__")
     assert exit_code.value.code == 0
     assert "one.pdf" in capsys.readouterr().out
+
+
+def test_generate_verify_and_catalog_run_through_the_command_line(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    out = str(tmp_path / "corpus")
+    argv = ["generate", "--profiles", "en-GB", "--count", "1", "--seed", "3", "--out", out]
+    assert main(argv) == 0
+    assert "1 documents" in capsys.readouterr().out
+    assert main(["verify", out]) == 0
+    assert "verified" in capsys.readouterr().out
+    assert main(["catalog", out]) == 1
+    assert "rows not met" in capsys.readouterr().out
+
+
+def test_generate_reads_a_plan_file_when_given_one(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    plan = tmp_path / "plan.json"
+    plan.write_text(
+        json.dumps(
+            {
+                "schema": "forge-plan/1",
+                "cells": [{"profile": "en-GB", "family": "classic", "seed": 5}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    out = str(tmp_path / "corpus")
+    assert main(["generate", "--plan", str(plan), "--out", out]) == 0
+    assert "0001_en-GB_classic_s5.pdf" in capsys.readouterr().out
+
+
+def test_generate_names_the_key_a_broken_plan_gets_wrong(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    plan = tmp_path / "plan.json"
+    plan.write_text(json.dumps({"schema": "forge-plan/1", "cells": []}), encoding="utf-8")
+    assert main(["generate", "--plan", str(plan), "--out", str(tmp_path / "c")]) == 1
+    assert "cells must be a non-empty list" in capsys.readouterr().err
+
+
+def test_generate_defaults_to_the_maximal_family(tmp_path: Path) -> None:
+    out = str(tmp_path / "corpus")
+    assert main(["generate", "--profiles", "en-GB", "--seed", "3", "--out", out]) == 0
+    assert (tmp_path / "corpus" / "0001_en-GB_classic_s3.pdf").is_file()
+
+
+def test_verify_says_which_corpus_it_cannot_find(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(["verify", str(tmp_path / "absent")]) == 1
+    assert "corpus directory not found" in capsys.readouterr().err
+
+
+def test_catalog_says_which_corpus_it_cannot_find(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(["catalog", str(tmp_path / "absent")]) == 1
+    assert "corpus directory not found" in capsys.readouterr().err
+
+
+def test_verify_reports_a_corpus_that_does_not_hold_up(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    out = tmp_path / "corpus"
+    assert main(["generate", "--profiles", "en-GB", "--seed", "3", "--out", str(out)]) == 0
+    truth = next(out.glob("*.truth.json"))
+    broken = json.loads(truth.read_text(encoding="utf-8"))
+    broken["fields"]["total_amount"]["value"] = "1.00"
+    truth.write_text(json.dumps(broken), encoding="utf-8")
+    capsys.readouterr()
+    assert main(["verify", str(out)]) == 1
+    printed = capsys.readouterr().out
+    assert "arithmetic" in printed
+    assert "determinism" in printed
+    assert "1 documents: 2 failures" in printed
