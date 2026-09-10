@@ -33,11 +33,15 @@ src/invoice_forge/
   lexicon/               per-language label lexicons (JSON) + lexicon/loader.py
   model/                 DocumentModel: parties, identifiers, dates, money, items, charges, vat, payment
   sample/                ContentSampler: catalogues, names, addresses, ids, IBAN/VAT generators
-  layout/                TemplateFamily definitions: classic, stacked, tabular, saas, minimal
-  render/                pdf.py (the only fitz importer besides the extractor's reader), text.py, table.py, pagination.py
-  truth/                 truth builder + readback verification
+  layout/                TemplateFamily declarations: spec.py, classic.py (stacked, tabular, saas, minimal)
+  render/                pdf.py (the only fitz importer besides the extractor's reader), sheet.py,
+                         text.py, wording.py, table.py, pagination.py, blocks.py, totals.py,
+                         placement.py, context.py, renderer.py
+  truth/                 truth builder (builder.py, values.py) + readback (locate.py)
+  produce.py             one cell of a corpus: sample, render, read back, write both files
   fonts/                 Liberation Sans/Serif + LICENSE
   knobs.py               the closed vocabulary of difficulty knobs
+  fields.py              the canonical field names, restated from the extractor and tied by a test
 tests/forge/             unit (no PDF) + integration (small corpus, determinism, verify)
 benchmarks/              make bench output: latest.json + README.md
 ```
@@ -96,7 +100,9 @@ Families in scope:
 | `minimal` | `classic` with pagination, VAT summary, parties beyond bill-to, payment block and footer switched off — the one-page simple invoice |
 
 Every family is expressed as a `FamilySpec` value (frozen dataclass) consumed by the
-same renderer; adding a family is adding a declaration and its golden test.
+same renderer; adding a family is adding a declaration and its golden test. A block a
+family omits is `None` on that record, which is how the simpler families are `classic`
+with blocks switched off rather than layouts of their own.
 
 ### 3.4 `DocumentModel` (code)
 
@@ -123,9 +129,11 @@ PyMuPDF only. Text placement through measured widths (`fitz.Font.text_length`) s
 right-aligned amounts and wrapped descriptions are exact; drawn rules and boxes for
 tables and the QR placeholder; page breaks with carry-forward; header/footer per page;
 fonts embedded from `invoice_forge/fonts/`; metadata fixed; `save(garbage=4,
-deflate=True, no_new_id=True)`. The renderer returns, per page, the list of
-`(role, text)` it placed, which the truth builder resolves to bboxes by reading the
-PDF back.
+deflate=True, no_new_id=True)`. The renderer returns a `Placement` per value it printed —
+what it says, which page, and the point it was drawn at — which the truth builder resolves
+to bboxes by reading the PDF back and taking the occurrence nearest that point. Recording
+the point is what keeps a string an invoice prints twice from being located at the wrong
+one of them.
 
 ### 3.7 Truth builder and verification (code)
 

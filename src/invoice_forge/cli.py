@@ -11,24 +11,55 @@ from __future__ import annotations
 import argparse
 import sys
 from collections.abc import Sequence
+from pathlib import Path
 
-from invoice_forge.knobs import KNOB_NAMES, split_knobs
+from invoice_forge.families import FAMILY_NAMES, Family
+from invoice_forge.jsonspec import SpecError
+from invoice_forge.knobs import KNOB_NAMES, Knob, split_knobs
+from invoice_forge.produce import DocumentSpec, produce
+from invoice_forge.truth.locate import LocateError
 
 PROGRAM = "forge"
 DESCRIPTION = "Generate synthetic invoice PDFs with exact ground truth."
-BUILT_BY = {"generate": "F3", "catalog": "F3", "verify": "F3", "render-one": "F2"}
+BUILT_BY = {"generate": "F3", "catalog": "F3", "verify": "F3"}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = _parse(argv)
+    knobs: tuple[Knob, ...] = ()
     if arguments.knobs is not None:
         try:
-            split_knobs(arguments.knobs)
+            knobs = split_knobs(arguments.knobs)
         except ValueError as error:
-            sys.stderr.write(f"{error}\n")
-            return 1
+            return _failed(error)
+    if arguments.command == "render-one":
+        return _render_one(arguments, knobs)
     command = arguments.command
     sys.stderr.write(f"forge {command} arrives in PR {BUILT_BY[command]} of docs/FORGE_PLAN.md\n")
+    return 1
+
+
+def _render_one(arguments: argparse.Namespace, knobs: tuple[Knob, ...]) -> int:
+    """Render one document and its truth, and say where both went."""
+    try:
+        family = _family(arguments.family)
+        spec = DocumentSpec(arguments.profile, family, arguments.seed, knobs)
+        produced = produce(spec, Path(arguments.out))
+    except (SpecError, LocateError, ValueError) as error:
+        return _failed(error)
+    sys.stdout.write(f"{produced.pdf} ({produced.pages} pages)\n{produced.truth}\n")
+    return 0
+
+
+def _family(name: str) -> Family:
+    try:
+        return Family(name)
+    except ValueError as error:
+        raise ValueError(f"unknown family {name}; known: {', '.join(FAMILY_NAMES)}") from error
+
+
+def _failed(error: Exception) -> int:
+    sys.stderr.write(f"{error}\n")
     return 1
 
 

@@ -45,7 +45,14 @@ REDUCED_RATE_DOMAIN = "software"
 CHARGE_AMOUNTS = ("9.90", "24.90", "45.00", "120.00")
 CHARGE_IN = 2
 RATE_SCALE = 4
-RATE_RANGE = (9000, 12000)
+# Exchange rates are fictional but not absurd: a Swedish invoice echoing euros quotes a
+# rate near 0.09, not near parity. Keyed by (currency, secondary currency), in units of
+# 10**-RATE_SCALE; a pair no vendor has declared yet gets the near-parity default.
+EXCHANGE_RATES = {
+    ("EUR", "USD"): (10400, 11200),
+    ("SEK", "EUR"): (830, 920),
+}
+DEFAULT_RATE_RANGE = (9000, 12000)
 REFERENCE_LETTERS = 2
 
 
@@ -172,7 +179,9 @@ def _payment(request: SampleRequest, supplier: Party, rng: Random) -> Payment:
 
 
 def _exchange_rate(profile: VendorProfile, rng: Random) -> Decimal | None:
-    low, high = RATE_RANGE
+    """Drawn for every profile, printed only where one is declared, so the stream is stable."""
+    pair = (profile.currency, profile.secondary_currency or "")
+    low, high = EXCHANGE_RATES.get(pair, DEFAULT_RATE_RANGE)
     drawn = Decimal(rng.randrange(low, high)).scaleb(-RATE_SCALE)
     return drawn if profile.secondary_currency is not None else None
 
