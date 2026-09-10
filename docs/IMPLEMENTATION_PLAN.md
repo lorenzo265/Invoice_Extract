@@ -794,3 +794,14 @@ text scans; none imports the package.
 | `test_public_api_has_no_any` | `Any` is not imported in `__init__.py`, `pipeline.py` or `domain/models.py` |
 | `test_dataclasses_are_frozen` | every `@dataclass` decorator in `domain/`, `layout/schema.py`, `extraction/spec.py`, `document/reader.py` has `frozen=True` |
 | `test_markdown_links_resolve` (PR9) | every relative `](target)` in any `*.md` points at an existing file |
+
+Three of these changed in PR F0 of `docs/FORGE_PLAN.md`, when `invoice_forge` became the
+repository's second package. `test_source_within_line_budget` was removed — `AGENTS.md`
+lifted the repository-wide total, and a cap on the repository's size would be a cap on
+what it can do. `test_fitz_imported_only_in_pymupdf_reader` became
+`test_fitz_imported_only_in_the_two_pdf_modules`, and `test_no_float_calls_in_domain`
+became `test_no_float_calls_in_the_money_layers`, because each rule now covers one module
+or directory per package. Every remaining assertion scans every package under `src/`, and
+two were widened while they were there: `Any` may not be imported anywhere under `src/`,
+and every `@dataclass` under `src/` must be frozen, not only those in the modules this
+table named.

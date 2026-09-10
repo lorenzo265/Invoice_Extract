@@ -13,11 +13,18 @@ from collections.abc import Iterator
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SRC = REPO_ROOT / "src" / "invoice_extractor"
+SRC = REPO_ROOT / "src"
+EXTRACTOR = SRC / "invoice_extractor"
+FORGE = SRC / "invoice_forge"
 
-MAX_SOURCE_LINES = 2200
 MAX_MODULE_LINES = 250
 MAX_FUNCTION_LINES = 40
+
+# The only two modules allowed to import the PDF library: the extractor reads with it,
+# the generator writes with it, and nothing else knows it exists.
+PDF_MODULES = (EXTRACTOR / "document" / "pymupdf_reader.py", FORGE / "render" / "pdf.py")
+# Where money lives in each package. `float` is not called there (ADR-0003).
+MONEY_LAYERS = (EXTRACTOR / "domain", FORGE / "model")
 
 # Assembled from halves so this file, which `test_no_todo_markers` scans, is not itself
 # the violation it looks for.
@@ -49,15 +56,15 @@ IGNORED_DIRS = frozenset(
 )
 PROSE_ROOTS = ("src", "tests", "scripts", "docs")
 URL_ALLOWED_ROOTS = frozenset({"docs", ".github"})
-URL_ALLOWED_FILES = frozenset({"README.md", ".pre-commit-config.yaml", "pyproject.toml"})
-
-FROZEN_DATACLASS_TARGETS = (
-    "domain",
-    "layout/schema.py",
-    "extraction/spec.py",
-    "document/reader.py",
+URL_ALLOWED_FILES = frozenset(
+    {
+        "README.md",
+        ".pre-commit-config.yaml",
+        "pyproject.toml",
+        # The bundled fonts' licence is third-party text, reproduced as it must be.
+        "src/invoice_forge/fonts/LICENSE",
+    }
 )
-NO_ANY_TARGETS = ("__init__.py", "pipeline.py", "domain/models.py")
 
 
 def walk(root: Path) -> Iterator[Path]:
@@ -143,14 +150,6 @@ def imports_name(module: Path, name: str) -> bool:
     )
 
 
-def existing_targets(targets: tuple[str, ...]) -> list[Path]:
-    found: list[Path] = []
-    for target in targets:
-        path = SRC / target
-        found.extend(python_modules(path) if path.is_dir() else [path] if path.exists() else [])
-    return found
-
-
 def decorator_name(node: ast.expr) -> str | None:
     target = node.func if isinstance(node, ast.Call) else node
     if isinstance(target, ast.Attribute):
@@ -167,11 +166,6 @@ def declares_frozen(decorator: ast.expr) -> bool:
         and keyword.value.value is True
         for keyword in decorator.keywords
     )
-
-
-def test_source_within_line_budget() -> None:
-    total = sum(counted_lines(module) for module in source_modules())
-    assert total <= MAX_SOURCE_LINES, f"src/ counts {total} lines, budget is {MAX_SOURCE_LINES}"
 
 
 def test_no_module_over_250_lines() -> None:
@@ -192,18 +186,21 @@ def test_no_function_over_40_lines() -> None:
     assert not oversized, f"functions over {MAX_FUNCTION_LINES} lines: {oversized}"
 
 
-def test_fitz_imported_only_in_pymupdf_reader() -> None:
-    reader = SRC / "document" / "pymupdf_reader.py"
+def test_fitz_imported_only_in_the_two_pdf_modules() -> None:
+    allowed = set(PDF_MODULES)
     importers = {module for module in source_modules() if imports_module(module, "fitz")}
-    assert importers <= {reader}, f"fitz imported outside the reader: {sorted(importers)}"
-    # The reader arrives in PR2; until then the boundary holds vacuously.
-    if reader.exists():
-        assert reader in importers, "document/pymupdf_reader.py is the module that imports fitz"
+    strays = sorted(where(module) for module in importers - allowed)
+    assert not strays, f"fitz imported outside the two PDF modules: {strays}"
+    # Each module arrives with its own pull request; until then the rule holds vacuously.
+    for module in PDF_MODULES:
+        if module.exists():
+            assert module in importers, f"{where(module)} is one of the modules that import fitz"
 
 
-def test_no_float_calls_in_domain() -> None:
-    offenders = call_sites(python_modules(SRC / "domain"), "float")
-    assert not offenders, f"float() called in domain/: {offenders}"
+def test_no_float_calls_in_the_money_layers() -> None:
+    modules = [module for layer in MONEY_LAYERS for module in python_modules(layer)]
+    offenders = call_sites(modules, "float")
+    assert not offenders, f"float() called where money lives: {offenders}"
 
 
 def test_no_print_in_source() -> None:
@@ -264,10 +261,8 @@ def test_no_urls_outside_docs() -> None:
 
 
 def test_public_api_has_no_any() -> None:
-    offenders = [
-        where(module) for module in existing_targets(NO_ANY_TARGETS) if imports_name(module, "Any")
-    ]
-    assert not offenders, f"`Any` imported into the public API: {offenders}"
+    offenders = [where(module) for module in source_modules() if imports_name(module, "Any")]
+    assert not offenders, f"`Any` imported under src/: {offenders}"
 
 
 def test_markdown_links_resolve() -> None:
@@ -292,7 +287,7 @@ def _link_targets(document: Path) -> list[str]:
 def test_dataclasses_are_frozen() -> None:
     offenders = [
         f"{where(module)}:{node.name}"
-        for module in existing_targets(FROZEN_DATACLASS_TARGETS)
+        for module in source_modules()
         for node in ast.walk(parse(module))
         if isinstance(node, ast.ClassDef)
         for decorator in node.decorator_list

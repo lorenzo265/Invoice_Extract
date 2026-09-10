@@ -16,12 +16,14 @@ dev = ["ruff>=0.6", "mypy>=1.11", "pytest>=8", "pytest-cov>=5", "pre-commit>=3.7
 
 [project.scripts]
 invoice-extractor = "invoice_extractor.cli:main"
+forge = "invoice_forge.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 invoice_extractor = ["py.typed"]
+invoice_forge = ["py.typed", "fonts/*.ttf", "fonts/LICENSE"]
 
 [tool.ruff]
 line-length = 100
@@ -46,8 +48,8 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src", "scripts"]
-addopts = "--cov=invoice_extractor --cov-report=term-missing --cov-fail-under=90"
+addopts = "--cov=invoice_extractor --cov=invoice_forge --cov-report=term-missing --cov-fail-under=90"
 
 [tool.coverage.run]
 branch = true
-source = ["src/invoice_extractor"]
+source = ["src/invoice_extractor", "src/invoice_forge"]
