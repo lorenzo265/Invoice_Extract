@@ -32,8 +32,10 @@ def item_row(item: LineItem, cells: Mapping[str, list[dict[str, object]]]) -> di
         "quantity": str(item.quantity),
         "unit": item.unit,
         "unit_price": str(item.unit_price),
+        "discount_percent": None if item.discount_percent is None else str(item.discount_percent),
         "vat_rate": str(item.vat_rate),
         "net_amount": str(item.net_amount),
+        "section": item.section,
         "cells": {name: list(boxes) for name, boxes in cells.items()},
         "sub_items": [_sub_item(sub) for sub in item.sub_items],
     }

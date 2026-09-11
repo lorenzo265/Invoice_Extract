@@ -16,6 +16,7 @@ from random import Random
 from invoice_forge.families import Family
 from invoice_forge.knobs import Knob
 from invoice_forge.layout.classic import family_spec
+from invoice_forge.layout.variants import with_knobs
 from invoice_forge.lexicon.schema import Lexicon
 from invoice_forge.model import Document
 from invoice_forge.profiles.schema import VendorProfile
@@ -63,7 +64,7 @@ def render(request: RenderRequest, path: Path) -> RenderResult:
 
 def _context(request: RenderRequest) -> RenderContext:
     profile = request.profile
-    family = family_spec(request.family)
+    family = with_knobs(family_spec(request.family), request.knobs)
     wording = choose_wording(request.document, profile, request.lexicon, Random(request.seed))
     return RenderContext(
         document=request.document,
@@ -87,7 +88,7 @@ def _draw_pages(
     _draw_page(sheet, context, plan[0], first_top)
     for page in plan[1:]:
         sheet.new_page()
-        later = blocks.draw_header(sheet, context)
+        later = blocks.draw_header(sheet, context, first=False)
         extents.append(later.page_line_y)
         _draw_page(sheet, context, page, later.bottom)
     return plan, extents
@@ -105,10 +106,17 @@ def _budget(context: RenderContext, first_top: float, later_top: float) -> PageB
 
 
 def _draw_page(sheet: Sheet, context: RenderContext, page: PlannedPage, top: float) -> None:
-    """The table's share of one page: header row, carried-in line, rows, closing line."""
+    """The table's share of one page: header row, carried-in line, rows, closing line.
+
+    A page that holds only the totals gets no column headings: an empty table header is
+    the kind of thing a real invoice never prints.
+    """
     spec = context.family.items
     wording = context.wording
-    y = table.draw_header(sheet, spec, wording, top + table.HEADER_RULE_ABOVE)
+    tabled = bool(page.rows) or page.carried_in is not None
+    y = top + table.HEADER_RULE_ABOVE
+    if tabled:
+        y = table.draw_header(sheet, spec, wording, y)
     if page.carried_in is not None:
         printed = money(page.carried_in, wording.number_format)
         y = table.draw_carry(sheet, spec, wording.carry["incoming"], printed, y)
@@ -117,6 +125,6 @@ def _draw_page(sheet: Sheet, context: RenderContext, page: PlannedPage, top: flo
     if page.carried_out is not None:
         printed = money(page.carried_out, wording.number_format)
         table.draw_carry(sheet, spec, wording.carry["outgoing"], printed, y)
-    else:
-        totals.draw_totals(sheet, context, y)
+    if page.last:
+        totals.draw_totals(sheet, context, y, closed=tabled)
     blocks.draw_footer(sheet, context)

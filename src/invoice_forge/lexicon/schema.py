@@ -64,6 +64,8 @@ class Lexicon:
     payment_terms: tuple[str, ...]
     legal_lines: tuple[str, ...]
     copy_stamps: tuple[str, ...]
+    section_headings: tuple[str, ...]
+    address_placeholders: tuple[str, ...]
     months: tuple[str, ...]
     month_abbreviations: tuple[str, ...]
     diacritics: str

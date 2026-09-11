@@ -80,21 +80,26 @@ def _check_rows(items: Sequence[dict[str, object]]) -> list[str]:
     complaints: list[str] = []
     for index, row in enumerate(items):
         where = f"line_items[{index}]"
-        expected = _cents(amount(row, "quantity", where) * amount(row, "unit_price", where))
+        expected = _cents(_exact_net(row, where))
         printed = amount(row, "net_amount", where)
         if expected != printed:
             complaints.append(f"{where}: {expected} was expected, the truth says {printed}")
     return complaints
 
 
+def _exact_net(row: dict[str, object], where: str) -> Decimal:
+    """Quantity times price, less the discount the row declares, before anyone rounds."""
+    gross = amount(row, "quantity", where) * amount(row, "unit_price", where)
+    if row.get("discount_percent") is None:
+        return gross
+    return gross - gross * amount(row, "discount_percent", where) / PERCENT
+
+
 def _check_subtotal(
     items: Sequence[dict[str, object]], subtotal: Decimal, policy: str
 ) -> list[str]:
     """The two policies differ only in where the cents are decided; both are re-derived."""
-    exact = [
-        amount(row, "quantity", "line_items") * amount(row, "unit_price", "line_items")
-        for row in items
-    ]
+    exact = [_exact_net(row, "line_items") for row in items]
     expected = _summed(exact, policy)
     if expected == subtotal:
         return []

@@ -17,8 +17,8 @@
   },
   "fields": {
     "invoice_number": {
-      "value": "FAC-2024-764878",
-      "printed": "FAC-2024-764878",
+      "value": "FAC-2024-608064",
+      "printed": "FAC-2024-608064",
       "label": "Facture n°",
       "evidence": [
         {
@@ -34,13 +34,13 @@
     },
     "invoice_date": {
       "value": "2024-06-14",
-      "printed": "14 juin 2024",
+      "printed": "14/06/2024",
       "label": "Date",
       "evidence": [
         {
           "page": 1,
           "bbox": [
-            499.5,
+            504.0,
             83.98,
             544.98,
             93.94
@@ -50,13 +50,13 @@
     },
     "due_date": {
       "value": "2024-06-28",
-      "printed": "28 juin 2024",
+      "printed": "28/06/2024",
       "label": "Échéance",
       "evidence": [
         {
           "page": 1,
           "bbox": [
-            499.5,
+            504.0,
             107.98,
             544.98,
             117.94
@@ -114,71 +114,71 @@
     },
     "vat_rate": {
       "value": "5.5",
-      "printed": "5.5 %",
-      "label": "Taux",
+      "printed": "5,5 %",
+      "label": "Taux de TVA",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
-            540.98,
+            421.98,
             71.0,
-            550.94
+            431.94
           ]
         }
       ]
     },
     "subtotal": {
-      "value": "29361.55",
-      "printed": "29 361,55 EUR",
+      "value": "11241.25",
+      "printed": "11241,25 EUR",
       "label": "Total HT",
       "evidence": [
         {
           "page": 1,
           "bbox": [
-            488.75,
-            520.98,
+            491.0,
+            401.98,
             544.98,
-            530.94
+            411.94
           ]
         }
       ]
     },
     "vat_amount": {
-      "value": "2045.67",
-      "printed": "2 045,67 EUR",
+      "value": "954.13",
+      "printed": "954,13 EUR",
       "label": "Total TVA",
       "evidence": [
         {
           "page": 1,
           "bbox": [
-            493.25,
-            546.98,
+            500.0,
+            414.98,
             544.98,
-            556.94
+            424.94
           ]
         }
       ]
     },
     "total_amount": {
-      "value": "31432.12",
-      "printed": "31 432,12 EUR",
+      "value": "12195.38",
+      "printed": "12195,38 EUR",
       "label": "Montant TTC",
       "evidence": [
         {
           "page": 1,
           "bbox": [
-            487.75,
-            559.98,
+            490.0,
+            427.98,
             544.99,
-            569.94
+            437.94
           ]
         }
       ]
     },
     "supply_date": {
       "value": "2024-06-08",
-      "printed": "8 juin 2024",
+      "printed": "08/06/2024",
       "label": "Date de livraison",
       "evidence": [
         {
@@ -193,8 +193,8 @@
       ]
     },
     "order_number": {
-      "value": "PO-470636",
-      "printed": "PO-470636",
+      "value": "PO-835601",
+      "printed": "PO-835601",
       "label": "Commande n°",
       "evidence": [
         {
@@ -209,8 +209,8 @@
       ]
     },
     "customer_number": {
-      "value": "C-37740",
-      "printed": "C-37740",
+      "value": "C-59795",
+      "printed": "C-59795",
       "label": "Numéro client",
       "evidence": [
         {
@@ -237,8 +237,8 @@
       "evidence": []
     },
     "your_reference": {
-      "value": "REF-6850",
-      "printed": "REF-6850",
+      "value": "REF-1064",
+      "printed": "REF-1064",
       "label": "Votre réf.",
       "evidence": [
         {
@@ -253,17 +253,17 @@
       ]
     },
     "payment_terms": {
-      "value": "Escompte de 2 % pour paiement sous 10 jours.",
-      "printed": "Modalités de règlement: Escompte de 2 % pour paiement sous 10 jours.",
+      "value": "Paiement à 30 jours date de facture.",
+      "printed": "Modalités de règlement: Paiement à 30 jours date de facture.",
       "label": "Modalités de règlement",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
-            613.87,
-            279.54,
-            622.73
+            486.87,
+            243.95,
+            495.73
           ]
         }
       ]
@@ -272,13 +272,15 @@
   "line_items": [
     {
       "pos": 1,
-      "sku": "SW-CLD-50",
-      "description": "Stockage cloud 50 Go, facturation mensuelle",
-      "quantity": "12",
-      "unit": "mois",
-      "unit_price": "12.5000",
+      "sku": "SW-API-10K",
+      "description": "Forfait API, 10 000 appels par mois",
+      "quantity": "100",
+      "unit": "forfait",
+      "unit_price": "89.00",
+      "discount_percent": null,
       "vat_rate": "5.5",
-      "net_amount": "150.00",
+      "net_amount": "8900.00",
+      "section": null,
       "cells": {
         "sku": [
           {
@@ -286,7 +288,7 @@
             "bbox": [
               72.0,
               327.98,
-              118.47,
+              121.48,
               337.94
             ]
           }
@@ -297,7 +299,7 @@
             "bbox": [
               140.0,
               327.98,
-              301.81,
+              269.16,
               337.94
             ]
           }
@@ -306,7 +308,7 @@
           {
             "page": 1,
             "bbox": [
-              363.0,
+              358.5,
               327.98,
               372.0,
               337.94
@@ -317,7 +319,7 @@
           {
             "page": 1,
             "bbox": [
-              402.75,
+              411.75,
               327.98,
               432.0,
               337.94
@@ -328,7 +330,7 @@
           {
             "page": 1,
             "bbox": [
-              520.25,
+              515.75,
               327.98,
               545.0,
               337.94
@@ -340,13 +342,15 @@
     },
     {
       "pos": 2,
-      "sku": "HX-M8-040",
-      "description": "Vis à tête hexagonale M8 x 40, zinguée, DIN 933",
-      "quantity": "40",
-      "unit": "u",
-      "unit_price": "0.12",
+      "sku": "SRV-WRT-Q",
+      "description": "Maintenance, forfait trimestriel, installation type B",
+      "quantity": "7.5",
+      "unit": "forfait",
+      "unit_price": "245.50",
+      "discount_percent": null,
       "vat_rate": "20",
-      "net_amount": "4.80",
+      "net_amount": "1841.25",
+      "section": null,
       "cells": {
         "sku": [
           {
@@ -354,7 +358,7 @@
             "bbox": [
               72.0,
               344.98,
-              116.99,
+              121.96,
               354.94
             ]
           }
@@ -365,7 +369,7 @@
             "bbox": [
               140.0,
               344.98,
-              318.58,
+              322.97,
               354.94
             ]
           }
@@ -374,7 +378,7 @@
           {
             "page": 1,
             "bbox": [
-              363.0,
+              360.75,
               344.98,
               372.0,
               354.94
@@ -385,7 +389,7 @@
           {
             "page": 1,
             "bbox": [
-              416.25,
+              407.25,
               344.98,
               432.0,
               354.94
@@ -396,7 +400,7 @@
           {
             "page": 1,
             "bbox": [
-              529.25,
+              515.75,
               344.98,
               545.0,
               354.94
@@ -408,13 +412,15 @@
     },
     {
       "pos": 3,
-      "sku": "SW-SUP-GLD",
-      "description": "Contrat de support Or, délai de réponse 4 heures",
-      "quantity": "10",
-      "unit": "an",
-      "unit_price": "1290.00",
+      "sku": "SW-CLD-50",
+      "description": "Stockage cloud 50 Go, facturation mensuelle",
+      "quantity": "2",
+      "unit": "mois",
+      "unit_price": "12.5000",
+      "discount_percent": null,
       "vat_rate": "5.5",
-      "net_amount": "12900.00",
+      "net_amount": "25.00",
+      "section": null,
       "cells": {
         "sku": [
           {
@@ -422,7 +428,7 @@
             "bbox": [
               72.0,
               361.98,
-              126.48,
+              118.47,
               371.94
             ]
           }
@@ -433,7 +439,7 @@
             "bbox": [
               140.0,
               361.98,
-              314.08,
+              301.81,
               371.94
             ]
           }
@@ -442,7 +448,7 @@
           {
             "page": 1,
             "bbox": [
-              363.0,
+              367.5,
               361.98,
               372.0,
               371.94
@@ -453,7 +459,7 @@
           {
             "page": 1,
             "bbox": [
-              400.5,
+              402.75,
               361.98,
               432.0,
               371.94
@@ -464,7 +470,7 @@
           {
             "page": 1,
             "bbox": [
-              509.0,
+              524.75,
               361.98,
               545.0,
               371.94
@@ -476,430 +482,24 @@
     },
     {
       "pos": 4,
-      "sku": "SRV-ANA-H",
-      "description": "Analyse et documentation, à l'heure",
-      "quantity": "0.5",
-      "unit": "h",
-      "unit_price": "115.0000",
-      "vat_rate": "20",
-      "net_amount": "57.50",
-      "cells": {
-        "sku": [
-          {
-            "page": 1,
-            "bbox": [
-              72.0,
-              378.98,
-              121.48,
-              388.94
-            ]
-          }
-        ],
-        "description": [
-          {
-            "page": 1,
-            "bbox": [
-              140.0,
-              378.98,
-              268.7,
-              388.94
-            ]
-          }
-        ],
-        "quantity": [
-          {
-            "page": 1,
-            "bbox": [
-              360.75,
-              378.98,
-              372.0,
-              388.94
-            ]
-          }
-        ],
-        "unit_price": [
-          {
-            "page": 1,
-            "bbox": [
-              398.25,
-              378.98,
-              432.0,
-              388.94
-            ]
-          }
-        ],
-        "net_amount": [
-          {
-            "page": 1,
-            "bbox": [
-              524.75,
-              378.98,
-              545.0,
-              388.94
-            ]
-          }
-        ]
-      },
-      "sub_items": []
-    },
-    {
-      "pos": 5,
-      "sku": "SW-API-10K",
-      "description": "Forfait API, 10 000 appels par mois",
-      "quantity": "50",
-      "unit": "forfait",
-      "unit_price": "89.00",
-      "vat_rate": "5.5",
-      "net_amount": "4450.00",
-      "cells": {
-        "sku": [
-          {
-            "page": 1,
-            "bbox": [
-              72.0,
-              395.98,
-              121.48,
-              405.94
-            ]
-          }
-        ],
-        "description": [
-          {
-            "page": 1,
-            "bbox": [
-              140.0,
-              395.98,
-              269.16,
-              405.94
-            ]
-          }
-        ],
-        "quantity": [
-          {
-            "page": 1,
-            "bbox": [
-              363.0,
-              395.98,
-              372.0,
-              405.94
-            ]
-          }
-        ],
-        "unit_price": [
-          {
-            "page": 1,
-            "bbox": [
-              411.75,
-              395.98,
-              432.0,
-              405.94
-            ]
-          }
-        ],
-        "net_amount": [
-          {
-            "page": 1,
-            "bbox": [
-              513.5,
-              395.98,
-              545.0,
-              405.94
-            ]
-          }
-        ]
-      },
-      "sub_items": []
-    },
-    {
-      "pos": 6,
-      "sku": "HX-M8-040",
-      "description": "Vis à tête hexagonale M8 x 40, zinguée, DIN 933",
-      "quantity": "100",
-      "unit": "u",
-      "unit_price": "0.12",
-      "vat_rate": "20",
-      "net_amount": "12.00",
-      "cells": {
-        "sku": [
-          {
-            "page": 1,
-            "bbox": [
-              72.0,
-              412.98,
-              116.99,
-              422.94
-            ]
-          }
-        ],
-        "description": [
-          {
-            "page": 1,
-            "bbox": [
-              140.0,
-              412.98,
-              318.58,
-              422.94
-            ]
-          }
-        ],
-        "quantity": [
-          {
-            "page": 1,
-            "bbox": [
-              358.5,
-              412.98,
-              372.0,
-              422.94
-            ]
-          }
-        ],
-        "unit_price": [
-          {
-            "page": 1,
-            "bbox": [
-              416.25,
-              412.98,
-              432.0,
-              422.94
-            ]
-          }
-        ],
-        "net_amount": [
-          {
-            "page": 1,
-            "bbox": [
-              524.75,
-              412.98,
-              545.0,
-              422.94
-            ]
-          }
-        ]
-      },
-      "sub_items": []
-    },
-    {
-      "pos": 7,
-      "sku": "SW-API-10K",
-      "description": "Forfait API, 10 000 appels par mois",
-      "quantity": "100",
-      "unit": "forfait",
-      "unit_price": "89.00",
-      "vat_rate": "5.5",
-      "net_amount": "8900.00",
-      "cells": {
-        "sku": [
-          {
-            "page": 1,
-            "bbox": [
-              72.0,
-              429.98,
-              121.48,
-              439.94
-            ]
-          }
-        ],
-        "description": [
-          {
-            "page": 1,
-            "bbox": [
-              140.0,
-              429.98,
-              269.16,
-              439.94
-            ]
-          }
-        ],
-        "quantity": [
-          {
-            "page": 1,
-            "bbox": [
-              358.5,
-              429.98,
-              372.0,
-              439.94
-            ]
-          }
-        ],
-        "unit_price": [
-          {
-            "page": 1,
-            "bbox": [
-              411.75,
-              429.98,
-              432.0,
-              439.94
-            ]
-          }
-        ],
-        "net_amount": [
-          {
-            "page": 1,
-            "bbox": [
-              513.5,
-              429.98,
-              545.0,
-              439.94
-            ]
-          }
-        ]
-      },
-      "sub_items": []
-    },
-    {
-      "pos": 8,
-      "sku": "SRV-WRT-Q",
-      "description": "Maintenance, forfait trimestriel, installation type B",
-      "quantity": "7.5",
-      "unit": "forfait",
-      "unit_price": "245.50",
-      "vat_rate": "20",
-      "net_amount": "1841.25",
-      "cells": {
-        "sku": [
-          {
-            "page": 1,
-            "bbox": [
-              72.0,
-              446.98,
-              121.96,
-              456.94
-            ]
-          }
-        ],
-        "description": [
-          {
-            "page": 1,
-            "bbox": [
-              140.0,
-              446.98,
-              322.97,
-              456.94
-            ]
-          }
-        ],
-        "quantity": [
-          {
-            "page": 1,
-            "bbox": [
-              360.75,
-              446.98,
-              372.0,
-              456.94
-            ]
-          }
-        ],
-        "unit_price": [
-          {
-            "page": 1,
-            "bbox": [
-              407.25,
-              446.98,
-              432.0,
-              456.94
-            ]
-          }
-        ],
-        "net_amount": [
-          {
-            "page": 1,
-            "bbox": [
-              513.5,
-              446.98,
-              545.0,
-              456.94
-            ]
-          }
-        ]
-      },
-      "sub_items": []
-    },
-    {
-      "pos": 9,
-      "sku": "SW-CLD-50",
-      "description": "Stockage cloud 50 Go, facturation mensuelle",
-      "quantity": "2",
-      "unit": "mois",
-      "unit_price": "12.5000",
-      "vat_rate": "5.5",
-      "net_amount": "25.00",
-      "cells": {
-        "sku": [
-          {
-            "page": 1,
-            "bbox": [
-              72.0,
-              463.98,
-              118.47,
-              473.94
-            ]
-          }
-        ],
-        "description": [
-          {
-            "page": 1,
-            "bbox": [
-              140.0,
-              463.98,
-              301.81,
-              473.94
-            ]
-          }
-        ],
-        "quantity": [
-          {
-            "page": 1,
-            "bbox": [
-              367.5,
-              463.98,
-              372.0,
-              473.94
-            ]
-          }
-        ],
-        "unit_price": [
-          {
-            "page": 1,
-            "bbox": [
-              402.75,
-              463.98,
-              432.0,
-              473.94
-            ]
-          }
-        ],
-        "net_amount": [
-          {
-            "page": 1,
-            "bbox": [
-              524.75,
-              463.98,
-              545.0,
-              473.94
-            ]
-          }
-        ]
-      },
-      "sub_items": []
-    },
-    {
-      "pos": 10,
       "sku": "SRV-INST-H",
       "description": "Installation sur site, à l'heure",
       "quantity": "5",
       "unit": "h",
       "unit_price": "95.00",
+      "discount_percent": null,
       "vat_rate": "20",
       "net_amount": "475.00",
+      "section": null,
       "cells": {
         "sku": [
           {
             "page": 1,
             "bbox": [
               72.0,
-              480.98,
+              378.98,
               121.98,
-              490.94
+              388.94
             ]
           }
         ],
@@ -908,9 +508,9 @@
             "page": 1,
             "bbox": [
               140.0,
-              480.98,
+              378.98,
               243.23,
-              490.94
+              388.94
             ]
           }
         ],
@@ -919,9 +519,9 @@
             "page": 1,
             "bbox": [
               367.5,
-              480.98,
+              378.98,
               372.0,
-              490.94
+              388.94
             ]
           }
         ],
@@ -930,9 +530,9 @@
             "page": 1,
             "bbox": [
               411.75,
-              480.98,
+              378.98,
               432.0,
-              490.94
+              388.94
             ]
           }
         ],
@@ -941,77 +541,9 @@
             "page": 1,
             "bbox": [
               520.25,
-              480.98,
+              378.98,
               545.0,
-              490.94
-            ]
-          }
-        ]
-      },
-      "sub_items": []
-    },
-    {
-      "pos": 11,
-      "sku": "ENC-IP65",
-      "description": "Coffret IP65, 300 x 200 x 120",
-      "quantity": "12",
-      "unit": "u",
-      "unit_price": "45.50",
-      "vat_rate": "20",
-      "net_amount": "546.00",
-      "cells": {
-        "sku": [
-          {
-            "page": 1,
-            "bbox": [
-              72.0,
-              497.98,
-              109.98,
-              507.94
-            ]
-          }
-        ],
-        "description": [
-          {
-            "page": 1,
-            "bbox": [
-              140.0,
-              497.98,
-              248.22,
-              507.94
-            ]
-          }
-        ],
-        "quantity": [
-          {
-            "page": 1,
-            "bbox": [
-              363.0,
-              497.98,
-              372.0,
-              507.94
-            ]
-          }
-        ],
-        "unit_price": [
-          {
-            "page": 1,
-            "bbox": [
-              411.75,
-              497.98,
-              432.0,
-              507.94
-            ]
-          }
-        ],
-        "net_amount": [
-          {
-            "page": 1,
-            "bbox": [
-              520.25,
-              497.98,
-              545.0,
-              507.94
+              388.94
             ]
           }
         ]
@@ -1019,91 +551,72 @@
       "sub_items": []
     }
   ],
-  "charges": [
-    {
-      "type": "SHIPPING",
-      "amount": "24.90",
-      "vat_rate": "20",
-      "declared": true,
-      "label": "Frais de port",
-      "evidence": [
-        {
-          "page": 1,
-          "bbox": [
-            504.5,
-            533.98,
-            544.98,
-            543.94
-          ]
-        }
-      ]
-    }
-  ],
+  "charges": [],
   "vat_summary": [
     {
       "rate": "5.5",
-      "base": "26425.00",
-      "vat": "1453.38",
+      "base": "8925.00",
+      "vat": "490.88",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
-            540.98,
+            421.98,
             71.0,
-            550.94
+            431.94
           ]
         },
         {
           "page": 1,
           "bbox": [
-            164.0,
-            540.98,
+            170.75,
+            421.98,
             200.0,
-            550.94
-          ]
-        },
-        {
-          "page": 1,
-          "bbox": [
-            248.5,
-            540.98,
-            280.0,
-            550.94
-          ]
-        }
-      ]
-    },
-    {
-      "rate": "20",
-      "base": "2961.45",
-      "vat": "592.29",
-      "evidence": [
-        {
-          "page": 1,
-          "bbox": [
-            50.0,
-            552.98,
-            68.75,
-            562.94
-          ]
-        },
-        {
-          "page": 1,
-          "bbox": [
-            168.5,
-            552.98,
-            200.0,
-            562.94
+            431.94
           ]
         },
         {
           "page": 1,
           "bbox": [
             255.25,
-            552.98,
+            421.98,
             280.0,
-            562.94
+            431.94
+          ]
+        }
+      ]
+    },
+    {
+      "rate": "20",
+      "base": "2316.25",
+      "vat": "463.25",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            433.98,
+            68.75,
+            443.94
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            170.75,
+            433.98,
+            200.0,
+            443.94
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            255.25,
+            433.98,
+            280.0,
+            443.94
           ]
         }
       ]
@@ -1262,7 +775,7 @@
       "bbox": [
         50.0,
         751.76,
-        172.33,
+        235.57,
         759.51
       ]
     },
@@ -1273,7 +786,7 @@
       "bbox": [
         50.0,
         761.76,
-        240.39,
+        172.33,
         769.51
       ]
     },
@@ -1284,7 +797,7 @@
       "bbox": [
         50.0,
         771.76,
-        235.57,
+        240.39,
         779.51
       ]
     }

@@ -35,10 +35,13 @@ def after_table_height(context: RenderContext) -> float:
     return TABLE_CLOSING_RULE + beside + payment_height(context)
 
 
-def draw_totals(sheet: Sheet, context: RenderContext, y: float) -> float:
-    """The closing rule, the VAT summary, the totals, the echo and the payment block."""
+def draw_totals(sheet: Sheet, context: RenderContext, y: float, closed: bool = True) -> float:
+    """The closing rule, the VAT summary, the totals, the echo and the payment block.
+
+    `closed` is false on a page that holds no table: there is nothing above to rule off.
+    """
     spec = context.family.items
-    if spec.ruled:
+    if spec.ruled and closed:
         sheet.rule(y - TABLE_CLOSING_RULE, heavy=True)
     summary_bottom = _draw_vat_summary(sheet, context, y)
     totals_bottom = _draw_amounts(sheet, context, y)
@@ -93,7 +96,7 @@ def _draw_vat_summary(sheet: Sheet, context: RenderContext, y: float) -> float:
     _draw_summary_headings(sheet, context, spec, top)
     for index, line in enumerate(totals.vat_lines):
         baseline = top + spec.leading * (index + 1)
-        printed = f"{fmt.rate(line.rate)} %"
+        printed = f"{fmt.rate(line.rate, context.wording.number_format)} %"
         sheet.draw(spec.x, baseline, printed, spec.size, Weight.REGULAR, vat_cell(index, "rate"))
         if line.rate == headline and len(totals.vat_lines) > 1:
             # The document states no single rate, so the summary row is the rate's evidence
@@ -144,7 +147,8 @@ def _draw_amounts(sheet: Sheet, context: RenderContext, y: float) -> float:
 def _amount_text(context: RenderContext, name: str, amount: Decimal) -> tuple[str, Mark]:
     wording = context.wording
     if name == "vat_rate":
-        return f"{fmt.rate(amount)} %", field("vat_rate", wording.labels["vat_rate"])
+        printed = f"{fmt.rate(amount, wording.number_format)} %"
+        return printed, field("vat_rate", wording.labels["vat_rate"])
     printed = f"{fmt.money(amount, wording.number_format)} {context.document.currency}"
     if name.startswith("charge:"):
         index = int(name.split(":")[1])

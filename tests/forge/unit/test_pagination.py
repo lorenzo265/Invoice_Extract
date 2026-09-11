@@ -34,7 +34,7 @@ def row(pos: int, height: float = ROW_HEIGHT) -> MeasuredRow:
         unit_price=Decimal("10.00"),
         vat_rate=Decimal("19"),
     )
-    return MeasuredRow(item=item, lines=("A thing",), height=height)
+    return MeasuredRow(item=item, lines=("A thing",), parts=(), height=height)
 
 
 def rows(count: int, height: float = ROW_HEIGHT) -> tuple[MeasuredRow, ...]:

@@ -179,7 +179,7 @@ def test_a_column_the_table_has_no_value_for_is_refused() -> None:
     with pytest.raises(ValueError, match="no value for table column"):
         table.draw_row(
             Sheet(CLASSIC.page, context.profile.fonts),
-            table.MeasuredRow(item(), ("A thing",), 20.0),
+            table.MeasuredRow(item(), ("A thing",), (), 20.0),
             dataclasses.replace(
                 CLASSIC.items, columns=(dataclasses.replace(CLASSIC.items.columns[0], name="wat"),)
             ),

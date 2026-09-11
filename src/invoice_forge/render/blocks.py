@@ -9,9 +9,9 @@ printing over it.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 
-from invoice_forge.layout.spec import PartiesSpec, Weight
+from invoice_forge.layout.spec import CustomerVat, PageLine, PartiesSpec, Weight
 from invoice_forge.model import Document, Party
 from invoice_forge.render import text as fmt
 from invoice_forge.render.context import RenderContext
@@ -20,6 +20,11 @@ from invoice_forge.render.sheet import Sheet
 from invoice_forge.render.wording import page_line
 
 RULE_BELOW_HEADER = 20.0
+FOOTER_PAGE_LINE_GAP = 4.0
+# Trap dates sit a few days off the invoice date, never on it.
+TRAP_ORDER_DAYS = 11
+TRAP_DELIVERY_DAYS = 4
+TRAP_PRINT_DAYS = 2
 # The page count is the last row of the reference block; the rule goes under it.
 PAGE_LINE_GAP = 4.0
 NAME_TO_LINES_GAP = 4.0
@@ -51,20 +56,60 @@ class HeaderExtent:
     page_line_y: float
 
 
-def draw_header(sheet: Sheet, context: RenderContext) -> HeaderExtent:
-    """Letterhead on the left, title and reference list on the right, one rule under both."""
-    left = _draw_letterhead(sheet, context)
+def draw_header(sheet: Sheet, context: RenderContext, first: bool = True) -> HeaderExtent:
+    """Letterhead on the left, title and reference list on the right, one rule under both.
+
+    A family that does not repeat its letterhead prints the supplier's name alone on the
+    pages after the first — enough to know whose invoice this is, and nothing an extractor
+    can read the VAT id off twice.
+    """
+    repeats = first or context.family.pagination.repeat_letterhead
+    left = _draw_letterhead(sheet, context) if repeats else _draw_continuation(sheet, context)
     _draw_title(sheet, context)
-    page_line_y = _draw_metadata(sheet, context)
+    page_line_y = _draw_traps(sheet, context, _draw_metadata(sheet, context))
     bottom = max(left, page_line_y)
     sheet.rule(bottom + PAGE_LINE_GAP)
     return HeaderExtent(bottom=bottom + PAGE_LINE_GAP + RULE_BELOW_HEADER, page_line_y=page_line_y)
+
+
+def _draw_continuation(sheet: Sheet, context: RenderContext) -> float:
+    spec = context.family.letterhead
+    sheet.draw(spec.x, spec.top, context.document.supplier.name, spec.name_size, Weight.BOLD)
+    return spec.top
+
+
+def _draw_traps(sheet: Sheet, context: RenderContext, y: float) -> float:
+    """Dates beside the real ones. They are noise, and the truth says which trap is where."""
+    spec = context.family.traps
+    if spec is None:
+        return y
+    for index, kind in enumerate(spec.kinds):
+        baseline = y + spec.leading * index
+        label = context.wording.traps[kind]
+        sheet.draw(spec.label_x, baseline, f"{label}:", spec.size)
+        printed = _trap_date(context, kind)
+        sheet.draw_right(
+            spec.value_x, baseline, printed, spec.size, Weight.REGULAR, noise("trap_label", label)
+        )
+    return y + spec.leading * len(spec.kinds)
+
+
+def _trap_date(context: RenderContext, kind: str) -> str:
+    """Dates near the invoice date but never equal to it, so a wrong read is a wrong value."""
+    dates = context.document.dates
+    offsets = {"order_date": -TRAP_ORDER_DAYS, "delivery_date": -TRAP_DELIVERY_DAYS}
+    shifted = dates.invoice_date + timedelta(days=offsets.get(kind, TRAP_PRINT_DAYS))
+    return fmt.date_text(shifted, context.wording.date_format, context.lexicon)
 
 
 def draw_page_line(sheet: Sheet, context: RenderContext, page: int, pages: int, y: float) -> None:
     """Drawn last, on a page long since left: the count is not known until the end."""
     spec = context.family.metadata
     printed = page_line(context.wording, page, pages)
+    if context.family.page_line is PageLine.FOOTER:
+        baseline = context.family.page.bottom - FOOTER_PAGE_LINE_GAP
+        sheet.draw_right(spec.value_x, baseline, printed, spec.size, Weight.REGULAR, page=page)
+        return
     sheet.draw_right(spec.value_x, y, printed, spec.size, Weight.REGULAR, page=page)
 
 
@@ -167,7 +212,11 @@ def _metadata_rows(context: RenderContext) -> tuple[tuple[str, str, str], ...]:
     """`(field name, label, printed value)` for every reference this document prints."""
     labels = context.wording.labels
     printed = _metadata_values(context)
-    return tuple((name, labels[name], printed[name]) for name in METADATA_ORDER if printed[name])
+    order = METADATA_ORDER
+    if context.family.customer_vat is CustomerVat.METADATA:
+        printed["customer_vat_id"] = context.document.bill_to.vat_id or ""
+        order = (*order, "customer_vat_id")
+    return tuple((name, labels[name], printed[name]) for name in order if printed[name])
 
 
 def _metadata_values(context: RenderContext) -> dict[str, str]:
@@ -214,15 +263,18 @@ def _draw_party(
     sheet.draw(x, y, context.wording.parties[kind], spec.heading_size, Weight.BOLD)
     top = y + spec.leading + NAME_TO_LINES_GAP
     sheet.draw(x, top, party.name, spec.line_size, Weight.BOLD, party_part(kind, "name"))
-    for index, line in enumerate(party.lines):
+    lines = party.lines if party.placeholder is None else (party.placeholder,)
+    for index, line in enumerate(lines):
         baseline = top + spec.leading * (index + 1)
-        sheet.draw(x, baseline, line, spec.line_size, Weight.REGULAR, party_part(kind, "line"))
-    return top + spec.leading * (len(party.lines) + 1)
+        mark = party_part(kind, "line") if party.placeholder is None else None
+        sheet.draw(x, baseline, line, spec.line_size, Weight.REGULAR, mark)
+    return top + spec.leading * (len(lines) + 1)
 
 
 def _draw_customer_vat(sheet: Sheet, context: RenderContext, spec: PartiesSpec, y: float) -> float:
+    """Under the bill-to block, unless the family prints it with the references instead."""
     vat_id = context.document.bill_to.vat_id
-    if vat_id is None:
+    if vat_id is None or context.family.customer_vat is CustomerVat.METADATA:
         return y
     label = context.wording.labels["customer_vat_id"]
     printed = f"{label}: {vat_id}"

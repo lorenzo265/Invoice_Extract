@@ -1,79 +1,256 @@
 {
   "language": "en",
   "document_titles": {
-    "invoice": ["INVOICE", "Invoice", "TAX INVOICE"],
-    "credit_note": ["CREDIT NOTE", "Credit Note"]
+    "invoice": [
+      "INVOICE",
+      "Invoice",
+      "TAX INVOICE"
+    ],
+    "credit_note": [
+      "CREDIT NOTE",
+      "Credit Note"
+    ]
   },
   "header_labels": {
-    "invoice_number": ["Invoice Number", "Invoice No.", "Invoice Ref"],
-    "invoice_date": ["Invoice Date", "Date of Issue", "Date"],
-    "due_date": ["Due Date", "Payment Due", "Pay By"],
-    "supplier_vat_id": ["VAT Number", "VAT Reg. No.", "VAT Registration"],
-    "customer_vat_id": ["Customer VAT Number", "Buyer VAT No."],
-    "currency": ["Currency"],
-    "supply_date": ["Tax Point", "Supply Date", "Delivery Date"],
-    "order_number": ["Order Number", "Purchase Order", "PO Number"],
-    "customer_number": ["Customer Number", "Account No."],
-    "contract_number": ["Contract Number", "Agreement No."],
-    "our_reference": ["Our Reference", "Account Manager"],
-    "your_reference": ["Your Reference", "Your Ref"],
-    "payment_terms": ["Payment Terms", "Terms"]
+    "invoice_number": [
+      "Invoice Number",
+      "Invoice No.",
+      "Invoice Ref"
+    ],
+    "invoice_date": [
+      "Invoice Date",
+      "Date of Issue",
+      "Date"
+    ],
+    "due_date": [
+      "Due Date",
+      "Payment Due",
+      "Pay By"
+    ],
+    "supplier_vat_id": [
+      "VAT Number",
+      "VAT Reg. No.",
+      "VAT Registration"
+    ],
+    "customer_vat_id": [
+      "Customer VAT Number",
+      "Buyer VAT No."
+    ],
+    "currency": [
+      "Currency"
+    ],
+    "supply_date": [
+      "Tax Point",
+      "Supply Date",
+      "Delivery Date"
+    ],
+    "order_number": [
+      "Order Number",
+      "Purchase Order",
+      "PO Number"
+    ],
+    "customer_number": [
+      "Customer Number",
+      "Account No."
+    ],
+    "contract_number": [
+      "Contract Number",
+      "Agreement No."
+    ],
+    "our_reference": [
+      "Our Reference",
+      "Account Manager"
+    ],
+    "your_reference": [
+      "Your Reference",
+      "Your Ref"
+    ],
+    "payment_terms": [
+      "Payment Terms",
+      "Terms"
+    ]
   },
   "totals_labels": {
-    "vat_rate": ["VAT Rate", "Tax Rate", "Rate"],
-    "subtotal": ["Subtotal", "Net Total", "Goods Total"],
-    "vat_amount": ["VAT Amount", "Total VAT", "Tax"],
-    "total_amount": ["Total Due", "Amount Due", "Invoice Total"]
+    "vat_rate": [
+      "VAT Rate",
+      "Tax Rate",
+      "Rate"
+    ],
+    "subtotal": [
+      "Subtotal",
+      "Net Total",
+      "Goods Total"
+    ],
+    "vat_amount": [
+      "VAT Amount",
+      "Total VAT",
+      "Tax"
+    ],
+    "total_amount": [
+      "Total Due",
+      "Amount Due",
+      "Invoice Total"
+    ]
   },
   "charge_labels": {
-    "SHIPPING": ["Shipping", "Carriage", "Delivery Charge"],
-    "ENVIRONMENTAL_FEE": ["Environmental Levy", "Green Levy"],
-    "SURCHARGE": ["Surcharge", "Small Order Surcharge"],
-    "CONSOLIDATION_FEE": ["Handling Fee", "Consolidation Fee"],
-    "RECYCLING_FEE": ["Recycling Fee", "WEEE Contribution"],
-    "ROUNDING": ["Rounding", "Rounding Adjustment"]
+    "SHIPPING": [
+      "Shipping",
+      "Carriage",
+      "Delivery Charge"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Environmental Levy",
+      "Green Levy"
+    ],
+    "SURCHARGE": [
+      "Surcharge",
+      "Small Order Surcharge"
+    ],
+    "CONSOLIDATION_FEE": [
+      "Handling Fee",
+      "Consolidation Fee"
+    ],
+    "RECYCLING_FEE": [
+      "Recycling Fee",
+      "WEEE Contribution"
+    ],
+    "ROUNDING": [
+      "Rounding",
+      "Rounding Adjustment"
+    ]
   },
   "column_headers": {
-    "sku": ["SKU", "Item", "Part Number"],
-    "description": ["Description", "Item Description", "Details"],
-    "quantity": ["Qty", "Quantity"],
-    "unit_price": ["Unit Price", "Price", "Rate"],
-    "net_amount": ["Net Amount", "Amount", "Line Total"],
-    "pos": ["Pos.", "Line", "No."],
-    "unit": ["Unit", "UoM"],
-    "discount": ["Discount", "Disc. %"],
-    "vat_rate": ["VAT %", "Tax %", "VAT Code"],
-    "subscription_id": ["Subscription ID", "Service ID"],
-    "billing_cycle": ["Billing Cycle", "Frequency"],
-    "period": ["Period", "Service Period"],
-    "share": ["Share %", "Allocation"],
-    "remaining_term": ["Remaining Term", "Term Left"]
+    "sku": [
+      "SKU",
+      "Item",
+      "Part Number"
+    ],
+    "description": [
+      "Description",
+      "Item Description",
+      "Details"
+    ],
+    "quantity": [
+      "Qty",
+      "Quantity"
+    ],
+    "unit_price": [
+      "Unit Price",
+      "Price",
+      "Rate"
+    ],
+    "net_amount": [
+      "Net Amount",
+      "Amount",
+      "Line Total"
+    ],
+    "pos": [
+      "Pos.",
+      "Line",
+      "No."
+    ],
+    "unit": [
+      "Unit",
+      "UoM"
+    ],
+    "discount": [
+      "Discount",
+      "Disc. %"
+    ],
+    "vat_rate": [
+      "VAT %",
+      "Tax %",
+      "VAT Code"
+    ],
+    "subscription_id": [
+      "Subscription ID",
+      "Service ID"
+    ],
+    "billing_cycle": [
+      "Billing Cycle",
+      "Frequency"
+    ],
+    "period": [
+      "Period",
+      "Service Period"
+    ],
+    "share": [
+      "Share %",
+      "Allocation"
+    ],
+    "remaining_term": [
+      "Remaining Term",
+      "Term Left"
+    ]
   },
   "vat_summary_headers": {
-    "rate": ["Rate", "VAT Rate"],
-    "base": ["Net", "Taxable Amount"],
-    "vat": ["VAT", "Tax Amount"]
+    "rate": [
+      "Rate",
+      "VAT Rate"
+    ],
+    "base": [
+      "Net",
+      "Taxable Amount"
+    ],
+    "vat": [
+      "VAT",
+      "Tax Amount"
+    ]
   },
   "party_headings": {
-    "bill_to": ["Bill To", "Invoice To", "Sold To"],
-    "ship_to": ["Ship To", "Deliver To"],
-    "mail_to": ["Mail To", "Correspondence Address"]
+    "bill_to": [
+      "Bill To",
+      "Invoice To",
+      "Sold To"
+    ],
+    "ship_to": [
+      "Ship To",
+      "Deliver To"
+    ],
+    "mail_to": [
+      "Mail To",
+      "Correspondence Address"
+    ]
   },
   "trap_labels": {
-    "order_date": ["Order Date", "Date Ordered"],
-    "delivery_date": ["Delivery Date", "Despatch Date"],
-    "print_date": ["Printed", "Date Printed"]
+    "order_date": [
+      "Order Date",
+      "Date Ordered"
+    ],
+    "delivery_date": [
+      "Delivery Date",
+      "Despatch Date"
+    ],
+    "print_date": [
+      "Printed",
+      "Date Printed"
+    ]
   },
   "carry_forward": {
-    "incoming": ["Brought forward", "Balance brought forward"],
-    "outgoing": ["Carried forward", "Subtotal carried forward"]
+    "incoming": [
+      "Brought forward",
+      "Balance brought forward"
+    ],
+    "outgoing": [
+      "Carried forward",
+      "Subtotal carried forward"
+    ]
   },
   "exemption_sentences": {
-    "reverse_charge": ["Reverse charge: customer to account for VAT to HMRC."],
-    "intra_community": ["Zero-rated intra-community supply."],
-    "export": ["Zero-rated export of goods."]
+    "reverse_charge": [
+      "Reverse charge: customer to account for VAT to HMRC."
+    ],
+    "intra_community": [
+      "Zero-rated intra-community supply."
+    ],
+    "export": [
+      "Zero-rated export of goods."
+    ]
   },
-  "page_numbering": ["Page {page} of {pages}", "Page {page}/{pages}"],
+  "page_numbering": [
+    "Page {page} of {pages}",
+    "Page {page}/{pages}"
+  ],
   "payment_terms": [
     "Payment due within 30 days of invoice date.",
     "Net 14 days from date of invoice.",
@@ -84,17 +261,97 @@
     "Goods remain our property until paid for in full.",
     "Interest may be charged on overdue accounts."
   ],
-  "copy_stamps": ["COPY", "DUPLICATE"],
-  "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-  "month_abbreviations": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  "copy_stamps": [
+    "COPY",
+    "DUPLICATE"
+  ],
+  "section_headings": [
+    "Hardware",
+    "Services",
+    "Software licences",
+    "Spare parts",
+    "Consumables"
+  ],
+  "address_placeholders": [
+    "as bill-to address",
+    "same as invoice address"
+  ],
+  "months": [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ],
+  "month_abbreviations": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ],
   "diacritics": "naive café résumé — £ € ² °",
   "amount_in_words": {
     "style": "english",
-    "units": ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"],
-    "tens": ["twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"],
-    "scales": ["hundred", "thousand", "million"],
+    "units": [
+      "zero",
+      "one",
+      "two",
+      "three",
+      "four",
+      "five",
+      "six",
+      "seven",
+      "eight",
+      "nine",
+      "ten",
+      "eleven",
+      "twelve",
+      "thirteen",
+      "fourteen",
+      "fifteen",
+      "sixteen",
+      "seventeen",
+      "eighteen",
+      "nineteen"
+    ],
+    "tens": [
+      "twenty",
+      "thirty",
+      "forty",
+      "fifty",
+      "sixty",
+      "seventy",
+      "eighty",
+      "ninety"
+    ],
+    "scales": [
+      "hundred",
+      "thousand",
+      "million"
+    ],
     "joiner": "and",
-    "currency_unit": ["pound", "pounds"],
-    "currency_fraction": ["penny", "pence"]
+    "currency_unit": [
+      "pound",
+      "pounds"
+    ],
+    "currency_fraction": [
+      "penny",
+      "pence"
+    ]
   }
 }

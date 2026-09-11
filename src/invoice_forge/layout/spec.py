@@ -34,6 +34,20 @@ class VatSummaryStyle(Enum):
     TABLE = "table"
 
 
+class PageLine(Enum):
+    """Where "page x of y" is printed: with the references, or under the footer rule."""
+
+    HEADER = "header"
+    FOOTER = "footer"
+
+
+class CustomerVat(Enum):
+    """Which block carries the customer's VAT id — the second is a trap for the first."""
+
+    PARTY_BLOCK = "party_block"
+    METADATA = "metadata"
+
+
 class Weight(Enum):
     """The two faces a family draws with. The profile decides sans or serif."""
 
@@ -117,15 +131,29 @@ class ItemsSpec:
     row_size: float
     row_leading: float
     row_gap: float
+    sub_item_indent: float = 12.0
+    section_gap: float = 6.0
 
 
 @dataclass(frozen=True, slots=True)
 class PaginationSpec:
-    """Where the table starts on each page, and whether a break carries a subtotal."""
+    """Where the table starts on each page, what a break carries, and what repeats."""
 
     first_page_gap: float
     later_page_top: float
     carry_forward: bool
+    repeat_letterhead: bool = True
+
+
+@dataclass(frozen=True, slots=True)
+class TrapSpec:
+    """Dates printed beside the real ones that an extractor should not read as them."""
+
+    kinds: tuple[str, ...]
+    label_x: float
+    value_x: float
+    size: float
+    leading: float
 
 
 @dataclass(frozen=True, slots=True)
@@ -188,3 +216,6 @@ class FamilySpec:
     parties: PartiesSpec | None
     vat_summary: VatSummarySpec | None
     payment: PaymentSpec | None
+    page_line: PageLine = PageLine.HEADER
+    customer_vat: CustomerVat = CustomerVat.PARTY_BLOCK
+    traps: TrapSpec | None = None

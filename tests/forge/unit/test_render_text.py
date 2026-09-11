@@ -60,14 +60,19 @@ def test_a_quantity_drops_the_zeros_money_keeps() -> None:
 def test_a_round_hundred_is_not_printed_in_exponent_notation() -> None:
     """`Decimal("100").normalize()` is `1E+2`; nothing printed may ever read like that."""
     assert quantity(Decimal("100"), GERMAN) == "100"
-    assert rate(Decimal("20")) == "20"
+    assert rate(Decimal("20"), GERMAN) == "20"
     assert plain(Decimal("1000")) == "1000"
 
 
 def test_a_rate_is_whole_where_it_is_whole() -> None:
-    assert rate(Decimal("19")) == "19"
-    assert rate(Decimal("19.00")) == "19"
-    assert rate(Decimal("5.5")) == "5.5"
+    assert rate(Decimal("19"), BRITISH) == "19"
+    assert rate(Decimal("19.00"), BRITISH) == "19"
+    assert rate(Decimal("5.5"), BRITISH) == "5.5"
+
+
+def test_a_fractional_rate_reads_the_way_the_profile_writes_numbers() -> None:
+    assert rate(Decimal("5.5"), GERMAN) == "5,5"
+    assert rate(Decimal("5.5"), SWEDISH) == "5,5"
 
 
 @pytest.mark.parametrize(

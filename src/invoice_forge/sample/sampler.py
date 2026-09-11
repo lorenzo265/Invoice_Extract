@@ -28,6 +28,7 @@ from invoice_forge.model import (
 )
 from invoice_forge.profiles.schema import VendorProfile
 from invoice_forge.sample import identifiers as ids
+from invoice_forge.sample import variations
 from invoice_forge.sample.catalogue import DOMAIN_NAMES, Catalogue
 from invoice_forge.sample.parties import bank_name, party
 
@@ -80,7 +81,8 @@ def sample_document(request: SampleRequest) -> Document:
         currency=profile.currency,
         supplier=supplier,
         bill_to=_party(request, rng),
-        ship_to=_party(request, rng),
+        ship_to=_ship_to(request, rng),
+        mail_to=_mail_to(request, rng),
         identifiers=_identifiers(request, dates.invoice_date, rng),
         dates=dates,
         items=_items(request, rng),
@@ -125,24 +127,42 @@ def _identifiers(request: SampleRequest, invoice_date: date, rng: Random) -> Ide
     )
 
 
+def _ship_to(request: SampleRequest, rng: Random) -> Party:
+    """Drawn either way, so the `placeholder_addresses` knob does not shift the stream."""
+    drawn = _party(request, rng)
+    wording = rng.choice(request.lexicon.address_placeholders)
+    return variations.placeholder(drawn, wording, request.knobs)
+
+
+def _mail_to(request: SampleRequest, rng: Random) -> Party | None:
+    """A third party block, which only the `party_blocks` knob asks for."""
+    drawn = _party(request, rng)
+    return drawn if Knob.PARTY_BLOCKS in request.knobs else None
+
+
 def _items(request: SampleRequest, rng: Random) -> tuple[LineItem, ...]:
-    low, high = ITEM_RANGE
+    low, high = variations.item_range(request.knobs, ITEM_RANGE)
     count = rng.randint(low, high)
-    return tuple(_item(request, position, rng) for position in range(1, count + 1))
+    drawn = tuple(_item(request, position, rng) for position in range(1, count + 1))
+    return variations.sectioned(drawn, request.lexicon.section_headings, request.knobs, rng)
 
 
 def _item(request: SampleRequest, position: int, rng: Random) -> LineItem:
     domain = rng.choice(DOMAIN_NAMES)
-    product = rng.choice(request.catalogue.products(domain))
+    catalogue = request.catalogue
+    product = rng.choice(catalogue.products(domain))
     rates = request.profile.vat_rates
+    knobs = request.knobs
     return LineItem(
         pos=position,
         sku=product.sku,
-        description=product.description,
+        description=variations.described(product, catalogue, knobs, rng),
         quantity=_quantity(rng),
         unit=product.unit,
         unit_price=product.price,
         vat_rate=rates.reduced if domain == REDUCED_RATE_DOMAIN else rates.standard,
+        discount_percent=variations.discount_percent(knobs, rng),
+        sub_items=variations.sub_items(domain, catalogue, knobs, rng),
     )
 
 

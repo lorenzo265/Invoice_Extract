@@ -55,9 +55,9 @@ def quantity(value: Decimal, number_format: NumberFormat) -> str:
     return _grouped(plain(value), number_format)
 
 
-def rate(value: Decimal) -> str:
-    """A VAT rate as it is printed: a whole number where it is whole, never 19.00."""
-    return plain(value)
+def rate(value: Decimal, number_format: NumberFormat) -> str:
+    """A rate as it is printed: whole where it is whole, and 5,5 where the profile uses commas."""
+    return _grouped(plain(value), number_format)
 
 
 def plain(value: Decimal) -> str:

@@ -199,11 +199,13 @@ def test_the_parties_the_document_names_are_in_the_truth(profile_id: str) -> Non
 
 
 @for_each_profile
-def test_the_noise_the_footer_prints_is_recorded(profile_id: str) -> None:
+def test_the_noise_a_classic_document_prints_is_recorded(profile_id: str) -> None:
+    """Legal lines on every page, and a carried subtotal wherever the table breaks."""
     document = rendered(profile_id)
     kinds = {entry["kind"] for entry in document.truth["noise"]}
-    assert kinds == {"footer_legal"}
-    assert len(document.truth["noise"]) >= document.pages
+    assert kinds <= {"footer_legal", "carry_forward"}
+    assert "footer_legal" in kinds
+    assert ("carry_forward" in kinds) == (document.pages > 1)
 
 
 @for_each_profile

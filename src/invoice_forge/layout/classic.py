@@ -28,6 +28,7 @@ from invoice_forge.layout.spec import (
     PaymentSpec,
     TitleSpec,
     TotalsSpec,
+    TrapSpec,
     VatSummarySpec,
     VatSummaryStyle,
 )
@@ -42,6 +43,32 @@ CLASSIC_COLUMNS: tuple[Column, ...] = (
     Column("unit_price", 432.0, Alignment.RIGHT),
     Column("vat_rate", 470.0, Alignment.RIGHT),
     Column("net_amount", 545.0, Alignment.RIGHT),
+)
+DESCRIPTION_WIDTH = 192.0
+
+# The same table with a per-line discount column. Every amount column moves left to make
+# room for it, and the description gives up the width, so the set is declared rather than
+# computed: a column set is a layout decision, not arithmetic.
+DISCOUNT_COLUMNS: tuple[Column, ...] = (
+    Column("pos", 50.0, Alignment.LEFT),
+    Column("sku", 72.0, Alignment.LEFT),
+    Column("description", 140.0, Alignment.LEFT),
+    Column("quantity", 345.0, Alignment.RIGHT),
+    Column("unit_price", 405.0, Alignment.RIGHT),
+    Column("discount", 443.0, Alignment.RIGHT),
+    Column("vat_rate", 478.0, Alignment.RIGHT),
+    Column("net_amount", 545.0, Alignment.RIGHT),
+)
+DISCOUNT_DESCRIPTION_WIDTH = 165.0
+
+# Dates printed beside the real ones. An extractor that reads "the date nearest the label"
+# has three more labels to be wrong about.
+TRAPS = TrapSpec(
+    kinds=("order_date", "delivery_date", "print_date"),
+    label_x=360.0,
+    value_x=545.0,
+    size=9.0,
+    leading=12.0,
 )
 
 CLASSIC = FamilySpec(
@@ -61,7 +88,7 @@ CLASSIC = FamilySpec(
     items=ItemsSpec(
         columns=CLASSIC_COLUMNS,
         ruled=True,
-        description_width=192.0,
+        description_width=DESCRIPTION_WIDTH,
         header_size=8.0,
         row_size=9.0,
         row_leading=11.0,

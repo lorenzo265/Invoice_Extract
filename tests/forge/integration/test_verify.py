@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import shutil
 from collections.abc import Callable
+from functools import cache
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +24,7 @@ from invoice_forge.truth.reading import TruthError
 from invoice_forge.truth.verify import CHECKS, Failure, verify_corpus, verify_document
 
 Corrupt = Callable[[dict[str, Any]], None]
+PROFILE = "de-DE"
 
 
 def corrupted(source: Path, tmp_path: Path, mutate: Corrupt) -> Path:
@@ -82,6 +84,36 @@ def test_a_truth_that_is_not_json_is_a_failure(tmp_path: Path) -> None:
     assert "invalid JSON" in verify_document(broken)[0].detail
 
 
+@cache
+def _charged(tmp: str) -> Path:
+    """A document that carries a declared charge, whichever seed happens to draw one.
+
+    Which seed that is moves whenever the sampler gains a draw, so it is searched for
+    rather than written down.
+    """
+    for seed in range(20):
+        produced = produce(DocumentSpec(PROFILE, Family.CLASSIC, seed), Path(tmp) / f"s{seed}.pdf")
+        truth = json.loads(produced.truth.read_text(encoding="utf-8"))
+        if truth["charges"]:
+            return produced.pdf
+    raise AssertionError("no seed under 20 draws a charge")
+
+
+@pytest.mark.parametrize("declared", [True, False], ids=["hidden", "evidence removed"])
+def test_a_corrupted_charge_fails_the_evidence_rule(declared: bool, tmp_path: Path) -> None:
+    """Either half of the rule broken — a declared charge with no evidence, or the reverse."""
+
+    def mutate(truth: dict[str, Any]) -> None:
+        if declared:
+            truth["charges"][0]["declared"] = False
+        else:
+            truth["charges"][0]["evidence"] = []
+
+    charged = _charged(str(tmp_path / "source"))
+    failures = verify_document(corrupted(charged, tmp_path, mutate))
+    assert checks_that_fired(failures) == {"evidence", "determinism"}
+
+
 @pytest.mark.parametrize(
     ("name", "mutate", "expected"),
     [
@@ -99,8 +131,6 @@ def test_a_truth_that_is_not_json_is_a_failure(tmp_path: Path) -> None:
         ),
         ("a wrong line net", lambda t: _set_net(t), {"arithmetic", "readback", "determinism"}),
         ("a wrong vat line", lambda t: _set_vat(t), {"arithmetic", "readback", "determinism"}),
-        ("a charge hidden", lambda t: _undeclare(t), {"evidence", "determinism"}),
-        ("evidence removed", lambda t: _strip_charge_evidence(t), {"evidence", "determinism"}),
         ("a wrong page count", lambda t: _set_pages(t), {"schema", "determinism"}),
         (
             "an older schema",
@@ -175,14 +205,6 @@ def _set_net(truth: dict[str, Any]) -> None:
 
 def _set_vat(truth: dict[str, Any]) -> None:
     truth["vat_summary"][0]["vat"] = "1.00"
-
-
-def _undeclare(truth: dict[str, Any]) -> None:
-    truth["charges"][0]["declared"] = False
-
-
-def _strip_charge_evidence(truth: dict[str, Any]) -> None:
-    truth["charges"][0]["evidence"] = []
 
 
 def _set_pages(truth: dict[str, Any]) -> None:

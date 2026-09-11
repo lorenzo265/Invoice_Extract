@@ -28,7 +28,14 @@ from invoice_forge.lexicon.schema import (
 )
 
 LEXICON_DIR = Path(__file__).parent
-PLAIN_LISTS = ("page_numbering", "payment_terms", "legal_lines", "copy_stamps")
+PLAIN_LISTS = (
+    "page_numbering",
+    "payment_terms",
+    "legal_lines",
+    "copy_stamps",
+    "section_headings",
+    "address_placeholders",
+)
 TOP_LEVEL_KEYS = (
     "language",
     *SYNONYM_MAPS,
@@ -85,6 +92,8 @@ def _parse(data: Mapping[str, object]) -> Lexicon:
         payment_terms=lists["payment_terms"],
         legal_lines=lists["legal_lines"],
         copy_stamps=lists["copy_stamps"],
+        section_headings=lists["section_headings"],
+        address_placeholders=lists["address_placeholders"],
         months=_month_names(data, "months"),
         month_abbreviations=_month_names(data, "month_abbreviations"),
         diacritics=require_text(data, "diacritics", "diacritics"),

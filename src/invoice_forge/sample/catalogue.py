@@ -18,6 +18,7 @@ from invoice_forge.jsonspec import (
     read_object,
     reject_unknown,
     require_decimal,
+    require_filled_strings,
     require_mapping,
     require_text,
 )
@@ -25,7 +26,7 @@ from invoice_forge.jsonspec import (
 CATALOGUE_DIR = Path(__file__).parent / "catalogues"
 DOMAIN_NAMES: tuple[str, ...] = ("industrial", "electronics", "software", "services")
 PRODUCT_KEYS = ("sku", "description", "unit", "price")
-TOP_LEVEL_KEYS = ("language", "domains")
+TOP_LEVEL_KEYS = ("language", "qualifiers", "domains")
 MIN_PRODUCTS = 3
 
 
@@ -44,6 +45,8 @@ class Catalogue:
     """One language's products, grouped by the kind of business that sells them."""
 
     language: str
+    # Phrases a supplier appends to a description; what `wrapped_description` lengthens with.
+    qualifiers: tuple[str, ...]
     domains: Mapping[str, tuple[Product, ...]]
 
     def products(self, domain: str) -> tuple[Product, ...]:
@@ -70,6 +73,7 @@ def _parse(data: Mapping[str, object]) -> Catalogue:
     reject_unknown(domains, DOMAIN_NAMES, "domains.", "domain")
     return Catalogue(
         language=require_text(data, "language", "language"),
+        qualifiers=require_filled_strings(data, "qualifiers", "qualifiers"),
         domains={name: _products(domains, name) for name in DOMAIN_NAMES},
     )
 

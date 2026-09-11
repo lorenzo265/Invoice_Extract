@@ -28,7 +28,11 @@ def product(index: int) -> dict[str, Any]:
 
 def base() -> dict[str, Any]:
     products = [product(index) for index in range(1, MIN_PRODUCTS + 1)]
-    return {"language": "xx", "domains": {name: products for name in DOMAIN_NAMES}}
+    return {
+        "language": "xx",
+        "qualifiers": ["as drawn", "delivered"],
+        "domains": {name: products for name in DOMAIN_NAMES},
+    }
 
 
 def error(tmp_path: Path, data: object) -> str:
@@ -38,6 +42,7 @@ def error(tmp_path: Path, data: object) -> str:
 def test_a_valid_catalogue_loads(tmp_path: Path) -> None:
     catalogue = load_catalogue(write(tmp_path, "catalogue", base()))
     assert catalogue.language == "xx"
+    assert catalogue.qualifiers == ("as drawn", "delivered")
     assert catalogue.products("software")[0].price == Decimal("1.50")
 
 
@@ -63,6 +68,17 @@ def test_prices_never_pass_through_a_float() -> None:
             for item in catalogue.products(domain):
                 assert isinstance(item.price, Decimal)
                 assert item.price > 0, item.sku
+
+
+def test_every_bundled_catalogue_offers_qualifiers_to_lengthen_a_description_with() -> None:
+    for language in bundled_catalogue_ids():
+        assert load_catalogue(language).qualifiers, language
+
+
+def test_a_catalogue_without_qualifiers_is_refused(tmp_path: Path) -> None:
+    data = base()
+    data["qualifiers"] = []
+    assert error(tmp_path, data) == "qualifiers must be a non-empty list of strings"
 
 
 def test_descriptions_carry_the_digits_and_units_that_defeat_a_column_reader() -> None:

@@ -1,31 +1,129 @@
 {
   "language": "en",
+  "qualifiers": [
+    "including mounting kit",
+    "delivered duty paid",
+    "to drawing",
+    "RoHS compliant",
+    "minimum order 10 units",
+    "stainless grade 304"
+  ],
   "domains": {
     "industrial": [
-      { "sku": "HX-M8-040", "description": "Hex bolt M8 x 40, zinc plated, DIN 933", "unit": "ea", "price": "0.12" },
-      { "sku": "BRG-6204", "description": "Deep groove bearing 6204-2RS, sealed both sides", "unit": "ea", "price": "3.85" },
-      { "sku": "BRK-ST-3", "description": "Steel bracket 3 mm, 60 x 60 x 40, mill finish", "unit": "ea", "price": "2.30" },
-      { "sku": "PLT-AL-2", "description": "Aluminium sheet 2 mm, 1000 x 500, EN AW-5754", "unit": "ea", "price": "31.20" },
-      { "sku": "HSE-12-2", "description": "Hydraulic hose 12 mm, 2 m, crimped fittings", "unit": "ea", "price": "38.0450" }
+      {
+        "sku": "HX-M8-040",
+        "description": "Hex bolt M8 x 40, zinc plated, DIN 933",
+        "unit": "ea",
+        "price": "0.12"
+      },
+      {
+        "sku": "BRG-6204",
+        "description": "Deep groove bearing 6204-2RS, sealed both sides",
+        "unit": "ea",
+        "price": "3.85"
+      },
+      {
+        "sku": "BRK-ST-3",
+        "description": "Steel bracket 3 mm, 60 x 60 x 40, mill finish",
+        "unit": "ea",
+        "price": "2.30"
+      },
+      {
+        "sku": "PLT-AL-2",
+        "description": "Aluminium sheet 2 mm, 1000 x 500, EN AW-5754",
+        "unit": "ea",
+        "price": "31.20"
+      },
+      {
+        "sku": "HSE-12-2",
+        "description": "Hydraulic hose 12 mm, 2 m, crimped fittings",
+        "unit": "ea",
+        "price": "38.0450"
+      }
     ],
     "electronics": [
-      { "sku": "CBL-H07-25", "description": "Cable H07V-K 2.5 mm², black, 100 m coil", "unit": "coil", "price": "48.90" },
-      { "sku": "ENC-IP65", "description": "Enclosure IP65, 300 x 200 x 120", "unit": "ea", "price": "45.50" },
-      { "sku": "REL-24V", "description": "Interface relay 24 V DC, 1 changeover", "unit": "ea", "price": "7.95" },
-      { "sku": "SNS-T-PT1", "description": "Temperature sensor PT100, 3-wire, -50 to +200 °C", "unit": "ea", "price": "22.75" },
-      { "sku": "FLT-P-200", "description": "Filter cartridge P-200, cellulose, 10 µm", "unit": "ea", "price": "17.40" }
+      {
+        "sku": "CBL-H07-25",
+        "description": "Cable H07V-K 2.5 mm², black, 100 m coil",
+        "unit": "coil",
+        "price": "48.90"
+      },
+      {
+        "sku": "ENC-IP65",
+        "description": "Enclosure IP65, 300 x 200 x 120",
+        "unit": "ea",
+        "price": "45.50"
+      },
+      {
+        "sku": "REL-24V",
+        "description": "Interface relay 24 V DC, 1 changeover",
+        "unit": "ea",
+        "price": "7.95"
+      },
+      {
+        "sku": "SNS-T-PT1",
+        "description": "Temperature sensor PT100, 3-wire, -50 to +200 °C",
+        "unit": "ea",
+        "price": "22.75"
+      },
+      {
+        "sku": "FLT-P-200",
+        "description": "Filter cartridge P-200, cellulose, 10 µm",
+        "unit": "ea",
+        "price": "17.40"
+      }
     ],
     "software": [
-      { "sku": "SW-LIC-PRO", "description": "ProSuite licence, 1 seat, 12 months", "unit": "licence", "price": "349.00" },
-      { "sku": "SW-CLD-50", "description": "Cloud storage 50 GB, billed monthly", "unit": "month", "price": "12.5000" },
-      { "sku": "SW-SUP-GLD", "description": "Gold support contract, 4-hour response", "unit": "year", "price": "1290.00" },
-      { "sku": "SW-API-10K", "description": "API allowance, 10,000 calls per month", "unit": "pack", "price": "89.00" }
+      {
+        "sku": "SW-LIC-PRO",
+        "description": "ProSuite licence, 1 seat, 12 months",
+        "unit": "licence",
+        "price": "349.00"
+      },
+      {
+        "sku": "SW-CLD-50",
+        "description": "Cloud storage 50 GB, billed monthly",
+        "unit": "month",
+        "price": "12.5000"
+      },
+      {
+        "sku": "SW-SUP-GLD",
+        "description": "Gold support contract, 4-hour response",
+        "unit": "year",
+        "price": "1290.00"
+      },
+      {
+        "sku": "SW-API-10K",
+        "description": "API allowance, 10,000 calls per month",
+        "unit": "pack",
+        "price": "89.00"
+      }
     ],
     "services": [
-      { "sku": "SRV-INST-H", "description": "On-site installation, per hour", "unit": "hr", "price": "95.00" },
-      { "sku": "SRV-TRN-D", "description": "Foundation training, 1 day, up to 8 attendees", "unit": "day", "price": "780.00" },
-      { "sku": "SRV-WRT-Q", "description": "Maintenance, quarterly retainer, type B plant", "unit": "retainer", "price": "245.50" },
-      { "sku": "SRV-ANA-H", "description": "Analysis and documentation, per hour", "unit": "hr", "price": "115.0000" }
+      {
+        "sku": "SRV-INST-H",
+        "description": "On-site installation, per hour",
+        "unit": "hr",
+        "price": "95.00"
+      },
+      {
+        "sku": "SRV-TRN-D",
+        "description": "Foundation training, 1 day, up to 8 attendees",
+        "unit": "day",
+        "price": "780.00"
+      },
+      {
+        "sku": "SRV-WRT-Q",
+        "description": "Maintenance, quarterly retainer, type B plant",
+        "unit": "retainer",
+        "price": "245.50"
+      },
+      {
+        "sku": "SRV-ANA-H",
+        "description": "Analysis and documentation, per hour",
+        "unit": "hr",
+        "price": "115.0000"
+      }
     ]
   }
 }

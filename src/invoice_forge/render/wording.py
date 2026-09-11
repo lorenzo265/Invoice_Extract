@@ -29,6 +29,7 @@ class Wording:
     columns: Mapping[str, str]
     charges: Mapping[str, str]
     parties: Mapping[str, str]
+    traps: Mapping[str, str]
     vat_summary: Mapping[str, str]
     carry: Mapping[str, str]
     page_numbering: str
@@ -50,6 +51,7 @@ def choose_wording(
         columns=_picked(lexicon.column_headers, rng),
         charges=_picked(lexicon.charge_labels, rng),
         parties=_picked(lexicon.party_headings, rng),
+        traps=_picked(lexicon.trap_labels, rng),
         vat_summary=_picked(lexicon.vat_summary_headers, rng),
         carry=_picked(lexicon.carry_forward, rng),
         page_numbering=rng.choice(lexicon.page_numbering),

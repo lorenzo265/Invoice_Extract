@@ -32,12 +32,17 @@ class PageBudget:
 
 @dataclass(frozen=True, slots=True)
 class PlannedPage:
-    """One page's share of the table, and what the breaks around it carry."""
+    """One page's share of the table, what the breaks around it carry, and whether it ends it.
+
+    `last` is stated rather than inferred from `carried_out`: a family that carries nothing
+    across a break has no carry line on any page, and the totals still belong on one page.
+    """
 
     number: int
     rows: tuple[MeasuredRow, ...]
     carried_in: Decimal | None
     carried_out: Decimal | None
+    last: bool
 
 
 def plan_pages(rows: tuple[MeasuredRow, ...], budget: PageBudget) -> tuple[PlannedPage, ...]:
@@ -57,6 +62,7 @@ def plan_pages(rows: tuple[MeasuredRow, ...], budget: PageBudget) -> tuple[Plann
                 rows=taken,
                 carried_in=carried - rows_total(taken) if carries_in else None,
                 carried_out=None if last or not budget.carry_forward else carried,
+                last=last,
             )
         )
         if last:
