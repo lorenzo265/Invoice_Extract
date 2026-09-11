@@ -28,11 +28,11 @@ suppression to get past a gate.
 | Constraint | Value |
 |---|---|
 | Python | `>= 3.11` (`slots=True`, `tomllib`, `typing.Self`) |
-| Runtime dependency | `PyMuPDF` only (`import fitz`) |
+| Runtime dependency | `PyMuPDF` only (`import pymupdf`) |
 | Dev dependencies | `ruff`, `mypy`, `pytest`, `pytest-cov`, `pre-commit` — nothing else, ever |
 | Layout | `src/invoice_extractor/`, `py.typed` shipped |
 | Lint / format | `ruff` — rules `E, F, I, N, UP, B, SIM, RUF`, line length 100 |
-| Types | `mypy --strict` on `src/`; `ignore_missing_imports` scoped to `fitz` only |
+| Types | `mypy --strict` on `src/`; `ignore_missing_imports` scoped to `pymupdf` only |
 | Tests | `pytest --cov=invoice_extractor --cov-fail-under=90` |
 | Size budget | `src/` ≤ 2200 non-blank non-comment lines; module ≤ 250; function ≤ 40 (AST-counted) |
 | Money | `decimal.Decimal`, never `float`; parsed only through `normalizers.parse_money` |
@@ -83,7 +83,7 @@ class DocumentReader(Protocol):
 # document/zones.py
 def classify(bbox: BBox, page_width: float, page_height: float) -> Zone
 
-# document/pymupdf_reader.py  — the only module that imports fitz
+# document/pymupdf_reader.py  — the only module that imports pymupdf
 class PyMuPDFReader:                       # satisfies DocumentReader; context manager
     def __init__(self, pdf_path: Path) -> None   # raises FileNotFoundError
     def __enter__(self) -> Self; def __exit__(...) -> None
@@ -222,7 +222,7 @@ section only), `src/invoice_extractor/__init__.py` (`__version__ = "0.1.0"`,
 `__all__ = ["__version__"]` for now), `src/invoice_extractor/py.typed`,
 `tests/__init__.py` absent (use `pythonpath`), `tests/test_repo_hygiene.py` with the
 assertions in Appendix A that are meaningful on an empty package (size budget, no
-`print`, no `TODO`, fitz import location, no suppressions without justification).
+`print`, no `TODO`, pymupdf import location, no suppressions without justification).
 
 **Design notes.**
 
@@ -268,7 +268,7 @@ files = ["src"]
 python_version = "3.11"
 
 [[tool.mypy.overrides]]
-module = "fitz"
+module = "pymupdf"
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
@@ -346,8 +346,8 @@ def main() -> None                      # both samples into samples/
 
 Per sample the script does three things:
 
-1. **Draw.** `doc = fitz.open(); page = doc.new_page(width=595, height=842)`; one
-   `page.insert_text(fitz.Point(x, y), text, fontsize=10, fontname="helv")` per line and
+1. **Draw.** `doc = pymupdf.open(); page = doc.new_page(width=595, height=842)`; one
+   `page.insert_text(pymupdf.Point(x, y), text, fontsize=10, fontname="helv")` per line and
    per table cell (five calls per table row, at the column x's of the spec).
 2. **Save deterministically.** `doc.set_metadata({"producer": "invoice-extractor",
    "creator": "scripts/make_samples.py", "title": "<id> sample", "creationDate":
@@ -358,7 +358,7 @@ Per sample the script does three things:
    byte-identical (verified against PyMuPDF 1.27).
 3. **Write `expected.json`.** Values come from the script's own data table (never
    re-extracted). The `evidence.bbox` of each scalar field is read back from the PDF just
-   written, with `fitz`, using the same call the reader will use
+   written, with `pymupdf`, using the same call the reader will use
    (`page.get_text("dict")`, line bbox rounded to 2 decimals) — so the golden file pins
    the bbox the reader must report, without anyone typing coordinates by hand. Shape and
    key order: `docs/SAMPLES_SPEC.md` "The `expected.json` contract". Serialize with
@@ -377,7 +377,7 @@ subtotal + vat = total, subtotal × rate / 100 = vat, using `Decimal`).
 
 **Out of scope.** Any `src/` module. Any reader.
 
-**Self-review.** The four sample files are committed. The script imports `fitz` (it is a
+**Self-review.** The four sample files are committed. The script imports `pymupdf` (it is a
 script, not `src/`, so the hygiene rule does not apply). No coordinate in the script
 disagrees with `docs/SAMPLES_SPEC.md`.
 
@@ -385,7 +385,7 @@ disagrees with `docs/SAMPLES_SPEC.md`.
 
 ## PR2 — Document boundary
 
-**Goal.** Text lines with bounding boxes and zones, behind a protocol, with `fitz`
+**Goal.** Text lines with bounding boxes and zones, behind a protocol, with `pymupdf`
 confined to one module.
 
 **Scope.** `src/invoice_extractor/document/__init__.py`, `document/reader.py`,
@@ -400,9 +400,9 @@ RIGHT/BOTTOM. `PyMuPDFReader` opens the file in `__init__` (raising
 and builds `TextLine`s from `page.get_text("dict")`: one per `line` in each `block`,
 `text` = concatenation of the spans' text, `bbox` rounded to 2 decimals (`round(v, 2)`),
 `zone` from `classify` with `page.rect.width/height`, `page` 1-indexed. Lines are
-returned in reading order: sorted by `(bbox.y0, bbox.x0)`. Everything `fitz` returns is
+returned in reading order: sorted by `(bbox.y0, bbox.x0)`. Everything `pymupdf` returns is
 converted to this module's own typed values before leaving the function that received
-it; no `fitz` object escapes.
+it; no `pymupdf` object escapes.
 
 `tests/conftest.py` defines `FakeDocument`: constructed from a list of
 `(page, text, x0, y0, x1, y1)` tuples, computes zones with `classify` for an A4 page,
@@ -422,7 +422,7 @@ integration: `test_reader_returns_supplier_name_in_top_left` (both samples),
 
 **Out of scope.** Any label matching. Any layout.
 
-**Self-review.** `grep -rn "import fitz" src/` lists exactly one file.
+**Self-review.** `grep -rn "import pymupdf" src/` lists exactly one file.
 
 ---
 
@@ -548,7 +548,7 @@ winner is the first valid one, else per `on_all_invalid`: `BEST` → the first e
 candidate with `valid=False`; `NOT_FOUND` → `FieldResult(name, None, None, None,
 valid=False)`. `candidate_count = len(candidates)`; `zone` is the `TextLine.zone` of the
 winning candidate's line (`None` when nothing was found) — strategies carry it by
-building each `Candidate` from the `TextLine` it came from. The engine never touches `fitz`,
+building each `Candidate` from the `TextLine` it came from. The engine never touches `pymupdf`,
 never reads a file and never raises for a document it cannot understand.
 
 *Specs.* `FIELD_SPECS`, in `FIELD_ORDER`:
@@ -783,7 +783,7 @@ text scans; none imports the package.
 | `test_source_within_line_budget` | non-blank, non-comment lines (a line whose stripped text is empty or starts with `#`) across all `.py` files ≤ 2200 |
 | `test_no_module_over_250_lines` | same count per file ≤ 250 |
 | `test_no_function_over_40_lines` | for every `FunctionDef`/`AsyncFunctionDef`, `end_lineno - lineno + 1 ≤ 40` |
-| `test_fitz_imported_only_in_pymupdf_reader` | `Import`/`ImportFrom` of `fitz` appears only in `document/pymupdf_reader.py` and appears there |
+| `test_pymupdf_imported_only_in_pymupdf_reader` | `Import`/`ImportFrom` of `pymupdf` appears only in `document/pymupdf_reader.py` and appears there |
 | `test_no_float_calls_in_domain` | no `Call` to a `Name` `float` in `domain/*.py` |
 | `test_no_print_in_source` | no `Call` to `Name` `print` |
 | `test_no_todo_markers` | none of `TODO`, `FIXME`, `XXX`, `HACK` in any `.py` under `src/` or `tests/` |
@@ -798,8 +798,8 @@ text scans; none imports the package.
 Three of these changed in PR F0 of `docs/FORGE_PLAN.md`, when `invoice_forge` became the
 repository's second package. `test_source_within_line_budget` was removed — `AGENTS.md`
 lifted the repository-wide total, and a cap on the repository's size would be a cap on
-what it can do. `test_fitz_imported_only_in_pymupdf_reader` became
-`test_fitz_imported_only_in_the_two_pdf_modules`, and `test_no_float_calls_in_domain`
+what it can do. `test_pymupdf_imported_only_in_pymupdf_reader` became
+`test_pymupdf_imported_only_in_the_two_pdf_modules`, and `test_no_float_calls_in_domain`
 became `test_no_float_calls_in_the_money_layers`, because each rule now covers one module
 or directory per package. Every remaining assertion scans every package under `src/`, and
 two were widened while they were there: `Any` may not be imported anywhere under `src/`,

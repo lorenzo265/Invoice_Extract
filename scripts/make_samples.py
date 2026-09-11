@@ -15,7 +15,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
-import fitz
+import pymupdf
 
 PAGE_WIDTH = 595
 PAGE_HEIGHT = 842
@@ -223,10 +223,10 @@ def metadata(sample: SampleSpec) -> dict[str, str]:
 
 def draw(sample: SampleSpec, pdf_path: Path) -> None:
     """Write `sample` to `pdf_path` as a one-page A4 PDF, byte-identical run to run."""
-    document = fitz.open()
+    document = pymupdf.open()
     page = document.new_page(width=PAGE_WIDTH, height=PAGE_HEIGHT)
     for x, y, text in placements(sample):
-        page.insert_text(fitz.Point(x, y), text, fontsize=FONT_SIZE, fontname=FONT_NAME)
+        page.insert_text(pymupdf.Point(x, y), text, fontsize=FONT_SIZE, fontname=FONT_NAME)
     document.set_metadata(metadata(sample))
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
     # no_new_id keeps PyMuPDF from writing a random trailer /ID on every save.
@@ -237,7 +237,7 @@ def draw(sample: SampleSpec, pdf_path: Path) -> None:
 def line_boxes(pdf_path: Path) -> LineBoxes:
     """Every text line in the PDF, mapped to its 1-indexed page and rounded bbox."""
     boxes: dict[str, tuple[int, tuple[float, ...]]] = {}
-    with fitz.open(str(pdf_path)) as document:
+    with pymupdf.open(str(pdf_path)) as document:
         for number, page in enumerate(document, start=1):
             for block in page.get_text("dict")["blocks"]:
                 for line in block.get("lines", ()):

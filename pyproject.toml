@@ -48,9 +48,13 @@ strict = true
 files = ["src"]
 python_version = "3.11"
 
+# PyMuPDF ships no annotations. `follow_imports = "skip"` keeps every value it hands back
+# an `Any` at the boundary, which is what the two PDF modules then convert into this
+# project's own typed values. Analysing it instead would make every call to it an error.
 [[tool.mypy.overrides]]
-module = "fitz"
+module = "pymupdf"
 ignore_missing_imports = true
+follow_imports = "skip"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -12,7 +12,7 @@ under "Decisions" and proven by the existing golden tests.
 
 - New package `src/invoice_forge/`; tests under `tests/forge/`; same tooling, same
   hygiene (module ≤ 250, function ≤ 40, `Decimal`, frozen records, `mypy --strict`).
-- `fitz` imported only in `invoice_forge/render/pdf.py` and the extractor's reader.
+- `pymupdf` imported only in `invoice_forge/render/pdf.py` and the extractor's reader.
 - No new dependency. Fonts bundled. `random.Random(seed)` only; never `random` module
   functions, never time.
 - The base corpus PDFs are NOT committed; `corpus/plan.json`, the golden PNGs and the
@@ -31,7 +31,7 @@ by a script from the extractor's specs and checked by a test that they agree);
 `src/invoice_forge/{__init__,knobs,cli}.py`; `src/invoice_forge/fonts/` with the five
 Liberation files and `LICENSE`; `tests/forge/test_knobs.py`,
 `tests/test_field_catalog_matches_extractor.py`; `tests/test_repo_hygiene.py` updated
-(repository line budget removed; per-module/function limits kept; `fitz` allowed in
+(repository line budget removed; per-module/function limits kept; `pymupdf` allowed in
 the two named modules); `Makefile` targets `corpus`, `bench` (stubs that fail
 clearly), `pyproject.toml` script entry `forge`.
 

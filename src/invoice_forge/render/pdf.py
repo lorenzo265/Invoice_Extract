@@ -17,7 +17,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from pathlib import Path
 
-import fitz
+import pymupdf
 
 from invoice_forge.layout.spec import PageGeometry, Weight
 from invoice_forge.profiles.schema import FontFamily
@@ -55,10 +55,10 @@ class Canvas:
 
     def __init__(self, geometry: PageGeometry, fonts: FontFamily) -> None:
         self.geometry = geometry
-        self._document = fitz.open()
+        self._document = pymupdf.open()
         self._files = {weight: FONT_DIR / FONT_FILES[fonts, weight] for weight in Weight}
         self._fonts = {
-            weight: fitz.Font(fontfile=str(path)) for weight, path in self._files.items()
+            weight: pymupdf.Font(fontfile=str(path)) for weight, path in self._files.items()
         }
 
     @property
@@ -82,16 +82,16 @@ class Canvas:
         page 1: the number of pages is not known until the last row has been placed.
         """
         self._page(page).insert_text(
-            fitz.Point(x, y), text, fontsize=size, fontname=FONT_NAMES[weight]
+            pymupdf.Point(x, y), text, fontsize=size, fontname=FONT_NAMES[weight]
         )
 
     def rule(self, y: float, x0: float, x1: float, width: float) -> None:
-        start, end = fitz.Point(x0, y), fitz.Point(x1, y)
+        start, end = pymupdf.Point(x0, y), pymupdf.Point(x1, y)
         self._page(None).draw_line(start, end, width=width, color=RULE_COLOUR)
 
     def box(self, x: float, y: float, width: float, height: float) -> None:
         """An empty rectangle where a payment QR code would be. Drawn, never an image."""
-        rect = fitz.Rect(x, y, x + width, y + height)
+        rect = pymupdf.Rect(x, y, x + width, y + height)
         self._page(None).draw_rect(rect, width=BOX_WIDTH, color=BOX_COLOUR)
 
     def save(self, path: Path, title: str) -> None:
@@ -107,7 +107,7 @@ class Canvas:
         self._document.save(str(path), garbage=4, deflate=True, no_new_id=True)
         self._document.close()
 
-    def _page(self, number: int | None) -> fitz.Page:
+    def _page(self, number: int | None) -> pymupdf.Page:
         """Fetched by index, never held: adding a page invalidates every `Page` object."""
         if not self.pages:
             raise RuntimeError("no page has been started; call new_page() first")
@@ -121,7 +121,7 @@ def locate_all(path: Path, queries: Sequence[tuple[int, str]]) -> tuple[tuple[BB
     decides which occurrence belongs to which placement by comparing against the point it
     drew at. One open, however many queries, because a corpus asks thousands of them.
     """
-    document = fitz.open(str(path))
+    document = pymupdf.open(str(path))
     try:
         return tuple(
             tuple(_rounded(rect) for rect in document[page - 1].search_for(text))
@@ -142,7 +142,7 @@ def text_in(path: Path, boxes: Sequence[tuple[int, BBox]]) -> tuple[str, ...]:
     asking the page per box: a corpus asks hundreds of boxes per document, and re-reading
     the page for each one costs seconds where this costs milliseconds.
     """
-    document = fitz.open(str(path))
+    document = pymupdf.open(str(path))
     try:
         pages = {page: _words(document, page) for page in {number for number, _ in boxes}}
         return tuple(_within(pages[page], box) for page, box in boxes)
@@ -151,7 +151,7 @@ def text_in(path: Path, boxes: Sequence[tuple[int, BBox]]) -> tuple[str, ...]:
 
 
 def _words(
-    document: fitz.Document, page: int
+    document: pymupdf.Document, page: int
 ) -> tuple[tuple[float, float, float, float, str], ...]:
     """Every word on a page with its box, converted out of PyMuPDF's tuples at once."""
     return tuple(
@@ -176,7 +176,7 @@ def _within(words: Sequence[tuple[float, float, float, float, str]], box: BBox) 
 
 
 def pages_in(path: Path) -> int:
-    document = fitz.open(str(path))
+    document = pymupdf.open(str(path))
     try:
         return int(document.page_count)
     finally:
@@ -185,7 +185,7 @@ def pages_in(path: Path) -> int:
 
 def page_image(path: Path, page: int, dpi: int) -> bytes:
     """One page as PNG bytes, for the golden fixtures. Identical input, identical bytes."""
-    document = fitz.open(str(path))
+    document = pymupdf.open(str(path))
     try:
         pixmap = document[page - 1].get_pixmap(dpi=dpi)
         return bytes(pixmap.tobytes("png"))
@@ -193,6 +193,6 @@ def page_image(path: Path, page: int, dpi: int) -> bytes:
         document.close()
 
 
-def _rounded(rect: fitz.Rect) -> BBox:
+def _rounded(rect: pymupdf.Rect) -> BBox:
     """Two decimals, the same precision the extractor's reader rounds its boxes to."""
     return (round(rect.x0, 2), round(rect.y0, 2), round(rect.x1, 2), round(rect.y1, 2))

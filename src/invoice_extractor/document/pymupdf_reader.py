@@ -1,7 +1,7 @@
-"""The one module that imports `fitz`.
+"""The one module that imports `pymupdf`.
 
 Everything PyMuPDF hands back is converted into this project's own typed values before
-it leaves the function that received it — no `fitz` object, and no untyped value, ever
+it leaves the function that received it — no `pymupdf` object, and no untyped value, ever
 escapes this file. Swapping the PDF library is a change to this module alone.
 """
 
@@ -12,7 +12,7 @@ from pathlib import Path
 from types import TracebackType
 from typing import Self
 
-import fitz
+import pymupdf
 
 from invoice_extractor.document.reader import BBox, TextLine
 from invoice_extractor.document.zones import classify
@@ -26,7 +26,7 @@ class PyMuPDFReader:
     def __init__(self, pdf_path: Path) -> None:
         if not pdf_path.is_file():
             raise FileNotFoundError(f"PDF not found: {pdf_path}")
-        self._document = fitz.open(str(pdf_path))
+        self._document = pymupdf.open(str(pdf_path))
 
     def __enter__(self) -> Self:
         return self

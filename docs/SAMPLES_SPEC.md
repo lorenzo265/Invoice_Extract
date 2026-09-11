@@ -21,12 +21,12 @@ contain, down to the character.
 
 Both samples are one page each, drawn under the same rules:
 
-- **Page.** A4 portrait, 595 × 842 pt (`fitz.paper_rect("a4")`). One page per invoice.
+- **Page.** A4 portrait, 595 × 842 pt (`pymupdf.paper_rect("a4")`). One page per invoice.
 - **Font.** `"helv"` (Helvetica, a PDF base-14 font — no embedding, nothing to subset),
   size `10`, for every line on both PDFs. No bold, no other size: this is a data fixture,
   not a design exercise.
 - **Placement.** Every line of content is exactly one
-  `page.insert_text(fitz.Point(x, y), text, fontsize=10, fontname="helv")` call. `y` is
+  `page.insert_text(pymupdf.Point(x, y), text, fontsize=10, fontname="helv")` call. `y` is
   the text's **baseline**, not its top — PyMuPDF reports a taller `bbox` above and
   below it (ascender to descender), which is why the `y0` values in the evidence tables
   below don't equal the `y` a line is inserted at.

@@ -23,7 +23,8 @@ MAX_MODULE_LINES = 250
 MAX_FUNCTION_LINES = 40
 
 # The only two modules allowed to import the PDF library: the extractor reads with it,
-# the generator writes with it, and nothing else knows it exists.
+# the generator writes with it, and nothing else knows it exists. `pymupdf` is the modern
+# import name; `fitz` is the deprecated alias, which prints a warning on every import.
 PDF_MODULES = (EXTRACTOR / "document" / "pymupdf_reader.py", FORGE / "render" / "pdf.py")
 # Where money lives in each package. `float` is not called there (ADR-0003).
 MONEY_LAYERS = (EXTRACTOR / "domain", FORGE / "model")
@@ -188,15 +189,15 @@ def test_no_function_over_40_lines() -> None:
     assert not oversized, f"functions over {MAX_FUNCTION_LINES} lines: {oversized}"
 
 
-def test_fitz_imported_only_in_the_two_pdf_modules() -> None:
+def test_pymupdf_imported_only_in_the_two_pdf_modules() -> None:
     allowed = set(PDF_MODULES)
-    importers = {module for module in source_modules() if imports_module(module, "fitz")}
+    importers = {module for module in source_modules() if imports_module(module, "pymupdf")}
     strays = sorted(where(module) for module in importers - allowed)
-    assert not strays, f"fitz imported outside the two PDF modules: {strays}"
+    assert not strays, f"pymupdf imported outside the two PDF modules: {strays}"
     # Each module arrives with its own pull request; until then the rule holds vacuously.
     for module in PDF_MODULES:
         if module.exists():
-            assert module in importers, f"{where(module)} is one of the modules that import fitz"
+            assert module in importers, f"{where(module)} is a module that must import pymupdf"
 
 
 def test_no_float_calls_in_the_money_layers() -> None:

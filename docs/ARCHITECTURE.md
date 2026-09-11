@@ -127,7 +127,7 @@ classDiagram
 
 | # | Boundary | Rule |
 |---|---|---|
-| 1 | PDF library | `fitz` is imported nowhere except `document/pymupdf_reader.py`. Every other module sees the `DocumentReader` protocol and plain `TextLine` / `BBox` values — swapping the PDF library touches one file. |
+| 1 | PDF library | `pymupdf` is imported nowhere except `document/pymupdf_reader.py`. Every other module sees the `DocumentReader` protocol and plain `TextLine` / `BBox` values — swapping the PDF library touches one file. |
 | 2 | Layout format | Only `layout/loader.py` (guided by `layout/schema.py`) knows the JSON shape. Every other module receives a typed `Layout`, never a raw `dict`. |
 | 3 | Strategies & units | `extraction/strategies.py`, `normalizers.py`, `validators.py`, and `rankers.py` are pure functions: inputs to outputs, no I/O, no shared state — trivial to unit test and free to compose. |
 | 4 | Orchestration | `pipeline.py` is the only module that *runs* the stages across `document/`, `layout/`, `extraction/`, `validation/`, and `domain/`: nothing else opens a document, loops over the specs, or decides what happens next. Two modules import a name from a package they do not orchestrate — `validation/confidence.py` takes the `Extraction` the pipeline hands it, and `output/text_report.py` reads `INVARIANT_NAMES` to know which rows to print — and neither calls back into the package it names. |
@@ -144,7 +144,7 @@ classDiagram
 | `domain/money.py` | `Decimal` rounding and tolerance helpers shared by normalizers and invariants. | — |
 | `domain/findings.py` | Defines `Finding` and its `Severity` (`INFO` / `WARNING` / `ERROR`). | — |
 | `document/reader.py` | Defines `BBox`, `TextLine`, `Zone`, and the `DocumentReader` protocol. | — |
-| `document/pymupdf_reader.py` | The only module that imports `fitz`; implements `DocumentReader` over a real PDF. | `document.reader`, `document.zones` |
+| `document/pymupdf_reader.py` | The only module that imports `pymupdf`; implements `DocumentReader` over a real PDF. | `document.reader`, `document.zones` |
 | `document/zones.py` | Maps a `BBox` centre, normalised to page size, onto the 3x3 `Zone` grid. | `document.reader` |
 | `layout/schema.py` | The typed shape of a layout: field labels, zones, regex, line-item headers. | `document.reader` (`Zone`) |
 | `layout/loader.py` | Parses and validates a layout JSON file into a `Layout`; the only module that reads the JSON shape. | `layout.schema`, `document.reader` (`Zone`) |
@@ -220,6 +220,6 @@ flowchart LR
     DOM -.->|"BBox only"| DOC
 ```
 
-No arrow points the other way: `document/reader.py` never imports `domain/`, `layout/`, `extraction/`, `validation/`, `pipeline.py`, or `output/`. The one exception is deliberate and narrow — `domain/models.py` reuses `document.reader.BBox` inside `Evidence` instead of redefining geometry, an edge that carries no dependency on `fitz`, which stays confined to `pymupdf_reader.py`.
+No arrow points the other way: `document/reader.py` never imports `domain/`, `layout/`, `extraction/`, `validation/`, `pipeline.py`, or `output/`. The one exception is deliberate and narrow — `domain/models.py` reuses `document.reader.BBox` inside `Evidence` instead of redefining geometry, an edge that carries no dependency on `pymupdf`, which stays confined to `pymupdf_reader.py`.
 
 Two arrows are worth naming because they cross rings rather than descend one. `validation/confidence.py` imports `Extraction` from `extraction/engine.py`, and `output/text_report.py` imports `INVARIANT_NAMES` from `validation/invariants.py`. Both are the *name of a value the caller is handed*, not a call back into that package — `score` is given an `Extraction` by `pipeline.py`, and the report prints one row per invariant in the order that tuple fixes. Boundary 4 in §3 is about who runs the stages, and `pipeline.py` is still the only module that does.

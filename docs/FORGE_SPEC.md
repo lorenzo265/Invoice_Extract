@@ -35,7 +35,7 @@ src/invoice_forge/
   model/                 DocumentModel: parties, identifiers, dates, money, items, charges, vat, payment
   sample/                ContentSampler: catalogues, names, addresses, ids, IBAN/VAT generators
   layout/                TemplateFamily declarations: spec.py, classic.py (stacked, tabular, saas, minimal)
-  render/                pdf.py (the only fitz importer besides the extractor's reader), sheet.py,
+  render/                pdf.py (the only pymupdf importer besides the extractor's reader), sheet.py,
                          text.py, wording.py, table.py, pagination.py, blocks.py, totals.py,
                          placement.py, context.py, renderer.py
   truth/                 builder.py, values.py, locate.py (writing) + verify.py, checks.py,
@@ -128,7 +128,7 @@ credit notes by inverting an invoice and referencing it.
 
 ### 3.6 Renderer (code)
 
-PyMuPDF only. Text placement through measured widths (`fitz.Font.text_length`) so
+PyMuPDF only. Text placement through measured widths (`pymupdf.Font.text_length`) so
 right-aligned amounts and wrapped descriptions are exact; drawn rules and boxes for
 tables and the QR placeholder; page breaks with carry-forward; header/footer per page;
 fonts embedded from `invoice_forge/fonts/`; metadata fixed; `save(garbage=4,

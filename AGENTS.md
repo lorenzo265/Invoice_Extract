@@ -96,10 +96,10 @@ branch as it is and stop working on this repository until a human has read
   is wrong; fix `src/`.
 - **Never add `# noqa` or `# type: ignore` without a same-line comment explaining why
   the suppression is correct, not convenient** — for example
-  `# type: ignore[no-any-return]  # fitz stubs are untyped; scoped in pyproject.toml`.
+  `# type: ignore[no-any-return]  # pymupdf is unannotated; scoped in pyproject.toml`.
   A suppression with no stated reason is a threshold weakened in disguise.
 - **Never add a dependency, runtime or development.** `pyproject.toml`, written once
-  in PR0, already carries everything the whole plan needs: PyMuPDF (`fitz`) at
+  in PR0, already carries everything the whole plan needs: PyMuPDF (`pymupdf`) at
   runtime; `ruff`, `mypy`, `pytest`, `pytest-cov`, and `pre-commit` for development. If
   a later PR seems to need something new, solve it with the standard library or the
   tools already in hand — that need is not a reason to touch the dependency lists. If
@@ -126,7 +126,9 @@ F.I.R.S.T. tests, Conventional Commits — applies unchanged to every new packag
 
 - **`src/invoice_forge/`** is that new package, with its own tests under `tests/forge/`,
   the same tooling and the same hygiene checks.
-- **`fitz` may be imported by exactly two modules** in the repository:
+- **`pymupdf` may be imported by exactly two modules** in the repository. The import
+  name is `pymupdf`, never the deprecated `fitz` alias, which prints a warning to
+  stderr on every import:
   `invoice_extractor/document/pymupdf_reader.py` and `invoice_forge/render/pdf.py`.
 - **No runtime dependency beyond PyMuPDF**, for either package. Fonts are bundled
   files, not a dependency. Randomness is `random.Random(seed)` — never the `random`
@@ -177,9 +179,11 @@ Clean Code, applied concretely to this codebase:
   `Result`/`Spec` type. Immutability is what makes `Evidence` trustworthy — nothing
   downstream can mutate a `FieldResult` after ranking has already decided it.
 - **No `Any` in the public API, and `mypy --strict` is not a suggestion.** The one
-  exception is `ignore_missing_imports` for `fitz` itself, scoped in `pyproject.toml`.
+  exception is `ignore_missing_imports` and `follow_imports = "skip"` for `pymupdf`
+  itself, scoped in `pyproject.toml`: the library ships no annotations, so every value
+  it hands back is an `Any` the boundary module converts into a typed value of ours.
   That does not license `Any` anywhere else — including at the boundary in
-  `pymupdf_reader.py`: wrap `fitz`'s untyped values in this module's own typed return
+  `pymupdf_reader.py`: wrap `pymupdf`'s untyped values in this module's own typed return
   values immediately; never let one escape.
 
 ## Test standard

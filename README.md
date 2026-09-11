@@ -179,9 +179,9 @@ pass — see [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 | Command | Enforces |
 |---|---|
 | `make lint` | `ruff check` + `ruff format --check` (E, F, I, N, UP, B, SIM, RUF; line length 100) |
-| `make typecheck` | `mypy --strict` on `src/` (`fitz` is the one ignored import) |
+| `make typecheck` | `mypy --strict` on `src/` (`pymupdf` is the one ignored import) |
 | `make test` | `pytest --cov=invoice_extractor --cov-fail-under=90` |
-| hygiene test | `src/` <= 2200 non-blank/non-comment lines; no module > 250 lines; no function > 40 lines; `fitz` in one module only; no `print`, no work markers, no unjustified suppressions, no absolute paths or e-mail addresses, every relative markdown link resolves |
+| hygiene test | `src/` <= 2200 non-blank/non-comment lines; no module > 250 lines; no function > 40 lines; `pymupdf` in the two PDF modules only; no `print`, no work markers, no unjustified suppressions, no absolute paths or e-mail addresses, every relative markdown link resolves |
 
 `.github/workflows/ci.yml` runs the same `make check` on every push and pull request.
 Nothing merges that hasn't passed it.
