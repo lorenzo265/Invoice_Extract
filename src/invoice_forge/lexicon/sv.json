@@ -65,6 +65,10 @@
     "payment_terms": [
       "Betalningsvillkor",
       "Villkor"
+    ],
+    "credit_reference": [
+      "Ursprungsfaktura",
+      "Avser faktura"
     ]
   },
   "totals_labels": {
@@ -181,6 +185,10 @@
     ]
   },
   "vat_summary_headers": {
+    "code": [
+      "Kod",
+      "Momskod"
+    ],
     "rate": [
       "Momssats",
       "Sats"
@@ -302,7 +310,7 @@
   ],
   "diacritics": "åäö ÅÄÖ é ² °",
   "amount_in_words": {
-    "style": "germanic_compound",
+    "style": "nordic_compound",
     "units": [
       "noll",
       "en",
@@ -337,9 +345,13 @@
     ],
     "scales": [
       "hundra",
-      "tusen",
-      "miljon"
+      "tusen"
     ],
+    "million": [
+      "en miljon",
+      "miljoner"
+    ],
+    "scale_one": "ett",
     "joiner": "och",
     "currency_unit": [
       "krona",

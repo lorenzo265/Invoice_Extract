@@ -1,4 +1,9 @@
-"""The same seed draws the same document, everywhere, forever."""
+"""The same seed draws the same document, everywhere, forever.
+
+Every request here names `classic` and no knobs, so what is asserted is the document a
+profile draws when nothing has been turned on. What each knob then changes is
+`test_knob_content.py`; that the family can change it too is `test_saas_content.py`.
+"""
 
 from __future__ import annotations
 
@@ -7,6 +12,8 @@ from datetime import date
 
 import pytest
 
+from invoice_forge.families import Family
+from invoice_forge.knobs import Knob
 from invoice_forge.lexicon.loader import load_lexicon
 from invoice_forge.model import DocumentType
 from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
@@ -17,13 +24,17 @@ from invoice_forge.sample.sampler import ITEM_RANGE, SampleRequest, sample_docum
 SEEDS = range(6)
 
 
-def request_for(profile_id: str, seed: int) -> SampleRequest:
+def request_for(
+    profile_id: str, seed: int, knobs: tuple[Knob, ...] = (), family: Family = Family.CLASSIC
+) -> SampleRequest:
     profile = load_profile(profile_id)
     return SampleRequest(
         profile=profile,
         lexicon=load_lexicon(profile.lexicon),
         catalogue=load_catalogue(profile.lexicon),
+        family=family,
         seed=seed,
+        knobs=knobs,
     )
 
 
@@ -49,7 +60,7 @@ def test_a_drawn_document_speaks_its_profile(profile_id: str) -> None:
     assert document.profile_id == profile_id
     assert document.language == profile.language
     assert document.currency == profile.currency
-    assert document.secondary_currency == profile.secondary_currency
+    assert document.secondary_currency is None, "a second currency is the echo knob's business"
 
 
 @pytest.mark.parametrize("profile_id", bundled_profile_ids())
@@ -131,8 +142,20 @@ def test_the_total_is_the_rows_plus_the_charges_plus_the_tax(profile_id: str) ->
         assert totals.total_amount > 0
 
 
-def test_an_exchange_rate_is_drawn_only_for_a_second_currency() -> None:
+def test_an_exchange_rate_is_drawn_only_where_a_second_currency_is_echoed() -> None:
+    """Off, nothing is echoed; on, only a vendor that deals in a second currency echoes."""
     for profile_id in bundled_profile_ids():
         profile = load_profile(profile_id)
-        document = sample_document(request_for(profile_id, 4))
-        assert (document.exchange_rate is not None) is (profile.secondary_currency is not None)
+        assert sample_document(request_for(profile_id, 4)).exchange_rate is None
+        echoed = sample_document(request_for(profile_id, 4, (Knob.DUAL_CURRENCY_ECHO,)))
+        assert echoed.secondary_currency == profile.secondary_currency
+        assert (echoed.exchange_rate is not None) is (profile.secondary_currency is not None)
+
+
+def test_the_echo_knob_moves_no_other_draw() -> None:
+    """The rate is drawn either way, so turning the knob on shifts nothing else."""
+    for profile_id in bundled_profile_ids():
+        plain = sample_document(request_for(profile_id, 4))
+        echoed = sample_document(request_for(profile_id, 4, (Knob.DUAL_CURRENCY_ECHO,)))
+        assert plain.items == echoed.items
+        assert plain.identifiers == echoed.identifiers

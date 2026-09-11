@@ -75,8 +75,12 @@ Rules:
   layer, rounded to 2 decimals; the generator never writes a bbox it did not read.
 - **Undeclared amounts have no evidence.** A charge with `declared: false` is folded into
   the total and appears only in `charges`; that is the point of the knob.
-- **`noise`** lists what was printed to mislead, so the benchmark can report which traps
-  caused which misses.
+- **`noise`** lists what was printed beside the values: the traps, and the lines an
+  extractor must not read as a value — a carried-forward subtotal, a section subtotal, a
+  copy stamp, the exemption sentence, the total spelled out in words, the legal footer.
+  Each entry names its `kind` and where it is, so the benchmark can report which one
+  caused which miss. The kinds are `footer_legal`, `carry_forward`, `section_subtotal`,
+  `trap_label`, `copy_stamp`, `exemption` and `amount_in_words`.
 - **Determinism**: the same seed, profile, template and knobs produce byte-identical PDF
   and truth files.
 

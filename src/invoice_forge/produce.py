@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from invoice_forge.families import Family
-from invoice_forge.knobs import Knob
+from invoice_forge.knobs import Knob, check_knobs
 from invoice_forge.lexicon.loader import load_lexicon
 from invoice_forge.profiles.loader import load_profile
 from invoice_forge.render.renderer import RenderRequest, render
@@ -44,11 +44,16 @@ class Produced:
 
 
 def produce(spec: DocumentSpec, pdf_path: Path) -> Produced:
-    """Write `<stem>.pdf` and `<stem>.truth.json`. Same spec, same bytes, every time."""
+    """Write `<stem>.pdf` and `<stem>.truth.json`. Same spec, same bytes, every time.
+
+    The one place every route into the generator passes through, so it is where a cell
+    that asks for two values of one axis is refused rather than silently resolved.
+    """
+    check_knobs(spec.knobs)
     profile = load_profile(spec.profile_id)
     lexicon = load_lexicon(profile.lexicon)
     catalogue = load_catalogue(profile.lexicon)
-    sampled = SampleRequest(profile, lexicon, catalogue, spec.seed, spec.knobs)
+    sampled = SampleRequest(profile, lexicon, catalogue, spec.family, spec.seed, spec.knobs)
     document = sample_document(sampled)
     request = RenderRequest(document, profile, lexicon, spec.family, spec.seed, spec.knobs)
     pdf_path.parent.mkdir(parents=True, exist_ok=True)

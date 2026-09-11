@@ -19,6 +19,7 @@ from make_forge_goldens import GOLDEN_SEED
 from rendering import for_each_profile, rendered
 
 from invoice_forge.families import Family
+from invoice_forge.knobs import Knob
 from invoice_forge.produce import DocumentSpec, produce
 from invoice_forge.truth.reading import TruthError
 from invoice_forge.truth.verify import CHECKS, Failure, verify_corpus, verify_document
@@ -86,17 +87,12 @@ def test_a_truth_that_is_not_json_is_a_failure(tmp_path: Path) -> None:
 
 @cache
 def _charged(tmp: str) -> Path:
-    """A document that carries a declared charge, whichever seed happens to draw one.
-
-    Which seed that is moves whenever the sampler gains a draw, so it is searched for
-    rather than written down.
-    """
-    for seed in range(20):
-        produced = produce(DocumentSpec(PROFILE, Family.CLASSIC, seed), Path(tmp) / f"s{seed}.pdf")
-        truth = json.loads(produced.truth.read_text(encoding="utf-8"))
-        if truth["charges"]:
-            return produced.pdf
-    raise AssertionError("no seed under 20 draws a charge")
+    """A document that carries a declared charge, because the knob for one asks for it."""
+    spec = DocumentSpec(PROFILE, Family.CLASSIC, 1, (Knob.DECLARED_CHARGE,))
+    produced = produce(spec, Path(tmp) / "charged.pdf")
+    truth = json.loads(produced.truth.read_text(encoding="utf-8"))
+    assert truth["charges"], "the declared_charge knob puts a charge on the document"
+    return produced.pdf
 
 
 @pytest.mark.parametrize("declared", [True, False], ids=["hidden", "evidence removed"])

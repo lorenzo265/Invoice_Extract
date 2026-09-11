@@ -99,6 +99,10 @@ class Sheet:
         right = self.geometry.right if x1 is None else x1
         self.canvas.rule(y, left, right, width)
 
+    def vrule(self, x: float, y0: float, y1: float) -> None:
+        """A vertical rule, which only a bordered block has any use for."""
+        self.canvas.line(x, y0, x, y1, RULE_WIDTH)
+
     def record(self, mark: Mark, text: str, x: float, y: float) -> None:
         """Note that a string already drawn is also evidence for something else.
 

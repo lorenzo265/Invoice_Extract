@@ -19,7 +19,7 @@ from invoice_forge.fields import LABELLED_FIELDS
 from invoice_forge.model import Document, DocumentType, Party
 from invoice_forge.render.placement import Placement, Slot
 from invoice_forge.render.renderer import RenderRequest, RenderResult
-from invoice_forge.render.totals import headline_rate
+from invoice_forge.render.summary import headline_rate
 from invoice_forge.render.wording import Wording
 from invoice_forge.truth.locate import Evidence, locate
 from invoice_forge.truth.values import field_values, item_row

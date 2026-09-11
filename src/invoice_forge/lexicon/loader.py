@@ -22,6 +22,7 @@ from invoice_forge.lexicon.schema import (
     AMOUNT_IN_WORDS_STYLES,
     MAX_SYNONYMS,
     MONTHS_IN_A_YEAR,
+    SCALE_WORDS,
     SYNONYM_MAPS,
     AmountInWords,
     Lexicon,
@@ -50,6 +51,8 @@ WORDS_KEYS = (
     "units",
     "tens",
     "scales",
+    "million",
+    "scale_one",
     "joiner",
     "currency_unit",
     "currency_fraction",
@@ -134,11 +137,20 @@ def _amount_in_words(data: Mapping[str, object]) -> AmountInWords:
         style=require_choice(words, "style", f"{path}.style", AMOUNT_IN_WORDS_STYLES),
         units=require_filled_strings(words, "units", f"{path}.units"),
         tens=require_filled_strings(words, "tens", f"{path}.tens"),
-        scales=require_filled_strings(words, "scales", f"{path}.scales"),
+        scales=_scale_words(words, path),
+        million=_word_pair(words, "million", path),
+        scale_one=require_text(words, "scale_one", f"{path}.scale_one"),
         joiner=require_text(words, "joiner", f"{path}.joiner"),
         currency_unit=_word_pair(words, "currency_unit", path),
         currency_fraction=_word_pair(words, "currency_fraction", path),
     )
+
+
+def _scale_words(words: Mapping[str, object], path: str) -> tuple[str, ...]:
+    values = require_filled_strings(words, "scales", f"{path}.scales")
+    if len(values) != SCALE_WORDS:
+        raise SpecError(f"{path}.scales must list the hundred and the thousand")
+    return values
 
 
 def _word_pair(words: Mapping[str, object], key: str, path: str) -> tuple[str, str]:

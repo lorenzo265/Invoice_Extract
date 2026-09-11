@@ -58,6 +58,7 @@ def _references(document: Document) -> dict[str, str | None]:
         "contract_number": identifiers.contract_number,
         "our_reference": identifiers.our_reference,
         "your_reference": identifiers.your_reference,
+        "credit_reference": identifiers.credit_reference,
         "supplier_vat_id": _identifier(document.supplier.vat_id),
         "customer_vat_id": _identifier(document.bill_to.vat_id),
         "currency": document.currency,

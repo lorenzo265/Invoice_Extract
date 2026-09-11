@@ -20,7 +20,7 @@ from invoice_forge.layout.variants import with_knobs
 from invoice_forge.lexicon.schema import Lexicon
 from invoice_forge.model import Document
 from invoice_forge.profiles.schema import VendorProfile
-from invoice_forge.render import blocks, table, totals
+from invoice_forge.render import blocks, header, table, totals
 from invoice_forge.render.context import RenderContext
 from invoice_forge.render.pagination import PageBudget, PlannedPage, plan_pages
 from invoice_forge.render.placement import Placement
@@ -57,7 +57,7 @@ def render(request: RenderRequest, path: Path) -> RenderResult:
     rows = table.measure_rows(sheet, context.document, context.family.items)
     plan, extents = _draw_pages(sheet, context, rows)
     for page in plan:
-        blocks.draw_page_line(sheet, context, page.number, len(plan), extents[page.number - 1])
+        header.draw_page_line(sheet, context, page.number, len(plan), extents[page.number - 1])
     sheet.save(path, context.document.identifiers.invoice_number)
     return RenderResult(pages=len(plan), placements=sheet.placements, context=context)
 
@@ -65,7 +65,9 @@ def render(request: RenderRequest, path: Path) -> RenderResult:
 def _context(request: RenderRequest) -> RenderContext:
     profile = request.profile
     family = with_knobs(family_spec(request.family), request.knobs)
-    wording = choose_wording(request.document, profile, request.lexicon, Random(request.seed))
+    wording = choose_wording(
+        request.document, profile, request.lexicon, Random(request.seed), request.knobs
+    )
     return RenderContext(
         document=request.document,
         profile=profile,
@@ -81,26 +83,26 @@ def _draw_pages(
 ) -> tuple[tuple[PlannedPage, ...], list[float]]:
     """Draw page one, plan the rest from what page one showed, then draw the rest."""
     sheet.new_page()
-    header = blocks.draw_header(sheet, context)
-    extents = [header.page_line_y]
-    first_top = blocks.draw_parties(sheet, context, header.bottom)
-    plan = plan_pages(rows, _budget(context, first_top, header.bottom))
+    first = header.draw_header(sheet, context)
+    extents = [first.page_line_y]
+    first_top = blocks.draw_parties(sheet, context, first.bottom)
+    plan = plan_pages(rows, _budget(sheet, context, first_top, first.bottom))
     _draw_page(sheet, context, plan[0], first_top)
     for page in plan[1:]:
         sheet.new_page()
-        later = blocks.draw_header(sheet, context, first=False)
+        later = header.draw_header(sheet, context, first=False)
         extents.append(later.page_line_y)
         _draw_page(sheet, context, page, later.bottom)
     return plan, extents
 
 
-def _budget(context: RenderContext, first_top: float, later_top: float) -> PageBudget:
+def _budget(sheet: Sheet, context: RenderContext, first_top: float, later_top: float) -> PageBudget:
     return PageBudget(
         first_top=first_top,
         later_top=later_top,
         bottom=blocks.footer_top(context),
-        header_height=table.HEADER_HEIGHT,
-        totals_height=totals.after_table_height(context),
+        header_height=table.header_height(sheet, context.family.items, context.wording),
+        totals_height=totals.after_table_height(sheet, context),
         carry_forward=context.family.pagination.carry_forward,
     )
 

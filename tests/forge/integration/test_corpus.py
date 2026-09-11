@@ -17,7 +17,7 @@ from invoice_forge.corpus.catalog import catalog, met_all, render_table
 from invoice_forge.corpus.generate import PLAN_NAME, generate, write_plan
 from invoice_forge.corpus.plan import PLAN_SCHEMA, cell_name, load_plan, plan_from_arguments
 from invoice_forge.corpus.survey import survey_corpus
-from invoice_forge.families import Family
+from invoice_forge.families import FAMILY_NAMES, Family
 from invoice_forge.knobs import KNOB_NAMES
 from invoice_forge.truth.verify import verify_corpus
 
@@ -122,6 +122,21 @@ def test_the_committed_fixture_corpus_verifies() -> None:
     """The plan's own gate: `forge verify tests/forge/fixtures/` exits 0."""
     assert verify(str(FIXTURES)) == 0
     assert fixture_pdf().is_file()
+
+
+def test_the_fixture_corpus_turns_every_knob_on_once_and_leaves_it_off_once() -> None:
+    """PR F5's gate. A knob no document turns on is a knob no document proves."""
+    survey = survey_corpus(FIXTURES)
+    never_on = [name for name in KNOB_NAMES if not survey.knobs[name]]
+    never_off = [name for name in KNOB_NAMES if survey.knobs[name] == survey.documents]
+    assert not never_on, f"knobs no fixture document turns on: {never_on}"
+    assert not never_off, f"knobs every fixture document turns on: {never_off}"
+
+
+def test_the_fixture_corpus_renders_every_family() -> None:
+    survey = survey_corpus(FIXTURES)
+    rendered = {family for _, family in survey.pairs}
+    assert rendered == set(FAMILY_NAMES)
 
 
 def test_the_command_line_generates_verifies_and_catalogues(

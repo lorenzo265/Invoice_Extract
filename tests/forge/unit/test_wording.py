@@ -6,7 +6,9 @@ from random import Random
 
 import pytest
 
+from invoice_forge.families import Family
 from invoice_forge.fields import LABELLED_FIELDS
+from invoice_forge.knobs import Knob
 from invoice_forge.lexicon.loader import load_lexicon
 from invoice_forge.model import CHARGE_TYPE_NAMES, CreditNoteStyle, as_credit_note
 from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
@@ -17,12 +19,13 @@ from invoice_forge.sample.sampler import SampleRequest, sample_document
 SEEDS = range(5)
 
 
-def wording_for(profile_id: str, seed: int) -> Wording:
+def wording_for(profile_id: str, seed: int, knobs: tuple[Knob, ...] = ()) -> Wording:
     profile = load_profile(profile_id)
     lexicon = load_lexicon(profile.lexicon)
     catalogue = load_catalogue(profile.lexicon)
-    document = sample_document(SampleRequest(profile, lexicon, catalogue, seed))
-    return choose_wording(document, profile, lexicon, Random(seed))
+    request = SampleRequest(profile, lexicon, catalogue, Family.CLASSIC, seed, knobs)
+    document = sample_document(request)
+    return choose_wording(document, profile, lexicon, Random(seed), knobs)
 
 
 @pytest.mark.parametrize("profile_id", bundled_profile_ids())
@@ -43,7 +46,7 @@ def test_every_charge_and_party_the_profile_can_print_has_a_word(profile_id: str
     wording = wording_for(profile_id, 2)
     assert set(wording.charges) == set(CHARGE_TYPE_NAMES)
     assert {"bill_to", "ship_to", "mail_to"} <= set(wording.parties)
-    assert {"rate", "base", "vat"} == set(wording.vat_summary)
+    assert {"code", "rate", "base", "vat"} == set(wording.vat_summary)
     assert {"incoming", "outgoing"} == set(wording.carry)
 
 
@@ -80,10 +83,37 @@ def test_a_credit_note_is_titled_as_one() -> None:
     profile = load_profile("de-DE")
     lexicon = load_lexicon(profile.lexicon)
     catalogue = load_catalogue(profile.lexicon)
-    invoice = sample_document(SampleRequest(profile, lexicon, catalogue, 1))
-    note = as_credit_note(invoice, "CN-1", CreditNoteStyle.NEGATIVE_AMOUNTS)
+    request = SampleRequest(profile, lexicon, catalogue, Family.CLASSIC, 1)
+    note = as_credit_note(sample_document(request), "CN-1", CreditNoteStyle.NEGATIVE_AMOUNTS)
     wording = choose_wording(note, profile, lexicon, Random(1))
     assert wording.title in lexicon.document_titles["credit_note"]
+
+
+@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+def test_thousands_variant_writes_the_separator_the_vendor_usually_does_not(
+    profile_id: str,
+) -> None:
+    """Off, the vendor's first separator; on, one of the others it also writes."""
+    profile = load_profile(profile_id)
+    separators = profile.thousands_separators
+    assert wording_for(profile_id, 1).number_format.thousands == separators[0]
+    turned = wording_for(profile_id, 1, (Knob.THOUSANDS_VARIANT,)).number_format.thousands
+    assert turned in separators
+    if len(separators) > 1:
+        assert turned != separators[0]
+
+
+@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+def test_a_copy_stamp_and_an_exemption_sentence_are_drawn_whether_or_not_they_print(
+    profile_id: str,
+) -> None:
+    """Drawn always, so a knob that prints them shifts no other choice in the document."""
+    profile = load_profile(profile_id)
+    lexicon = load_lexicon(profile.lexicon)
+    wording = wording_for(profile_id, 2)
+    assert wording.copy_stamp in lexicon.copy_stamps
+    offered = {line for lines in lexicon.exemption_sentences.values() for line in lines}
+    assert wording.exemption in offered
 
 
 def test_the_page_line_carries_both_numbers() -> None:

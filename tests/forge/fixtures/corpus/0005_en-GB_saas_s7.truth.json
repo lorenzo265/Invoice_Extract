@@ -1,0 +1,2837 @@
+{
+  "schema": "forge-truth/1",
+  "generator": {
+    "version": "0.1.0",
+    "seed": 7,
+    "profile": "en-GB",
+    "template": "saas",
+    "knobs": []
+  },
+  "document": {
+    "type": "invoice",
+    "pages": 4,
+    "language": "en",
+    "currency": "GBP",
+    "secondary_currency": null,
+    "rounding": "per_line"
+  },
+  "fields": {
+    "invoice_number": {
+      "value": "SI-2024-442182",
+      "printed": "SI-2024-442182",
+      "label": "Invoice No.",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            480.45,
+            71.86,
+            544.97,
+            81.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            480.45,
+            71.86,
+            544.97,
+            81.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            480.45,
+            71.86,
+            544.97,
+            81.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            480.45,
+            71.86,
+            544.97,
+            81.9
+          ]
+        }
+      ]
+    },
+    "invoice_date": {
+      "value": "2024-06-14",
+      "printed": "14 June 2024",
+      "label": "Date",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            490.45,
+            83.86,
+            544.97,
+            93.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            490.45,
+            83.86,
+            544.97,
+            93.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            490.45,
+            83.86,
+            544.97,
+            93.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            490.45,
+            83.86,
+            544.97,
+            93.9
+          ]
+        }
+      ]
+    },
+    "due_date": {
+      "value": "2024-06-28",
+      "printed": "28 June 2024",
+      "label": "Due Date",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            490.45,
+            95.86,
+            544.97,
+            105.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            490.45,
+            95.86,
+            544.97,
+            105.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            490.45,
+            95.86,
+            544.97,
+            105.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            490.45,
+            95.86,
+            544.97,
+            105.9
+          ]
+        }
+      ]
+    },
+    "supplier_vat_id": {
+      "value": "GB018159083",
+      "printed": "VAT Number: GB018159083",
+      "label": "VAT Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            107.86,
+            164.98,
+            117.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            107.86,
+            164.98,
+            117.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            50.0,
+            107.86,
+            164.98,
+            117.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            107.86,
+            164.98,
+            117.9
+          ]
+        }
+      ]
+    },
+    "customer_vat_id": {
+      "value": "GB390996030",
+      "printed": "Customer VAT Number: GB390996030",
+      "label": "Customer VAT Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            273.86,
+            206.47,
+            283.9
+          ]
+        }
+      ]
+    },
+    "currency": {
+      "value": "GBP",
+      "printed": "GBP",
+      "label": "Currency",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            525.99,
+            155.85,
+            544.97,
+            165.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            525.99,
+            155.85,
+            544.97,
+            165.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            525.99,
+            155.85,
+            544.97,
+            165.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            525.99,
+            155.85,
+            544.97,
+            165.9
+          ]
+        }
+      ]
+    },
+    "vat_rate": {
+      "value": "20",
+      "printed": "20 %",
+      "label": "VAT Rate",
+      "evidence": [
+        {
+          "page": 4,
+          "bbox": [
+            524.49,
+            340.86,
+            544.99,
+            350.9
+          ]
+        }
+      ]
+    },
+    "subtotal": {
+      "value": "189153.00",
+      "printed": "189,153.00 GBP",
+      "label": "Subtotal",
+      "evidence": [
+        {
+          "page": 4,
+          "bbox": [
+            478.45,
+            314.86,
+            544.94,
+            324.9
+          ]
+        }
+      ]
+    },
+    "vat_amount": {
+      "value": "37830.60",
+      "printed": "37,830.60 GBP",
+      "label": "Tax",
+      "evidence": [
+        {
+          "page": 4,
+          "bbox": [
+            483.45,
+            327.86,
+            544.94,
+            337.9
+          ]
+        }
+      ]
+    },
+    "total_amount": {
+      "value": "226983.60",
+      "printed": "226,983.60 GBP",
+      "label": "Amount Due",
+      "evidence": [
+        {
+          "page": 4,
+          "bbox": [
+            477.95,
+            353.86,
+            544.95,
+            363.9
+          ]
+        }
+      ]
+    },
+    "supply_date": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "order_number": {
+      "value": "PO-041111",
+      "printed": "PO-041111",
+      "label": "Order Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.97,
+            119.86,
+            544.98,
+            129.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            498.97,
+            119.86,
+            544.98,
+            129.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            498.97,
+            119.86,
+            544.98,
+            129.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            498.97,
+            119.86,
+            544.98,
+            129.9
+          ]
+        }
+      ]
+    },
+    "customer_number": {
+      "value": "C-87584",
+      "printed": "C-87584",
+      "label": "Customer Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            510.48,
+            107.86,
+            544.99,
+            117.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            510.48,
+            107.86,
+            544.99,
+            117.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            510.48,
+            107.86,
+            544.99,
+            117.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            510.48,
+            107.86,
+            544.99,
+            117.9
+          ]
+        }
+      ]
+    },
+    "contract_number": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "our_reference": {
+      "value": "VW/6140",
+      "printed": "VW/6140",
+      "label": "Our Reference",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            507.98,
+            131.85,
+            544.97,
+            141.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            507.98,
+            131.85,
+            544.97,
+            141.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            507.98,
+            131.85,
+            544.97,
+            141.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            507.98,
+            131.85,
+            544.97,
+            141.9
+          ]
+        }
+      ]
+    },
+    "your_reference": {
+      "value": "REF-5572",
+      "printed": "REF-5572",
+      "label": "Your Ref",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            503.98,
+            143.85,
+            544.98,
+            153.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            503.98,
+            143.85,
+            544.98,
+            153.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            503.98,
+            143.85,
+            544.98,
+            153.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            503.98,
+            143.85,
+            544.98,
+            153.9
+          ]
+        }
+      ]
+    },
+    "payment_terms": {
+      "value": "Net 14 days from date of invoice.",
+      "printed": "Terms: Net 14 days from date of invoice.",
+      "label": "Terms",
+      "evidence": [
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            407.76,
+            193.94,
+            416.69
+          ]
+        }
+      ]
+    },
+    "credit_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    }
+  },
+  "line_items": [
+    {
+      "pos": 1,
+      "sku": "SRV-ANA-H",
+      "description": "Analysis and documentation, per hour",
+      "quantity": "0.5",
+      "unit": "hr",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "57.50",
+      "section": "Spare parts",
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              344.76,
+              155.34,
+              353.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              354.76,
+              178.45,
+              363.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              364.76,
+              126.01,
+              373.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              445.88,
+              344.76,
+              456.99,
+              353.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              466.63,
+              344.76,
+              499.98,
+              353.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              524.98,
+              344.76,
+              544.99,
+              353.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 2,
+      "sku": "SRV-ANA-H",
+      "description": "Analysis and documentation, per hour",
+      "quantity": "100",
+      "unit": "hr",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "11500.00",
+      "section": "Spare parts",
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              379.76,
+              155.34,
+              388.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              389.76,
+              178.45,
+              398.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              399.76,
+              126.01,
+              408.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              443.65,
+              379.76,
+              457.0,
+              388.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              466.63,
+              379.76,
+              499.98,
+              388.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.41,
+              379.76,
+              544.98,
+              388.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 3,
+      "sku": "SW-LIC-PRO",
+      "description": "ProSuite licence, 1 seat, 12 months",
+      "quantity": "1",
+      "unit": "licence",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "349.00",
+      "section": "Spare parts",
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              414.76,
+              176.65,
+              423.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              424.76,
+              166.88,
+              433.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              452.55,
+              414.76,
+              457.0,
+              423.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              475.53,
+              414.76,
+              499.99,
+              423.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              520.53,
+              414.76,
+              544.99,
+              423.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Cloud storage 50 GB, billed monthly",
+          "quantity": "1",
+          "unit_price": "12.5000"
+        },
+        {
+          "description": "Gold support contract, 4-hour response",
+          "quantity": "1",
+          "unit_price": "1290.00"
+        }
+      ]
+    },
+    {
+      "pos": 4,
+      "sku": "SRV-ANA-H",
+      "description": "Analysis and documentation, per hour",
+      "quantity": "5",
+      "unit": "hr",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "575.00",
+      "section": "Spare parts",
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              489.76,
+              155.34,
+              498.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              499.76,
+              178.45,
+              508.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              509.76,
+              126.01,
+              518.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              452.55,
+              489.76,
+              457.0,
+              498.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              466.63,
+              489.76,
+              499.98,
+              498.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              520.53,
+              489.76,
+              544.99,
+              498.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Maintenance, quarterly retainer, type B plant",
+          "quantity": null,
+          "unit_price": null
+        },
+        {
+          "description": "Analysis and documentation, per hour",
+          "quantity": null,
+          "unit_price": null
+        }
+      ]
+    },
+    {
+      "pos": 5,
+      "sku": "SW-CLD-50",
+      "description": "Cloud storage 50 GB, billed monthly",
+      "quantity": "4",
+      "unit": "month",
+      "unit_price": "12.5000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "50.00",
+      "section": "Spare parts",
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              584.76,
+              186.87,
+              593.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              594.76,
+              158.89,
+              603.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              452.55,
+              584.76,
+              457.0,
+              593.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              471.08,
+              584.76,
+              499.99,
+              593.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              524.98,
+              584.76,
+              544.99,
+              593.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 6,
+      "sku": "SRV-INST-H",
+      "description": "On-site installation, per hour",
+      "quantity": "12",
+      "unit": "hr",
+      "unit_price": "95.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "1140.00",
+      "section": "Spare parts",
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              609.76,
+              177.98,
+              618.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              619.76,
+              139.78,
+              628.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              448.1,
+              609.76,
+              457.0,
+              618.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              479.98,
+              609.76,
+              499.99,
+              618.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              513.86,
+              609.76,
+              544.98,
+              618.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 7,
+      "sku": "SW-API-10K",
+      "description": "API allowance, 10,000 calls per month",
+      "quantity": "25",
+      "unit": "pack",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "2225.00",
+      "section": "Spare parts",
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              634.76,
+              162.87,
+              643.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              644.76,
+              166.45,
+              653.69
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              110.0,
+              654.76,
+              132.22,
+              663.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              448.1,
+              634.76,
+              457.0,
+              643.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              479.98,
+              634.76,
+              499.99,
+              643.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              513.86,
+              634.76,
+              544.98,
+              643.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 8,
+      "sku": "SRV-INST-H",
+      "description": "On-site installation, per hour",
+      "quantity": "2",
+      "unit": "hr",
+      "unit_price": "95.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "190.00",
+      "section": "Spare parts",
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              238.76,
+              177.98,
+              247.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              248.76,
+              139.78,
+              257.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              452.55,
+              238.76,
+              457.0,
+              247.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              479.98,
+              238.76,
+              499.99,
+              247.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              520.53,
+              238.76,
+              544.99,
+              247.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Foundation training, 1 day, up to 8 attendees",
+          "quantity": null,
+          "unit_price": null
+        },
+        {
+          "description": "On-site installation, per hour",
+          "quantity": null,
+          "unit_price": null
+        }
+      ]
+    },
+    {
+      "pos": 9,
+      "sku": "SW-LIC-PRO",
+      "description": "ProSuite licence, 1 seat, 12 months",
+      "quantity": "40",
+      "unit": "licence",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "13960.00",
+      "section": "Consumables",
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              355.76,
+              176.65,
+              364.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              365.76,
+              166.88,
+              374.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              448.1,
+              355.76,
+              457.0,
+              364.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              475.53,
+              355.76,
+              499.99,
+              364.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              509.41,
+              355.76,
+              544.98,
+              364.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Cloud storage 50 GB, billed monthly",
+          "quantity": null,
+          "unit_price": null
+        }
+      ]
+    },
+    {
+      "pos": 10,
+      "sku": "SRV-ANA-H",
+      "description": "Analysis and documentation, per hour",
+      "quantity": "0.5",
+      "unit": "hr",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "57.50",
+      "section": "Consumables",
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              400.76,
+              155.34,
+              409.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              410.76,
+              178.45,
+              419.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              420.76,
+              126.01,
+              429.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              445.88,
+              400.76,
+              456.99,
+              409.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              466.63,
+              400.76,
+              499.98,
+              409.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              524.98,
+              400.76,
+              544.99,
+              409.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 11,
+      "sku": "SW-LIC-PRO",
+      "description": "ProSuite licence, 1 seat, 12 months",
+      "quantity": "10",
+      "unit": "licence",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "3490.00",
+      "section": "Consumables",
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              435.76,
+              176.65,
+              444.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              445.76,
+              166.88,
+              454.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              448.1,
+              435.76,
+              457.0,
+              444.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              475.53,
+              435.76,
+              499.99,
+              444.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              513.86,
+              435.76,
+              544.98,
+              444.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 12,
+      "sku": "SRV-TRN-D",
+      "description": "Foundation training, 1 day, up to 8 attendees",
+      "quantity": "25",
+      "unit": "day",
+      "unit_price": "780.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "19500.00",
+      "section": "Consumables",
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              460.76,
+              187.33,
+              469.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              470.76,
+              151.77,
+              479.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              480.76,
+              145.12,
+              489.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              448.1,
+              460.76,
+              457.0,
+              469.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              475.53,
+              460.76,
+              499.99,
+              469.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              509.41,
+              460.76,
+              544.98,
+              469.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Maintenance, quarterly retainer, type B plant",
+          "quantity": null,
+          "unit_price": null
+        },
+        {
+          "description": "Analysis and documentation, per hour",
+          "quantity": null,
+          "unit_price": null
+        },
+        {
+          "description": "On-site installation, per hour",
+          "quantity": null,
+          "unit_price": null
+        }
+      ]
+    },
+    {
+      "pos": 13,
+      "sku": "SRV-TRN-D",
+      "description": "Foundation training, 1 day, up to 8 attendees",
+      "quantity": "4",
+      "unit": "day",
+      "unit_price": "780.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "3120.00",
+      "section": "Consumables",
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              585.76,
+              187.33,
+              594.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              595.76,
+              151.77,
+              604.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              605.76,
+              145.12,
+              614.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              452.55,
+              585.76,
+              457.0,
+              594.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              475.53,
+              585.76,
+              499.99,
+              594.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              513.86,
+              585.76,
+              544.98,
+              594.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Foundation training, 1 day, up to 8 attendees",
+          "quantity": null,
+          "unit_price": null
+        },
+        {
+          "description": "On-site installation, per hour",
+          "quantity": null,
+          "unit_price": null
+        }
+      ]
+    },
+    {
+      "pos": 14,
+      "sku": "SRV-WRT-Q",
+      "description": "Maintenance, quarterly retainer, type B plant",
+      "quantity": "100",
+      "unit": "retainer",
+      "unit_price": "245.50",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "24550.00",
+      "section": "Consumables",
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              680.76,
+              158.01,
+              689.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              690.76,
+              172.66,
+              699.69
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              110.0,
+              700.76,
+              152.21,
+              709.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              443.65,
+              680.76,
+              457.0,
+              689.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              475.53,
+              680.76,
+              499.99,
+              689.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              509.41,
+              680.76,
+              544.98,
+              689.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 15,
+      "sku": "SW-LIC-PRO",
+      "description": "ProSuite licence, 1 seat, 12 months",
+      "quantity": "20",
+      "unit": "licence",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "6980.00",
+      "section": "Consumables",
+      "cells": {
+        "description": [
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              238.76,
+              176.65,
+              247.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              248.76,
+              166.88,
+              257.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 3,
+            "bbox": [
+              448.1,
+              238.76,
+              457.0,
+              247.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 3,
+            "bbox": [
+              475.53,
+              238.76,
+              499.99,
+              247.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 3,
+            "bbox": [
+              513.86,
+              238.76,
+              544.98,
+              247.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Cloud storage 50 GB, billed monthly",
+          "quantity": "1",
+          "unit_price": "12.5000"
+        },
+        {
+          "description": "API allowance, 10,000 calls per month",
+          "quantity": "1",
+          "unit_price": "89.00"
+        }
+      ]
+    },
+    {
+      "pos": 16,
+      "sku": "SW-API-10K",
+      "description": "API allowance, 10,000 calls per month",
+      "quantity": "4",
+      "unit": "pack",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "356.00",
+      "section": "Consumables",
+      "cells": {
+        "description": [
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              313.76,
+              162.87,
+              322.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              323.76,
+              166.45,
+              332.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              333.76,
+              132.22,
+              342.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 3,
+            "bbox": [
+              452.55,
+              313.76,
+              457.0,
+              322.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 3,
+            "bbox": [
+              479.98,
+              313.76,
+              499.99,
+              322.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 3,
+            "bbox": [
+              520.53,
+              313.76,
+              544.99,
+              322.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 17,
+      "sku": "SRV-ANA-H",
+      "description": "Analysis and documentation, per hour",
+      "quantity": "100",
+      "unit": "hr",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "11500.00",
+      "section": "Software licences",
+      "cells": {
+        "description": [
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              380.76,
+              155.34,
+              389.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              390.76,
+              178.45,
+              399.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              400.76,
+              126.01,
+              409.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 3,
+            "bbox": [
+              443.65,
+              380.76,
+              457.0,
+              389.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 3,
+            "bbox": [
+              466.63,
+              380.76,
+              499.98,
+              389.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 3,
+            "bbox": [
+              509.41,
+              380.76,
+              544.98,
+              389.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Foundation training, 1 day, up to 8 attendees",
+          "quantity": "1",
+          "unit_price": "780.00"
+        },
+        {
+          "description": "On-site installation, per hour",
+          "quantity": "1",
+          "unit_price": "95.00"
+        },
+        {
+          "description": "Maintenance, quarterly retainer, type B plant",
+          "quantity": "1",
+          "unit_price": "245.50"
+        }
+      ]
+    },
+    {
+      "pos": 18,
+      "sku": "SRV-WRT-Q",
+      "description": "Maintenance, quarterly retainer, type B plant",
+      "quantity": "25",
+      "unit": "retainer",
+      "unit_price": "245.50",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "6137.50",
+      "section": "Software licences",
+      "cells": {
+        "description": [
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              505.76,
+              158.01,
+              514.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              515.76,
+              172.66,
+              524.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              525.76,
+              152.21,
+              534.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 3,
+            "bbox": [
+              448.1,
+              505.76,
+              457.0,
+              514.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 3,
+            "bbox": [
+              475.53,
+              505.76,
+              499.99,
+              514.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 3,
+            "bbox": [
+              513.86,
+              505.76,
+              544.98,
+              514.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 19,
+      "sku": "SW-API-10K",
+      "description": "API allowance, 10,000 calls per month",
+      "quantity": "4",
+      "unit": "pack",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "356.00",
+      "section": "Software licences",
+      "cells": {
+        "description": [
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              540.76,
+              162.87,
+              549.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              550.76,
+              166.45,
+              559.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              560.76,
+              132.22,
+              569.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 3,
+            "bbox": [
+              452.55,
+              540.76,
+              457.0,
+              549.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 3,
+            "bbox": [
+              479.98,
+              540.76,
+              499.99,
+              549.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 3,
+            "bbox": [
+              520.53,
+              540.76,
+              544.99,
+              549.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "Cloud storage 50 GB, billed monthly",
+          "quantity": "1",
+          "unit_price": "12.5000"
+        },
+        {
+          "description": "API allowance, 10,000 calls per month",
+          "quantity": "1",
+          "unit_price": "89.00"
+        }
+      ]
+    },
+    {
+      "pos": 20,
+      "sku": "SW-SUP-GLD",
+      "description": "Gold support contract, 4-hour response",
+      "quantity": "50",
+      "unit": "year",
+      "unit_price": "1290.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "64500.00",
+      "section": "Software licences",
+      "cells": {
+        "description": [
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              625.76,
+              155.78,
+              634.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              635.76,
+              165.99,
+              644.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              645.76,
+              142.9,
+              654.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 3,
+            "bbox": [
+              448.1,
+              625.76,
+              457.0,
+              634.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 3,
+            "bbox": [
+              468.86,
+              625.76,
+              499.98,
+              634.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 3,
+            "bbox": [
+              509.41,
+              625.76,
+              544.98,
+              634.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 21,
+      "sku": "SW-LIC-PRO",
+      "description": "ProSuite licence, 1 seat, 12 months",
+      "quantity": "3",
+      "unit": "licence",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "1047.00",
+      "section": "Software licences",
+      "cells": {
+        "description": [
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              660.76,
+              176.65,
+              669.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              670.76,
+              166.88,
+              679.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 3,
+            "bbox": [
+              452.55,
+              660.76,
+              457.0,
+              669.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 3,
+            "bbox": [
+              475.53,
+              660.76,
+              499.99,
+              669.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 3,
+            "bbox": [
+              513.86,
+              660.76,
+              544.98,
+              669.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 22,
+      "sku": "SW-LIC-PRO",
+      "description": "ProSuite licence, 1 seat, 12 months",
+      "quantity": "50",
+      "unit": "licence",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "17450.00",
+      "section": "Software licences",
+      "cells": {
+        "description": [
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              685.76,
+              176.65,
+              694.69
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              110.0,
+              695.76,
+              166.88,
+              704.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 3,
+            "bbox": [
+              448.1,
+              685.76,
+              457.0,
+              694.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 3,
+            "bbox": [
+              475.53,
+              685.76,
+              499.99,
+              694.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 3,
+            "bbox": [
+              509.41,
+              685.76,
+              544.98,
+              694.69
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 23,
+      "sku": "SW-CLD-50",
+      "description": "Cloud storage 50 GB, billed monthly",
+      "quantity": "5",
+      "unit": "month",
+      "unit_price": "12.5000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "62.50",
+      "section": "Software licences",
+      "cells": {
+        "description": [
+          {
+            "page": 4,
+            "bbox": [
+              110.0,
+              238.76,
+              186.87,
+              247.69
+            ]
+          },
+          {
+            "page": 4,
+            "bbox": [
+              110.0,
+              248.76,
+              158.89,
+              257.69
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 4,
+            "bbox": [
+              452.55,
+              238.76,
+              457.0,
+              247.69
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 4,
+            "bbox": [
+              471.08,
+              238.76,
+              499.99,
+              247.69
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 4,
+            "bbox": [
+              524.98,
+              238.76,
+              544.99,
+              247.69
+            ]
+          }
+        ]
+      },
+      "sub_items": [
+        {
+          "description": "API allowance, 10,000 calls per month",
+          "quantity": "1",
+          "unit_price": "89.00"
+        }
+      ]
+    }
+  ],
+  "charges": [],
+  "vat_summary": [
+    {
+      "rate": "20",
+      "base": "189153.00",
+      "vat": "37830.60",
+      "evidence": [
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            334.86,
+            70.5,
+            344.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            154.96,
+            334.86,
+            199.97,
+            344.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            239.96,
+            334.86,
+            279.98,
+            344.9
+          ]
+        }
+      ]
+    }
+  ],
+  "secondary_amounts": null,
+  "parties": {
+    "supplier": {
+      "name": "Ashcroft Components Limited",
+      "lines": [
+        "18 Harbour Street",
+        "Manchester HC8 6BS",
+        "United Kingdom"
+      ],
+      "vat_id": "GB018159083",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            50.24,
+            236.17,
+            64.74
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            69.86,
+            121.49,
+            79.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            81.86,
+            136.99,
+            91.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            93.86,
+            114.0,
+            103.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            50.24,
+            236.17,
+            64.74
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            69.86,
+            121.49,
+            79.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            81.86,
+            136.99,
+            91.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            93.86,
+            114.0,
+            103.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            50.0,
+            50.24,
+            236.17,
+            64.74
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            50.0,
+            69.86,
+            121.49,
+            79.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            50.0,
+            81.86,
+            136.99,
+            91.9
+          ]
+        },
+        {
+          "page": 3,
+          "bbox": [
+            50.0,
+            93.86,
+            114.0,
+            103.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            50.24,
+            236.17,
+            64.74
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            69.86,
+            121.49,
+            79.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            81.86,
+            136.99,
+            91.9
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            93.86,
+            114.0,
+            103.9
+          ]
+        }
+      ]
+    },
+    "bill_to": {
+      "name": "Brackenhill Industrial Supplies Limited",
+      "lines": [
+        "37 Harbour Street",
+        "Leeds RD9 4RV",
+        "United Kingdom"
+      ],
+      "vat_id": "GB390996030",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            225.85,
+            215.83,
+            235.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            237.85,
+            121.49,
+            247.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            249.85,
+            115.0,
+            259.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            261.86,
+            114.0,
+            271.9
+          ]
+        }
+      ]
+    },
+    "ship_to": {
+      "name": "Ashcroft Trading Ltd",
+      "lines": [
+        "175 Harbour Street",
+        "Bristol RN5 7SO",
+        "United Kingdom"
+      ],
+      "vat_id": "GB199351819",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            225.85,
+            408.9,
+            235.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            237.85,
+            396.49,
+            247.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            249.85,
+            385.96,
+            259.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            261.86,
+            384.0,
+            271.9
+          ]
+        }
+      ]
+    },
+    "mail_to": null
+  },
+  "noise": [
+    {
+      "kind": "carry_forward",
+      "label": "Subtotal carried forward",
+      "page": 1,
+      "bbox": [
+        509.41,
+        669.76,
+        544.98,
+        678.69
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        751.66,
+        229.63,
+        759.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        761.66,
+        194.28,
+        769.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        771.66,
+        193.85,
+        779.48
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Balance brought forward",
+      "page": 2,
+      "bbox": [
+        509.41,
+        220.76,
+        544.98,
+        229.69
+      ]
+    },
+    {
+      "kind": "section_subtotal",
+      "label": "Subtotal Spare parts",
+      "page": 2,
+      "bbox": [
+        509.41,
+        324.76,
+        544.98,
+        333.69
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Subtotal carried forward",
+      "page": 2,
+      "bbox": [
+        509.41,
+        715.76,
+        544.98,
+        724.69
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        751.66,
+        229.63,
+        759.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        761.66,
+        194.28,
+        769.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        771.66,
+        193.85,
+        779.48
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Balance brought forward",
+      "page": 3,
+      "bbox": [
+        509.41,
+        220.76,
+        544.98,
+        229.69
+      ]
+    },
+    {
+      "kind": "section_subtotal",
+      "label": "Subtotal Consumables",
+      "page": 3,
+      "bbox": [
+        509.41,
+        349.76,
+        544.98,
+        358.69
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Subtotal carried forward",
+      "page": 3,
+      "bbox": [
+        504.96,
+        710.76,
+        544.98,
+        719.69
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 3,
+      "bbox": [
+        50.0,
+        751.66,
+        229.63,
+        759.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 3,
+      "bbox": [
+        50.0,
+        761.66,
+        194.28,
+        769.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 3,
+      "bbox": [
+        50.0,
+        771.66,
+        193.85,
+        779.48
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Balance brought forward",
+      "page": 4,
+      "bbox": [
+        504.96,
+        220.76,
+        544.98,
+        229.69
+      ]
+    },
+    {
+      "kind": "section_subtotal",
+      "label": "Subtotal Software licences",
+      "page": 4,
+      "bbox": [
+        504.96,
+        294.76,
+        544.98,
+        303.69
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 4,
+      "bbox": [
+        50.0,
+        751.66,
+        229.63,
+        759.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 4,
+      "bbox": [
+        50.0,
+        761.66,
+        194.28,
+        769.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 4,
+      "bbox": [
+        50.0,
+        771.66,
+        193.85,
+        779.48
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2049 @@
+{
+  "schema": "forge-truth/1",
+  "generator": {
+    "version": "0.1.0",
+    "seed": 7,
+    "profile": "en-GB",
+    "template": "stacked",
+    "knobs": [
+      "credit_note",
+      "stamp_copy",
+      "supply_date",
+      "extra_references",
+      "column_set",
+      "rounding_per_line",
+      "bank_footer",
+      "noise_footer",
+      "payment_terms_block"
+    ]
+  },
+  "document": {
+    "type": "credit_note",
+    "pages": 2,
+    "language": "en",
+    "currency": "GBP",
+    "secondary_currency": null,
+    "rounding": "per_line"
+  },
+  "fields": {
+    "invoice_number": {
+      "value": "SI-2024-501871",
+      "printed": "SI-2024-501871",
+      "label": "Invoice No.",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            75.86,
+            424.52,
+            85.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            75.86,
+            424.52,
+            85.9
+          ]
+        }
+      ]
+    },
+    "invoice_date": {
+      "value": "2024-06-14",
+      "printed": "14 June 2024",
+      "label": "Date",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            119.86,
+            416.0,
+            129.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            119.86,
+            416.0,
+            129.9
+          ]
+        }
+      ]
+    },
+    "due_date": {
+      "value": "2024-06-28",
+      "printed": "28 June 2024",
+      "label": "Due Date",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            163.85,
+            416.0,
+            173.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            163.85,
+            416.0,
+            173.9
+          ]
+        }
+      ]
+    },
+    "supplier_vat_id": {
+      "value": "GB018159083",
+      "printed": "VAT Number: GB018159083",
+      "label": "VAT Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            107.86,
+            164.98,
+            117.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            107.86,
+            164.98,
+            117.9
+          ]
+        }
+      ]
+    },
+    "customer_vat_id": {
+      "value": "GB390996030",
+      "printed": "Customer VAT Number: GB390996030",
+      "label": "Customer VAT Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            413.86,
+            206.47,
+            423.9
+          ]
+        }
+      ]
+    },
+    "currency": {
+      "value": "GBP",
+      "printed": "GBP",
+      "label": "Currency",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            295.86,
+            379.48,
+            305.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            295.86,
+            379.48,
+            305.9
+          ]
+        }
+      ]
+    },
+    "vat_rate": {
+      "value": "20",
+      "printed": "20 %",
+      "label": "VAT Rate",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            340.0,
+            535.85,
+            360.5,
+            545.9
+          ]
+        }
+      ]
+    },
+    "subtotal": {
+      "value": "36432.06",
+      "printed": "36,432.06 GBP",
+      "label": "Subtotal",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            340.0,
+            495.86,
+            401.49,
+            505.9
+          ]
+        }
+      ]
+    },
+    "vat_amount": {
+      "value": "7286.41",
+      "printed": "7,286.41 GBP",
+      "label": "Tax",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            340.0,
+            515.85,
+            396.48,
+            525.9
+          ]
+        }
+      ]
+    },
+    "total_amount": {
+      "value": "43718.47",
+      "printed": "43,718.47 GBP",
+      "label": "Amount Due",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            340.0,
+            555.85,
+            401.99,
+            565.9
+          ]
+        }
+      ]
+    },
+    "supply_date": {
+      "value": "2024-06-08",
+      "printed": "8 June 2024",
+      "label": "Delivery Date",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            141.85,
+            410.99,
+            151.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            141.85,
+            410.99,
+            151.9
+          ]
+        }
+      ]
+    },
+    "order_number": {
+      "value": "PO-041111",
+      "printed": "PO-041111",
+      "label": "Order Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            207.85,
+            406.01,
+            217.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            207.85,
+            406.01,
+            217.9
+          ]
+        }
+      ]
+    },
+    "customer_number": {
+      "value": "C-87584",
+      "printed": "C-87584",
+      "label": "Customer Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            185.85,
+            394.51,
+            195.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            185.85,
+            394.51,
+            195.9
+          ]
+        }
+      ]
+    },
+    "contract_number": {
+      "value": "CTR-081390",
+      "printed": "CTR-081390",
+      "label": "Contract Number",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            229.85,
+            411.51,
+            239.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            229.85,
+            411.51,
+            239.9
+          ]
+        }
+      ]
+    },
+    "our_reference": {
+      "value": "VW/6140",
+      "printed": "VW/6140",
+      "label": "Our Reference",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            251.85,
+            396.99,
+            261.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            251.85,
+            396.99,
+            261.9
+          ]
+        }
+      ]
+    },
+    "your_reference": {
+      "value": "REF-5572",
+      "printed": "REF-5572",
+      "label": "Your Ref",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            273.86,
+            400.99,
+            283.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            273.86,
+            400.99,
+            283.9
+          ]
+        }
+      ]
+    },
+    "payment_terms": {
+      "value": "2% discount if paid within 10 days.",
+      "printed": "2% discount if paid within 10 days.",
+      "label": "Terms",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            591.76,
+            172.2,
+            600.69
+          ]
+        }
+      ]
+    },
+    "credit_reference": {
+      "value": "SI-2024-442182",
+      "printed": "SI-2024-442182",
+      "label": "Original Invoice",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            360.0,
+            97.86,
+            424.52,
+            107.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            360.0,
+            97.86,
+            424.52,
+            107.9
+          ]
+        }
+      ]
+    }
+  },
+  "line_items": [
+    {
+      "pos": 1,
+      "sku": "SRV-ANA-H",
+      "description": "Analysis and documentation, per hour",
+      "quantity": "0.5",
+      "unit": "hr",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "57.50",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              467.86,
+              201.0,
+              477.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              331.49,
+              467.86,
+              343.99,
+              477.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              432.46,
+              467.86,
+              469.98,
+              477.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              467.86,
+              544.99,
+              477.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 2,
+      "sku": "SW-API-10K",
+      "description": "API allowance, 10,000 calls per month",
+      "quantity": "50",
+      "unit": "pack",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "4450.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              484.86,
+              202.97,
+              494.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              484.86,
+              344.0,
+              494.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              484.86,
+              469.99,
+              494.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              484.86,
+              544.98,
+              494.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 3,
+      "sku": "HX-M8-040",
+      "description": "Hex bolt M8 x 40, zinc plated, DIN 933",
+      "quantity": "100",
+      "unit": "ea",
+      "unit_price": "0.12",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "12.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              501.86,
+              203.45,
+              511.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              328.98,
+              501.86,
+              344.0,
+              511.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              452.48,
+              501.86,
+              469.99,
+              511.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              501.86,
+              544.99,
+              511.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 4,
+      "sku": "SW-API-10K",
+      "description": "API allowance, 10,000 calls per month",
+      "quantity": "100",
+      "unit": "pack",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "8900.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              518.85,
+              202.97,
+              528.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              328.98,
+              518.85,
+              344.0,
+              528.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              518.85,
+              469.99,
+              528.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              518.85,
+              544.98,
+              528.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 5,
+      "sku": "SRV-WRT-Q",
+      "description": "Maintenance, quarterly retainer, type B plant",
+      "quantity": "7.5",
+      "unit": "retainer",
+      "unit_price": "245.50",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "1841.25",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              535.85,
+              226.97,
+              545.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              331.49,
+              535.85,
+              343.99,
+              545.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              442.47,
+              535.85,
+              469.99,
+              545.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              535.85,
+              544.98,
+              545.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 6,
+      "sku": "SW-CLD-50",
+      "description": "Cloud storage 50 GB, billed monthly",
+      "quantity": "2",
+      "unit": "month",
+      "unit_price": "12.5000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "25.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              552.85,
+              193.97,
+              562.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              338.99,
+              552.85,
+              344.0,
+              562.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              437.47,
+              552.85,
+              469.98,
+              562.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              552.85,
+              544.99,
+              562.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 7,
+      "sku": "SRV-INST-H",
+      "description": "On-site installation, per hour",
+      "quantity": "5",
+      "unit": "hr",
+      "unit_price": "95.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "475.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              569.85,
+              162.47,
+              579.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              338.99,
+              569.85,
+              344.0,
+              579.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              569.85,
+              469.99,
+              579.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              569.85,
+              544.99,
+              579.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 8,
+      "sku": "ENC-IP65",
+      "description": "Enclosure IP65, 300 x 200 x 120",
+      "quantity": "12",
+      "unit": "ea",
+      "unit_price": "45.50",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "546.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              586.85,
+              179.99,
+              596.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              586.85,
+              344.0,
+              596.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              586.85,
+              469.99,
+              596.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              586.85,
+              544.99,
+              596.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 9,
+      "sku": "SRV-INST-H",
+      "description": "On-site installation, per hour",
+      "quantity": "20",
+      "unit": "hr",
+      "unit_price": "95.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "1900.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              603.85,
+              162.47,
+              613.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              603.85,
+              344.0,
+              613.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              603.85,
+              469.99,
+              613.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              603.85,
+              544.98,
+              613.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 10,
+      "sku": "SRV-WRT-Q",
+      "description": "Maintenance, quarterly retainer, type B plant",
+      "quantity": "12",
+      "unit": "retainer",
+      "unit_price": "245.50",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "2946.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              620.85,
+              226.97,
+              630.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              620.85,
+              344.0,
+              630.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              442.47,
+              620.85,
+              469.99,
+              630.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              620.85,
+              544.98,
+              630.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 11,
+      "sku": "SW-API-10K",
+      "description": "API allowance, 10,000 calls per month",
+      "quantity": "50",
+      "unit": "pack",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "4450.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              637.85,
+              202.97,
+              647.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              637.85,
+              344.0,
+              647.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              637.85,
+              469.99,
+              647.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              637.85,
+              544.98,
+              647.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 12,
+      "sku": "SRV-TRN-D",
+      "description": "Foundation training, 1 day, up to 8 attendees",
+      "quantity": "2",
+      "unit": "day",
+      "unit_price": "780.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "1560.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              654.85,
+              228.48,
+              664.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              338.99,
+              654.85,
+              344.0,
+              664.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              442.47,
+              654.85,
+              469.99,
+              664.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              654.85,
+              544.98,
+              664.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 13,
+      "sku": "ENC-IP65",
+      "description": "Enclosure IP65, 300 x 200 x 120",
+      "quantity": "50",
+      "unit": "ea",
+      "unit_price": "45.50",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "2275.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              671.85,
+              179.99,
+              681.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              671.85,
+              344.0,
+              681.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              671.85,
+              469.99,
+              681.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              671.85,
+              544.98,
+              681.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 14,
+      "sku": "CBL-H07-25",
+      "description": "Cable H07V-K 2.5 mm², black, 100 m coil",
+      "quantity": "40",
+      "unit": "coil",
+      "unit_price": "48.90",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "1956.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              688.85,
+              214.94,
+              698.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              688.85,
+              344.0,
+              698.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              688.85,
+              469.99,
+              698.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              688.85,
+              544.98,
+              698.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 15,
+      "sku": "REL-24V",
+      "description": "Interface relay 24 V DC, 1 changeover",
+      "quantity": "1",
+      "unit": "ea",
+      "unit_price": "7.95",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "7.95",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              705.85,
+              202.97,
+              715.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              338.99,
+              705.85,
+              344.0,
+              715.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              452.48,
+              705.85,
+              469.99,
+              715.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              527.48,
+              705.85,
+              544.99,
+              715.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 16,
+      "sku": "SNS-T-PT1",
+      "description": "Temperature sensor PT100, 3-wire, -50 to +200 °C",
+      "quantity": "10",
+      "unit": "ea",
+      "unit_price": "22.75",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "227.50",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              722.85,
+              252.79,
+              732.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              722.85,
+              344.0,
+              732.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              447.48,
+              722.85,
+              469.99,
+              732.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              722.85,
+              544.99,
+              732.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 17,
+      "sku": "SW-CLD-50",
+      "description": "Cloud storage 50 GB, billed monthly",
+      "quantity": "25",
+      "unit": "month",
+      "unit_price": "12.5000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "312.50",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              50.0,
+              739.85,
+              193.97,
+              749.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              333.99,
+              739.85,
+              344.0,
+              749.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              437.47,
+              739.85,
+              469.98,
+              749.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              739.85,
+              544.99,
+              749.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 18,
+      "sku": "PLT-AL-2",
+      "description": "Aluminium sheet 2 mm, 1000 x 500, EN AW-5754",
+      "quantity": "25",
+      "unit": "ea",
+      "unit_price": "31.20",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "780.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              50.0,
+              377.86,
+              248.44,
+              387.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              333.99,
+              377.86,
+              344.0,
+              387.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              447.48,
+              377.86,
+              469.99,
+              387.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              377.86,
+              544.99,
+              387.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 19,
+      "sku": "SRV-ANA-H",
+      "description": "Analysis and documentation, per hour",
+      "quantity": "12",
+      "unit": "hr",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "1380.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              50.0,
+              394.86,
+              201.0,
+              404.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              333.99,
+              394.86,
+              344.0,
+              404.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              432.46,
+              394.86,
+              469.98,
+              404.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              509.97,
+              394.86,
+              544.98,
+              404.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 20,
+      "sku": "PLT-AL-2",
+      "description": "Aluminium sheet 2 mm, 1000 x 500, EN AW-5754",
+      "quantity": "12",
+      "unit": "ea",
+      "unit_price": "31.20",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "374.40",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              50.0,
+              411.86,
+              248.44,
+              421.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              333.99,
+              411.86,
+              344.0,
+              421.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              447.48,
+              411.86,
+              469.99,
+              421.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              411.86,
+              544.99,
+              421.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 21,
+      "sku": "BRG-6204",
+      "description": "Deep groove bearing 6204-2RS, sealed both sides",
+      "quantity": "1.5",
+      "unit": "ea",
+      "unit_price": "3.85",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "5.78",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              50.0,
+              428.86,
+              252.02,
+              438.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              331.49,
+              428.86,
+              343.99,
+              438.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              452.48,
+              428.86,
+              469.99,
+              438.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              527.48,
+              428.86,
+              544.99,
+              438.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 22,
+      "sku": "SRV-TRN-D",
+      "description": "Foundation training, 1 day, up to 8 attendees",
+      "quantity": "2.5",
+      "unit": "day",
+      "unit_price": "780.00",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "1950.00",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              50.0,
+              445.86,
+              228.48,
+              455.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              331.49,
+              445.86,
+              343.99,
+              455.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              442.47,
+              445.86,
+              469.99,
+              455.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              509.97,
+              445.86,
+              544.98,
+              455.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 23,
+      "sku": "HX-M8-040",
+      "description": "Hex bolt M8 x 40, zinc plated, DIN 933",
+      "quantity": "1.5",
+      "unit": "ea",
+      "unit_price": "0.12",
+      "discount_percent": null,
+      "vat_rate": "20",
+      "net_amount": "0.18",
+      "section": null,
+      "cells": {
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              50.0,
+              462.86,
+              203.45,
+              472.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              331.49,
+              462.86,
+              343.99,
+              472.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              452.48,
+              462.86,
+              469.99,
+              472.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              527.48,
+              462.86,
+              544.99,
+              472.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    }
+  ],
+  "charges": [],
+  "vat_summary": [
+    {
+      "rate": "20",
+      "base": "36432.06",
+      "vat": "7286.41",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            505.86,
+            70.5,
+            515.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            159.96,
+            505.86,
+            199.98,
+            515.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            244.97,
+            505.86,
+            279.98,
+            515.9
+          ]
+        }
+      ]
+    }
+  ],
+  "secondary_amounts": null,
+  "parties": {
+    "supplier": {
+      "name": "Ashcroft Components Limited",
+      "lines": [
+        "18 Harbour Street",
+        "Manchester HC8 6BS",
+        "United Kingdom"
+      ],
+      "vat_id": "GB018159083",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            50.24,
+            236.17,
+            64.74
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            69.86,
+            121.49,
+            79.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            81.86,
+            136.99,
+            91.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            93.86,
+            114.0,
+            103.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            50.24,
+            236.17,
+            64.74
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            69.86,
+            121.49,
+            79.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            81.86,
+            136.99,
+            91.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            93.86,
+            114.0,
+            103.9
+          ]
+        }
+      ]
+    },
+    "bill_to": {
+      "name": "Brackenhill Industrial Supplies Limited",
+      "lines": [
+        "37 Harbour Street",
+        "Leeds RD9 4RV",
+        "United Kingdom"
+      ],
+      "vat_id": "GB390996030",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            365.86,
+            215.83,
+            375.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            377.86,
+            121.49,
+            387.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            389.86,
+            115.0,
+            399.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            401.86,
+            114.0,
+            411.9
+          ]
+        }
+      ]
+    },
+    "ship_to": {
+      "name": "Ashcroft Trading Ltd",
+      "lines": [
+        "175 Harbour Street",
+        "Bristol RN5 7SO",
+        "United Kingdom"
+      ],
+      "vat_id": "GB199351819",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            365.86,
+            408.9,
+            375.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            377.86,
+            396.49,
+            387.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            389.86,
+            385.96,
+            399.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            401.86,
+            384.0,
+            411.9
+          ]
+        }
+      ]
+    },
+    "mail_to": null
+  },
+  "noise": [
+    {
+      "kind": "copy_stamp",
+      "label": "DUPLICATE",
+      "page": 1,
+      "bbox": [
+        360.0,
+        65.52,
+        451.47,
+        83.38
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Subtotal carried forward",
+      "page": 1,
+      "bbox": [
+        504.96,
+        756.85,
+        544.98,
+        766.9
+      ]
+    },
+    {
+      "kind": "copy_stamp",
+      "label": "DUPLICATE",
+      "page": 2,
+      "bbox": [
+        360.0,
+        65.52,
+        451.47,
+        83.38
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Balance brought forward",
+      "page": 2,
+      "bbox": [
+        504.96,
+        359.86,
+        544.98,
+        369.9
+      ]
+    }
+  ]
+}

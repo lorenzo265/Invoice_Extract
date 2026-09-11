@@ -1,23 +1,29 @@
 """A rendered document says what its truth says it says, in the place the truth says.
 
-This is what `forge verify` will do over a whole corpus in PR F3; here it holds the
-renderer and the truth builder to each other on one document per profile.
+This is what `forge verify` does over a whole corpus; here it holds the renderer and the
+truth builder to each other on one `classic` document per profile, with no knob on.
 """
 
 from __future__ import annotations
 
+import json
 from decimal import Decimal
 from pathlib import Path
 
 from make_forge_goldens import GOLDEN_SEED
 from rendering import for_each_profile, render_document, rendered
 
+from invoice_forge.families import Family
 from invoice_forge.fields import LABELLED_FIELDS, LINE_ITEM_COLUMNS
+from invoice_forge.knobs import Knob
+from invoice_forge.produce import DocumentSpec, produce
 from invoice_forge.profiles.loader import load_profile
 from invoice_forge.render.pdf import locate_all
 from invoice_forge.truth.builder import TRUTH_SCHEMA
 
 CENT = Decimal("0.01")
+# A seed whose document is short enough that the echo has room under the totals.
+ECHO_SEED = 5
 
 
 def evidence_of(entry: dict[str, object]) -> list[dict[str, object]]:
@@ -178,12 +184,23 @@ def test_the_vat_lines_add_up_to_the_vat_amount(profile_id: str) -> None:
 
 
 @for_each_profile
-def test_a_declared_charge_carries_evidence(profile_id: str) -> None:
-    document = rendered(profile_id)
-    for charge in document.truth["charges"]:
-        assert charge["declared"] is True
-        assert charge["evidence"], charge["type"]
-        assert charge["label"], charge["type"]
+def test_an_unknobbed_document_carries_no_charge_at_all(profile_id: str) -> None:
+    assert rendered(profile_id).truth["charges"] == []
+
+
+@for_each_profile
+def test_a_declared_charge_carries_evidence_and_an_undeclared_one_does_not(
+    profile_id: str, tmp_path: Path
+) -> None:
+    """Both halves of the evidence rule, on the one document that asks for both charges."""
+    knobs = (Knob.DECLARED_CHARGE, Knob.UNDECLARED_CHARGE)
+    spec = DocumentSpec(profile_id, Family.CLASSIC, ECHO_SEED, knobs)
+    produced = produce(spec, tmp_path / f"{profile_id}_charged.pdf")
+    charges = json.loads(produced.truth.read_text(encoding="utf-8"))["charges"]
+    assert [charge["declared"] for charge in charges] == [True, False]
+    declared, undeclared = charges
+    assert declared["evidence"] and declared["label"]
+    assert not undeclared["evidence"] and undeclared["label"] is None
 
 
 @for_each_profile
@@ -209,16 +226,26 @@ def test_the_noise_a_classic_document_prints_is_recorded(profile_id: str) -> Non
 
 
 @for_each_profile
-def test_a_secondary_currency_is_echoed_where_the_profile_has_one(profile_id: str) -> None:
-    document = rendered(profile_id)
-    profile = load_profile(document.profile_id)
-    echo = document.truth["secondary_amounts"]
+def test_a_document_echoes_no_second_currency_unless_it_is_asked_to(profile_id: str) -> None:
+    """The echo is an axis of its own, so an unknobbed document has none of it."""
+    assert rendered(profile_id).truth["secondary_amounts"] is None
+
+
+@for_each_profile
+def test_a_secondary_currency_is_echoed_where_the_knob_asks_and_the_vendor_has_one(
+    profile_id: str, tmp_path: Path
+) -> None:
+    spec = DocumentSpec(profile_id, Family.CLASSIC, ECHO_SEED, (Knob.DUAL_CURRENCY_ECHO,))
+    produced = produce(spec, tmp_path / f"{profile_id}.pdf")
+    truth = json.loads(produced.truth.read_text(encoding="utf-8"))
+    profile = load_profile(profile_id)
+    echo = truth["secondary_amounts"]
     if profile.secondary_currency is None:
         assert echo is None
         return
     assert echo["currency"] == profile.secondary_currency
     assert echo["evidence"]
-    total = Decimal(str(document.truth["fields"]["total_amount"]["value"]))
+    total = Decimal(str(truth["fields"]["total_amount"]["value"]))
     expected = total * Decimal(echo["exchange_rate"])
     assert abs(expected - Decimal(echo["total_amount"])) <= CENT
 

@@ -29,14 +29,18 @@ class MetadataStyle(Enum):
 
 
 class VatSummaryStyle(Enum):
+    """The four forms the tax summary takes, from absent to a coded table with a heading."""
+
     NONE = "none"
     LIST = "list"
     TABLE = "table"
+    CODED = "coded"
 
 
 class PageLine(Enum):
-    """Where "page x of y" is printed: with the references, or under the footer rule."""
+    """Where "page x of y" is printed, or that this family does not print it at all."""
 
+    NONE = "none"
     HEADER = "header"
     FOOTER = "footer"
 
@@ -89,15 +93,24 @@ class LetterheadSpec:
 
 @dataclass(frozen=True, slots=True)
 class TitleSpec:
+    """The document type, and how far under it a copy stamp goes when one is printed."""
+
     x: float
     top: float
     size: float
     upper_case: bool
+    stamp_gap: float = 18.0
+    stamp_size: float = 16.0
 
 
 @dataclass(frozen=True, slots=True)
 class MetadataSpec:
-    """The reference block: invoice number, dates, customer and order numbers."""
+    """The reference block: invoice number, dates, customer and order numbers.
+
+    `LIST` sets the label at `label_x` and the value against `value_x`. `TABLE` rules a
+    box around the same two columns. `STACKED` puts the value on the line under its
+    label, which is the layout that defeats "the value is to the right of the label".
+    """
 
     style: MetadataStyle
     label_x: float
@@ -106,6 +119,10 @@ class MetadataSpec:
     size: float
     leading: float
     align: Alignment
+    # A stacked block needs two lines per row, and a bordered one needs a left edge.
+    value_leading: float = 0.0
+    left: float = 0.0
+    pad: float = 3.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -122,7 +139,12 @@ class PartiesSpec:
 
 @dataclass(frozen=True, slots=True)
 class ItemsSpec:
-    """The table: its columns, whether it is ruled, and how a row is set."""
+    """The table: its columns, whether it is ruled, and how a row is set.
+
+    `standard_columns` says the column set is the one the column knobs have another value
+    for. A family with columns of its own — subscription lines, say — sets it false and
+    keeps them: the knobs offer the other value of the standard set's axis, not of its.
+    """
 
     columns: tuple[Column, ...]
     ruled: bool
@@ -133,6 +155,7 @@ class ItemsSpec:
     row_gap: float
     sub_item_indent: float = 12.0
     section_gap: float = 6.0
+    standard_columns: bool = True
 
 
 @dataclass(frozen=True, slots=True)
@@ -158,17 +181,24 @@ class TrapSpec:
 
 @dataclass(frozen=True, slots=True)
 class VatSummarySpec:
+    """The tax summary. `CODED` puts a code column before the rate and a heading above."""
+
     style: VatSummaryStyle
     x: float
     base_x: float
     vat_x: float
     size: float
     leading: float
+    code_x: float = 0.0
 
 
 @dataclass(frozen=True, slots=True)
 class TotalsSpec:
-    """The block that adds it all up, and the secondary-currency line under it."""
+    """The block that adds it all up, and the lines a family prints under it.
+
+    `stacked` sets the amount on the line below its label rather than across from it,
+    the way the `stacked` family sets everything else.
+    """
 
     label_x: float
     value_x: float
@@ -176,6 +206,9 @@ class TotalsSpec:
     leading: float
     gap_above: float
     secondary_echo: bool
+    stacked: bool = False
+    amount_in_words: bool = False
+    exemption: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -188,6 +221,16 @@ class PaymentSpec:
     gap_above: float
     box_width: float
     box_height: float
+
+
+@dataclass(frozen=True, slots=True)
+class TermsBlockSpec:
+    """Payment terms as a block of their own rather than a line in the bank block."""
+
+    x: float
+    size: float
+    leading: float
+    gap_above: float
 
 
 @dataclass(frozen=True, slots=True)
@@ -212,10 +255,12 @@ class FamilySpec:
     items: ItemsSpec
     pagination: PaginationSpec
     totals: TotalsSpec
-    footer: FooterSpec
+    footer: FooterSpec | None
     parties: PartiesSpec | None
     vat_summary: VatSummarySpec | None
     payment: PaymentSpec | None
+    terms_block: TermsBlockSpec | None = None
     page_line: PageLine = PageLine.HEADER
     customer_vat: CustomerVat = CustomerVat.PARTY_BLOCK
     traps: TrapSpec | None = None
+    copy_stamp: bool = False

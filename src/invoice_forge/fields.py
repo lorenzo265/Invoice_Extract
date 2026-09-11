@@ -41,6 +41,7 @@ METADATA_FIELDS: tuple[str, ...] = (
     "our_reference",
     "your_reference",
     "payment_terms",
+    "credit_reference",
 )
 
 # Every name a lexicon gives label synonyms for.

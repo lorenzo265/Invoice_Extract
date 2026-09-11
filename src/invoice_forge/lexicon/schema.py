@@ -24,22 +24,37 @@ TRAP_KINDS: tuple[str, ...] = ("order_date", "delivery_date", "print_date")
 CARRY_KINDS: tuple[str, ...] = ("incoming", "outgoing")
 EXEMPTION_KINDS: tuple[str, ...] = ("reverse_charge", "intra_community", "export")
 PARTY_KINDS: tuple[str, ...] = ("bill_to", "ship_to", "mail_to")
-VAT_SUMMARY_COLUMNS: tuple[str, ...] = ("rate", "base", "vat")
+VAT_SUMMARY_COLUMNS: tuple[str, ...] = ("code", "rate", "base", "vat")
 
 MONTHS_IN_A_YEAR = 12
 MAX_SYNONYMS = 5
+# The two scale words a number is built from below a million: a hundred and a thousand.
+SCALE_WORDS = 2
 
-AMOUNT_IN_WORDS_STYLES: tuple[str, ...] = ("english", "germanic_compound", "romance")
+AMOUNT_IN_WORDS_STYLES: tuple[str, ...] = (
+    "english",
+    "germanic_compound",
+    "nordic_compound",
+    "romance",
+)
 
 
 @dataclass(frozen=True, slots=True)
 class AmountInWords:
-    """The words a language spells a total with. The algorithm that joins them is `style`."""
+    """The words a language spells a total with. The rule that joins them is `style`.
+
+    `scale_one` is the form of "one" that stands before a scale word, which is not always
+    the word for one: German counts `ein` and Swedish `ett` where both say `eine`/`en`
+    on their own. A million is a noun rather than a scale word — `eine Million`, `deux
+    millions` — so the lexicon spells it whole, in the singular and the plural.
+    """
 
     style: str
     units: tuple[str, ...]
     tens: tuple[str, ...]
     scales: tuple[str, ...]
+    million: tuple[str, str]
+    scale_one: str
     joiner: str
     currency_unit: tuple[str, str]
     currency_fraction: tuple[str, str]

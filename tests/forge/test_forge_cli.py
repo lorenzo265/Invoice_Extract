@@ -1,4 +1,4 @@
-"""`forge`'s argument surface: what it does, and what it says about what it cannot yet do."""
+"""`forge`'s argument surface: what it does, and what it says about what it will not do."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 from invoice_forge.cli import BUILT_BY, main
+from invoice_forge.families import FAMILY_NAMES
 
 
 def render_one(out: Path, *extra: str) -> list[str]:
@@ -90,13 +91,27 @@ def test_an_unknown_family_is_named_and_refused(
     assert "unknown family baroque" in capsys.readouterr().err
 
 
-def test_a_family_that_is_declared_but_not_built_says_which_are(
+@pytest.mark.parametrize("family", FAMILY_NAMES)
+def test_every_family_the_vocabulary_names_renders_from_the_command_line(
+    family: str, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    argv = ["render-one", "--profile", "de-DE", "--family", family]
+    argv += ["--seed", "7", "--out", str(tmp_path / f"{family}.pdf")]
+    assert main(argv) == 0
+    assert str(tmp_path / f"{family}.pdf") in capsys.readouterr().out
+
+
+def test_two_knobs_that_are_one_axis_are_refused_by_name(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    argv = ["render-one", "--profile", "de-DE", "--family", "saas"]
+    """A cell cannot ask for both roundings: a document is rounded one way or the other."""
+    argv = ["render-one", "--profile", "de-DE", "--family", "classic"]
+    argv += ["--knobs", "rounding_per_line,rounding_total"]
     argv += ["--seed", "7", "--out", str(tmp_path / "x.pdf")]
     assert main(argv) == 1
-    assert "not built yet" in capsys.readouterr().err
+    complaint = capsys.readouterr().err
+    assert "rounding_per_line" in complaint
+    assert "rounding_total" in complaint
 
 
 def test_an_unknown_profile_names_the_file_it_looked_for(

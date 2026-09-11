@@ -31,13 +31,14 @@ src/invoice_forge/
   cli.py                 forge generate | catalog | verify | render-one (the argument surface)
   commands.py            what each subcommand does, once its arguments are parsed
   profiles/              one JSON per vendor profile (+ profiles/schema.py, loader.py)
-  lexicon/               per-language label lexicons (JSON) + lexicon/loader.py
+  lexicon/               per-language label lexicons (JSON) + loader.py, spelling.py
   model/                 DocumentModel: parties, identifiers, dates, money, items, charges, vat, payment
   sample/                ContentSampler: catalogues, names, addresses, ids, IBAN/VAT generators
-  layout/                TemplateFamily declarations: spec.py, classic.py (stacked, tabular, saas, minimal)
+  layout/                TemplateFamily declarations: spec.py, columns.py, classic.py,
+                         derived.py (tabular, stacked, saas, minimal), variants.py (knobs)
   render/                pdf.py (the only pymupdf importer besides the extractor's reader), sheet.py,
-                         text.py, wording.py, table.py, pagination.py, blocks.py, totals.py,
-                         placement.py, context.py, renderer.py
+                         text.py, wording.py, table.py, pagination.py, header.py, blocks.py,
+                         summary.py, totals.py, placement.py, context.py, renderer.py
   truth/                 builder.py, values.py, locate.py (writing) + verify.py, checks.py,
                          readback.py, reading.py (proving)
   corpus/                plan.py (forge-plan/1), generate.py, survey.py, catalog.py
@@ -154,6 +155,32 @@ The knob names in `docs/VARIATION_CATALOG.md`, as an `Enum`. A knob affects the
 sampler (what content), the family (which blocks), or the renderer (how), and the
 truth records which knobs were on. Knobs have no free parameters; a variant that needs
 a parameter is a second knob.
+
+**A knob is the other value of its axis.** The catalog names an axis and the values in
+scope; the family or the profile declares one of them, and turning the knob on replaces it
+with the other. `classic` is the maximal family, so a knob that touches it usually takes
+something away — `bank_footer` is the invoice that does not say where to pay it, and
+`vat_summary_table` is the summary printed as a list rather than a table. A knob whose axis
+a document does not have changes nothing: `dual_currency_echo` on a vendor that deals in
+one currency, `party_blocks` on a family with one party column.
+
+The three places a knob lands, and the module that owns each:
+
+| Where | Module | Knobs |
+|---|---|---|
+| the family's declaration | `layout/variants.py` | `carry_forward`, `page_numbering`, `trap_labels`, `party_blocks`, `customer_vat_position`, `repeat_letterhead`, `column_set`, `discount`, `vat_summary_table`, `amount_in_words`, `exemption_verbiage`, `bank_footer`, `noise_footer`, `payment_terms_block`, `stamp_copy` |
+| the document's content | `sample/variations.py` | `multi_page`, `wrapped_description`, `sub_items`, `section_subtotals`, `placeholder_addresses`, `multi_rate`, `charges`, `declared_charge`, `undeclared_charge`, `rounding_per_line`, `rounding_total`, `dual_currency_echo`, `credit_note`, `supply_date`, `extra_references` |
+| the words it commits to | `render/wording.py` | `thousands_variant` |
+
+Two knobs that name the two values of one axis cannot both be on. `knobs.check_knobs`
+refuses the pair at `produce`, which every route into the generator passes through, so a
+plan cell that asks for both rounding policies is a plan to fix rather than a document to
+render.
+
+A family implies content as well as layout — `saas` bills subscriptions in sections with
+components under them, drawn from the domains billed by the period rather than by the
+piece. That is what the family *is*, so `sample/variations.py` turns those on for it and
+the truth still records only the knobs the plan asked for: the plan asked for `saas`.
 
 ## 4. CLI
 

@@ -16,7 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from decimal import Decimal
 
-from invoice_forge.layout.spec import Column, ItemsSpec, Weight
+from invoice_forge.layout.spec import Alignment, Column, ItemsSpec, Weight
 from invoice_forge.model import Document, LineItem, SubItem
 from invoice_forge.render import text as fmt
 from invoice_forge.render.placement import cell, noise
@@ -26,7 +26,10 @@ from invoice_forge.render.wording import Wording
 HEADER_RULE_ABOVE = 10.0
 HEADER_RULE_BELOW = 4.0
 HEADER_TO_FIRST_ROW = 18.0
-HEADER_HEIGHT = HEADER_RULE_ABOVE + HEADER_TO_FIRST_ROW
+# A heading of several words wraps inside its column; one word cannot, which is why
+# `layout/columns.py` anchors every column wide enough for the longest word in it.
+HEADING_LEADING = 9.0
+HEADING_GUTTER = 4.0
 CARRY_RULE_ABOVE = 9.0
 CARRY_HEIGHT = 18.0
 # The five columns the extractor reads. The others are printed but not recorded as cells.
@@ -59,15 +62,63 @@ def rows_total(rows: tuple[MeasuredRow, ...]) -> Decimal:
     return sum((row.item.net_amount for row in rows), Decimal(0))
 
 
+def heading_lines(
+    sheet: Sheet, spec: ItemsSpec, wording: Wording
+) -> tuple[tuple[Column, tuple[str, ...]], ...]:
+    """Each column's heading, broken to the room the column set leaves it.
+
+    A table of nine columns cannot print `Faktureringsintervall` beside `Fördelning` on
+    one line in any face that is still readable, and a real one does not try: it sets the
+    heading over two lines. What room a column has is the distance to its neighbour on the
+    side its text runs, which is what the anchors already say.
+    """
+    rooms = _rooms(spec)
+    return tuple(
+        (column, sheet.wrapped(wording.columns[column.name], room, spec.header_size))
+        for column, room in zip(spec.columns, rooms, strict=True)
+    )
+
+
+def header_height(sheet: Sheet, spec: ItemsSpec, wording: Wording) -> float:
+    """How tall the heading row is, counted before the pagination places a single row."""
+    tallest = max(len(lines) for _, lines in heading_lines(sheet, spec, wording))
+    return HEADER_RULE_ABOVE + HEADING_LEADING * (tallest - 1) + HEADER_TO_FIRST_ROW
+
+
 def draw_header(sheet: Sheet, spec: ItemsSpec, wording: Wording, y: float) -> float:
     """The column headings, between two rules. Returns the first row's baseline."""
+    broken = heading_lines(sheet, spec, wording)
+    tallest = max(len(lines) for _, lines in broken)
     if spec.ruled:
         sheet.rule(y - HEADER_RULE_ABOVE, heavy=True)
-    for column in spec.columns:
-        sheet.draw_column(column, y, wording.columns[column.name], spec.header_size, Weight.BOLD)
+    for column, lines in broken:
+        for index, line in enumerate(lines):
+            baseline = y + HEADING_LEADING * index
+            sheet.draw_column(column, baseline, line, spec.header_size, Weight.BOLD)
+    bottom = y + HEADING_LEADING * (tallest - 1)
     if spec.ruled:
-        sheet.rule(y + HEADER_RULE_BELOW, heavy=True)
-    return y + HEADER_TO_FIRST_ROW
+        sheet.rule(bottom + HEADER_RULE_BELOW, heavy=True)
+    return bottom + HEADER_TO_FIRST_ROW
+
+
+def _rooms(spec: ItemsSpec) -> tuple[float, ...]:
+    """The width each heading has: to the next anchor, or to the previous one if flushed.
+
+    The description's room is the width the set declares for it, because that is what its
+    rows wrap to and a heading may not claim more than its own column.
+    """
+    anchors = [column.anchor for column in spec.columns]
+    rooms = []
+    for index, column in enumerate(spec.columns):
+        if column.name == "description":
+            rooms.append(spec.description_width)
+            continue
+        if column.align is Alignment.LEFT:
+            edge = anchors[index + 1] if index + 1 < len(anchors) else anchors[index]
+        else:
+            edge = anchors[index - 1] if index else anchors[index]
+        rooms.append(abs(edge - column.anchor) - HEADING_GUTTER)
+    return tuple(rooms)
 
 
 def draw_row(sheet: Sheet, row: MeasuredRow, spec: ItemsSpec, wording: Wording, y: float) -> float:
@@ -211,6 +262,11 @@ def _cell_text(item: LineItem, column: str, wording: Wording) -> str:
         "discount": lambda: _discount(item, number_format),
         "vat_rate": lambda: fmt.rate(item.vat_rate, number_format),
         "net_amount": lambda: fmt.money(item.net_amount, number_format),
+        "subscription_id": lambda: _subscribed(item, "subscription_id", number_format),
+        "billing_cycle": lambda: _subscribed(item, "billing_cycle", number_format),
+        "period": lambda: _subscribed(item, "period", number_format),
+        "share": lambda: _subscribed(item, "share", number_format),
+        "remaining_term": lambda: _subscribed(item, "remaining_term", number_format),
     }.get(column)
     if printed is None:
         raise ValueError(f"no value for table column {column}")
@@ -222,3 +278,18 @@ def _discount(item: LineItem, number_format: fmt.NumberFormat) -> str:
     if item.discount_percent is None:
         return ""
     return f"{fmt.rate(item.discount_percent, number_format)} %"
+
+
+def _subscribed(item: LineItem, column: str, number_format: fmt.NumberFormat) -> str:
+    """A subscription column on a row that bills no subscription is an empty cell."""
+    subscription = item.subscription
+    if subscription is None:
+        return ""
+    share = subscription.share_percent
+    return {
+        "subscription_id": subscription.subscription_id,
+        "billing_cycle": subscription.billing_cycle,
+        "period": f"{subscription.period_start}-{subscription.period_end}",
+        "share": "" if share is None else f"{fmt.rate(share, number_format)} %",
+        "remaining_term": subscription.remaining_term or "",
+    }[column]

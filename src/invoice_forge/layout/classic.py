@@ -12,10 +12,13 @@ prototype in `docs/reference/forge/prototype/`.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from invoice_forge.families import Family
+from invoice_forge.layout import columns
+from invoice_forge.layout.derived import derived_specs
 from invoice_forge.layout.spec import (
     Alignment,
-    Column,
     FamilySpec,
     FooterSpec,
     ItemsSpec,
@@ -34,32 +37,6 @@ from invoice_forge.layout.spec import (
 )
 
 A4 = PageGeometry(width=595.0, height=842.0, left=50.0, right=545.0, top=50.0, bottom=790.0)
-
-CLASSIC_COLUMNS: tuple[Column, ...] = (
-    Column("pos", 50.0, Alignment.LEFT),
-    Column("sku", 72.0, Alignment.LEFT),
-    Column("description", 140.0, Alignment.LEFT),
-    Column("quantity", 372.0, Alignment.RIGHT),
-    Column("unit_price", 432.0, Alignment.RIGHT),
-    Column("vat_rate", 470.0, Alignment.RIGHT),
-    Column("net_amount", 545.0, Alignment.RIGHT),
-)
-DESCRIPTION_WIDTH = 192.0
-
-# The same table with a per-line discount column. Every amount column moves left to make
-# room for it, and the description gives up the width, so the set is declared rather than
-# computed: a column set is a layout decision, not arithmetic.
-DISCOUNT_COLUMNS: tuple[Column, ...] = (
-    Column("pos", 50.0, Alignment.LEFT),
-    Column("sku", 72.0, Alignment.LEFT),
-    Column("description", 140.0, Alignment.LEFT),
-    Column("quantity", 345.0, Alignment.RIGHT),
-    Column("unit_price", 405.0, Alignment.RIGHT),
-    Column("discount", 443.0, Alignment.RIGHT),
-    Column("vat_rate", 478.0, Alignment.RIGHT),
-    Column("net_amount", 545.0, Alignment.RIGHT),
-)
-DISCOUNT_DESCRIPTION_WIDTH = 165.0
 
 # Dates printed beside the real ones. An extractor that reads "the date nearest the label"
 # has three more labels to be wrong about.
@@ -84,11 +61,12 @@ CLASSIC = FamilySpec(
         size=9.0,
         leading=12.0,
         align=Alignment.RIGHT,
+        left=355.0,
     ),
     items=ItemsSpec(
-        columns=CLASSIC_COLUMNS,
+        columns=columns.CLASSIC.columns,
         ruled=True,
-        description_width=DESCRIPTION_WIDTH,
+        description_width=columns.CLASSIC.description_width,
         header_size=8.0,
         row_size=9.0,
         row_leading=11.0,
@@ -119,6 +97,7 @@ CLASSIC = FamilySpec(
         vat_x=280.0,
         size=9.0,
         leading=12.0,
+        code_x=50.0,
     ),
     payment=PaymentSpec(
         x=50.0,
@@ -130,13 +109,9 @@ CLASSIC = FamilySpec(
     ),
 )
 
-FAMILY_SPECS: dict[Family, FamilySpec] = {Family.CLASSIC: CLASSIC}
+FAMILY_SPECS: Mapping[Family, FamilySpec] = {Family.CLASSIC: CLASSIC, **derived_specs(CLASSIC)}
 
 
 def family_spec(family: Family) -> FamilySpec:
-    """The declaration for a family, or a refusal naming the families that exist yet."""
-    spec = FAMILY_SPECS.get(family)
-    if spec is None:
-        built = ", ".join(sorted(known.value for known in FAMILY_SPECS))
-        raise ValueError(f"family {family.value} is not built yet; built families: {built}")
-    return spec
+    """The declaration for a family. Every member of the enum has one, and a test says so."""
+    return FAMILY_SPECS[family]

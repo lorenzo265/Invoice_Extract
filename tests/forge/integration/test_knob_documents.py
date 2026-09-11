@@ -25,6 +25,8 @@ from invoice_forge.truth.verify import verify_document
 
 PROFILE = "de-DE"
 SEED = 3
+# A seed whose rows fill every page but the last, which then holds only the totals.
+TOTALS_ONLY_SEED = 7
 # "Seite 1" cannot match "Folgeseite", which the carry-forward line also prints.
 PAGE_LINE = "Seite 1"
 # The rule above the legal lines: page height less the footer block.
@@ -227,14 +229,18 @@ def test_a_rendered_knob_document_is_still_byte_deterministic() -> None:
 
 
 def test_a_page_that_holds_only_the_totals_prints_no_column_headings() -> None:
-    """An empty table header is the kind of thing a real invoice never prints."""
-    together = turned(*STRUCTURAL)
+    """An empty table header is the kind of thing a real invoice never prints.
+
+    A seed whose rows end exactly on the page before the last, so the last page really
+    does hold nothing but the totals. Chosen, rather than searched for, so the test that
+    proves the case is the test that runs.
+    """
+    together = turned(*STRUCTURAL, seed=TOTALS_ONLY_SEED)
     last = together.pages
     rows_on_the_last_page = [
         row for row in rows_of(together) if any(box["page"] == last for box in row["cells"]["sku"])
     ]
-    if rows_on_the_last_page:
-        pytest.skip("this seed fills its last page with rows")
+    assert not rows_on_the_last_page, "this seed is chosen for its empty last page"
     columns = together.truth["line_items"][0]
     assert not page_text(together, last, columns["sku"])
     assert page_text(together, last, str(together.truth["fields"]["total_amount"]["printed"]))

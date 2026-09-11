@@ -68,6 +68,11 @@
     "payment_terms": [
       "Payment Terms",
       "Terms"
+    ],
+    "credit_reference": [
+      "Original Invoice",
+      "Invoice Credited",
+      "Against Invoice"
     ]
   },
   "totals_labels": {
@@ -184,6 +189,10 @@
     ]
   },
   "vat_summary_headers": {
+    "code": [
+      "Code",
+      "VAT Code"
+    ],
     "rate": [
       "Rate",
       "VAT Rate"
@@ -341,9 +350,13 @@
     ],
     "scales": [
       "hundred",
-      "thousand",
+      "thousand"
+    ],
+    "million": [
+      "one million",
       "million"
     ],
+    "scale_one": "one",
     "joiner": "and",
     "currency_unit": [
       "pound",

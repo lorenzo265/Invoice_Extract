@@ -60,6 +60,23 @@ class Knob(Enum):
 
 KNOB_NAMES: tuple[str, ...] = tuple(knob.value for knob in Knob)
 
+# Two knobs that name the two values of one axis cannot both be on. The catalog gives the
+# rounding policy two rows because it counts documents of each kind, and a document is
+# rounded one way or the other — so a cell that asks for both is a plan to fix, not a
+# document to render.
+EXCLUSIVE: tuple[tuple[Knob, Knob], ...] = ((Knob.ROUNDING_PER_LINE, Knob.ROUNDING_TOTAL),)
+
+
+def check_knobs(knobs: Iterable[Knob]) -> None:
+    """Refuse a combination no document could be. Raises `ValueError` naming both knobs."""
+    turned = set(knobs)
+    for first, second in EXCLUSIVE:
+        if first in turned and second in turned:
+            raise ValueError(
+                f"{first.value} and {second.value} are the two values of one axis; "
+                "a document can only be one of them"
+            )
+
 
 def parse_knobs(names: Iterable[str]) -> tuple[Knob, ...]:
     """Resolve knob names, in the order given. Raises `ValueError` naming the bad one."""

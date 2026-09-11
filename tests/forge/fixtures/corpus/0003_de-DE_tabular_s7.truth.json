@@ -1,0 +1,2404 @@
+{
+  "schema": "forge-truth/1",
+  "generator": {
+    "version": "0.1.0",
+    "seed": 7,
+    "profile": "de-DE",
+    "template": "tabular",
+    "knobs": [
+      "multi_rate",
+      "vat_summary_table",
+      "charges",
+      "declared_charge",
+      "undeclared_charge",
+      "rounding_total",
+      "dual_currency_echo",
+      "exemption_verbiage",
+      "amount_in_words",
+      "thousands_variant"
+    ]
+  },
+  "document": {
+    "type": "invoice",
+    "pages": 2,
+    "language": "de",
+    "currency": "EUR",
+    "secondary_currency": "USD",
+    "rounding": "total"
+  },
+  "fields": {
+    "invoice_number": {
+      "value": "RG-2024-442182",
+      "printed": "RG-2024-442182",
+      "label": "Rechnungs-Nr.",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            475.45,
+            71.86,
+            544.98,
+            81.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            475.45,
+            71.86,
+            544.98,
+            81.9
+          ]
+        }
+      ]
+    },
+    "invoice_date": {
+      "value": "2024-06-14",
+      "printed": "14 Juni 2024",
+      "label": "Datum",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            493.46,
+            85.86,
+            544.97,
+            95.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            493.46,
+            85.86,
+            544.97,
+            95.9
+          ]
+        }
+      ]
+    },
+    "due_date": {
+      "value": "2024-06-28",
+      "printed": "28 Juni 2024",
+      "label": "Fällig am",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            493.46,
+            113.86,
+            544.97,
+            123.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            493.46,
+            113.86,
+            544.97,
+            123.9
+          ]
+        }
+      ]
+    },
+    "supplier_vat_id": {
+      "value": "DE018159083",
+      "printed": "USt-IdNr.: DE018159083",
+      "label": "USt-IdNr.",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            107.86,
+            149.98,
+            117.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            107.86,
+            149.98,
+            117.9
+          ]
+        }
+      ]
+    },
+    "customer_vat_id": {
+      "value": "DE139099603",
+      "printed": "USt-IdNr. des Kunden: DE139099603",
+      "label": "USt-IdNr. des Kunden",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            289.86,
+            200.49,
+            299.9
+          ]
+        }
+      ]
+    },
+    "currency": {
+      "value": "EUR",
+      "printed": "EUR",
+      "label": "Währung",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            526.0,
+            169.85,
+            544.99,
+            179.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            526.0,
+            169.85,
+            544.99,
+            179.9
+          ]
+        }
+      ]
+    },
+    "vat_rate": {
+      "value": "19",
+      "printed": "19 %",
+      "label": "Steuersatz",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            90.0,
+            341.86,
+            110.5,
+            351.9
+          ]
+        }
+      ]
+    },
+    "subtotal": {
+      "value": "139029.16",
+      "printed": "139 029,16 EUR",
+      "label": "Nettosumme",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            478.45,
+            321.86,
+            544.95,
+            331.9
+          ]
+        }
+      ]
+    },
+    "vat_amount": {
+      "value": "25715.19",
+      "printed": "25 715,19 EUR",
+      "label": "Umsatzsteuer",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            483.46,
+            360.86,
+            544.96,
+            370.9
+          ]
+        }
+      ]
+    },
+    "total_amount": {
+      "value": "164839.15",
+      "printed": "164 839,15 EUR",
+      "label": "Gesamtbetrag",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            478.45,
+            373.86,
+            544.95,
+            383.9
+          ]
+        }
+      ]
+    },
+    "supply_date": {
+      "value": "2024-06-08",
+      "printed": "8 Juni 2024",
+      "label": "Leistungszeitraum",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.46,
+            99.86,
+            544.97,
+            109.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            498.46,
+            99.86,
+            544.97,
+            109.9
+          ]
+        }
+      ]
+    },
+    "order_number": {
+      "value": "PO-041111",
+      "printed": "PO-041111",
+      "label": "Bestellnummer",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.97,
+            141.85,
+            544.98,
+            151.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            498.97,
+            141.85,
+            544.98,
+            151.9
+          ]
+        }
+      ]
+    },
+    "customer_number": {
+      "value": "C-87584",
+      "printed": "C-87584",
+      "label": "Kundennummer",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            510.48,
+            127.86,
+            544.99,
+            137.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            510.48,
+            127.86,
+            544.99,
+            137.9
+          ]
+        }
+      ]
+    },
+    "contract_number": {
+      "value": "CTR-081390",
+      "printed": "CTR-081390",
+      "label": "Vertragsnummer",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            493.47,
+            155.85,
+            544.98,
+            165.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            493.47,
+            155.85,
+            544.98,
+            165.9
+          ]
+        }
+      ]
+    },
+    "our_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "your_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "payment_terms": {
+      "value": "Zahlbar innerhalb von 14 Tagen netto.",
+      "printed": "Zahlungsziel: Zahlbar innerhalb von 14 Tagen netto.",
+      "label": "Zahlungsziel",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            455.76,
+            234.88,
+            464.69
+          ]
+        }
+      ]
+    },
+    "credit_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    }
+  },
+  "line_items": [
+    {
+      "pos": 1,
+      "sku": "SRV-ANA-H",
+      "description": "Analyse und Dokumentation, pro Stunde",
+      "quantity": "0.5",
+      "unit": "Std",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "57.50",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              343.86,
+              137.46,
+              353.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              343.86,
+              313.5,
+              353.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              385.49,
+              343.86,
+              397.99,
+              353.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              410.46,
+              343.86,
+              447.98,
+              353.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              343.86,
+              544.99,
+              353.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 2,
+      "sku": "HX-M8-040",
+      "description": "Sechskantschraube M8 x 40, verzinkt, DIN 933",
+      "quantity": "100",
+      "unit": "Stk",
+      "unit_price": "0.12",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "12.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              360.86,
+              134.0,
+              370.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              360.86,
+              339.47,
+              370.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              382.98,
+              360.86,
+              398.0,
+              370.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              430.48,
+              360.86,
+              447.99,
+              370.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              360.86,
+              544.99,
+              370.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 3,
+      "sku": "SW-API-10K",
+      "description": "API-Kontingent 10.000 Aufrufe je Monat",
+      "quantity": "10",
+      "unit": "Paket",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "890.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              377.86,
+              138.96,
+              387.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              377.86,
+              310.96,
+              387.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              387.99,
+              377.86,
+              398.0,
+              387.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              425.48,
+              377.86,
+              447.99,
+              387.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              377.86,
+              544.99,
+              387.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 4,
+      "sku": "SW-CLD-50",
+      "description": "Cloud-Speicher 50 GB, Abrechnung monatlich",
+      "quantity": "2",
+      "unit": "Monat",
+      "unit_price": "12.5000",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "25.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              394.86,
+              136.48,
+              404.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              394.86,
+              336.49,
+              404.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              394.86,
+              398.0,
+              404.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              415.47,
+              394.86,
+              447.98,
+              404.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              394.86,
+              544.99,
+              404.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 5,
+      "sku": "REL-24V",
+      "description": "Koppelrelais 24 V DC, 1 Wechsler",
+      "quantity": "100",
+      "unit": "Stk",
+      "unit_price": "7.95",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "795.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              411.86,
+              124.5,
+              421.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              411.86,
+              287.96,
+              421.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              382.98,
+              411.86,
+              398.0,
+              421.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              430.48,
+              411.86,
+              447.99,
+              421.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              411.86,
+              544.99,
+              421.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 6,
+      "sku": "SRV-ANA-H",
+      "description": "Analyse und Dokumentation, pro Stunde",
+      "quantity": "1.5",
+      "unit": "Std",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "172.50",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              428.86,
+              137.46,
+              438.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              428.86,
+              313.5,
+              438.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              385.49,
+              428.86,
+              397.99,
+              438.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              410.46,
+              428.86,
+              447.98,
+              438.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              428.86,
+              544.99,
+              438.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 7,
+      "sku": "SW-CLD-50",
+      "description": "Cloud-Speicher 50 GB, Abrechnung monatlich",
+      "quantity": "25",
+      "unit": "Monat",
+      "unit_price": "12.5000",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "312.50",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              445.86,
+              136.48,
+              455.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              445.86,
+              336.49,
+              455.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              387.99,
+              445.86,
+              398.0,
+              455.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              415.47,
+              445.86,
+              447.98,
+              455.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              445.86,
+              544.99,
+              455.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 8,
+      "sku": "SW-API-10K",
+      "description": "API-Kontingent 10.000 Aufrufe je Monat",
+      "quantity": "3",
+      "unit": "Paket",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "267.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              462.86,
+              138.96,
+              472.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              462.86,
+              310.96,
+              472.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              462.86,
+              398.0,
+              472.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              425.48,
+              462.86,
+              447.99,
+              472.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              462.86,
+              544.99,
+              472.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 9,
+      "sku": "ENC-IP65",
+      "description": "Verteilerkasten IP65, 300 x 200 x 120",
+      "quantity": "4",
+      "unit": "Stk",
+      "unit_price": "45.50",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "182.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              479.86,
+              128.48,
+              489.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              479.86,
+              301.98,
+              489.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              479.86,
+              398.0,
+              489.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              425.48,
+              479.86,
+              447.99,
+              489.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              479.86,
+              544.99,
+              489.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 10,
+      "sku": "REL-24V",
+      "description": "Koppelrelais 24 V DC, 1 Wechsler",
+      "quantity": "1",
+      "unit": "Stk",
+      "unit_price": "7.95",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "7.95",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              496.86,
+              124.5,
+              506.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              496.86,
+              287.96,
+              506.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              496.86,
+              398.0,
+              506.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              430.48,
+              496.86,
+              447.99,
+              506.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              527.48,
+              496.86,
+              544.99,
+              506.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 11,
+      "sku": "SW-SUP-GLD",
+      "description": "Supportvertrag Gold, Reaktionszeit 4 Stunden",
+      "quantity": "100",
+      "unit": "Jahr",
+      "unit_price": "1290.00",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "129000.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              513.85,
+              145.46,
+              523.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              513.85,
+              335.47,
+              523.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              382.98,
+              513.85,
+              398.0,
+              523.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              412.97,
+              513.85,
+              447.98,
+              523.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              499.96,
+              513.85,
+              544.97,
+              523.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 12,
+      "sku": "SRV-ANA-H",
+      "description": "Analyse und Dokumentation, pro Stunde",
+      "quantity": "12",
+      "unit": "Std",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "1380.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              530.85,
+              137.46,
+              540.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              530.85,
+              313.5,
+              540.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              387.99,
+              530.85,
+              398.0,
+              540.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              410.46,
+              530.85,
+              447.98,
+              540.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              530.85,
+              544.98,
+              540.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 13,
+      "sku": "SRV-ANA-H",
+      "description": "Analyse und Dokumentation, pro Stunde",
+      "quantity": "1.5",
+      "unit": "Std",
+      "unit_price": "115.0000",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "172.50",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              547.85,
+              137.46,
+              557.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              547.85,
+              313.5,
+              557.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              385.49,
+              547.85,
+              397.99,
+              557.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              410.46,
+              547.85,
+              447.98,
+              557.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              547.85,
+              544.99,
+              557.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 14,
+      "sku": "SRV-TRN-D",
+      "description": "Schulung Grundlagen, 1 Tag, bis 8 Teilnehmer",
+      "quantity": "2.5",
+      "unit": "Tag",
+      "unit_price": "780.00",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "1950.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              564.85,
+              137.46,
+              574.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              564.85,
+              338.48,
+              574.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              385.49,
+              564.85,
+              397.99,
+              574.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              420.47,
+              564.85,
+              447.99,
+              574.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              564.85,
+              544.98,
+              574.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 15,
+      "sku": "HX-M8-040",
+      "description": "Sechskantschraube M8 x 40, verzinkt, DIN 933",
+      "quantity": "3",
+      "unit": "Stk",
+      "unit_price": "0.12",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "0.36",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              581.85,
+              134.0,
+              591.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              581.85,
+              339.47,
+              591.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              581.85,
+              398.0,
+              591.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              430.48,
+              581.85,
+              447.99,
+              591.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              527.48,
+              581.85,
+              544.99,
+              591.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 16,
+      "sku": "SW-LIC-PRO",
+      "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
+      "quantity": "1.5",
+      "unit": "Lizenz",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "523.50",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              598.85,
+              141.96,
+              608.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              598.85,
+              321.94,
+              608.9
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              609.85,
+              182.01,
+              619.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              385.49,
+              598.85,
+              397.99,
+              608.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              420.47,
+              598.85,
+              447.99,
+              608.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              598.85,
+              544.99,
+              608.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 17,
+      "sku": "REL-24V",
+      "description": "Koppelrelais 24 V DC, 1 Wechsler",
+      "quantity": "40",
+      "unit": "Stk",
+      "unit_price": "7.95",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "318.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              626.85,
+              124.5,
+              636.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              626.85,
+              287.96,
+              636.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              387.99,
+              626.85,
+              398.0,
+              636.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              430.48,
+              626.85,
+              447.99,
+              636.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              626.85,
+              544.99,
+              636.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 18,
+      "sku": "HX-M8-040",
+      "description": "Sechskantschraube M8 x 40, verzinkt, DIN 933",
+      "quantity": "20",
+      "unit": "Stk",
+      "unit_price": "0.12",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "2.40",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              643.85,
+              134.0,
+              653.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              643.85,
+              339.47,
+              653.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              387.99,
+              643.85,
+              398.0,
+              653.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              430.48,
+              643.85,
+              447.99,
+              653.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              527.48,
+              643.85,
+              544.99,
+              653.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 19,
+      "sku": "SW-LIC-PRO",
+      "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
+      "quantity": "2",
+      "unit": "Lizenz",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "698.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              660.85,
+              141.96,
+              670.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              660.85,
+              321.94,
+              670.9
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              671.85,
+              182.01,
+              681.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              660.85,
+              398.0,
+              670.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              420.47,
+              660.85,
+              447.99,
+              670.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              660.85,
+              544.99,
+              670.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 20,
+      "sku": "SW-API-10K",
+      "description": "API-Kontingent 10.000 Aufrufe je Monat",
+      "quantity": "3",
+      "unit": "Paket",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "267.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              688.85,
+              138.96,
+              698.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              688.85,
+              310.96,
+              698.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              688.85,
+              398.0,
+              698.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              425.48,
+              688.85,
+              447.99,
+              698.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              688.85,
+              544.99,
+              698.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 21,
+      "sku": "FLT-P-200",
+      "description": "Filterpatrone P-200, Zellulose, 10 µm",
+      "quantity": "3",
+      "unit": "Stk",
+      "unit_price": "17.40",
+      "discount_percent": null,
+      "vat_rate": "19",
+      "net_amount": "52.20",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              253.85,
+              130.98,
+              263.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              253.85,
+              300.14,
+              263.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              392.99,
+              253.85,
+              398.0,
+              263.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              425.48,
+              253.85,
+              447.99,
+              263.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              522.48,
+              253.85,
+              544.99,
+              263.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 22,
+      "sku": "SW-LIC-PRO",
+      "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
+      "quantity": "5",
+      "unit": "Lizenz",
+      "unit_price": "349.00",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "1745.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              270.86,
+              141.96,
+              280.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              270.86,
+              321.94,
+              280.9
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              281.86,
+              182.01,
+              291.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              392.99,
+              270.86,
+              398.0,
+              280.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              420.47,
+              270.86,
+              447.99,
+              280.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              509.97,
+              270.86,
+              544.98,
+              280.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 23,
+      "sku": "REL-24V",
+      "description": "Koppelrelais 24 V DC, 1 Wechsler",
+      "quantity": "25",
+      "unit": "Stk",
+      "unit_price": "7.95",
+      "discount_percent": null,
+      "vat_rate": "7",
+      "net_amount": "198.75",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              298.86,
+              124.5,
+              308.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              298.86,
+              287.96,
+              308.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              387.99,
+              298.86,
+              398.0,
+              308.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              430.48,
+              298.86,
+              447.99,
+              308.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              298.86,
+              544.99,
+              308.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    }
+  ],
+  "charges": [
+    {
+      "type": "SURCHARGE",
+      "amount": "24.90",
+      "vat_rate": "19",
+      "declared": true,
+      "label": "Mindermengenzuschlag",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            500.98,
+            334.86,
+            544.97,
+            344.9
+          ]
+        }
+      ]
+    },
+    {
+      "type": "SHIPPING",
+      "amount": "24.90",
+      "vat_rate": "19",
+      "declared": true,
+      "label": "Versandkosten",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            500.98,
+            347.86,
+            544.97,
+            357.9
+          ]
+        }
+      ]
+    },
+    {
+      "type": "SHIPPING",
+      "amount": "45.00",
+      "vat_rate": "19",
+      "declared": false,
+      "label": null,
+      "evidence": []
+    }
+  ],
+  "vat_summary": [
+    {
+      "rate": "7",
+      "base": "5915.10",
+      "vat": "414.06",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            90.0,
+            329.86,
+            105.5,
+            339.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            240.0,
+            329.86,
+            459.53,
+            339.9
+          ]
+        }
+      ]
+    },
+    {
+      "rate": "19",
+      "base": "133163.86",
+      "vat": "25301.13",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            90.0,
+            341.86,
+            110.5,
+            351.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            240.0,
+            341.86,
+            482.04,
+            351.9
+          ]
+        }
+      ]
+    }
+  ],
+  "secondary_amounts": {
+    "currency": "USD",
+    "total_amount": "182279.13",
+    "exchange_rate": "1.1058",
+    "evidence": [
+      {
+        "page": 2,
+        "bbox": [
+          340.0,
+          391.76,
+          489.73,
+          400.69
+        ]
+      }
+    ]
+  },
+  "parties": {
+    "supplier": {
+      "name": "Rheinwerk Industriebedarf GmbH & Co. KG",
+      "lines": [
+        "Gutenbergstraße 18",
+        "31860 Kassel",
+        "Deutschland"
+      ],
+      "vat_id": "DE018159083",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            50.24,
+            316.99,
+            64.74
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            69.86,
+            130.5,
+            79.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            81.86,
+            104.51,
+            91.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            93.86,
+            100.01,
+            103.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            50.24,
+            316.99,
+            64.74
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            69.86,
+            130.5,
+            79.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            81.86,
+            104.51,
+            91.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            93.86,
+            100.01,
+            103.9
+          ]
+        }
+      ]
+    },
+    "bill_to": {
+      "name": "Rheinwerk Elektronik GmbH",
+      "lines": [
+        "Lindenstraße 108",
+        "28194 Kassel",
+        "Deutschland"
+      ],
+      "vat_id": "DE139099603",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            241.85,
+            170.92,
+            251.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            253.85,
+            120.01,
+            263.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            265.86,
+            104.51,
+            275.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            277.86,
+            100.01,
+            287.9
+          ]
+        }
+      ]
+    },
+    "ship_to": {
+      "name": "Hafenkante Industriebedarf AG",
+      "lines": [
+        "Industrieweg 128",
+        "86579 Augsburg",
+        "Deutschland"
+      ],
+      "vat_id": "DE219935181",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            241.85,
+            452.42,
+            251.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            253.85,
+            388.51,
+            263.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            265.86,
+            386.02,
+            275.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            277.86,
+            370.01,
+            287.9
+          ]
+        }
+      ]
+    },
+    "mail_to": null
+  },
+  "noise": [
+    {
+      "kind": "carry_forward",
+      "label": "Übertrag auf Folgeseite",
+      "page": 1,
+      "bbox": [
+        499.96,
+        705.85,
+        544.97,
+        715.9
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        751.66,
+        218.79,
+        759.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        761.66,
+        178.67,
+        769.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        771.66,
+        251.03,
+        779.48
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Übertrag",
+      "page": 2,
+      "bbox": [
+        499.96,
+        235.85,
+        544.97,
+        245.9
+      ]
+    },
+    {
+      "kind": "amount_in_words",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        414.86,
+        392.07,
+        424.9
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        751.66,
+        218.79,
+        759.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        761.66,
+        178.67,
+        769.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        771.66,
+        251.03,
+        779.48
+      ]
+    }
+  ]
+}

@@ -16,7 +16,7 @@ from tempfile import TemporaryDirectory
 from typing import Any
 
 import pytest
-from make_forge_goldens import GOLDEN_SEED
+from make_forge_goldens import GOLDEN_SEED, golden_pairs
 
 from invoice_forge.families import Family
 from invoice_forge.produce import DocumentSpec, produce
@@ -24,6 +24,10 @@ from invoice_forge.profiles.loader import bundled_profile_ids
 
 # Every test that looks at a rendered document runs once per bundled profile.
 for_each_profile = pytest.mark.parametrize("profile_id", bundled_profile_ids())
+# And the golden images run once per profile and family the profile declares.
+for_each_pair = pytest.mark.parametrize(
+    ("profile_id", "family"), golden_pairs(), ids=[f"{p}-{f.value}" for p, f in golden_pairs()]
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,18 +40,23 @@ class Rendered:
     pages: int
 
 
-def render_document(profile_id: str, directory: Path, seed: int = GOLDEN_SEED) -> Rendered:
+def render_document(
+    profile_id: str,
+    directory: Path,
+    seed: int = GOLDEN_SEED,
+    family: Family = Family.CLASSIC,
+) -> Rendered:
     """Sample, render and read back one document, exactly as `forge render-one` does."""
-    spec = DocumentSpec(profile_id, Family.CLASSIC, seed)
-    produced = produce(spec, directory / f"{profile_id}.pdf")
+    spec = DocumentSpec(profile_id, family, seed)
+    produced = produce(spec, directory / f"{profile_id}_{family.value}.pdf")
     truth = json.loads(produced.truth.read_text(encoding="utf-8"))
     return Rendered(profile_id, produced.pdf, truth, produced.pages)
 
 
 @cache
-def rendered(profile_id: str) -> Rendered:
-    """This profile at the golden seed, rendered on first use and kept for the run."""
-    return render_document(profile_id, Path(_scratch().name))
+def rendered(profile_id: str, family: Family = Family.CLASSIC) -> Rendered:
+    """This pair at the golden seed, rendered on first use and kept for the run."""
+    return render_document(profile_id, Path(_scratch().name), family=family)
 
 
 @cache

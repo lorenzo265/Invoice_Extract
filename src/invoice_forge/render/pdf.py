@@ -85,9 +85,12 @@ class Canvas:
             pymupdf.Point(x, y), text, fontsize=size, fontname=FONT_NAMES[weight]
         )
 
-    def rule(self, y: float, x0: float, x1: float, width: float) -> None:
-        start, end = pymupdf.Point(x0, y), pymupdf.Point(x1, y)
+    def line(self, x0: float, y0: float, x1: float, y1: float, width: float) -> None:
+        start, end = pymupdf.Point(x0, y0), pymupdf.Point(x1, y1)
         self._page(None).draw_line(start, end, width=width, color=RULE_COLOUR)
+
+    def rule(self, y: float, x0: float, x1: float, width: float) -> None:
+        self.line(x0, y, x1, y, width)
 
     def box(self, x: float, y: float, width: float, height: float) -> None:
         """An empty rectangle where a payment QR code would be. Drawn, never an image."""

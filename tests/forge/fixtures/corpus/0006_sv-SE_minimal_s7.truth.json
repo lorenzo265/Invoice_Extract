@@ -1,0 +1,648 @@
+{
+  "schema": "forge-truth/1",
+  "generator": {
+    "version": "0.1.0",
+    "seed": 7,
+    "profile": "sv-SE",
+    "template": "minimal",
+    "knobs": []
+  },
+  "document": {
+    "type": "invoice",
+    "pages": 1,
+    "language": "sv",
+    "currency": "SEK",
+    "secondary_currency": null,
+    "rounding": "per_line"
+  },
+  "fields": {
+    "invoice_number": {
+      "value": "F-2024-608064",
+      "printed": "F-2024-608064",
+      "label": "Fakturanr",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            483.45,
+            71.86,
+            544.98,
+            81.9
+          ]
+        }
+      ]
+    },
+    "invoice_date": {
+      "value": "2024-06-14",
+      "printed": "2024-06-14",
+      "label": "Fakturadatum",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.96,
+            83.86,
+            544.99,
+            93.9
+          ]
+        }
+      ]
+    },
+    "due_date": {
+      "value": "2024-06-28",
+      "printed": "2024-06-28",
+      "label": "Förfallodatum",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.96,
+            95.86,
+            544.99,
+            105.9
+          ]
+        }
+      ]
+    },
+    "supplier_vat_id": {
+      "value": "SE018159083016",
+      "printed": "Momsregistreringsnummer: SE018159083016",
+      "label": "Momsregistreringsnummer",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            107.86,
+            234.02,
+            117.9
+          ]
+        }
+      ]
+    },
+    "customer_vat_id": {
+      "value": "SE099603082462",
+      "printed": "Kundens momsreg.nr: SE099603082462",
+      "label": "Kundens momsreg.nr",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            249.85,
+            213.03,
+            259.9
+          ]
+        }
+      ]
+    },
+    "currency": {
+      "value": "SEK",
+      "printed": "SEK",
+      "label": "Valuta",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            526.99,
+            131.85,
+            544.97,
+            141.9
+          ]
+        }
+      ]
+    },
+    "vat_rate": {
+      "value": "25",
+      "printed": "25 %",
+      "label": "Momssats",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            524.49,
+            403.86,
+            544.99,
+            413.9
+          ]
+        }
+      ]
+    },
+    "subtotal": {
+      "value": "11241.25",
+      "printed": "11 241,25 SEK",
+      "label": "Netto",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            484.45,
+            377.86,
+            544.94,
+            387.9
+          ]
+        }
+      ]
+    },
+    "vat_amount": {
+      "value": "2810.31",
+      "printed": "2 810,31 SEK",
+      "label": "Moms",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            489.46,
+            390.86,
+            544.94,
+            400.9
+          ]
+        }
+      ]
+    },
+    "total_amount": {
+      "value": "14051.56",
+      "printed": "14 051,56 SEK",
+      "label": "Totalt",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            483.96,
+            416.86,
+            544.95,
+            426.9
+          ]
+        }
+      ]
+    },
+    "supply_date": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "order_number": {
+      "value": "PO-835601",
+      "printed": "PO-835601",
+      "label": "Beställningsnr",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.97,
+            119.86,
+            544.98,
+            129.9
+          ]
+        }
+      ]
+    },
+    "customer_number": {
+      "value": "C-59795",
+      "printed": "C-59795",
+      "label": "Kundnummer",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            510.48,
+            107.86,
+            544.99,
+            117.9
+          ]
+        }
+      ]
+    },
+    "contract_number": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "our_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "your_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "payment_terms": {
+      "value": "2 % kassarabatt vid betalning inom 10 dagar.",
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "credit_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    }
+  },
+  "line_items": [
+    {
+      "pos": 1,
+      "sku": "SW-API-10K",
+      "description": "API-paket, 10 000 anrop per månad",
+      "quantity": "100",
+      "unit": "paket",
+      "unit_price": "89.00",
+      "discount_percent": null,
+      "vat_rate": "25",
+      "net_amount": "8900.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              303.86,
+              138.96,
+              313.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              303.86,
+              294.99,
+              313.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              382.98,
+              303.86,
+              398.0,
+              313.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              425.48,
+              303.86,
+              447.99,
+              313.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              303.86,
+              544.98,
+              313.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 2,
+      "sku": "SRV-WRT-Q",
+      "description": "Underhåll, kvartalsavgift, anläggning typ B",
+      "quantity": "7.5",
+      "unit": "avgift",
+      "unit_price": "245.50",
+      "discount_percent": null,
+      "vat_rate": "25",
+      "net_amount": "1841.25",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              320.86,
+              139.95,
+              330.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              320.86,
+              319.98,
+              330.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              385.49,
+              320.86,
+              397.99,
+              330.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              420.47,
+              320.86,
+              447.99,
+              330.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              509.97,
+              320.86,
+              544.98,
+              330.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 3,
+      "sku": "SW-CLD-50",
+      "description": "Molnlagring 50 GB, faktureras månadsvis",
+      "quantity": "2",
+      "unit": "månad",
+      "unit_price": "12.5000",
+      "discount_percent": null,
+      "vat_rate": "25",
+      "net_amount": "25.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              337.86,
+              136.48,
+              347.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              337.86,
+              316.98,
+              347.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              337.86,
+              398.0,
+              347.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              415.47,
+              337.86,
+              447.98,
+              347.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              337.86,
+              544.99,
+              347.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 4,
+      "sku": "SRV-INST-H",
+      "description": "Installation på plats, per timme",
+      "quantity": "5",
+      "unit": "tim",
+      "unit_price": "95.00",
+      "discount_percent": null,
+      "vat_rate": "25",
+      "net_amount": "475.00",
+      "section": null,
+      "cells": {
+        "sku": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              354.86,
+              139.45,
+              364.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              354.86,
+              273.96,
+              364.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              392.99,
+              354.86,
+              398.0,
+              364.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              425.48,
+              354.86,
+              447.99,
+              364.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              354.86,
+              544.99,
+              364.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    }
+  ],
+  "charges": [],
+  "vat_summary": [
+    {
+      "rate": "25",
+      "base": "11241.25",
+      "vat": "2810.31",
+      "evidence": []
+    }
+  ],
+  "secondary_amounts": null,
+  "parties": {
+    "supplier": {
+      "name": "Norrsken Elektronik AB",
+      "lines": [
+        "Industrivägen 142",
+        "609 13 Örebro",
+        "Sverige"
+      ],
+      "vat_id": "SE018159083016",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            50.24,
+            195.81,
+            64.74
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            69.86,
+            121.51,
+            79.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            81.86,
+            108.0,
+            91.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            93.86,
+            80.5,
+            103.9
+          ]
+        }
+      ]
+    },
+    "bill_to": {
+      "name": "Almvik Elektronik HB",
+      "lines": [
+        "Verkstadsgatan 144",
+        "219 93 Uppsala",
+        "Sverige"
+      ],
+      "vat_id": "SE099603082462",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            201.85,
+            140.94,
+            211.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            213.85,
+            130.01,
+            223.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            225.85,
+            113.02,
+            235.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            237.85,
+            80.5,
+            247.9
+          ]
+        }
+      ]
+    },
+    "ship_to": {
+      "name": "Almvik Teknik AB",
+      "lines": [
+        "Verkstadsgatan 64",
+        "231 94 Örebro",
+        "Sverige"
+      ],
+      "vat_id": "SE181909378657",
+      "evidence": []
+    },
+    "mail_to": null
+  },
+  "noise": []
+}

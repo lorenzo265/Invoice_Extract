@@ -67,6 +67,11 @@
     "payment_terms": [
       "Zahlungsbedingungen",
       "Zahlungsziel"
+    ],
+    "credit_reference": [
+      "Ursprungsrechnung",
+      "Bezug Rechnung",
+      "Stornierte Rechnung"
     ]
   },
   "totals_labels": {
@@ -183,6 +188,10 @@
     ]
   },
   "vat_summary_headers": {
+    "code": [
+      "Code",
+      "Steuerschlüssel"
+    ],
     "rate": [
       "Satz",
       "Steuersatz"
@@ -339,9 +348,13 @@
     ],
     "scales": [
       "hundert",
-      "tausend",
-      "Million"
+      "tausend"
     ],
+    "million": [
+      "eine Million",
+      "Millionen"
+    ],
+    "scale_one": "ein",
     "joiner": "und",
     "currency_unit": [
       "Euro",

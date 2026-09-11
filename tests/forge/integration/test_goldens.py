@@ -13,8 +13,9 @@ from pathlib import Path
 
 import pytest
 from make_forge_goldens import GOLDEN_DPI, GOLDEN_PAGE, golden_path
-from rendering import for_each_profile, rendered
+from rendering import for_each_pair, rendered
 
+from invoice_forge.families import Family
 from invoice_forge.layout.classic import A4
 from invoice_forge.lexicon.loader import bundled_lexicon_ids, load_lexicon
 from invoice_forge.profiles.schema import FontFamily
@@ -27,20 +28,23 @@ SAMPLE_SIZE = 11.0
 SAMPLE_TOP = 100.0
 
 
-@for_each_profile
-def test_a_golden_image_is_committed_for_every_profile(profile_id: str) -> None:
-    path = golden_path(profile_id)
-    assert path.is_file(), f"no golden image for {profile_id}; run {REGENERATE}"
+@for_each_pair
+def test_a_golden_image_is_committed_for_every_profile_and_family(
+    profile_id: str, family: Family
+) -> None:
+    path = golden_path(profile_id, family)
+    assert path.is_file(), f"no golden image for {profile_id} {family.value}; run {REGENERATE}"
     assert path.stat().st_size > 0
 
 
-@for_each_profile
-def test_the_page_renders_exactly_as_it_was_reviewed(profile_id: str) -> None:
-    document = rendered(profile_id)
-    expected = golden_path(profile_id).read_bytes()
+@for_each_pair
+def test_the_page_renders_exactly_as_it_was_reviewed(profile_id: str, family: Family) -> None:
+    document = rendered(profile_id, family)
+    expected = golden_path(profile_id, family).read_bytes()
     image = page_image(document.pdf, GOLDEN_PAGE, GOLDEN_DPI)
     assert image == expected, (
-        f"the rendered page differs from the committed image; if wanted, run {REGENERATE}"
+        f"the rendered {family.value} page differs from the committed image; "
+        f"if wanted, run {REGENERATE}"
     )
 
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import date
 from decimal import Decimal
 
+from invoice_forge.families import Family
 from invoice_forge.fields import LABELLED_FIELDS
 from invoice_forge.lexicon.loader import load_lexicon
 from invoice_forge.model import (
@@ -18,7 +19,7 @@ from invoice_forge.model import (
     RoundingPolicy,
 )
 from invoice_forge.profiles.loader import load_profile
-from invoice_forge.render.totals import headline_rate
+from invoice_forge.render.summary import headline_rate
 from invoice_forge.sample.catalogue import load_catalogue
 from invoice_forge.sample.sampler import SampleRequest, sample_document
 from invoice_forge.truth.values import field_values
@@ -30,7 +31,7 @@ def sampled() -> Document:
     profile = load_profile("de-DE")
     lexicon = load_lexicon(profile.lexicon)
     catalogue = load_catalogue(profile.lexicon)
-    return sample_document(SampleRequest(profile, lexicon, catalogue, 3))
+    return sample_document(SampleRequest(profile, lexicon, catalogue, Family.CLASSIC, 3))
 
 
 def bare(**changes: object) -> Document:

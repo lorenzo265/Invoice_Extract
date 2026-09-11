@@ -11,13 +11,19 @@ from random import Random
 
 import pytest
 
+from invoice_forge.families import Family
 from invoice_forge.knobs import Knob
 from invoice_forge.lexicon.loader import load_lexicon
-from invoice_forge.model import Document
+from invoice_forge.model import CreditNoteStyle, Document, DocumentType, RoundingPolicy
 from invoice_forge.profiles.loader import load_profile
 from invoice_forge.sample import variations
 from invoice_forge.sample.catalogue import load_catalogue
-from invoice_forge.sample.sampler import ITEM_RANGE, SampleRequest, sample_document
+from invoice_forge.sample.sampler import (
+    ITEM_RANGE,
+    OPTIONAL_REFERENCES,
+    SampleRequest,
+    sample_document,
+)
 
 PROFILE = "de-DE"
 SEED = 3
@@ -29,14 +35,30 @@ CONTENT_KNOBS = (
     Knob.DISCOUNT,
     Knob.PARTY_BLOCKS,
     Knob.PLACEHOLDER_ADDRESSES,
+    Knob.MULTI_RATE,
+    Knob.CHARGES,
+    Knob.DECLARED_CHARGE,
+    Knob.UNDECLARED_CHARGE,
+    Knob.DUAL_CURRENCY_ECHO,
+    Knob.CREDIT_NOTE,
+    Knob.SUPPLY_DATE,
+    Knob.EXTRA_REFERENCES,
 )
+# The two knobs that pin a value the sampler would otherwise draw. Pinning the value it
+# happened to draw changes nothing, which is right, so they are not held to that rule.
+PINNING_KNOBS = (Knob.ROUNDING_PER_LINE, Knob.ROUNDING_TOTAL)
 
 
-def drawn(*knobs: Knob, seed: int = SEED, profile_id: str = PROFILE) -> Document:
+def drawn(
+    *knobs: Knob,
+    seed: int = SEED,
+    profile_id: str = PROFILE,
+    family: Family = Family.CLASSIC,
+) -> Document:
     profile = load_profile(profile_id)
     lexicon = load_lexicon(profile.lexicon)
     catalogue = load_catalogue(profile.lexicon)
-    return sample_document(SampleRequest(profile, lexicon, catalogue, seed, knobs))
+    return sample_document(SampleRequest(profile, lexicon, catalogue, family, seed, knobs))
 
 
 @pytest.mark.parametrize("knob", CONTENT_KNOBS)
@@ -44,7 +66,7 @@ def test_a_content_knob_changes_the_document(knob: Knob) -> None:
     assert drawn(knob) != drawn()
 
 
-@pytest.mark.parametrize("knob", CONTENT_KNOBS)
+@pytest.mark.parametrize("knob", (*CONTENT_KNOBS, *PINNING_KNOBS))
 def test_a_knobbed_document_is_as_reproducible_as_any_other(knob: Knob) -> None:
     assert drawn(knob) == drawn(knob)
 
@@ -140,9 +162,104 @@ def test_placeholder_addresses_points_at_the_bill_to_block_instead_of_repeating_
 
 def test_a_knob_the_sampler_does_not_own_leaves_the_content_alone() -> None:
     """`trap_labels` is a layout knob: the document it is drawn for is the same document."""
-    assert drawn(Knob.TRAP_LABELS) == drawn()
-    assert drawn(Knob.PAGE_NUMBERING) == drawn()
-    assert drawn(Knob.CARRY_FORWARD) == drawn()
+    for knob in (
+        Knob.TRAP_LABELS,
+        Knob.PAGE_NUMBERING,
+        Knob.CARRY_FORWARD,
+        Knob.VAT_SUMMARY_TABLE,
+        Knob.AMOUNT_IN_WORDS,
+        Knob.BANK_FOOTER,
+        Knob.NOISE_FOOTER,
+        Knob.PAYMENT_TERMS_BLOCK,
+        Knob.STAMP_COPY,
+        Knob.COLUMN_SET,
+        Knob.THOUSANDS_VARIANT,
+        Knob.EXEMPTION_VERBIAGE,
+    ):
+        assert drawn(knob) == drawn(), knob
+
+
+def test_multi_rate_puts_a_document_at_more_than_one_rate() -> None:
+    rates = load_profile(PROFILE).vat_rates
+    assert set(drawn().vat_rates) == {rates.standard}
+    mixed = {rate for seed in range(8) for rate in drawn(Knob.MULTI_RATE, seed=seed).vat_rates}
+    assert mixed > {rates.standard}
+    assert mixed <= {rates.standard, rates.reduced, rates.zero}
+
+
+def test_each_charge_knob_puts_exactly_one_charge_on_the_document() -> None:
+    assert drawn().charges == ()
+    assert [charge.declared for charge in drawn(Knob.DECLARED_CHARGE).charges] == [True]
+    assert [charge.declared for charge in drawn(Knob.UNDECLARED_CHARGE).charges] == [False]
+    assert len(drawn(Knob.CHARGES).charges) == 1
+    every = drawn(Knob.CHARGES, Knob.DECLARED_CHARGE, Knob.UNDECLARED_CHARGE).charges
+    assert len(every) == 3
+    assert {charge.declared for charge in every[1:]} == {True, False}
+
+
+def test_an_undeclared_charge_is_in_the_total_and_on_no_line() -> None:
+    hidden = drawn(Knob.UNDECLARED_CHARGE)
+    totals = hidden.totals
+    assert totals.charges_total == 0
+    assert totals.undeclared_total == hidden.charges[0].amount
+    assert totals.total_amount > totals.subtotal + totals.vat_amount
+
+
+def test_the_rounding_knobs_pin_the_policy_and_an_unpinned_corpus_has_both() -> None:
+    assert drawn(Knob.ROUNDING_TOTAL).rounding is RoundingPolicy.TOTAL
+    assert drawn(Knob.ROUNDING_PER_LINE).rounding is RoundingPolicy.PER_LINE
+    unpinned = {drawn(seed=seed).rounding for seed in range(12)}
+    assert unpinned == set(RoundingPolicy)
+
+
+def test_a_credit_note_reverses_the_invoice_and_names_it() -> None:
+    invoice, note = drawn(), drawn(Knob.CREDIT_NOTE)
+    assert invoice.type is DocumentType.INVOICE
+    assert note.type is DocumentType.CREDIT_NOTE
+    assert note.identifiers.credit_reference == invoice.identifiers.invoice_number
+    assert note.identifiers.invoice_number != invoice.identifiers.invoice_number
+    style = load_profile(PROFILE).credit_note_style
+    reversed_amounts = style is CreditNoteStyle.NEGATIVE_AMOUNTS
+    assert (note.totals.total_amount < 0) is reversed_amounts
+
+
+def test_supply_date_is_the_other_value_of_whatever_the_profile_prints() -> None:
+    for profile_id in ("de-DE", "en-GB"):
+        prints = load_profile(profile_id).prints_supply_date
+        plain = drawn(profile_id=profile_id).dates.supply_date is not None
+        turned = drawn(Knob.SUPPLY_DATE, profile_id=profile_id).dates.supply_date is not None
+        assert plain is prints
+        assert turned is not prints
+
+
+def test_extra_references_carries_every_optional_reference_at_once() -> None:
+    every = drawn(Knob.EXTRA_REFERENCES).identifiers
+    assert all(getattr(every, name) is not None for name in OPTIONAL_REFERENCES)
+    profile = load_profile(PROFILE)
+    plain = drawn().identifiers
+    carried = {name for name in OPTIONAL_REFERENCES if getattr(plain, name) is not None}
+    assert carried == set(profile.extensions)
+
+
+def test_the_saas_family_bills_subscriptions_in_sections_with_components() -> None:
+    """A family implies content too, and `saas` is what that means."""
+    goods = drawn(family=Family.CLASSIC)
+    subscribed = drawn(family=Family.SAAS)
+    assert all(item.subscription is None for item in goods.items)
+    assert all(item.subscription is not None for item in subscribed.items)
+    assert {item.section for item in subscribed.items} != {None}
+    assert any(item.sub_items for item in subscribed.items)
+
+
+def test_a_subscription_carries_every_column_the_saas_table_prints() -> None:
+    for item in drawn(family=Family.SAAS).items:
+        period = item.subscription
+        assert period is not None
+        assert period.subscription_id.startswith("SUB-")
+        assert period.billing_cycle in variations.BILLING_CYCLES
+        assert period.period_start and period.period_end
+        assert period.share_percent is not None
+        assert period.remaining_term
 
 
 def test_two_knobs_compose_without_either_undoing_the_other() -> None:

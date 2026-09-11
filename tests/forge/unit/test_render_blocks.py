@@ -1,8 +1,8 @@
 """What the renderer does with the blocks a family switches off, and with odd documents.
 
-`classic` has every block, so the four bundled profiles never exercise a missing one.
-These are the paths the simpler families will take in PR F5, and the documents the knobs
-will produce — a single VAT rate, a party without a VAT id, a row with sub-items.
+`classic` has every block, so a document rendered with it never exercises a missing one.
+These are the paths the simpler families take, and the documents the knobs produce — a
+single VAT rate, a party without a VAT id, a row with sub-items.
 """
 
 from __future__ import annotations
@@ -17,6 +17,7 @@ import pytest
 
 from invoice_forge.families import Family
 from invoice_forge.layout.classic import CLASSIC, family_spec
+from invoice_forge.layout.derived import derived_specs
 from invoice_forge.layout.spec import FamilySpec, VatSummaryStyle
 from invoice_forge.lexicon.loader import load_lexicon
 from invoice_forge.model import (
@@ -33,7 +34,7 @@ from invoice_forge.model import (
     SubItem,
 )
 from invoice_forge.profiles.loader import load_profile
-from invoice_forge.render import blocks, table, totals
+from invoice_forge.render import blocks, header, summary, table, totals
 from invoice_forge.render.context import RenderContext
 from invoice_forge.render.placement import Slot
 from invoice_forge.render.renderer import RenderRequest, render
@@ -128,7 +129,7 @@ def test_a_supplier_without_a_vat_id_has_no_line_for_one() -> None:
     anonymous = Party("A Vendor Ltd", ("1 A Street",), None)
     context = context_for(CLASSIC, document(supplier=anonymous))
     sheet = sheet_for(context)
-    blocks.draw_header(sheet, context)
+    header.draw_header(sheet, context)
     assert not [p for p in sheet.placements if p.mark.name == "supplier_vat_id"]
 
 
@@ -146,12 +147,12 @@ def test_a_document_at_two_rates_states_none_of_them_as_the_rate() -> None:
 
 
 def test_the_headline_rate_of_a_document_with_no_rows_is_nothing() -> None:
-    assert totals.headline_rate(document(items=()).totals) is None
+    assert summary.headline_rate(document(items=()).totals) is None
 
 
 def test_the_headline_rate_is_the_one_the_document_is_mostly_at() -> None:
     mixed = document(items=(item(1, RATE), item(2, Decimal("5")), item(3, Decimal("5"))))
-    assert totals.headline_rate(mixed.totals) == Decimal("5")
+    assert summary.headline_rate(mixed.totals) == Decimal("5")
 
 
 def test_an_undeclared_charge_is_in_no_totals_row() -> None:
@@ -188,10 +189,11 @@ def test_a_column_the_table_has_no_value_for_is_refused() -> None:
         )
 
 
-def test_a_family_that_is_declared_but_not_built_says_so() -> None:
-    with pytest.raises(ValueError, match="not built yet"):
-        family_spec(Family.SAAS)
+def test_every_family_the_vocabulary_names_has_a_declaration() -> None:
+    """`Family` is closed, so a member without a spec is a member nothing can render."""
     assert family_spec(Family.CLASSIC) is CLASSIC
+    for family in Family:
+        assert family_spec(family).family is family
 
 
 def test_a_row_with_sub_items_carries_them_into_the_truth(tmp_path: Path) -> None:
@@ -226,3 +228,33 @@ def test_an_unruled_family_draws_its_totals_the_same_way() -> None:
     sheet = sheet_for(context)
     totals.draw_totals(sheet, context, 400.0)
     assert [p.mark.name for p in sheet.placements if p.mark.slot is Slot.FIELD]
+
+
+def test_a_coded_summary_names_the_zero_rate_as_exempt() -> None:
+    """The three codes a coded table prints: the standard rate, a reduced one, and zero."""
+    coded = family_spec(Family.TABULAR)
+    rates = load_profile("en-GB").vat_rates
+    context = context_for(coded, document(items=(item(1, rates.zero), item(2, rates.reduced))))
+    assert summary.vat_code(rates.zero, context) == summary.CODE_ZERO
+    assert summary.vat_code(rates.reduced, context) == summary.CODE_REDUCED
+    assert summary.vat_code(rates.standard, context) == summary.CODE_STANDARD
+
+
+def test_a_subscription_column_on_a_row_that_bills_no_period_is_empty() -> None:
+    """The saas column set on a document of goods: every subscription cell is blank."""
+    context = context_for(family_spec(Family.SAAS))
+    sheet = sheet_for(context)
+    rows = table.measure_rows(sheet, context.document, context.family.items)
+    y = table.draw_header(sheet, context.family.items, context.wording, 300.0)
+    table.draw_row(sheet, rows[0], context.family.items, context.wording, y)
+    drawn = {placement.text for placement in sheet.placements}
+    assert "SUB-" not in " ".join(drawn)
+    assert context.document.items[0].subscription is None
+
+
+def test_deriving_from_a_family_with_blocks_already_off_leaves_them_off() -> None:
+    """`derived_specs` is total over any maximal family, including one that is not."""
+    derived = derived_specs(BARE)
+    assert derived[Family.TABULAR].vat_summary is None
+    assert derived[Family.MINIMAL].parties is None
+    assert set(derived) == set(Family) - {Family.CLASSIC}

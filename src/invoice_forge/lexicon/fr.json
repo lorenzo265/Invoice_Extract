@@ -66,6 +66,10 @@
     "payment_terms": [
       "Conditions de paiement",
       "Modalités de règlement"
+    ],
+    "credit_reference": [
+      "Facture d'origine",
+      "Facture concernée"
     ]
   },
   "totals_labels": {
@@ -182,6 +186,10 @@
     ]
   },
   "vat_summary_headers": {
+    "code": [
+      "Code",
+      "Code TVA"
+    ],
     "rate": [
       "Taux",
       "Taux de TVA"
@@ -338,9 +346,13 @@
     ],
     "scales": [
       "cent",
-      "mille",
-      "million"
+      "mille"
     ],
+    "million": [
+      "un million",
+      "millions"
+    ],
+    "scale_one": "un",
     "joiner": "et",
     "currency_unit": [
       "euro",

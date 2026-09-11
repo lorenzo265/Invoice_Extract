@@ -125,6 +125,13 @@ def test_a_currency_word_needs_a_singular_and_a_plural(tmp_path: Path) -> None:
     assert error(tmp_path, data) == expected
 
 
+def test_the_scale_words_are_the_hundred_and_the_thousand(tmp_path: Path) -> None:
+    """A million is spelled whole, so a lexicon that lists it as a scale is out of date."""
+    data = base()
+    data["amount_in_words"]["scales"] = ["hundred", "thousand", "million"]
+    assert error(tmp_path, data) == "amount_in_words.scales must list the hundred and the thousand"
+
+
 def test_an_unknown_spelling_key_is_rejected(tmp_path: Path) -> None:
     data = base()
     data["amount_in_words"]["hundreds"] = ["hundred"]
