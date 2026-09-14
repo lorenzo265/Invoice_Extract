@@ -4,18 +4,24 @@
 
 ## Scope
 
-<!-- Which PR of docs/IMPLEMENTATION_PLAN.md is this? Name the number and the plan's
-     title for it, and confirm nothing from an earlier or later PR leaked in. -->
+<!-- Which PR of the plan in flight is this — docs/IMPLEMENTATION_PLAN.md,
+     docs/FORGE_PLAN.md or docs/ENGINE_PLAN.md? Name the plan, the number and the
+     plan's title for it, and confirm nothing from an earlier or later PR leaked in. -->
 
-PR __ of the plan — "\_\_\_\_":
+PR __ of \_\_\_\_ — "\_\_\_\_":
 
 ## Gate output
 
 <!-- Paste the tail of your last local `make check` run: the pass/fail summary for
-     lint, typecheck, test + coverage, and hygiene. Not the full scrollback. -->
+     lint, typecheck, test + coverage, and hygiene. Not the full scrollback. From
+     series E on, paste the tail of `make bench` too. -->
 
 ```
 $ make check
+```
+
+```
+$ make bench
 ```
 
 ## Decisions
@@ -27,10 +33,11 @@ $ make check
 ## Self-review checklist
 
 - [ ] `make check` passes locally (lint + typecheck + test + hygiene), with no step skipped or weakened.
+- [ ] `make bench` passes and no field's hit rate in `benchmarks/latest.json` is lower than on `main`.
 - [ ] This PR implements exactly one plan item — no scope from an earlier or later PR leaked in.
 - [ ] No `# noqa`, `# type: ignore`, or lowered coverage/size threshold was added without a same-line comment justifying it.
 - [ ] No new dependency — runtime or development — was added; `pyproject.toml`'s dependency lists are unchanged.
-- [ ] No file under `samples/*.expected.json` was edited.
+- [ ] No truth file was edited to make a gate pass.
 - [ ] Every new or changed function is ≤ 40 lines and every module is ≤ 250 lines, in every package under `src/`.
 - [ ] Every new public function and class is fully typed; no `Any` leaked in.
 - [ ] No `TODO`, `FIXME`, or commented-out code in the diff.

@@ -43,11 +43,19 @@ so, in each direction.
 | [0003](0003-money-is-decimal-never-float.md) | Money is `Decimal`, never `float` | `domain/money.py` |
 | [0004](0004-layouts-are-data.md) | A vendor layout is JSON, not code | `layout/schema.py`, `layout/loader.py`, `layouts/*.json` |
 | [0005](0005-findings-not-exceptions-for-domain-errors.md) | Domain disagreements are `Finding`s, not exceptions | `domain/findings.py`, `validation/invariants.py` |
+| [0006](0006-profiles-not-layouts.md) | The unit of configuration is a vendor profile | `profile/`, `profiles/*.json` |
+| [0007](0007-one-engine-six-spec-kinds.md) | One engine runs six spec kinds | `extraction/engine.py`, `extraction/spec/` |
+| [0008](0008-no-default-profile.md) | An undetected profile stops extraction | `profile/detect.py` |
+| [0009](0009-calibration-needs-negatives.md) | Confidence is calibrated offline on the synthetic corpus | `scoring/`, `calibration/` |
+| [0010](0010-findings-and-checks-always-serialized.md) | Findings and checks are always serialized | `validation/`, `output/json_writer.py` |
 
-Read in this order for the fastest route through how the pipeline reasons: 0004 (what
-varies between invoices) → 0001 (how a field is defined against that variation) → 0002
+Read in this order for the fastest route through how the pipeline reasons: 0006 (what
+varies between invoices, and what a profile is) → 0001 and 0007 (how a field is
+declared against that variation, and the one engine that runs the declaration) → 0002
 (what running a field spec produces) → 0003 (how the money in that output is typed) →
-0005 (how the pipeline reports when a value doesn't add up).
+0005 and 0010 (how the pipeline reports when a value doesn't add up, and why every
+report is serialized) → 0008 (what happens when no profile matches at all) → 0009 (how
+the confidence attached to every value is fitted).
 
 ## When to write one
 
