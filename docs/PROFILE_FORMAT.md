@@ -19,8 +19,13 @@ vendor. The generator's half is the `render` object; everything else is this doc
 
 `profiles/_defaults.json` → `profiles/<id>.json` → the matching `variants[]` entry.
 One merge function, one rule table (`profile/merge.py`): the key paths listed in
-`APPEND_PATHS` — every label vocabulary — are appended and de-duplicated; everything else
-is replaced. The merged result is what every stage sees.
+`APPEND_PATHS` — every label vocabulary, and `custom_fields` — are appended and
+de-duplicated; everything else is replaced. The merged result is what every stage sees.
+
+`custom_fields` appends because the defaults say what any vendor *may* print in its
+header block and a profile says what this one usually prints: a document that carries a
+reference its vendor rarely prints is still read, and a vendor that words the reference
+its own way adds that wording rather than losing the shared one.
 
 ## Labels come from the language
 

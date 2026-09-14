@@ -34,6 +34,10 @@ APPEND_PATHS: tuple[str, ...] = (
     "document_types.credit_note_titles",
     "document_types.credit_reference_labels",
     "noise.ignore_labels",
+    # A vendor's own extras are added to the ones every vendor may print, not swapped for
+    # them: `custom_fields` in a profile says what this vendor usually prints, and the
+    # defaults say what any of them may print when a document happens to carry it.
+    "custom_fields",
 )
 
 

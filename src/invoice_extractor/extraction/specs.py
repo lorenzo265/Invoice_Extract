@@ -1,126 +1,95 @@
-"""The ten fields, declared. Adding an eleventh is one entry here plus a test (ADR-0001).
+"""The fields, declared. Adding one is an entry here plus a test (ADR-0001).
 
 Nothing in this file knows a vendor's vocabulary — the labels, zones and formats live in
-`layouts/*.json`. What a spec names is behaviour: how to find the text, how to read it,
+`profiles/*.json`. What a spec names is behaviour: how to find the text, how to read it,
 how to judge it, how to break a tie, and what to report when nothing passes.
+
+The order below is the order a report prints them in; the order they are *run* in is
+`engine.order`, which puts a field before the ones derived from it.
 """
 
 from __future__ import annotations
 
-from invoice_extractor.domain.models import Strategy
-from invoice_extractor.extraction.normalizers import (
-    parse_date,
-    parse_money,
-    parse_percent,
-    strip_label,
-    upper_alnum,
-)
-from invoice_extractor.extraction.rankers import (
-    closest_to_label,
-    top_most,
-    valid_first,
-    zone_priority,
-)
-from invoice_extractor.extraction.spec import FieldSpec, OnAllInvalid
-from invoice_extractor.extraction.validators import (
-    is_currency_code,
-    is_date,
-    is_percent,
-    is_positive_money,
-    matches_pattern,
+from invoice_extractor.extraction.spec import AnchorSpec, DerivedSpec, LabelSpec, Spec, validate
+from invoice_extractor.extraction.units.derivations import DERIVATIONS
+
+# A value that parsed, in the expected zone, nearest the label that introduced it,
+# highest on the page. One order for every labelled field: which of the three ways a
+# vendor printed a label is the document's business, and the distance settles it.
+BY_LABEL = ("valid_first", "zone_priority", "closest_to_label", "top_most")
+# An amount is asked for once, at the end: the last page settles a label a running table
+# prints on every one of them.
+BY_AMOUNT = ("valid_first", "last_page_first", "zone_priority", "closest_to_label")
+# Only what is a number gets to be one.
+NUMERIC = ("not_a_trap", "looks_numeric")
+# What a vendor prints in its header block beside the fields the catalog names. A profile
+# declares the ones it prints under `custom_fields`; a profile that declares none simply
+# never resolves them.
+DECLARED_BY_THE_VENDOR = (
+    "contract_number",
+    "our_reference",
+    "your_reference",
+    "credit_reference",
 )
 
-INVOICE_NUMBER_PATTERN = r"[A-Z0-9][A-Z0-9/-]{2,}"
-VAT_ID_PATTERN = r"[A-Z]{2}[A-Z0-9]{2,12}"
 
-BY_POSITION = (valid_first, zone_priority, top_most)
-BY_LABEL_DISTANCE = (valid_first, zone_priority, closest_to_label)
-# Every field is labelled, and a labelled value sits either in the label's own run of
-# text or at the next tab stop along. Which of the two a vendor uses is the vendor's
-# business, so every field looks both ways and the rankers sort out what comes back.
-BESIDE_OR_IN_LINE = (Strategy.LABEL_RIGHT, Strategy.LABEL_BESIDE)
+def _identifier(name: str, source: str = "fields") -> LabelSpec:
+    return LabelSpec(
+        name=name,
+        normalizer="strip_label",
+        validator="is_identifier",
+        rankers=BY_LABEL,
+        source=source,
+    )
 
-FIELD_SPECS: tuple[FieldSpec, ...] = (
-    FieldSpec(
-        name="invoice_number",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=strip_label,
-        validator=matches_pattern(INVOICE_NUMBER_PATTERN),
-        rankers=BY_POSITION,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
-    ),
-    FieldSpec(
-        name="invoice_date",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=parse_date,
-        validator=is_date,
-        rankers=BY_POSITION,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
-    ),
-    FieldSpec(
-        name="due_date",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=parse_date,
-        validator=is_date,
-        rankers=BY_POSITION,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
-    ),
-    FieldSpec(
+
+def _date(name: str) -> LabelSpec:
+    return LabelSpec(name=name, normalizer="parse_date", validator="is_date", rankers=BY_LABEL)
+
+
+def _money(name: str) -> LabelSpec:
+    return LabelSpec(
+        name=name,
+        normalizer="parse_money",
+        validator="is_money",
+        rankers=BY_AMOUNT,
+        filters=NUMERIC,
+    )
+
+
+SPECS: tuple[Spec, ...] = (
+    _identifier("invoice_number"),
+    _identifier("order_number"),
+    _identifier("customer_number"),
+    _date("invoice_date"),
+    _date("supply_date"),
+    _date("due_date"),
+    AnchorSpec(
         name="supplier_vat_id",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=upper_alnum,
-        validator=matches_pattern(VAT_ID_PATTERN),
-        rankers=BY_POSITION,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
+        expected="supplier.vat_id",
+        normalizer="upper_alnum",
+        validator="is_vat_id",
     ),
-    FieldSpec(
+    LabelSpec(
         name="customer_vat_id",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=upper_alnum,
-        validator=matches_pattern(VAT_ID_PATTERN),
-        rankers=BY_POSITION,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
+        normalizer="upper_alnum",
+        validator="is_vat_id",
+        rankers=BY_LABEL,
     ),
-    FieldSpec(
-        name="currency",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=upper_alnum,
-        validator=is_currency_code,
-        rankers=BY_POSITION,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
-    ),
-    FieldSpec(
+    DerivedSpec(name="currency", derive="currency"),
+    LabelSpec(
         name="vat_rate",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=parse_percent,
-        validator=is_percent,
-        rankers=BY_LABEL_DISTANCE,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
+        normalizer="parse_percent",
+        validator="is_percent",
+        rankers=BY_AMOUNT,
+        filters=NUMERIC,
     ),
-    FieldSpec(
-        name="subtotal",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=parse_money,
-        validator=is_positive_money,
-        rankers=BY_LABEL_DISTANCE,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
-    ),
-    FieldSpec(
-        name="vat_amount",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=parse_money,
-        validator=is_positive_money,
-        rankers=BY_LABEL_DISTANCE,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
-    ),
-    FieldSpec(
-        name="total_amount",
-        strategies=BESIDE_OR_IN_LINE,
-        normalizer=parse_money,
-        validator=is_positive_money,
-        rankers=BY_LABEL_DISTANCE,
-        on_all_invalid=OnAllInvalid.NOT_FOUND,
-    ),
+    _money("subtotal"),
+    _money("vat_amount"),
+    _money("total_amount"),
+    *(_identifier(name, source="custom_fields") for name in DECLARED_BY_THE_VENDOR),
 )
 
-FIELD_ORDER: tuple[str, ...] = tuple(spec.name for spec in FIELD_SPECS)
+FIELD_ORDER: tuple[str, ...] = tuple(spec.name for spec in SPECS)
+
+validate(SPECS, DERIVATIONS)

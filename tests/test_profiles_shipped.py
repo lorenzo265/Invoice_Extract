@@ -13,11 +13,21 @@ from pathlib import Path
 import pytest
 
 from invoice_extractor.domain.models import LINE_ITEM_COLUMNS
-from invoice_extractor.extraction.specs import FIELD_ORDER
+from invoice_extractor.extraction.spec import LabelSpec
+from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_forge.fields import LINE_ITEM_COLUMNS as GENERATED_COLUMNS
 from invoice_forge.fields import METADATA_FIELDS, SCALAR_FIELDS
 from invoice_forge.profiles.loader import load_profile, profile_ids
+
+# Which of the declared fields a profile describes where. A derived field is described
+# nowhere: no vendor prints it, so no vendor has anything to say about it.
+DECLARED_AS_FIELDS = tuple(
+    spec.name for spec in SPECS if isinstance(spec, LabelSpec) and spec.source == "fields"
+)
+DECLARED_AS_CUSTOM = tuple(
+    spec.name for spec in SPECS if isinstance(spec, LabelSpec) and spec.source == "custom_fields"
+)
 
 CATALOG = Path("docs/FIELD_CATALOG.md")
 SHIPPED = ProfileRegistry()
@@ -32,14 +42,20 @@ def test_every_shipped_profile_loads(profile_id: str) -> None:
 @pytest.mark.parametrize("profile_id", SHIPPED.ids())
 def test_every_field_the_extractor_reads_is_declared_with_labels(profile_id: str) -> None:
     profile = SHIPPED.get(profile_id)
-    assert set(FIELD_ORDER) <= set(profile.fields)
-    assert all(profile.fields[name].labels for name in FIELD_ORDER)
+    assert set(DECLARED_AS_FIELDS) <= set(profile.fields)
+    assert all(profile.fields[name].labels for name in DECLARED_AS_FIELDS)
 
 
 @pytest.mark.parametrize("profile_id", SHIPPED.ids())
 def test_every_field_the_extractor_reads_is_given_a_zone(profile_id: str) -> None:
     profile = SHIPPED.get(profile_id)
-    assert all(profile.fields[name].zones for name in FIELD_ORDER)
+    assert all(profile.fields[name].zones for name in DECLARED_AS_FIELDS)
+
+
+@pytest.mark.parametrize("profile_id", SHIPPED.ids())
+def test_every_extra_a_vendor_may_print_is_declared_as_a_custom_field(profile_id: str) -> None:
+    declared = {custom.name for custom in SHIPPED.get(profile_id).custom_fields}
+    assert set(DECLARED_AS_CUSTOM) <= declared
 
 
 @pytest.mark.parametrize("profile_id", SHIPPED.ids())

@@ -41,19 +41,27 @@ Invoice Extraction Report
 ================================================================================
 source   tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf
 profile  fr-FR
+kind     invoice
 
-FIELD            VALUE            CONF  EVIDENCE
+FIELD             VALUE            CONF  EVIDENCE
 --------------------------------------------------------------------------------
-invoice_number   FAC-2024-608064  1.00  p1  LABEL_BESIDE  "Facture n°"
-invoice_date     -                0.00  -
-due_date         -                0.00  -
-supplier_vat_id  FR7P585117668    1.00  p1  LABEL_RIGHT  "N° TVA intracommunautaire"
-customer_vat_id  FR3P030824628    0.85  p1  LABEL_RIGHT  "N° TVA du client"
-currency         EUR              1.00  p1  LABEL_BESIDE  "Devise"
-vat_rate         20               0.90  p1  LABEL_BESIDE  "Taux de TVA"
-subtotal         11241.25         1.00  p1  LABEL_BESIDE  "Total HT"
-vat_amount       2248.25          1.00  p1  LABEL_BESIDE  "TVA"
-total_amount     13489.50         1.00  p1  LABEL_BESIDE  "Net à payer"
+invoice_number    FAC-2024-608064  0.90  p1  LABEL_BESIDE  "Facture n°"
+order_number      PO-835601        0.90  p1  LABEL_BESIDE  "Commande n°"
+customer_number   C-59795          0.90  p1  LABEL_BESIDE  "Numéro client"
+invoice_date      2024-06-14       0.90  p1  LABEL_BESIDE  "Date"
+supply_date       2024-06-08       0.90  p1  LABEL_BESIDE  "Date de livraison"
+due_date          2024-06-28       0.90  p1  LABEL_BESIDE  "Échéance"
+supplier_vat_id   FR7P585117668    1.00  p1  ANCHOR  "FR7P585117668"
+customer_vat_id   FR3P030824628    0.85  p1  LABEL_RIGHT  "N° TVA du client"
+currency          EUR              0.75  p1  DERIVED  -
+vat_rate          20               0.90  p1  LABEL_BELOW  "TVA %"
+subtotal          11241.25         0.90  p1  LABEL_BESIDE  "Total HT"
+vat_amount        2248.25          0.90  p1  LABEL_BESIDE  "TVA"
+total_amount      13489.50         1.00  p1  LABEL_BESIDE  "Net à payer"
+contract_number   -                0.00  -
+our_reference     -                0.00  -
+your_reference    REF-1064         0.75  p1  LABEL_BESIDE  "Votre réf."
+credit_reference  -                0.00  -
 
 Line items (4)
 PART NUMBER  DESCRIPTION                                              QTY  UNIT PRICE  NET AMOUNT
@@ -72,10 +80,11 @@ Invariants
 ================================================================================
 ```
 
-The two dates come back empty on purpose, and the report says so rather than guessing:
-this document spells its month in French, `datetime.strptime` reads month names in the C
-locale, and no format a profile can declare today reads `14 juin 2024`. It is one of the
-gaps the benchmark below counts.
+Both dates on that page are spelled `14 juin 2024`. `datetime.strptime` reads month
+names in the C locale, which is English, so the profile's own calendar — the same lexicon
+its labels come from — is what turns `juin` into a month before the format is applied.
+The three fields that come back empty are ones this vendor did not print; the report says
+so with a dash rather than guessing.
 
 `--json out.json` writes the same result as machine-readable JSON — full `Evidence`
 bounding boxes included, `Decimal` values as strings, dates as ISO-8601. Exit code is
@@ -92,8 +101,8 @@ flowchart LR
     PDF[/PDF file/] --> Reader["read()<br/>pymupdf_reader.py"]
     Reader -->|"Document: zoned lines<br/>+ per-page anchors"| Detect["detect_profile<br/>profile/detect.py"]
     Profiles[("profiles/*.json")] --> Detect
-    Detect -->|"the vendor's Profile,<br/>or a finding and nothing"| Engine["FieldSpec engine<br/>extraction/engine.py"]
-    Engine -->|"FieldResult × 10<br/>+ Evidence"| Items["Line items<br/>extraction/line_items.py"]
+    Detect -->|"the vendor's Profile,<br/>or a finding and nothing"| Engine["One spec engine<br/>extraction/engine.py"]
+    Engine -->|"a FieldResult per spec<br/>+ Evidence"| Items["Line items<br/>extraction/line_items.py"]
     Detect --> Items
     Items -->|"LineItems"| Inv["Invariants<br/>validation/invariants.py"]
     Engine --> Inv
@@ -109,9 +118,11 @@ Full narrative: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Design principles
 
-1. **A field is declared, not subclassed.** `FieldSpec(name, strategy, normalizer,
-   validator, rankers, on_all_invalid)` (`extraction/spec.py`) names five behaviours
-   instead of implementing them per field; the ten fields are a flat list of values in
+1. **A field is declared, not subclassed.** A spec (`extraction/spec.py`) names
+   behaviour — a normalizer, a validator, filters, rankers, what to do when nothing
+   passes — and never implements it: every name it uses is registered in
+   `extraction/units/registry.py`, and a typo is an import error rather than a field that
+   silently never resolves. The fields are a flat list of values in
    `extraction/specs.py`, run by one generic `extraction/engine.py`. —
    [ADR-0001](docs/adr/0001-field-specs-declared-not-subclassed.md)
 2. **Every value carries its evidence.** `Evidence(page, bbox, matched_label, strategy,
@@ -143,7 +154,7 @@ src/invoice_extractor/
     domain/        Evidence, FieldResult, LineItem, InvoiceResult, Money, Finding
     document/      PDF -> Document: pages of zoned TextLines, and each page's anchors
     profile/       Profile schema, strict loader, merge rules, registry, detection, lint
-    extraction/    FieldSpec engine: strategies, normalizers, validators, rankers
+    extraction/    One engine, three spec kinds; units/: the vocabulary they name
     validation/    Invariants (as Findings) and explainable confidence
     output/        JSON writer and human-readable text report
     pipeline.py    The only orchestration: PDF + registry -> InvoiceResult
@@ -171,8 +182,8 @@ raises `ProfileError` naming the exact bad key; `profiles/_defaults.json` and th
 language's lexicon supply everything the file does not say. No Python change, and the
 generator can render the same file to prove the profile describes a real invoice.
 
-**Add a field.** Three small edits and a test — `engine.py`, `pipeline.py` and every
-strategy stay untouched. Adding `purchase_order`, in full:
+**Add a field.** Four small edits and a test — `engine.py`, `pipeline.py` and every unit
+stay untouched. Adding `purchase_order`, in full:
 
 1. `docs/FIELD_CATALOG.md` — add `purchase_order`, the one place a canonical name is
    named; both packages and the benchmark read it from there.
@@ -181,24 +192,25 @@ strategy stay untouched. Adding `purchase_order`, in full:
 3. `extraction/specs.py` — one entry, in the position the field should be reported in:
 
    ```python
-   FieldSpec(
+   LabelSpec(
        name="purchase_order",
-       strategy=Strategy.LABEL_RIGHT,
-       normalizer=strip_label,
-       validator=matches_pattern(r"PO-\d{4,}"),
-       rankers=BY_POSITION,
-       on_all_invalid=OnAllInvalid.NOT_FOUND,
+       normalizer="strip_label",
+       validator="is_identifier",
+       rankers=BY_LABEL,
    )
    ```
+
+   Every name in it is looked up in `extraction/units/registry.py` when the module is
+   imported; a behaviour no unit provides is a new unit there, registered under its name.
 
 4. `profiles/_defaults.json` — `"purchase_order": {"labels":
    ["@header_labels.purchase_order"], "zones": ["r1c3"]}`, once, for every vendor that
    prints it in its language's own words.
-5. A unit test in `tests/unit/test_specs.py`, and a `FakeDocument` case for whichever
-   strategy is new to you.
+5. A unit test in `tests/unit/test_engine.py` against a `Document` built in memory, and
+   one in `tests/unit/units/` for any unit the field needed that did not exist.
 
 The field appears in the JSON, in the report and in `confidence_breakdown` with no other
-change: the engine already runs whatever `FIELD_SPECS` holds.
+change: the engine already runs whatever `SPECS` holds.
 
 ## How good is it, measured
 
@@ -215,17 +227,17 @@ measures this release at:
 
 - **Profile detection:** 100.0% (250 of 250); a document no profile matches is
   reported and not read (ADR-0008).
-- **Scalar fields:** 82.1% (2053 of 2500) of the values the documents carry.
+- **Scalar fields:** 99.4% (3472 of 3492) of the values the documents carry.
 - **Line-item cells:** 23.0% (6817 of 29635), over
   49 of 250 documents whose row count was read
   exactly.
-- **Confidence:** 0.0-0.2 at 0.0%, 0.4-0.6 at 100.0%, 0.6-0.8 at 100.0%, 0.8-1.0 at 99.5%.
+- **Confidence:** 0.0-0.2 at 0.0%, 0.4-0.6 at 66.7%, 0.6-0.8 at 100.0%, 0.8-1.0 at 99.5%.
 - **Not covered:** the generator prints these and the extractor has no spec for
   them, so they are never scored as wrong:
-  `contract_number`, `credit_reference`, `customer_number`, `order_number`, `our_reference`, `payment_terms`, `supply_date`, `your_reference`.
+  `payment_terms`.
 
-437 of those 447 misses found no candidate at all, rather than reading
-the wrong one (10). A field that found nothing was printed a way none
+6 of those 20 misses found no candidate at all, rather than reading
+the wrong one (14). A field that found nothing was printed a way none
 of its strategies looks; `benchmarks/README.md` says which fields, on which
 profiles and in which families.
 

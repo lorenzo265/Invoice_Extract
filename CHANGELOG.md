@@ -7,6 +7,44 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Added
 
+- **One engine, several spec kinds (ADR-0007).** `extraction/engine.py` runs every field
+  through the same internal pipeline — guard, collect, filter, normalize, validate, rank,
+  on-failure, publish — and only the collect step differs between kinds. `LabelSpec`
+  reads the text a label introduces, `AnchorSpec` looks for a value the profile already
+  expects, `DerivedSpec` computes one from the page and the fields already resolved.
+- **A closed vocabulary, named rather than imported (`extraction/units/`).** A spec names
+  its units as strings — `"parse_money"`, `"looks_numeric"`, `"last_page_first"` — and
+  `extraction/spec.py` refuses one that names a unit, a source or a dependency nothing
+  registered. The check runs while `extraction/specs.py` is imported, so a typo is an
+  import error rather than a field that silently never resolves.
+- **Seven more fields read**: `order_number`, `customer_number` and `supply_date` from
+  the catalog, and `contract_number`, `our_reference`, `your_reference` and
+  `credit_reference` through `custom_fields`, which a vendor declares for the extras it
+  prints in its header block. The shared defaults declare all four, so a document that
+  carries one is read whether or not its vendor usually prints it.
+- **`classify_document` (stage 3).** A document is an invoice or a credit note, decided
+  by the title it prints, the reference it makes to the invoice it credits, and the sign
+  of its total; `InvoiceResult.document_type` carries the answer.
+- On the 250-document corpus: fourteen of seventeen fields at 100%, `subtotal` 99.2%,
+  `vat_rate` 96.4%, `supply_date` 95.5%, and `payment_terms` the one name no spec reads
+  yet. Every field is at or above where it stood before, and none below.
+
+### Changed
+
+- **`currency` is derived, not read from a label.** The vendor's own code that the page
+  prints most is the document's currency, which separates it from the one a converted
+  total is echoed in without reading a label for either. A derived value still carries
+  evidence: the derivation reports the line it counted from.
+- **`supplier_vat_id` is found by expectation.** The profile knows the vendor's VAT id,
+  so the page is searched for that value rather than for whatever a label introduces —
+  which is what a letterhead printing `NTVAINTRACOMMUNAUTAIRE FR7…` needs.
+- **An amount is only what is mostly a number.** A candidate whose text is a sentence
+  carrying digits — a bank footer's IBAN, a page count — is dropped before ranking, and
+  the currency code a vendor prints beside the amount is taken off first, by the same
+  rule the parser uses.
+
+### Added
+
 - **A document is read once, whole (`docs/ENGINE_SPEC.md` §2, stage 0).** `read(pdf)`
   returns a `Document` of `Page`s, each with its lines already zoned and the four
   anchors found on it — where the letterhead ends, where a table's header band is, where

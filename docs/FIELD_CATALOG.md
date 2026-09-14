@@ -21,7 +21,7 @@ truth files and reports use it verbatim. Changing a name is a schema change with
 | `exchange_rate` | Decimal | plain decimal | Label, else Derived (inferred from totals) |
 | `iban` | str | spaces removed, upper-case, mod-97 valid | Label (pattern) |
 | `customer_country` | str | ISO 3166-1 alpha-2 | Derived (VAT prefix > bill_to > ship_to > postal pattern) |
-| `document_type` | enum | `invoice` \| `credit_note` | stage 3 (`classify_document`) |
+| `document_type` | enum | `invoice` \| `credit_note`, `null` where no profile matched | stage 3 (`classify_document`) |
 
 ## Parties (`SectionSpec`, plus `AnchorSpec` for the supplier)
 
@@ -50,10 +50,13 @@ VAT-summary row instead, and the block prints no single rate.
 
 Declared per profile as `LabelSpec`s under `custom_fields[]`; they appear in
 `InvoiceResult.fields` under their declared name and in the benchmark when the corpus
-emits them. The profiles this repository ships declare five, all of them references a
-vendor prints in its header block: `contract_number`, `our_reference`, `your_reference`,
-`payment_terms`, `credit_reference`. A name here is a name like any other in this
-catalog — the generator writes it into the truth under the same string.
+emits them. The names this repository ships are five, all of them things a vendor prints
+in its header block: `contract_number`, `our_reference`, `your_reference`,
+`payment_terms`, `credit_reference`. Four of them are declared in
+`profiles/_defaults.json`, so any vendor that prints one is read; `payment_terms` is a
+sentence rather than a reference and is read by the block that carries it. A name here is
+a name like any other in this catalog — the generator writes it into the truth under the
+same string.
 
 ## Findings vocabulary
 

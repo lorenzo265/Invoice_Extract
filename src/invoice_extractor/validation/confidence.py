@@ -26,7 +26,7 @@ PRECISION = 2
 
 
 def score(
-    extraction: Extraction, field_profile: FieldProfile, findings: Sequence[Finding]
+    extraction: Extraction, field_profile: FieldProfile | None, findings: Sequence[Finding]
 ) -> FieldResult:
     """The field again, with its confidence and what each signal contributed to it."""
     field = extraction.field
@@ -41,14 +41,14 @@ def score(
 
 
 def _signals(
-    extraction: Extraction, field_profile: FieldProfile, findings: Sequence[Finding]
+    extraction: Extraction, field_profile: FieldProfile | None, findings: Sequence[Finding]
 ) -> Mapping[str, bool]:
     field = extraction.field
     evidence = field.evidence
     return {
         "label_exact_match": evidence is not None and evidence.matched_label is not None,
         # The engine already stored the winning line's zone; never recompute one here.
-        "in_expected_zone": extraction.zone in field_profile.zones,
+        "in_expected_zone": field_profile is not None and extraction.zone in field_profile.zones,
         "validator_passed": field.valid,
         "single_candidate": extraction.candidate_count == 1,
         "invariants_agree": not _contradicted(findings, field.name),

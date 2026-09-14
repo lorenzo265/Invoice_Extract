@@ -1,158 +1,385 @@
 {
-  "zones": { "grid": [3, 3] },
+  "zones": {
+    "grid": [
+      3,
+      3
+    ]
+  },
   "fields": {
     "invoice_number": {
-      "labels": ["@header_labels.invoice_number"],
-      "zones": ["r1c3", "r1c2"]
+      "labels": [
+        "@header_labels.invoice_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ]
     },
     "invoice_date": {
-      "labels": ["@header_labels.invoice_date"],
-      "zones": ["r1c3", "r1c2"]
+      "labels": [
+        "@header_labels.invoice_date"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ]
     },
     "due_date": {
-      "labels": ["@header_labels.due_date"],
-      "zones": ["r1c3", "r1c2"]
+      "labels": [
+        "@header_labels.due_date"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ]
     },
     "supply_date": {
-      "labels": ["@header_labels.supply_date"],
-      "zones": ["r1c3", "r1c2"],
+      "labels": [
+        "@header_labels.supply_date"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
       "required": false
     },
     "order_number": {
-      "labels": ["@header_labels.order_number"],
-      "zones": ["r1c3", "r1c2"],
+      "labels": [
+        "@header_labels.order_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
       "required": false
     },
     "customer_number": {
-      "labels": ["@header_labels.customer_number"],
-      "zones": ["r1c3", "r1c2"],
+      "labels": [
+        "@header_labels.customer_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
       "required": false
     },
     "supplier_vat_id": {
-      "labels": ["@header_labels.supplier_vat_id"],
-      "zones": ["r1c1"]
+      "labels": [
+        "@header_labels.supplier_vat_id"
+      ],
+      "zones": [
+        "r1c1"
+      ]
     },
     "customer_vat_id": {
-      "labels": ["@header_labels.customer_vat_id"],
-      "zones": ["r2c1", "r1c2"]
+      "labels": [
+        "@header_labels.customer_vat_id"
+      ],
+      "zones": [
+        "r2c1",
+        "r1c2"
+      ]
     },
     "currency": {
-      "labels": ["@header_labels.currency"],
-      "zones": ["r1c3", "r1c2"]
+      "labels": [
+        "@header_labels.currency"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ]
     },
     "vat_rate": {
-      "labels": ["@totals_labels.vat_rate"],
-      "zones": ["r3c3", "r2c3"]
+      "labels": [
+        "@totals_labels.vat_rate"
+      ],
+      "zones": [
+        "r3c3",
+        "r2c3"
+      ]
     },
     "subtotal": {
-      "labels": ["@totals_labels.subtotal"],
-      "zones": ["r3c3", "r2c3"]
+      "labels": [
+        "@totals_labels.subtotal"
+      ],
+      "zones": [
+        "r3c3",
+        "r2c3"
+      ]
     },
     "vat_amount": {
-      "labels": ["@totals_labels.vat_amount"],
-      "zones": ["r3c3", "r2c3"]
+      "labels": [
+        "@totals_labels.vat_amount"
+      ],
+      "zones": [
+        "r3c3",
+        "r2c3"
+      ]
     },
     "total_amount": {
-      "labels": ["@totals_labels.total_amount"],
-      "zones": ["r3c3", "r2c3"]
+      "labels": [
+        "@totals_labels.total_amount"
+      ],
+      "zones": [
+        "r3c3",
+        "r2c3"
+      ]
     }
   },
   "parties": {
     "bill_to": {
-      "labels": ["@party_headings.bill_to"],
-      "stop_labels": ["@party_headings.ship_to", "@party_headings.mail_to"],
-      "placeholders": ["@address_placeholders"],
-      "zones": ["r2c1", "r1c1"]
+      "labels": [
+        "@party_headings.bill_to"
+      ],
+      "stop_labels": [
+        "@party_headings.ship_to",
+        "@party_headings.mail_to"
+      ],
+      "placeholders": [
+        "@address_placeholders"
+      ],
+      "zones": [
+        "r2c1",
+        "r1c1"
+      ]
     },
     "ship_to": {
-      "labels": ["@party_headings.ship_to"],
-      "stop_labels": ["@party_headings.bill_to", "@party_headings.mail_to"],
-      "placeholders": ["@address_placeholders"],
-      "zones": ["r2c1", "r2c2"]
+      "labels": [
+        "@party_headings.ship_to"
+      ],
+      "stop_labels": [
+        "@party_headings.bill_to",
+        "@party_headings.mail_to"
+      ],
+      "placeholders": [
+        "@address_placeholders"
+      ],
+      "zones": [
+        "r2c1",
+        "r2c2"
+      ]
     },
     "mail_to": {
-      "labels": ["@party_headings.mail_to"],
-      "stop_labels": ["@party_headings.bill_to", "@party_headings.ship_to"],
-      "placeholders": ["@address_placeholders"],
-      "zones": ["r2c1", "r2c2"]
+      "labels": [
+        "@party_headings.mail_to"
+      ],
+      "stop_labels": [
+        "@party_headings.bill_to",
+        "@party_headings.ship_to"
+      ],
+      "placeholders": [
+        "@address_placeholders"
+      ],
+      "zones": [
+        "r2c1",
+        "r2c2"
+      ]
     }
   },
   "line_items": {
     "columns": {
-      "pos": ["@column_headers.pos"],
-      "part_number": ["@column_headers.part_number"],
-      "description": ["@column_headers.description"],
-      "quantity": ["@column_headers.quantity"],
-      "unit": ["@column_headers.unit"],
-      "unit_price": ["@column_headers.unit_price"],
-      "discount_pct": ["@column_headers.discount_pct"],
-      "vat_rate": ["@column_headers.vat_rate"],
-      "net_amount": ["@column_headers.net_amount"]
+      "pos": [
+        "@column_headers.pos"
+      ],
+      "part_number": [
+        "@column_headers.part_number"
+      ],
+      "description": [
+        "@column_headers.description"
+      ],
+      "quantity": [
+        "@column_headers.quantity"
+      ],
+      "unit": [
+        "@column_headers.unit"
+      ],
+      "unit_price": [
+        "@column_headers.unit_price"
+      ],
+      "discount_pct": [
+        "@column_headers.discount_pct"
+      ],
+      "vat_rate": [
+        "@column_headers.vat_rate"
+      ],
+      "net_amount": [
+        "@column_headers.net_amount"
+      ]
     },
     "min_header_matches": 3,
-    "stop_labels": ["@totals_labels.subtotal", "@totals_labels.total_amount"],
-    "page_bounds": { "start": "header", "end": "totals_anchor" },
-    "carry_forward_labels": ["@carry_forward.incoming", "@carry_forward.outgoing"],
+    "stop_labels": [
+      "@totals_labels.subtotal",
+      "@totals_labels.total_amount"
+    ],
+    "page_bounds": {
+      "start": "header",
+      "end": "totals_anchor"
+    },
+    "carry_forward_labels": [
+      "@carry_forward.incoming",
+      "@carry_forward.outgoing"
+    ],
     "sub_item_indent": 8.0,
-    "number_columns": ["quantity", "unit_price", "discount_pct", "vat_rate", "net_amount"]
+    "number_columns": [
+      "quantity",
+      "unit_price",
+      "discount_pct",
+      "vat_rate",
+      "net_amount"
+    ]
   },
   "vat_summary": {
     "columns": {
-      "code": ["@vat_summary_headers.code"],
-      "rate": ["@vat_summary_headers.rate"],
-      "base": ["@vat_summary_headers.base"],
-      "vat": ["@vat_summary_headers.vat"]
+      "code": [
+        "@vat_summary_headers.code"
+      ],
+      "rate": [
+        "@vat_summary_headers.rate"
+      ],
+      "base": [
+        "@vat_summary_headers.base"
+      ],
+      "vat": [
+        "@vat_summary_headers.vat"
+      ]
     },
     "min_header_matches": 2,
-    "stop_labels": ["@totals_labels.total_amount"],
-    "page_bounds": { "start": "header", "end": "stop_label" },
-    "number_columns": ["rate", "base", "vat"]
+    "stop_labels": [
+      "@totals_labels.total_amount"
+    ],
+    "page_bounds": {
+      "start": "header",
+      "end": "stop_label"
+    },
+    "number_columns": [
+      "rate",
+      "base",
+      "vat"
+    ]
   },
   "totals": {
     "components": {
-      "subtotal": { "labels": ["@totals_labels.subtotal"] },
-      "vat_amount": { "labels": ["@totals_labels.vat_amount"] },
-      "total_amount": { "labels": ["@totals_labels.total_amount"] },
+      "subtotal": {
+        "labels": [
+          "@totals_labels.subtotal"
+        ]
+      },
+      "vat_amount": {
+        "labels": [
+          "@totals_labels.vat_amount"
+        ]
+      },
+      "total_amount": {
+        "labels": [
+          "@totals_labels.total_amount"
+        ]
+      },
       "shipping": {
-        "labels": ["@charge_labels.SHIPPING"],
+        "labels": [
+          "@charge_labels.SHIPPING"
+        ],
         "kind": "charge",
         "charge_type": "SHIPPING"
       },
       "environmental_fee": {
-        "labels": ["@charge_labels.ENVIRONMENTAL_FEE"],
+        "labels": [
+          "@charge_labels.ENVIRONMENTAL_FEE"
+        ],
         "kind": "charge",
         "charge_type": "ENVIRONMENTAL_FEE"
       },
       "surcharge": {
-        "labels": ["@charge_labels.SURCHARGE"],
+        "labels": [
+          "@charge_labels.SURCHARGE"
+        ],
         "kind": "charge",
         "charge_type": "SURCHARGE"
       },
       "consolidation_fee": {
-        "labels": ["@charge_labels.CONSOLIDATION_FEE"],
+        "labels": [
+          "@charge_labels.CONSOLIDATION_FEE"
+        ],
         "kind": "charge",
         "charge_type": "CONSOLIDATION_FEE"
       },
       "recycling_fee": {
-        "labels": ["@charge_labels.RECYCLING_FEE"],
+        "labels": [
+          "@charge_labels.RECYCLING_FEE"
+        ],
         "kind": "charge",
         "charge_type": "RECYCLING_FEE"
       },
       "rounding": {
-        "labels": ["@charge_labels.ROUNDING"],
+        "labels": [
+          "@charge_labels.ROUNDING"
+        ],
         "kind": "charge",
         "charge_type": "ROUNDING"
       }
     },
     "cluster_gap": 0.08,
-    "tolerance": { "absolute": "0.01", "relative": "0.005" }
+    "tolerance": {
+      "absolute": "0.01",
+      "relative": "0.005"
+    }
   },
-  "custom_fields": [],
+  "custom_fields": [
+    {
+      "name": "contract_number",
+      "labels": [
+        "@header_labels.contract_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    },
+    {
+      "name": "our_reference",
+      "labels": [
+        "@header_labels.our_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    },
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    },
+    {
+      "name": "credit_reference",
+      "labels": [
+        "@header_labels.credit_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
   "variants": [],
   "document_types": {
-    "invoice_titles": ["@document_titles.invoice"],
-    "credit_note_titles": ["@document_titles.credit_note"],
-    "credit_reference_labels": ["@header_labels.credit_reference"]
+    "invoice_titles": [
+      "@document_titles.invoice"
+    ],
+    "credit_note_titles": [
+      "@document_titles.credit_note"
+    ],
+    "credit_reference_labels": [
+      "@header_labels.credit_reference"
+    ]
   },
   "noise": {
     "ignore_labels": [

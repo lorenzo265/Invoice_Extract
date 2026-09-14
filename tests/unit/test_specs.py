@@ -1,75 +1,100 @@
-"""The ten declared fields, and the files they must agree with."""
+"""The declared fields, and the checks that run when they are imported."""
 
 from __future__ import annotations
 
-from datetime import date
-from decimal import Decimal
+import pytest
 
-from invoice_extractor.domain.models import VALUE_TYPES, Strategy
-from invoice_extractor.extraction.normalizers import (
-    parse_date,
-    parse_money,
-    parse_percent,
-    strip_label,
-    upper_alnum,
+from invoice_extractor.domain.models import VALUE_TYPES
+from invoice_extractor.extraction.spec import (
+    AnchorSpec,
+    DerivedSpec,
+    LabelSpec,
+    SpecError,
+    SpecKind,
+    validate,
 )
-from invoice_extractor.extraction.spec import Normalizer
-from invoice_extractor.extraction.specs import FIELD_ORDER, FIELD_SPECS
-from invoice_extractor.extraction.strategies import STRATEGIES
+from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
+from invoice_extractor.extraction.units.derivations import DERIVATIONS
 
-# The ten names, in the order docs/FIELD_CATALOG.md lists them.
-DOCUMENTED_ORDER = (
-    "invoice_number",
-    "invoice_date",
-    "due_date",
-    "supplier_vat_id",
-    "customer_vat_id",
-    "currency",
-    "vat_rate",
-    "subtotal",
-    "vat_amount",
-    "total_amount",
-)
-
-NORMALIZER_TYPES: dict[Normalizer, type] = {
-    strip_label: str,
-    upper_alnum: str,
-    parse_date: date,
-    parse_money: Decimal,
-    parse_percent: Decimal,
-}
+BY_LABEL = ("valid_first", "zone_priority", "closest_to_label", "top_most")
 
 
-def test_field_order_matches_the_field_catalog() -> None:
-    assert FIELD_ORDER == DOCUMENTED_ORDER
+def a_spec(**changed: object) -> LabelSpec:
+    declared = {
+        "name": "invoice_number",
+        "normalizer": "strip_label",
+        "validator": "is_identifier",
+        "rankers": BY_LABEL,
+    }
+    return LabelSpec(**{**declared, **changed})  # type: ignore[arg-type]
 
 
-def test_value_types_agree_with_models() -> None:
-    assert tuple(VALUE_TYPES) == FIELD_ORDER
-    for spec in FIELD_SPECS:
-        assert NORMALIZER_TYPES[spec.normalizer] is VALUE_TYPES[spec.name], spec.name
+def test_every_declared_field_is_typed_by_the_result_model() -> None:
+    assert set(FIELD_ORDER) <= set(VALUE_TYPES)
 
 
-def test_every_spec_names_at_least_one_strategy_the_engine_knows() -> None:
-    for spec in FIELD_SPECS:
-        assert spec.strategies, spec.name
-        assert all(strategy in STRATEGIES for strategy in spec.strategies), spec.name
+def test_no_field_is_declared_twice() -> None:
+    assert len(set(FIELD_ORDER)) == len(FIELD_ORDER)
 
 
-def test_every_labelled_field_looks_both_ways_along_its_line() -> None:
-    """A label and its value in one run, and the same pair at two tab stops, are one idea."""
-    for spec in FIELD_SPECS:
-        assert Strategy.LABEL_RIGHT in spec.strategies, spec.name
-        assert Strategy.LABEL_BESIDE in spec.strategies, spec.name
+def test_every_spec_knows_which_kind_it_is() -> None:
+    assert {spec.kind for spec in SPECS} == {SpecKind.LABEL, SpecKind.ANCHOR, SpecKind.DERIVED}
 
 
-def test_no_spec_names_the_same_strategy_twice() -> None:
-    """Which would double every candidate it finds, and with it the candidate count."""
-    for spec in FIELD_SPECS:
-        assert len(set(spec.strategies)) == len(spec.strategies), spec.name
+def test_the_shipped_specs_pass_the_check_that_runs_at_import() -> None:
+    validate(SPECS, DERIVATIONS)
 
 
-def test_every_ranker_list_starts_with_valid_first() -> None:
-    # Ranking that did not put a parsed value ahead of an unparsed one would make
-    # `on_all_invalid` unreachable for a field with one good and one bad candidate.
-    assert all(spec.rankers[0].__name__ == "valid_first" for spec in FIELD_SPECS)
+def test_a_spec_naming_a_normalizer_nobody_registered_is_refused() -> None:
+    with pytest.raises(SpecError, match="names normalizer 'guess'"):
+        validate((a_spec(normalizer="guess"),), DERIVATIONS)
+
+
+def test_a_spec_naming_a_validator_nobody_registered_is_refused() -> None:
+    with pytest.raises(SpecError, match="names validator 'looks_right'"):
+        validate((a_spec(validator="looks_right"),), DERIVATIONS)
+
+
+def test_a_spec_naming_a_ranker_nobody_registered_is_refused() -> None:
+    with pytest.raises(SpecError, match="names ranker 'by_vibes'"):
+        validate((a_spec(rankers=("by_vibes",)),), DERIVATIONS)
+
+
+def test_a_spec_naming_a_filter_nobody_registered_is_refused() -> None:
+    with pytest.raises(SpecError, match="names filter 'tidy'"):
+        validate((a_spec(filters=("tidy",)),), DERIVATIONS)
+
+
+def test_a_spec_reading_from_somewhere_that_is_not_a_source_is_refused() -> None:
+    with pytest.raises(SpecError, match="names source 'guesswork'"):
+        validate((a_spec(source="guesswork"),), DERIVATIONS)
+
+
+def test_an_anchor_expecting_something_no_profile_holds_is_refused() -> None:
+    spec = AnchorSpec(
+        name="supplier_vat_id",
+        expected="supplier.favourite_colour",
+        normalizer="upper_alnum",
+        validator="is_vat_id",
+    )
+    with pytest.raises(SpecError, match="names expected value"):
+        validate((spec,), DERIVATIONS)
+
+
+def test_a_derived_spec_naming_no_derivation_is_refused() -> None:
+    with pytest.raises(SpecError, match="names derivation 'divination'"):
+        validate((DerivedSpec(name="currency", derive="divination"),), DERIVATIONS)
+
+
+def test_two_specs_with_one_name_are_refused() -> None:
+    with pytest.raises(SpecError, match="is declared twice"):
+        validate((a_spec(), a_spec()), DERIVATIONS)
+
+
+def test_a_dependency_no_spec_resolves_is_refused() -> None:
+    with pytest.raises(SpecError, match="depends on 'nothing'"):
+        validate((a_spec(depends_on=("nothing",)),), DERIVATIONS)
+
+
+def test_a_dependency_another_spec_resolves_is_accepted() -> None:
+    validate((a_spec(name="first"), a_spec(name="second", depends_on=("first",))), DERIVATIONS)

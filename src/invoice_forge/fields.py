@@ -5,9 +5,11 @@
 their data (ADR-0006) and not their code, so a shared vocabulary is held in step by a
 test rather than by an import. `tests/forge/unit/test_fields.py` is that test.
 
-`METADATA_FIELDS` are the values a real invoice prints in its header block that the
-extractor does not read yet. The generator prints them, records them in the truth, and
-the benchmark reports them as "not covered" until the extractor learns them.
+`METADATA_FIELDS` are the extras a real invoice prints in its header block beside the
+scalar fields — a reference, an order number, a contract. The generator prints them and
+records them in the truth. A vendor that prints one declares it in its profile's
+`custom_fields`, which is how the extractor reads it; the benchmark reports the ones no
+spec has learned as "not covered" rather than as misses.
 """
 
 from __future__ import annotations

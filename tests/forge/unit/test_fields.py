@@ -9,10 +9,9 @@ from __future__ import annotations
 
 import dataclasses
 
-import pytest
-
 from invoice_extractor.domain.models import LineItem as ExtractedItem
-from invoice_extractor.extraction.specs import FIELD_ORDER
+from invoice_extractor.extraction.spec import LabelSpec
+from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
 from invoice_forge.fields import (
     EXTRA_COLUMNS,
     LABELLED_FIELDS,
@@ -25,9 +24,21 @@ from invoice_forge.lexicon.schema import HEADER_FIELDS, TOTALS_FIELDS
 from invoice_forge.model import Identifiers
 from invoice_forge.model.items import LineItem as ForgedItem
 
+# The names the extractor reads out of `custom_fields`, which a vendor declares when it
+# prints them, as against `fields`, which every profile declares whether it prints them or not.
+DECLARED_AS_CUSTOM = tuple(
+    spec.name for spec in SPECS if isinstance(spec, LabelSpec) and spec.source == "custom_fields"
+)
 
-def test_the_generator_writes_exactly_the_fields_the_extractor_reads() -> None:
-    assert SCALAR_FIELDS == FIELD_ORDER
+
+def test_the_extractor_reads_only_names_the_generator_writes() -> None:
+    """A spec that read a name no truth file can hold would be scored against nothing."""
+    assert set(FIELD_ORDER) <= set(LABELLED_FIELDS)
+
+
+def test_the_generator_writes_every_field_at_the_core_of_an_invoice() -> None:
+    """The ten a document always carries; a spec dropped from the engine would show here."""
+    assert set(SCALAR_FIELDS) <= set(FIELD_ORDER)
 
 
 def test_a_forged_row_carries_every_column_the_extractor_reads_from_a_row() -> None:
@@ -42,9 +53,14 @@ def test_a_forged_row_can_answer_for_every_column_it_declares() -> None:
         assert column in answerable, column
 
 
-@pytest.mark.parametrize("name", METADATA_FIELDS)
-def test_every_metadata_field_is_one_the_extractor_does_not_read_yet(name: str) -> None:
-    assert name not in FIELD_ORDER
+def test_a_custom_field_the_extractor_reads_is_one_of_the_extras_a_header_may_print() -> None:
+    """`custom_fields` is where a vendor declares its extras, so only an extra belongs there.
+
+    A value every document carries is read out of `fields`, which every profile declares;
+    a header extra no spec has learned yet the benchmark reports as `NOT_COVERED` rather
+    than as a miss.
+    """
+    assert set(DECLARED_AS_CUSTOM) <= set(METADATA_FIELDS)
 
 
 def test_the_identifiers_the_model_holds_are_metadata_fields_or_the_invoice_number() -> None:

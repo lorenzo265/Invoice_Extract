@@ -30,6 +30,7 @@ from invoice_extractor.profile.reading import (
 )
 from invoice_extractor.profile.schema import (
     PLACEMENT_NAMES,
+    Calendar,
     CustomFieldProfile,
     DocumentTypes,
     FieldProfile,
@@ -124,6 +125,16 @@ def section_profile(
             f"{path}.placeholders",
         ),
         zones=zones(optional_strings(data, "zones", f"{path}.zones"), f"{path}.zones"),
+    )
+
+
+def calendar(lexicon: Mapping[str, object]) -> Calendar:
+    """The language's month names, as the lexicon spells them and abbreviates them."""
+    return Calendar(
+        months=as_strings(lexicon.get("months", []), "lexicon.months"),
+        abbreviations=as_strings(
+            lexicon.get("month_abbreviations", []), "lexicon.month_abbreviations"
+        ),
     )
 
 

@@ -45,6 +45,7 @@ def result() -> InvoiceResult:
         ),
         findings=(Finding(Severity.WARNING, "line_items_sum", "skipped", "subtotal"),),
         profile_id="nordic",
+        document_type="invoice",
         source_path="samples/nordic_invoice.pdf",
     )
 

@@ -37,8 +37,9 @@ from invoice_forge.fields import METADATA_FIELDS
 
 MONEY_FIELDS = frozenset({"vat_rate", "subtotal", "vat_amount", "total_amount"})
 MONEY_COLUMNS = frozenset({"quantity", "unit_price", "net_amount"})
-# What the extractor does not read at all, and so is never scored on.
-NOT_COVERED: tuple[str, ...] = METADATA_FIELDS
+# What the extractor does not read at all, and so is never scored on: the names the
+# generator prints that no spec has learned yet.
+NOT_COVERED: tuple[str, ...] = tuple(name for name in METADATA_FIELDS if name not in FIELD_ORDER)
 
 
 class Outcome(Enum):

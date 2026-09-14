@@ -13,7 +13,7 @@ from decimal import Decimal
 
 from benchmarks import matrix as matrices
 from benchmarks import report as reports
-from benchmarks.compare import DocumentScore, Outcome, compare
+from benchmarks.compare import NOT_COVERED, DocumentScore, Outcome, compare
 from benchmarks.run import LATEST, README, REPORT
 
 from invoice_extractor.document.model import BBox
@@ -59,6 +59,7 @@ def result(**values: object) -> InvoiceResult:
         line_items=(LineItem("A-1", "A thing", Decimal(2), Decimal("3.50"), Decimal("7.00")),),
         findings=(),
         profile_id="de-DE",
+        document_type="invoice",
         source_path="x.pdf",
     )
 
@@ -111,7 +112,8 @@ def test_a_value_read_where_the_document_has_none_is_a_miss() -> None:
 
 def test_a_field_the_extractor_has_no_spec_for_is_not_covered() -> None:
     score = compare("x", truth(), result())
-    assert outcomes(score)["supply_date"] is Outcome.NOT_COVERED
+    assert NOT_COVERED, "a corpus the extractor covers entirely has nothing to report here"
+    assert outcomes(score)[NOT_COVERED[0]] is Outcome.NOT_COVERED
 
 
 def test_a_miss_that_found_no_candidate_is_counted_apart_from_a_wrong_one() -> None:

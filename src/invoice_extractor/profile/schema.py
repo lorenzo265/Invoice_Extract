@@ -187,6 +187,19 @@ class SupplierProfile:
 
 
 @dataclass(frozen=True, slots=True)
+class Calendar:
+    """What this language calls its months, in order, spelled out and abbreviated.
+
+    Not a profile key: the words come from the same lexicon the labels do, because a
+    vendor that prints `14 juin 2024` prints its language's word for June, and
+    `datetime.strptime` reads month names in the C locale only.
+    """
+
+    months: tuple[str, ...]
+    abbreviations: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class Noise:
     """Labels known to be traps: an order date beside the invoice date, a print date."""
 
@@ -206,6 +219,7 @@ class Profile:
     currencies: tuple[str, ...]
     vat: VatProfile
     supplier: SupplierProfile
+    calendar: Calendar
     zones_grid: tuple[int, int]
     fields: Mapping[str, FieldProfile]
     parties: Mapping[str, SectionProfile]

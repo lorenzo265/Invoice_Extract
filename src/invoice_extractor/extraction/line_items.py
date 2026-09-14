@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from invoice_extractor.document.model import TextLine
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import LINE_ITEM_COLUMNS, LineItem
-from invoice_extractor.extraction.normalizers import parse_number
+from invoice_extractor.extraction.units.normalizers import parse_number
 from invoice_extractor.profile.schema import Profile, TableProfile
 
 # How far apart two cells' tops may sit and still be the same printed row, in points.

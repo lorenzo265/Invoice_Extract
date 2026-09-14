@@ -115,6 +115,7 @@ def parse(data: Mapping[str, object], lexicon_root: Path = LEXICON_ROOT) -> Prof
         currencies=_currencies(data),
         vat=parts.vat_profile(require_mapping(data, "vat", "vat"), "vat"),
         supplier=parts.supplier_profile(require_mapping(data, "supplier", "supplier"), "supplier"),
+        calendar=parts.calendar(lexicon),
         zones_grid=parts.grid(optional_mapping(data, "zones", "zones"), "zones"),
         fields=_fields(data, lexicon),
         parties=_parties(data, lexicon),

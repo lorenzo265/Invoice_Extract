@@ -13,6 +13,7 @@ from invoice_extractor.domain.models import LINE_ITEM_COLUMNS
 from invoice_extractor.extraction.specs import FIELD_ORDER
 from invoice_extractor.profile.schema import (
     BlockProfile,
+    Calendar,
     ComponentKind,
     ComponentProfile,
     DocumentTypes,
@@ -31,6 +32,24 @@ from invoice_extractor.profile.schema import (
 
 PAGE_WIDTH = 595.0
 PAGE_HEIGHT = 842.0
+
+# A test profile speaks English, so its calendar is the one `strptime` already reads;
+# `tests/unit/units/test_dates.py` is where another language's months are exercised.
+MONTHS = (
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+)
+ABBREVIATIONS = tuple(name[:3] for name in MONTHS)
 
 # A text font at 10 pt, measured from the drawn baseline, so a fake page lays out in the
 # same coordinates a rendered one does.
@@ -145,6 +164,7 @@ def make_profile(
         supplier=SupplierProfile(
             name="Test Supplies Ltd", aliases=(), address_lines=("1 Test Street",), vat_id="GB1"
         ),
+        calendar=Calendar(months=MONTHS, abbreviations=ABBREVIATIONS),
         zones_grid=(3, 3),
         fields=dict(fields or {name: make_field_profile() for name in FIELD_ORDER}),
         parties={},

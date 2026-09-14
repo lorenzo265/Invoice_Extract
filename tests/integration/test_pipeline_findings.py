@@ -75,6 +75,7 @@ def test_a_document_no_profile_matches_is_reported_and_not_read(tmp_path: Path) 
     result = extract(EVERY[0][0], ProfileRegistry(empty))
     assert result.profile_id is None
     assert result.fields == {}
+    assert result.document_type is None, "which kind it is is read in the vendor's own words"
     assert not result.valid
     assert [finding.code for finding in result.findings] == ["profile_not_detected"]
 

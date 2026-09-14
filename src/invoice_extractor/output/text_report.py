@@ -48,6 +48,7 @@ def render(result: InvoiceResult) -> str:
         "=" * RULE_WIDTH,
         f"{'source':<{LABEL_WIDTH}}{result.source_path}",
         f"{'profile':<{LABEL_WIDTH}}{result.profile_id or MISSING}",
+        f"{'kind':<{LABEL_WIDTH}}{result.document_type or MISSING}",
         "",
         *_field_table(result.fields),
         "",

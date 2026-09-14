@@ -42,6 +42,9 @@ GENERATOR_SECTIONS = ("render",)
 # The one key whose record field is named for what it holds rather than for the key:
 # the profile writes `zones: {grid: [3, 3]}` and the record keeps the grid itself.
 RENAMED = {"zones": "zones_grid"}
+# What the loader reads out of the language's lexicon rather than out of a profile key,
+# for the same reason labels are read from there: it is the language's, not the vendor's.
+FROM_THE_LEXICON = ("calendar",)
 
 RECORDS: tuple[tuple[Sequence[str], type], ...] = (
     (parts.FIELD_KEYS, FieldProfile),
@@ -79,7 +82,7 @@ def test_a_custom_field_is_a_field_profile_under_a_name() -> None:
 
 def test_every_top_level_key_is_read_into_the_profile() -> None:
     read = {RENAMED.get(key, key) for key in TOP_LEVEL_KEYS if key not in GENERATOR_SECTIONS}
-    assert read == field_names(Profile)
+    assert read | set(FROM_THE_LEXICON) == field_names(Profile)
 
 
 def test_the_generator_half_of_the_file_is_named_but_not_read() -> None:

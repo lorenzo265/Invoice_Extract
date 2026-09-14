@@ -12,7 +12,6 @@ import pytest
 from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
-    VALUE_TYPES,
     Evidence,
     FieldResult,
     InvoiceResult,
@@ -20,7 +19,19 @@ from invoice_extractor.domain.models import (
     Strategy,
 )
 
-FIELD_ORDER = tuple(VALUE_TYPES)
+# The names this test builds a result out of, in the order it builds them.
+FIELD_ORDER = (
+    "invoice_number",
+    "invoice_date",
+    "due_date",
+    "supplier_vat_id",
+    "customer_vat_id",
+    "currency",
+    "vat_rate",
+    "subtotal",
+    "vat_amount",
+    "total_amount",
+)
 BOX = BBox(400.0, 65.25, 543.39, 78.99)
 
 VALUES: dict[str, Any] = {
@@ -63,6 +74,7 @@ def populated() -> InvoiceResult:
         ),
         findings=(Finding(Severity.WARNING, "line_items_sum", "skipped", "subtotal"),),
         profile_id="acme",
+        document_type="invoice",
         source_path="samples/acme_invoice.pdf",
     )
 
@@ -74,6 +86,15 @@ def serialized() -> dict[str, Any]:
 def test_invoice_result_round_trips_through_dict() -> None:
     result = populated()
     assert InvoiceResult.from_dict(result.to_dict()) == result
+
+
+def test_a_document_no_profile_matched_round_trips_with_no_vendor_and_no_kind() -> None:
+    """Both are read in the vendor's own words, so neither has a default (ADR-0008)."""
+    unread = dataclasses.replace(populated(), profile_id=None, document_type=None)
+    entry = unread.to_dict()
+    assert entry["profile_id"] is None
+    assert entry["document_type"] is None
+    assert InvoiceResult.from_dict(entry) == unread
 
 
 def test_to_dict_serializes_decimal_as_string_and_date_as_iso() -> None:
@@ -123,7 +144,7 @@ def test_missing_field_serializes_every_key_as_null() -> None:
         (LineItem("s", "d", Decimal(1), Decimal(1), Decimal(1)), "part_number"),
         (FieldResult("n", None, None, None, valid=False), "value"),
         (Evidence(1, BOX, None, Strategy.LABEL_RIGHT, "raw"), "raw_text"),
-        (InvoiceResult({}, (), (), "acme", "samples/acme_invoice.pdf"), "profile_id"),
+        (InvoiceResult({}, (), (), "acme", "invoice", "x.pdf"), "profile_id"),
     ],
 )
 def test_models_are_frozen(instance: object, attribute: str) -> None:

@@ -23,7 +23,10 @@ FieldValue = str | date | Decimal
 # produces each of these, and `from_dict` reads them back the same way.
 VALUE_TYPES: Mapping[str, type] = {
     "invoice_number": str,
+    "order_number": str,
+    "customer_number": str,
     "invoice_date": date,
+    "supply_date": date,
     "due_date": date,
     "supplier_vat_id": str,
     "customer_vat_id": str,
@@ -32,6 +35,10 @@ VALUE_TYPES: Mapping[str, type] = {
     "subtotal": Decimal,
     "vat_amount": Decimal,
     "total_amount": Decimal,
+    "contract_number": str,
+    "our_reference": str,
+    "your_reference": str,
+    "credit_reference": str,
 }
 
 
@@ -43,12 +50,19 @@ class Strategy(Enum):
     A vendor that writes `Invoice Number: INV-42` in one run gives the reader one line;
     a vendor that sets the label at one tab stop and the number flush right at another
     gives it two, and the text between them is white space that was never drawn.
+    `LABEL_BELOW` is the third way: a stacked layout prints the value under its label.
+
+    `ANCHOR` is not a search at all — the value was expected from the profile and found
+    on the page — and `DERIVED` names a value no line carries, computed from ones that
+    do, with the evidence pointing at the field it was computed from.
     """
 
     LABEL_RIGHT = auto()
     LABEL_BESIDE = auto()
     LABEL_BELOW = auto()
-    REGEX_ANCHOR = auto()
+    LABEL_PATTERN = auto()
+    ANCHOR = auto()
+    DERIVED = auto()
 
 
 @dataclass(frozen=True, slots=True)
@@ -103,12 +117,15 @@ class InvoiceResult:
 
     `profile_id` is `None` for a document no profile matched: there is no default
     vocabulary to fall back on (ADR-0008), so `fields` is empty and the findings say why.
+    `document_type` is `None` for the same document, because which kind it is is read
+    with the vendor's own words for each kind.
     """
 
     fields: Mapping[str, FieldResult]
     line_items: tuple[LineItem, ...]
     findings: tuple[Finding, ...]
     profile_id: str | None
+    document_type: str | None
     source_path: str
 
     @property
@@ -122,6 +139,7 @@ class InvoiceResult:
             "line_items": [_line_item_to_dict(item) for item in self.line_items],
             "findings": [finding.to_dict() for finding in self.findings],
             "profile_id": self.profile_id,
+            "document_type": self.document_type,
             "valid": self.valid,
             "source_path": self.source_path,
         }
@@ -136,6 +154,7 @@ class InvoiceResult:
             line_items=tuple(_line_item_from_dict(item) for item in items),
             findings=tuple(Finding.from_dict(entry) for entry in findings),
             profile_id=_optional_text(data["profile_id"]),
+            document_type=_optional_text(data["document_type"]),
             source_path=str(data["source_path"]),
         )
 

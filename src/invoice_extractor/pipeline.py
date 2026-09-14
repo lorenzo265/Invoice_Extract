@@ -2,7 +2,8 @@
 
 Every other module minds one concern; this one wires them together and does nothing
 itself — it does not parse a date, match a label, or compute a confidence. The stages it
-wires are `docs/ENGINE_SPEC.md` §2, in that order.
+wires are `docs/ENGINE_SPEC.md` §2, in that order: read, detect the profile, classify the
+document, run every spec, read the table, check the arithmetic, score.
 """
 
 from __future__ import annotations
@@ -12,10 +13,11 @@ from pathlib import Path
 from invoice_extractor.document.model import Document
 from invoice_extractor.document.pymupdf_reader import read
 from invoice_extractor.domain.findings import Finding, Severity
-from invoice_extractor.domain.models import InvoiceResult
-from invoice_extractor.extraction.engine import run
+from invoice_extractor.domain.models import FieldResult, InvoiceResult
+from invoice_extractor.extraction.classify import classify_document
+from invoice_extractor.extraction.engine import Extraction, order, run
 from invoice_extractor.extraction.line_items import extract_line_items
-from invoice_extractor.extraction.specs import FIELD_SPECS
+from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
 from invoice_extractor.profile.detect import ProfileScore, detect_profile
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_extractor.profile.schema import Profile
@@ -35,21 +37,33 @@ def extract(pdf_path: Path, registry: ProfileRegistry) -> InvoiceResult:
 
 
 def _extracted(document: Document, profile: Profile) -> InvoiceResult:
-    lines = document.lines
-    extractions = {spec.name: run(spec, lines, profile) for spec in FIELD_SPECS}
-    table = extract_line_items(lines, profile)
+    kind = classify_document(document, profile)
+    extractions = _resolve(document, profile)
+    table = extract_line_items(document.lines, profile)
     found = {name: extraction.field for name, extraction in extractions.items()}
     findings = (*table.findings, *check_all(found, table.items))
     return InvoiceResult(
         fields={
-            name: score(extraction, profile.fields[name], findings)
-            for name, extraction in extractions.items()
+            name: score(extractions[name], profile.fields.get(name), findings)
+            for name in FIELD_ORDER
         },
         line_items=table.items,
         findings=findings,
         profile_id=profile.id,
+        document_type=kind.value,
         source_path=document.source_path,
     )
+
+
+def _resolve(document: Document, profile: Profile) -> dict[str, Extraction]:
+    """Every spec, in an order where what a field is derived from resolved first."""
+    extractions: dict[str, Extraction] = {}
+    resolved: dict[str, FieldResult] = {}
+    for spec in order(SPECS):
+        extraction = run(spec, document, profile, resolved)
+        extractions[spec.name] = extraction
+        resolved[spec.name] = extraction.field
+    return extractions
 
 
 def _undetected(document: Document, scores: tuple[ProfileScore, ...]) -> InvoiceResult:
@@ -59,6 +73,7 @@ def _undetected(document: Document, scores: tuple[ProfileScore, ...]) -> Invoice
         line_items=(),
         findings=(_not_detected(scores),),
         profile_id=None,
+        document_type=None,
         source_path=document.source_path,
     )
 

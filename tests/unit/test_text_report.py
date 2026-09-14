@@ -8,13 +8,13 @@ from decimal import Decimal
 from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
-    VALUE_TYPES,
     Evidence,
     FieldResult,
     InvoiceResult,
     LineItem,
     Strategy,
 )
+from invoice_extractor.extraction.specs import FIELD_ORDER
 from invoice_extractor.output.text_report import render
 
 BOX = BBox(400.0, 609.25, 472.83, 622.99)
@@ -46,10 +46,11 @@ def field(name: str, value: object) -> FieldResult:
 
 def result(findings: tuple[Finding, ...] = ()) -> InvoiceResult:
     return InvoiceResult(
-        fields={name: field(name, VALUES[name]) for name in VALUE_TYPES},
+        fields={name: field(name, VALUES.get(name)) for name in FIELD_ORDER},
         line_items=ITEMS,
         findings=findings,
         profile_id="acme",
+        document_type="invoice",
         source_path="samples/acme_invoice.pdf",
     )
 
@@ -113,6 +114,12 @@ def test_report_names_its_source_and_profile() -> None:
     lines = report_lines()
     assert lines[2] == "source   samples/acme_invoice.pdf"
     assert lines[3] == "profile  acme"
+    assert lines[4] == "kind     invoice"
+
+
+def test_report_shows_a_dash_for_the_kind_of_a_document_no_profile_matched() -> None:
+    unread = dataclasses.replace(result(), profile_id=None, document_type=None)
+    assert render(unread).splitlines()[4] == "kind     -"
 
 
 def test_report_counts_the_line_items_it_lists() -> None:
@@ -122,8 +129,8 @@ def test_report_counts_the_line_items_it_lists() -> None:
 def test_report_shows_a_dash_when_a_candidate_matched_no_label() -> None:
     anchored = dataclasses.replace(
         field("currency", "GBP"),
-        evidence=Evidence(1, BOX, None, Strategy.REGEX_ANCHOR, "GBP"),
+        evidence=Evidence(1, BOX, None, Strategy.LABEL_PATTERN, "GBP"),
     )
     scoped = dataclasses.replace(result(), fields={"currency": anchored})
     row = line_starting(render(scoped).splitlines(), "currency")
-    assert row.endswith("p1  REGEX_ANCHOR  -")
+    assert row.endswith("p1  LABEL_PATTERN  -")
