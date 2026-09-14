@@ -35,11 +35,15 @@ VAT_ID_PATTERN = r"[A-Z]{2}[A-Z0-9]{2,12}"
 
 BY_POSITION = (valid_first, zone_priority, top_most)
 BY_LABEL_DISTANCE = (valid_first, zone_priority, closest_to_label)
+# Every field is labelled, and a labelled value sits either in the label's own run of
+# text or at the next tab stop along. Which of the two a vendor uses is the vendor's
+# business, so every field looks both ways and the rankers sort out what comes back.
+BESIDE_OR_IN_LINE = (Strategy.LABEL_RIGHT, Strategy.LABEL_BESIDE)
 
 FIELD_SPECS: tuple[FieldSpec, ...] = (
     FieldSpec(
         name="invoice_number",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=strip_label,
         validator=matches_pattern(INVOICE_NUMBER_PATTERN),
         rankers=BY_POSITION,
@@ -47,7 +51,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="invoice_date",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=parse_date,
         validator=is_date,
         rankers=BY_POSITION,
@@ -55,7 +59,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="due_date",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=parse_date,
         validator=is_date,
         rankers=BY_POSITION,
@@ -63,7 +67,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="supplier_vat_id",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=upper_alnum,
         validator=matches_pattern(VAT_ID_PATTERN),
         rankers=BY_POSITION,
@@ -71,7 +75,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="customer_vat_id",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=upper_alnum,
         validator=matches_pattern(VAT_ID_PATTERN),
         rankers=BY_POSITION,
@@ -79,7 +83,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="currency",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=upper_alnum,
         validator=is_currency_code,
         rankers=BY_POSITION,
@@ -87,7 +91,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="vat_rate",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=parse_percent,
         validator=is_percent,
         rankers=BY_LABEL_DISTANCE,
@@ -95,7 +99,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="subtotal",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=parse_money,
         validator=is_positive_money,
         rankers=BY_LABEL_DISTANCE,
@@ -103,7 +107,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="vat_amount",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=parse_money,
         validator=is_positive_money,
         rankers=BY_LABEL_DISTANCE,
@@ -111,7 +115,7 @@ FIELD_SPECS: tuple[FieldSpec, ...] = (
     ),
     FieldSpec(
         name="total_amount",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=BESIDE_OR_IN_LINE,
         normalizer=parse_money,
         validator=is_positive_money,
         rankers=BY_LABEL_DISTANCE,

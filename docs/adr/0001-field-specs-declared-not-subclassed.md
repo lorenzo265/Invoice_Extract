@@ -14,13 +14,13 @@ subclass instead of one function.
 
 ## Decision
 
-A field is a value, not a type. `FieldSpec(name, strategy, normalizer, validator,
+A field is a value, not a type. `FieldSpec(name, strategies, normalizer, validator,
 rankers, on_all_invalid)` (`extraction/spec.py`) names five behaviours instead of
 implementing them inline:
 
 | Slot | Closed vocabulary / source |
 |---|---|
-| `strategy` | `Strategy = LABEL_RIGHT \| LABEL_BELOW \| REGEX_ANCHOR` |
+| `strategies` | `Strategy = LABEL_RIGHT \| LABEL_BESIDE \| LABEL_BELOW \| REGEX_ANCHOR` |
 | `normalizer` | `extraction/normalizers.py` — `strip_label`, `parse_date`, `parse_money`, `upper_alnum`, `parse_percent` |
 | `validator` | `extraction/validators.py` — `matches_pattern`, `is_date`, `is_positive_money`, `is_currency_code`, `is_percent` |
 | `rankers` | `extraction/rankers.py` — `valid_first`, `zone_priority`, `closest_to_label`, `top_most` |
@@ -41,7 +41,22 @@ copy-pasted across subclasses. The full field list is auditable in one file at a
 The cost sits at the boundary: a genuinely new *behaviour* — a strategy, normalizer,
 validator, or ranker that doesn't exist yet — still requires touching the shared
 vocabulary modules, so a small amount of extension work always lives outside
-`specs.py`. `FieldSpec` values must stay pure compositions of function references, with
+`specs.py`.
+
+## Amendment: `strategy` became `strategies`
+
+The slot was one strategy per field until v0.2.0, when the benchmark over the generated
+corpus showed the cost of that: a vendor that sets a label at one tab stop and its value
+flush right at another prints no text between the two, so `<label>: <value>` never
+appears on the page and `LABEL_RIGHT` — the only strategy any field named — found no
+candidate at all for eight of the ten fields. The fix is `LABEL_BESIDE` in the same
+vocabulary; what made it a change to the *slot* is that both readings are ordinary, often
+in one corpus, and a field cannot be asked to pick one in advance.
+
+So a spec names a tuple, every strategy in it contributes its candidates, and the rankers
+choose between them — which is what the rankers were already for. The decision above is
+unchanged: a field is still a value naming behaviours, still adds no class, and still
+leaves the data those behaviours need in the layout. `FieldSpec` values must stay pure compositions of function references, with
 no captured state, or "reading `specs.py` tells you everything" stops being true.
 Strategies must return evidence-carrying candidates for the engine to rank (ADR-0002);
 the layout half of this split is ADR-0004.

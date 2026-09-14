@@ -24,7 +24,7 @@ def subtotal_spec(
 ) -> FieldSpec:
     return FieldSpec(
         name="subtotal",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=(Strategy.LABEL_RIGHT,),
         normalizer=parse_money,
         validator=is_positive_money,
         rankers=tuple(rankers),

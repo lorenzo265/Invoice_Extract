@@ -17,37 +17,37 @@ extractor has no spec for is `not covered` and is never counted as wrong.
 | --- | ---: | ---: | ---: | ---: |
 | contract_number | 0 | 0 | 0 | -- |
 | credit_reference | 0 | 0 | 0 | -- |
-| currency | 0 | 250 | 0 | 0.0% |
+| currency | 219 | 31 | 0 | 87.6% |
 | customer_number | 0 | 0 | 0 | -- |
-| customer_vat_id | 230 | 20 | 0 | 92.0% |
-| due_date | 10 | 240 | 0 | 4.0% |
-| invoice_date | 0 | 250 | 0 | 0.0% |
-| invoice_number | 0 | 250 | 0 | 0.0% |
+| customer_vat_id | 243 | 7 | 0 | 97.2% |
+| due_date | 183 | 67 | 0 | 73.2% |
+| invoice_date | 179 | 71 | 0 | 71.6% |
+| invoice_number | 219 | 31 | 0 | 87.6% |
 | order_number | 0 | 0 | 0 | -- |
 | our_reference | 0 | 0 | 0 | -- |
 | payment_terms | 0 | 0 | 0 | -- |
-| subtotal | 0 | 250 | 0 | 0.0% |
+| subtotal | 189 | 61 | 0 | 75.6% |
 | supplier_vat_id | 243 | 7 | 0 | 97.2% |
 | supply_date | 0 | 0 | 0 | -- |
-| total_amount | 0 | 250 | 0 | 0.0% |
-| vat_amount | 0 | 250 | 0 | 0.0% |
-| vat_rate | 0 | 250 | 0 | 0.0% |
+| total_amount | 189 | 61 | 0 | 75.6% |
+| vat_amount | 189 | 61 | 0 | 75.6% |
+| vat_rate | 200 | 50 | 0 | 80.0% |
 | your_reference | 0 | 0 | 0 | -- |
 
 ## What the misses are
 
 | Field | Miss | Found nothing | Read something else |
 | --- | ---: | ---: | ---: |
-| currency | 250 | 250 | 0 |
-| customer_vat_id | 20 | 20 | 0 |
-| due_date | 240 | 240 | 0 |
-| invoice_date | 250 | 250 | 0 |
-| invoice_number | 250 | 250 | 0 |
-| subtotal | 250 | 250 | 0 |
+| currency | 31 | 31 | 0 |
+| customer_vat_id | 7 | 7 | 0 |
+| due_date | 67 | 67 | 0 |
+| invoice_date | 71 | 71 | 0 |
+| invoice_number | 31 | 31 | 0 |
+| subtotal | 61 | 61 | 0 |
 | supplier_vat_id | 7 | 7 | 0 |
-| total_amount | 250 | 250 | 0 |
-| vat_amount | 250 | 250 | 0 |
-| vat_rate | 250 | 250 | 0 |
+| total_amount | 61 | 61 | 0 |
+| vat_amount | 61 | 51 | 10 |
+| vat_rate | 50 | 50 | 0 |
 
 A field that found nothing is a field whose label the strategies never reached; a field that read something else reached a candidate and chose wrongly. The first is a strategy to add, the second a ranker to fix.
 
@@ -67,74 +67,74 @@ A field that found nothing is a field whose label the strategies never reached; 
 
 | Profile | currency | customer_vat_id | due_date | invoice_date | invoice_number | subtotal | supplier_vat_id | total_amount | vat_amount | vat_rate |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| cs-CZ | 0.0% | 90.0% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| da-DK | 0.0% | 100.0% | 11.1% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| de-AT | 0.0% | 92.9% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| de-CH | 0.0% | 100.0% | 9.1% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| de-DE | 0.0% | 93.3% | 6.7% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| el-GR | 0.0% | 90.0% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| en-GB | 0.0% | 93.8% | 6.2% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| en-IE | 0.0% | 100.0% | 5.6% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| es-ES | 0.0% | 92.9% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| fi-FI | 0.0% | 90.0% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| fr-BE | 0.0% | 100.0% | 7.7% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| fr-FR | 0.0% | 92.3% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| fr-LU | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| it-IT | 0.0% | 92.9% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| nl-BE | 0.0% | 90.9% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| nl-NL | 0.0% | 93.3% | 6.7% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| no-NO | 0.0% | 100.0% | 8.3% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| pl-PL | 0.0% | 90.9% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| pt-PT | 0.0% | 100.0% | 12.5% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| sk-SK | 0.0% | 80.0% | 0.0% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| sv-SE | 0.0% | 100.0% | 14.3% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| tr-TR | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| cs-CZ | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 80.0% | 100.0% | 80.0% | 80.0% | 100.0% |
+| da-DK | 100.0% | 100.0% | 88.9% | 100.0% | 100.0% | 88.9% | 100.0% | 88.9% | 88.9% | 77.8% |
+| de-AT | 71.4% | 100.0% | 64.3% | 71.4% | 71.4% | 64.3% | 100.0% | 64.3% | 64.3% | 64.3% |
+| de-CH | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 81.8% | 100.0% | 81.8% | 81.8% | 100.0% |
+| de-DE | 80.0% | 100.0% | 53.3% | 53.3% | 80.0% | 66.7% | 100.0% | 66.7% | 66.7% | 80.0% |
+| el-GR | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 80.0% | 100.0% | 80.0% | 80.0% | 100.0% |
+| en-GB | 87.5% | 100.0% | 93.8% | 87.5% | 87.5% | 87.5% | 100.0% | 87.5% | 87.5% | 81.2% |
+| en-IE | 77.8% | 100.0% | 77.8% | 77.8% | 77.8% | 77.8% | 100.0% | 77.8% | 77.8% | 66.7% |
+| es-ES | 85.7% | 100.0% | 28.6% | 28.6% | 85.7% | 71.4% | 100.0% | 71.4% | 71.4% | 71.4% |
+| fi-FI | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 80.0% | 100.0% | 80.0% | 80.0% | 90.0% |
+| fr-BE | 76.9% | 100.0% | 84.6% | 76.9% | 76.9% | 61.5% | 100.0% | 61.5% | 61.5% | 69.2% |
+| fr-FR | 84.6% | 100.0% | 38.5% | 38.5% | 84.6% | 69.2% | 100.0% | 69.2% | 69.2% | 76.9% |
+| fr-LU | 100.0% | 100.0% | 14.3% | 14.3% | 100.0% | 85.7% | 100.0% | 85.7% | 85.7% | 85.7% |
+| it-IT | 85.7% | 100.0% | 7.1% | 7.1% | 85.7% | 71.4% | 100.0% | 71.4% | 71.4% | 78.6% |
+| nl-BE | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
+| nl-NL | 86.7% | 100.0% | 80.0% | 53.3% | 86.7% | 73.3% | 100.0% | 73.3% | 73.3% | 80.0% |
+| no-NO | 66.7% | 100.0% | 66.7% | 66.7% | 66.7% | 58.3% | 100.0% | 58.3% | 58.3% | 58.3% |
+| pl-PL | 72.7% | 100.0% | 72.7% | 72.7% | 72.7% | 63.6% | 100.0% | 63.6% | 63.6% | 63.6% |
+| pt-PT | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 75.0% | 100.0% | 75.0% | 75.0% | 100.0% |
+| sk-SK | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 80.0% | 100.0% | 80.0% | 80.0% | 100.0% |
+| sv-SE | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 85.7% | 100.0% | 85.7% | 85.7% | 57.1% |
+| tr-TR | 100.0% | 0.0% | 100.0% | 100.0% | 100.0% | 85.7% | 0.0% | 85.7% | 85.7% | 100.0% |
 
 ## By family
 
 | Family | currency | customer_vat_id | due_date | invoice_date | invoice_number | subtotal | supplier_vat_id | total_amount | vat_amount | vat_rate |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| classic | 0.0% | 88.2% | 0.0% | 0.0% | 0.0% | 0.0% | 95.6% | 0.0% | 0.0% | 0.0% |
-| minimal | 0.0% | 94.0% | 6.0% | 0.0% | 0.0% | 0.0% | 97.0% | 0.0% | 0.0% | 0.0% |
-| saas | 0.0% | 100.0% | 4.3% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
+| classic | 100.0% | 95.6% | 86.8% | 85.3% | 100.0% | 86.8% | 95.6% | 86.8% | 86.8% | 86.8% |
+| minimal | 100.0% | 97.0% | 85.1% | 83.6% | 100.0% | 86.6% | 97.0% | 86.6% | 86.6% | 89.6% |
+| saas | 100.0% | 100.0% | 65.2% | 65.2% | 100.0% | 82.6% | 100.0% | 82.6% | 82.6% | 100.0% |
 | stacked | 0.0% | 100.0% | 9.7% | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% |
-| tabular | 0.0% | 86.9% | 3.3% | 0.0% | 0.0% | 0.0% | 96.7% | 0.0% | 0.0% | 0.0% |
+| tabular | 100.0% | 96.7% | 80.3% | 82.0% | 100.0% | 86.9% | 96.7% | 86.9% | 86.9% | 95.1% |
 
 ## By knob
 
 | Knob | On | Off | Difference |
 | --- | ---: | ---: | ---: |
-| credit_note | 19.5% | 19.3% | +0.2 pp |
-| multi_page | 19.6% | 19.3% | +0.3 pp |
-| wrapped_description | 19.6% | 19.3% | +0.3 pp |
-| sub_items | 19.6% | 19.3% | +0.3 pp |
-| thousands_variant | 20.0% | 19.3% | +0.7 pp |
-| dual_currency_echo | 20.0% | 19.3% | +0.7 pp |
-| charges | 20.0% | 19.3% | +0.7 pp |
-| declared_charge | 20.0% | 19.3% | +0.7 pp |
-| undeclared_charge | 20.0% | 19.3% | +0.7 pp |
-| multi_rate | 20.0% | 19.3% | +0.7 pp |
-| vat_summary_table | 20.0% | 19.3% | +0.7 pp |
-| exemption_verbiage | 20.0% | 19.3% | +0.7 pp |
-| rounding_per_line | 20.0% | 19.3% | +0.7 pp |
-| rounding_total | 20.0% | 19.3% | +0.7 pp |
-| amount_in_words | 20.0% | 19.3% | +0.7 pp |
-| bank_footer | 27.7% | 18.9% | +8.8 pp |
-| noise_footer | 27.7% | 18.9% | +8.8 pp |
-| payment_terms_block | 27.7% | 18.9% | +8.8 pp |
-| carry_forward | 18.6% | 19.4% | -0.8 pp |
-| page_numbering | 18.6% | 19.4% | -0.8 pp |
-| stamp_copy | 18.6% | 19.4% | -0.8 pp |
-| column_set | 18.6% | 19.4% | -0.8 pp |
-| section_subtotals | 18.6% | 19.4% | -0.8 pp |
-| discount | 18.6% | 19.4% | -0.8 pp |
-| repeat_letterhead | 18.6% | 19.4% | -0.8 pp |
-| supply_date | 9.3% | 19.9% | -10.6 pp |
-| extra_references | 9.3% | 19.9% | -10.6 pp |
-| trap_labels | 9.3% | 19.9% | -10.6 pp |
-| party_blocks | 9.3% | 19.9% | -10.6 pp |
-| placeholder_addresses | 9.3% | 19.9% | -10.6 pp |
-| customer_vat_position | 9.3% | 19.9% | -10.6 pp |
+| multi_page | 92.1% | 79.8% | +12.3 pp |
+| supply_date | 95.0% | 81.4% | +13.6 pp |
+| extra_references | 95.0% | 81.4% | +13.6 pp |
+| trap_labels | 95.0% | 81.4% | +13.6 pp |
+| party_blocks | 95.0% | 81.4% | +13.6 pp |
+| placeholder_addresses | 95.0% | 81.4% | +13.6 pp |
+| customer_vat_position | 95.0% | 81.4% | +13.6 pp |
+| carry_forward | 96.4% | 81.3% | +15.2 pp |
+| page_numbering | 96.4% | 81.3% | +15.2 pp |
+| stamp_copy | 96.4% | 81.3% | +15.2 pp |
+| repeat_letterhead | 96.4% | 81.3% | +15.2 pp |
+| column_set | 85.7% | 81.9% | +3.8 pp |
+| section_subtotals | 85.7% | 81.9% | +3.8 pp |
+| discount | 85.7% | 81.9% | +3.8 pp |
+| amount_in_words | 86.4% | 81.9% | +4.6 pp |
+| wrapped_description | 89.0% | 80.5% | +8.5 pp |
+| sub_items | 89.0% | 80.5% | +8.5 pp |
+| thousands_variant | 81.5% | 82.2% | -0.6 pp |
+| dual_currency_echo | 81.5% | 82.2% | -0.6 pp |
+| charges | 81.5% | 82.2% | -0.6 pp |
+| declared_charge | 81.5% | 82.2% | -0.6 pp |
+| undeclared_charge | 81.5% | 82.2% | -0.6 pp |
+| rounding_total | 81.5% | 82.2% | -0.6 pp |
+| multi_rate | 68.5% | 82.9% | -14.4 pp |
+| vat_summary_table | 68.5% | 82.9% | -14.4 pp |
+| exemption_verbiage | 68.5% | 82.9% | -14.4 pp |
+| rounding_per_line | 68.5% | 82.9% | -14.4 pp |
+| credit_note | 66.2% | 85.1% | -18.9 pp |
+| bank_footer | 77.7% | 82.4% | -4.7 pp |
+| noise_footer | 77.7% | 82.4% | -4.7 pp |
+| payment_terms_block | 77.7% | 82.4% | -4.7 pp |
 
 A knob whose `on` rate sits below its `off` rate is a variation this release loses values to. Both rates are over every scalar field of every document on that side, so a knob that moves one field moves the column only a little. The base plan turns knobs on in themed bundles, so knobs that share a bundle share a row of documents and move together: what a column separates is a bundle, not always a single knob.
 
@@ -142,10 +142,10 @@ A knob whose `on` rate sits below its `off` rate is a variation this release los
 
 | Confidence | Hit | Miss | Hit rate |
 | --- | ---: | ---: | ---: |
-| 0.0-0.2 | 0 | 2017 | 0.0% |
+| 0.0-0.2 | 0 | 437 | 0.0% |
 | 0.2-0.4 | 0 | 0 | -- |
-| 0.4-0.6 | 0 | 0 | -- |
-| 0.6-0.8 | 0 | 0 | -- |
-| 0.8-1.0 | 483 | 0 | 100.0% |
+| 0.4-0.6 | 1 | 0 | 100.0% |
+| 0.6-0.8 | 36 | 0 | 100.0% |
+| 0.8-1.0 | 2016 | 10 | 99.5% |
 
 The confidence the extractor prints beside a value, against how often a value in that band turned out to be right.

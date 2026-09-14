@@ -65,7 +65,7 @@ classDiagram
     }
     class FieldSpec {
         +str name
-        +Strategy strategy
+        +Strategy[] strategies
         +Normalizer normalizer
         +Validator validator
         +tuple~Ranker~ rankers
@@ -113,7 +113,7 @@ classDiagram
     Evidence "1" --> "1" BBox
     TextLine ..> Evidence : source of
     Candidate "1" --> "1" Evidence
-    FieldSpec ..> Candidate : strategy() produces
+    FieldSpec ..> Candidate : its strategies produce
     Layout ..> FieldSpec : configures, matched by field name
     FieldResult "1" --> "1" Evidence
     InvoiceResult "1" --> "*" FieldResult
@@ -166,7 +166,7 @@ classDiagram
 1. `pipeline.extract("acme_invoice.pdf", layout="acme")` opens the PDF through `document/pymupdf_reader.py`, which yields one `TextLine` per line of text on page 1.
 2. `document/zones.py` stamps each `TextLine.zone` from its `BBox` centre, normalised against the page size — the line `"Invoice Number: INV-2024-0042"` lands in `Zone.TOP_RIGHT`.
 3. `layout/loader.py` has already parsed `layouts/acme.json` into a `Layout`; `layout.fields["invoice_number"]` holds `labels=["Invoice Number"]` and `zones=[Zone.TOP_RIGHT]` — no `regex`, a label match is enough.
-4. `extraction/specs.py` pairs the field name with behaviour: `FieldSpec(name="invoice_number", strategy=LABEL_RIGHT, normalizer=strip_label, validator=matches_pattern(r"[A-Z0-9][A-Z0-9/-]{2,}"), rankers=(valid_first, zone_priority, top_most), on_all_invalid=NOT_FOUND)`.
+4. `extraction/specs.py` pairs the field name with behaviour: `FieldSpec(name="invoice_number", strategies=(LABEL_RIGHT, LABEL_BESIDE), normalizer=strip_label, validator=matches_pattern(r"[A-Z0-9][A-Z0-9/-]{2,}"), rankers=(valid_first, zone_priority, top_most), on_all_invalid=NOT_FOUND)`.
 5. `extraction/engine.py` restricts the search to `TextLine`s in `Zone.TOP_RIGHT` and calls `strategies.label_right()`, which finds the label and reads the text to its right, returning `Candidate(raw_text="Invoice Number: INV-2024-0042", evidence=...)`.
 6. `normalizers.strip_label()` reduces the raw text to `"INV-2024-0042"`; `validators.matches_pattern()` confirms it matches the invoice-number shape — the spec's default pattern, unless the layout's optional `regex` for this field overrides it.
 7. Only one candidate exists, so `valid_first`, `zone_priority` and `top_most` have nothing to break a tie on — it wins by default.
@@ -182,7 +182,7 @@ FieldResult(
         page=1,
         bbox=BBox(x0=400.0, y0=65.25, x1=543.39, y1=78.99),
         matched_label="Invoice Number",
-        strategy=Strategy.LABEL_RIGHT,
+        strategies=(Strategy.LABEL_RIGHT, Strategy.LABEL_BESIDE),
         raw_text="Invoice Number: INV-2024-0042",
     ),
     confidence=1.0,

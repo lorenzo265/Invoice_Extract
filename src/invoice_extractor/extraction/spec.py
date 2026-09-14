@@ -48,10 +48,18 @@ Ranker = Callable[[Evaluated, FieldLayout], float]  # lower sorts first
 
 @dataclass(frozen=True, slots=True)
 class FieldSpec:
-    """One field, declared. The layout says where to look; this says how to read it."""
+    """One field, declared. The layout says where to look; this says how to read it.
+
+    `strategies` is a tuple because one field is printed more than one way: a label and
+    its value in a single run of text, and the same pair set at two tab stops with
+    nothing drawn between them, are one idea a reader has to find two ways. Every
+    strategy named contributes its candidates and the rankers choose between them —
+    which is what the rankers are for, and is why this is a tuple rather than a
+    fallback chain that would stop at the first strategy to find anything at all.
+    """
 
     name: str
-    strategy: Strategy
+    strategies: tuple[Strategy, ...]
     normalizer: Normalizer
     validator: Validator
     rankers: tuple[Ranker, ...]

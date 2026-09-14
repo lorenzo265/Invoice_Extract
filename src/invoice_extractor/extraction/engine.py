@@ -30,12 +30,23 @@ class Extraction:
 def run(spec: FieldSpec, lines: Sequence[TextLine], layout: Layout) -> Extraction:
     """Run one spec against a document's lines and report a single result for the field."""
     field_layout = layout.fields[spec.name]
-    candidates = STRATEGIES[spec.strategy](lines, field_layout)
+    candidates = _candidates(spec, lines, field_layout)
     evaluated = [_evaluate(spec, candidate, layout, field_layout) for candidate in candidates]
     winner = _winner(_ranked(evaluated, spec, field_layout), spec)
     if winner is None:
         return Extraction(_not_found(spec.name), len(candidates), None)
     return Extraction(_result(spec.name, winner), len(candidates), winner.candidate.zone)
+
+
+def _candidates(
+    spec: FieldSpec, lines: Sequence[TextLine], field_layout: FieldLayout
+) -> list[Candidate]:
+    """Every way the field may be printed, pooled — the rankers decide which one won."""
+    return [
+        candidate
+        for strategy in spec.strategies
+        for candidate in STRATEGIES[strategy](lines, field_layout)
+    ]
 
 
 def _evaluate(

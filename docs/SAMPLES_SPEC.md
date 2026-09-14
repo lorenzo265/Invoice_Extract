@@ -129,7 +129,7 @@ because these two samples need it.
   "page": <int>,                                    // 1-indexed
   "bbox": { "x0": <float>, "y0": <float>, "x1": <float>, "y1": <float> },
   "matched_label": <str> | null,
-  "strategy": "LABEL_RIGHT" | "LABEL_BELOW" | "REGEX_ANCHOR",
+  "strategy": "LABEL_RIGHT" | "LABEL_BESIDE" | "LABEL_BELOW" | "REGEX_ANCHOR",
   "raw_text": <str>
 }
 ```
@@ -263,16 +263,18 @@ Arithmetic check (why `findings` is `[]`): line items sum to `60.00 + 154.00 + 2
 490.00` = subtotal; `490.00 × 20% = 98.00` = VAT amount; `490.00 + 98.00 = 588.00` =
 total. All three invariants agree, to the cent.
 
-### Why every field is `LABEL_RIGHT`
+### Why every field is found by `LABEL_RIGHT`
 
 Every one of the ten fields above sits on the same printed line as its label, to the
-label's right — no field in `layouts/acme.json` needs `LABEL_BELOW` or `REGEX_ANCHOR`
-to be found, and no field needs a `regex` (see `docs/ARCHITECTURE.md` §5's worked
+label's right, in the same run of text — so `LABEL_RIGHT` finds all ten and no field in
+`layouts/acme.json` needs a `regex` (see `docs/ARCHITECTURE.md` §5's worked
 `invoice_number` example, and `docs/LAYOUT_FORMAT.md`'s worked `supplier_vat_id`
-example — both match this page exactly). `LABEL_BELOW` and `REGEX_ANCHOR` are real
-strategies with their own unit tests in `tests/unit/test_strategies.py`
-(`extraction/strategies.py`, PR5) against `FakeDocument` fixtures — this fixed pair of
-golden PDFs simply never needs them.
+example — both match this page exactly). Every spec also names `LABEL_BESIDE`, which
+finds the same pair set at two tab stops; on these two pages it contributes no
+candidate, and the recorded `strategy` stays `LABEL_RIGHT` for all ten.
+`LABEL_BELOW` and `REGEX_ANCHOR` are real strategies with their own unit tests in
+`tests/unit/test_strategies.py` (`extraction/strategies.py`, PR5) against
+`FakeDocument` fixtures — this fixed pair of golden PDFs simply never needs them.
 
 ### Expected scalar fields
 

@@ -194,19 +194,19 @@ vendor's own labels, so what is measured is the extraction engine and not label 
 Over the 250-document base corpus (`make corpus`), `make bench`
 measures this release at:
 
-- **Scalar fields:** 19.3% (483 of 2500) of the values the documents carry.
+- **Scalar fields:** 82.1% (2053 of 2500) of the values the documents carry.
 - **Line-item cells:** 23.0% (6817 of 29635), over
   49 of 250 documents whose row count was read
   exactly.
-- **Confidence:** 0.0-0.2 at 0.0%, 0.8-1.0 at 100.0%.
+- **Confidence:** 0.0-0.2 at 0.0%, 0.4-0.6 at 100.0%, 0.6-0.8 at 100.0%, 0.8-1.0 at 99.5%.
 - **Not covered:** the generator prints these and the extractor has no spec for
   them, so they are never scored as wrong:
   `contract_number`, `credit_reference`, `customer_number`, `order_number`, `our_reference`, `payment_terms`, `supply_date`, `your_reference`.
 
-Every one of those 2017 misses found no candidate at all. The corpus prints a
-label at one tab stop and its value flush right at another, as a real invoice
-does; the extractor's label strategies want the two in one line of text, and the
-two fields it does read — the VAT ids — are the two printed that way.
+437 of those 447 misses found no candidate at all, rather than reading
+the wrong one (10). A field that found nothing was printed a way none
+of its strategies looks; `benchmarks/README.md` says which fields, on which
+profiles and in which families.
 
 `benchmarks/README.md` is the field-by-field matrix, by profile, by family and by
 knob.

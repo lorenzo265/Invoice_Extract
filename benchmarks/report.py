@@ -45,17 +45,17 @@ def render_readme_block(report: Mapping[str, object]) -> str:
 
 
 def _diagnosis(fields: Mapping[str, object]) -> list[str]:
-    """The one sentence the numbers are for: what nearly every miss turned out to be."""
+    """What the misses were, split the one way that says where to go looking next."""
     miss = sum(_number(_mapping(fields, name), "miss") for name in fields)
     empty = sum(_number(_mapping(fields, name), "found_nothing") for name in fields)
     if not miss:
-        return ["Nothing missed."]
+        return ["Nothing was missed."]
     how_many = "Every one of" if empty == miss else f"{empty} of"
     return [
-        f"{how_many} those {miss} misses found no candidate at all. The corpus prints a",
-        "label at one tab stop and its value flush right at another, as a real invoice",
-        "does; the extractor's label strategies want the two in one line of text, and the",
-        "two fields it does read — the VAT ids — are the two printed that way.",
+        f"{how_many} those {miss} misses found no candidate at all, rather than reading",
+        f"the wrong one ({miss - empty}). A field that found nothing was printed a way none",
+        "of its strategies looks; `benchmarks/README.md` says which fields, on which",
+        "profiles and in which families.",
     ]
 
 

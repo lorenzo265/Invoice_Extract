@@ -5,7 +5,36 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- **`LABEL_BESIDE`, a fourth extraction strategy.** A vendor that sets its labels at one
+  tab stop and its values flush right at another draws no text between the two, so the
+  reader sees two lines rather than one and `<label>: <value>` never appears on the
+  page at all. The new strategy reads the nearest thing printed to the right of a line
+  that is only the label, on the same line of the page.
+
+### Changed
+
+- **`FieldSpec.strategy` is now `FieldSpec.strategies`.** One field is printed more than
+  one way, and a spec cannot be asked to pick in advance: every strategy it names
+  contributes its candidates and the rankers choose between them, which is what the
+  rankers were already for. Every one of the ten fields now looks both ways along its
+  line. See the amendment in
+  [ADR-0001](docs/adr/0001-field-specs-declared-not-subclassed.md).
+- A field's expected zones are now preferred on the candidate rather than on the lines
+  searched, because a zone says where the *value* is. A label at the last tab stop of
+  the middle third and its value flush right in the right third are one row of one
+  block; filtering the page before searching threw the label away.
+- `strip_label` strips a label only from text that starts with it, so a colon inside a
+  value handed over on its own — which is every candidate `LABEL_BESIDE` finds — stays
+  part of the value.
+
+### Measured
+
+- `make bench` over the 250-document base corpus: scalar fields **19.3% → 82.1%**.
+  Of the 447 remaining misses, 437 still find no candidate; almost all of them are the
+  `stacked` family, which prints each value on the line *under* its label — that is
+  `LABEL_BELOW`, a strategy that exists and that no spec names yet.
 
 ## [0.2.0]
 

@@ -5,7 +5,12 @@ from __future__ import annotations
 from conftest import line, make_field_layout
 from invoice_extractor.document.reader import Zone
 from invoice_extractor.domain.models import Strategy
-from invoice_extractor.extraction.strategies import label_below, label_right, regex_anchor
+from invoice_extractor.extraction.strategies import (
+    label_below,
+    label_beside,
+    label_right,
+    regex_anchor,
+)
 
 
 def test_label_right_reads_value_after_colon() -> None:
@@ -47,6 +52,76 @@ def test_label_right_prefers_expected_zone_then_falls_back() -> None:
 
     (fallback,) = label_right([outside], field_layout)
     assert fallback.raw_text == "Currency: GBP"
+
+
+def test_label_beside_reads_the_value_at_the_next_tab_stop() -> None:
+    """The metadata block of a real invoice: label left, value flush right, nothing between."""
+    label = line("Beleg-Nr.:", 360, 76)
+    value = line("RE-2024-674503", 476, 76)
+    (candidate,) = label_beside([label, value], make_field_layout(labels=("Beleg-Nr.",)))
+    assert candidate.raw_text == "RE-2024-674503"
+    assert candidate.evidence.matched_label == "Beleg-Nr."
+    assert candidate.evidence.strategy is Strategy.LABEL_BESIDE
+    assert candidate.label_distance > 0
+
+
+def test_label_beside_reads_a_label_that_carries_no_colon() -> None:
+    label = line("Currency", 360, 76)
+    value = line("EUR", 520, 76)
+    (candidate,) = label_beside([label, value], make_field_layout(labels=("Currency",)))
+    assert candidate.raw_text == "EUR"
+
+
+def test_label_beside_is_case_insensitive() -> None:
+    lines = [line("CURRENCY:", 360, 76), line("EUR", 520, 76)]
+    assert label_beside(lines, make_field_layout(labels=("Currency",)))
+
+
+def test_label_beside_takes_the_nearest_value_and_not_the_one_past_it() -> None:
+    label = line("Datum:", 360, 76)
+    near = line("13.02.2024", 470, 76)
+    far = line("ignored", 530, 76)
+    (candidate,) = label_beside([label, far, near], make_field_layout(labels=("Datum",)))
+    assert candidate.raw_text == "13.02.2024"
+
+
+def test_label_beside_ignores_a_line_on_the_row_above_or_below() -> None:
+    label = line("Datum:", 360, 100)
+    above = line("13.02.2024", 470, 88)
+    below = line("14.02.2024", 470, 112)
+    assert label_beside([label, above, below], make_field_layout(labels=("Datum",))) == []
+
+
+def test_label_beside_ignores_a_line_to_the_left_of_the_label() -> None:
+    label = line("Datum:", 360, 76)
+    before = line("13.02.2024", 100, 76)
+    assert label_beside([label, before], make_field_layout(labels=("Datum",))) == []
+
+
+def test_label_beside_ignores_a_value_on_another_page() -> None:
+    label = line("Datum:", 360, 76)
+    elsewhere = line("13.02.2024", 470, 76, page=2)
+    assert label_beside([label, elsewhere], make_field_layout(labels=("Datum",))) == []
+
+
+def test_label_beside_ignores_a_line_that_is_more_than_the_label() -> None:
+    """`label_right` owns that line; reading it here would make one value two candidates."""
+    lines = [line("Beleg-Nr.: RE-2024-674503", 360, 76), line("Something", 500, 76)]
+    assert label_beside(lines, make_field_layout(labels=("Beleg-Nr.",))) == []
+
+
+def test_label_beside_finds_nothing_where_the_label_stands_alone() -> None:
+    assert label_beside([line("Datum:", 360, 76)], make_field_layout(labels=("Datum",))) == []
+
+
+def test_label_beside_prefers_expected_zone_then_falls_back() -> None:
+    inside = [line("Currency:", 360, 76), line("SEK", 520, 76)]
+    outside = [line("Currency:", 56, 700), line("GBP", 200, 700)]
+    field_layout = make_field_layout(labels=("Currency",), zones=(Zone.TOP_RIGHT,))
+    (preferred,) = label_beside([*inside, *outside], field_layout)
+    assert preferred.raw_text == "SEK"
+    (fallback,) = label_beside(outside, field_layout)
+    assert fallback.raw_text == "GBP"
 
 
 def test_label_below_picks_nearest_line_under_anchor() -> None:

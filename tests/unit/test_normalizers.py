@@ -72,6 +72,12 @@ def test_upper_alnum_drops_punctuation() -> None:
     assert upper_alnum(candidate("Label: se-556 123 456 701"), make_layout()) == "SE556123456701"
 
 
+def test_strip_label_keeps_a_colon_inside_a_value_the_label_did_not_introduce() -> None:
+    """`label_beside` hands over the value alone, so a colon inside it is the value's own."""
+    found = candidate("Ref: 12:30", label="Unsere Referenz")
+    assert strip_label(found, make_layout()) == "Ref: 12:30"
+
+
 def test_strip_label_without_label_returns_stripped_text() -> None:
     assert strip_label(candidate("  GB123456789  ", label=None), make_layout()) == "GB123456789"
 

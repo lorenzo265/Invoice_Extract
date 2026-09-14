@@ -33,11 +33,19 @@ def parse_number(text: str, layout: Layout) -> Decimal | None:
 
 
 def strip_label(candidate: Candidate, layout: Layout) -> str:
-    """The text after the label's colon. A line with no colon is already its own value."""
-    _, colon, remainder = candidate.raw_text.partition(":")
-    if candidate.evidence.matched_label is None or not colon:
-        return candidate.raw_text.strip()
-    return remainder.strip()
+    """The text after the label's colon, where the label is part of the text at all.
+
+    `label_beside` and `label_below` hand over the value on its own — the label is a line
+    of its own somewhere else — so a colon inside such a value is the value's, not a
+    separator, and the whole text is kept. What decides is whether the text *starts* with
+    the label that was matched, which only `label_right` ever produces.
+    """
+    text = candidate.raw_text.strip()
+    label = candidate.evidence.matched_label
+    if label is None or not text.lower().startswith(label.lower()):
+        return text
+    _, colon, remainder = text.partition(":")
+    return remainder.strip() if colon else text
 
 
 def parse_date(candidate: Candidate, layout: Layout) -> date | None:

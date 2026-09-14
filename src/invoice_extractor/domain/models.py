@@ -36,9 +36,17 @@ VALUE_TYPES: Mapping[str, type] = {
 
 
 class Strategy(Enum):
-    """How a candidate was found. It lives here, beside the `Evidence` that records it."""
+    """How a candidate was found. It lives here, beside the `Evidence` that records it.
+
+    `LABEL_RIGHT` and `LABEL_BESIDE` are the same reading of a page — the value follows
+    its label along the line — found two ways, because a PDF has no idea what a line is.
+    A vendor that writes `Invoice Number: INV-42` in one run gives the reader one line;
+    a vendor that sets the label at one tab stop and the number flush right at another
+    gives it two, and the text between them is white space that was never drawn.
+    """
 
     LABEL_RIGHT = auto()
+    LABEL_BESIDE = auto()
     LABEL_BELOW = auto()
     REGEX_ANCHOR = auto()
 

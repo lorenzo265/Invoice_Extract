@@ -99,7 +99,7 @@ Each value is a `FieldLayout`:
 |---|---|---|---|
 | `labels` | `list[str]`, non-empty | Yes | Candidate label text this field's strategy searches for, exactly as printed — no trailing colon (see below), no regex. |
 | `zones` | `list[Zone name]`, non-empty | Yes | Where this field is expected to appear. Ranking prefers a candidate found in one of these zones (`extraction/rankers.py`'s `zone_priority`) and `validation/confidence.py`'s `in_expected_zone` signal reads it — it does not forbid a match elsewhere. |
-| `regex` | `str` | No | A field-specific pattern, only needed by a field whose `FieldSpec.strategy` is `REGEX_ANCHOR`, or one whose validator wants a shape check `matches_pattern` can't infer from labels alone. Neither seed layout uses it — `labels` and `zones` are enough for both `acme` and `nordic`. Compiled with `re.compile` at load time so a broken pattern fails immediately: `"fields.<name>.regex is not a valid regular expression: <re.error message>"`. |
+| `regex` | `str` | No | A field-specific pattern, only needed by a field whose `FieldSpec.strategies` name `REGEX_ANCHOR`, or one whose validator wants a shape check `matches_pattern` can't infer from labels alone. Neither seed layout uses it — `labels` and `zones` are enough for both `acme` and `nordic`. Compiled with `re.compile` at load time so a broken pattern fails immediately: `"fields.<name>.regex is not a valid regular expression: <re.error message>"`. |
 
 Validation messages: `"fields.<name> must be an object"` when the value under a field
 name is not one, `"fields.<name>.labels must be a non-empty list of strings"` (the
