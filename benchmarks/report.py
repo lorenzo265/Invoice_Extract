@@ -34,6 +34,8 @@ def render_readme_block(report: Mapping[str, object]) -> str:
         "  exactly.",
         f"- **Party blocks:** {_overall(_mapping(matrix, 'parties'))} of the names and",
         "  addresses the documents print.",
+        f"- **Totals block:** {_overall(_mapping(matrix, 'charges'))} of the charges the",
+        "  documents carry, declared on the page or inferred from the arithmetic.",
         f"- **Confidence:** {_calibrated(matrix)}",
         "- **Not covered:** the generator prints these and the extractor has no spec for",
         "  them, so they are never scored as wrong:",
@@ -96,6 +98,7 @@ def render_report(report: Mapping[str, object]) -> str:
         _columns_section(matrix),
         _vat_section(matrix),
         _parties_section(matrix),
+        _totals_section(matrix),
         _by_section(matrix, "by_profile", "By profile", "Profile"),
         _by_section(matrix, "by_family", "By family", "Family"),
         _knob_section(matrix),
@@ -207,6 +210,39 @@ def _parties_section(matrix: Mapping[str, object]) -> str:
         " per line it drew, and a block with none was never on the page. A block's VAT id"
         " is not scored here — a document need not print one inside the block, and the"
         " customer's is a field of its own."
+    )
+    return f"{table}\n\n{note}"
+
+
+def _totals_section(matrix: Mapping[str, object]) -> str:
+    """What the totals block carries beside its amounts: its charges and its echo."""
+    rows = [
+        (
+            f"charge, {name}",
+            _cell(cell, "hit"),
+            _cell(cell, "miss"),
+            _cell(cell, "absent"),
+            _rate(cell),
+        )
+        for name, cell in _cells(_mapping(matrix, "charges"))
+    ]
+    rows += [
+        (
+            f"echo, {name}",
+            _cell(cell, "hit"),
+            _cell(cell, "miss"),
+            _cell(cell, "absent"),
+            _rate(cell),
+        )
+        for name, cell in _cells(_mapping(matrix, "secondary_amounts"))
+    ]
+    header = ("Reading", "Hit", "Miss", "Absent", "Hit rate")
+    table = _section("Charges and second currency", header, rows, _RIGHT_FROM_ONE)
+    note = (
+        "A charge the block declares is scored on its type and its amount together. One"
+        " no line declares is only a difference in the arithmetic — the page says neither"
+        " what it is for nor how many of them there are — so what is scored is how much of"
+        " the total nothing declared."
     )
     return f"{table}\n\n{note}"
 

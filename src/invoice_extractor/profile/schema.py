@@ -30,10 +30,16 @@ class Placement(Enum):
 
 
 class ComponentKind(Enum):
-    """What a totals-block component is: a named amount, or a charge folded into the total."""
+    """What a totals-block component is: an amount, a charge folded into it, or a rate.
+
+    A rate is printed in the block like the amounts around it and adds to nothing: it is
+    the one rate a single-rate document states, and the identity the block closes is made
+    of the amounts alone.
+    """
 
     AMOUNT = "amount"
     CHARGE = "charge"
+    RATE = "rate"
 
 
 class TableEdge(Enum):

@@ -7,6 +7,30 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Added
 
+- **`BlockSpec`: the totals block, read as the block it is.** The block is the run of
+  rows that names the most of a profile's components, in one column, close together — so
+  a table heading that says `VAT %` loses to a block that names four — and the longest
+  label a row starts with is what names it, so `Total VAT` is the tax and not the total.
+  An amount is read beside its label, or, where a vendor stacks them, at the label's own
+  x on the next row. A block that prints its amounts twice is read in the column where
+  net plus tax plus charges comes to the total.
+- **Charges and the second currency** (`domain/totals.py`): `InvoiceResult.charges` and
+  `InvoiceResult.secondary_amounts`. A charge the page names carries its type and the box
+  it was read from; the total echoed in another currency carries that currency, what it
+  comes to and the rate it was converted at.
+- **Stage 5, reconciliation** (`reconcile/`): the five functions of `ENGINE_SPEC.md` §5.
+  The tax a block does not state comes from the VAT summary, else from what the total
+  adds to the net where that could be a rate at all; the one rate a multi-rate document
+  is at comes from the rate its summary is mostly at, or from the rate most of what it
+  sold is charged at; what the total carries that nothing declares is a charge, reported
+  as one; where the summary and the block disagree, both are said out loud and the
+  disagreeing field is capped at half its confidence. Everything filled in is a `Finding`
+  (ADR-0005) and points at what it was worked out from (ADR-0002).
+- On the 250-document corpus: **every totals field right on every family** — `subtotal`
+  1.000 (was 0.992), `vat_rate` 1.000 (was 0.964), `vat_amount` and `total_amount` 1.000
+  — every charge the corpus prints read with its type and amount (19 of 19), every
+  undeclared charge found in the arithmetic (13 of 13), and every second-currency echo
+  read with its rate (5 of 5).
 - **`TableSpec`: the line items and the VAT summary, read cell by cell.** A table's
   columns are where *this document* drew them — the header words say so, and a cell
   belongs to the heading whose edge it lines up with — and a state machine says what each
@@ -31,6 +55,16 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Changed
 
+- **The totals are read from the block, not from labels.** `subtotal`, `vat_amount`,
+  `total_amount` and `vat_rate` are published by the `BlockSpec` rather than by four
+  `LabelSpec`s, with `Strategy.BLOCK_ROW` on their evidence. The units only those four
+  specs named — `parse_money`, `parse_percent`, `is_money`, `is_percent`, `looks_numeric`
+  and `last_page_first` — are gone with them: the vocabulary is closed in both directions
+  (`ENGINE_SPEC.md` §3), and a unit nothing names is code that cannot run.
+- **The arithmetic knows about charges.** `totals_reconcile` adds every charge the
+  document carries, and `vat_rate_consistent` taxes the net plus the charges the block
+  declared — and does not run at all on a document its summary shows is at more than one
+  rate, which is what `vat_equals_subtotal_times_rate` has always meant.
 - **The line-item table ends at a stop label** rather than at the totals anchor: the
   anchor is found before any vendor is known, and a page whose descriptions wrap reads it
   in the wrong place. `page_bounds` still says which, per profile.

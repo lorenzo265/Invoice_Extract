@@ -35,21 +35,16 @@ STRATEGIES: Mapping[str, Collect] = {
 
 FILTERS: Mapping[str, Filter] = {
     "not_a_trap": filters.not_a_trap,
-    "looks_numeric": filters.looks_numeric,
 }
 
 NORMALIZERS: Mapping[str, Normalizer] = {
     "strip_label": normalizers.strip_label,
     "parse_date": normalizers.parse_date,
-    "parse_money": normalizers.parse_money,
-    "parse_percent": normalizers.parse_percent,
     "upper_alnum": normalizers.upper_alnum,
 }
 
 VALIDATORS: Mapping[str, Validator] = {
     "is_date": validators.is_date,
-    "is_money": validators.is_money,
-    "is_percent": validators.is_percent,
     "is_identifier": validators.is_identifier,
     "is_vat_id": validators.is_vat_id,
 }
@@ -59,7 +54,6 @@ RANKERS: Mapping[str, Ranker] = {
     "zone_priority": rankers.zone_priority,
     "closest_to_label": rankers.closest_to_label,
     "top_most": rankers.top_most,
-    "last_page_first": rankers.last_page_first,
     "best_match": rankers.best_match,
 }
 

@@ -1,6 +1,6 @@
 """What a field is: a declaration naming registered units, never values (ADR-0001, 0007).
 
-Five kinds so far, one engine behind all of them:
+Six kinds, one engine behind all of them:
 
 | Kind | Where the value comes from |
 |---|---|
@@ -9,6 +9,7 @@ Five kinds so far, one engine behind all of them:
 | `DerivedSpec` | a pure function over fields that are already resolved |
 | `SectionSpec` | the block a heading opens, down the column it was set in |
 | `TableSpec` | the rows under a header, cell by cell |
+| `BlockSpec` | the column of rows a document adds up in, read as one block |
 
 A spec holds names, not functions: `units/registry.py` is the vocabulary, and `validate`
 refuses a spec that names a unit, a source or a dependency that does not exist. That
@@ -31,6 +32,7 @@ from invoice_extractor.extraction.units.registry import (
     RANKERS,
     VALIDATORS,
 )
+from invoice_extractor.profile.schema import REQUIRED_COMPONENTS
 
 # What a profile may be asked for by name: the values it already knows about its vendor.
 EXPECTED_VALUES: tuple[str, ...] = ("supplier.name", "supplier.vat_id")
@@ -44,17 +46,21 @@ TABLE_COLUMNS: Mapping[str, tuple[str, ...]] = {
     "vat_summary": VAT_SUMMARY_COLUMNS,
 }
 SECTION_SOURCES: tuple[str, ...] = PARTY_NAMES
+# What a totals block may publish as a field of its own. Everything else it names is a
+# charge, and a charge is a row of the block rather than a field of the catalog.
+BLOCK_COMPONENTS: tuple[str, ...] = (*REQUIRED_COMPONENTS, "vat_rate")
 
 
 class SpecKind(Enum):
-    """The ways a value is collected. `docs/ENGINE_PLAN.md` brings the table and block
-    kinds with the stages that need them."""
+    """The ways a value is collected: by label, by expectation, by derivation, or by
+    reading a part of the document — a party block, a table, the totals block."""
 
     LABEL = auto()
     ANCHOR = auto()
     DERIVED = auto()
     SECTION = auto()
     TABLE = auto()
+    BLOCK = auto()
 
 
 class OnFailure(Enum):
@@ -130,11 +136,25 @@ class TableSpec:
     kind: SpecKind = field(default=SpecKind.TABLE, init=False)
 
 
+@dataclass(frozen=True, slots=True)
+class BlockSpec:
+    """The totals block: which of the components a profile names are fields of their own.
+
+    A block publishes more than fields — the charges it declares and the currency it
+    echoes the total in — but only these have a name in the catalog, and only these are
+    scored like any other field.
+    """
+
+    name: str
+    fields: tuple[str, ...]
+    kind: SpecKind = field(default=SpecKind.BLOCK, init=False)
+
+
 # A spec whose value is collected off the page, as against one computed from others.
 Collected = LabelSpec | AnchorSpec
 Spec = LabelSpec | AnchorSpec | DerivedSpec
 # A spec that publishes a part of a document rather than one value.
-Structure = SectionSpec | TableSpec
+Structure = SectionSpec | TableSpec | BlockSpec
 
 
 class SpecError(ValueError):
@@ -154,11 +174,18 @@ def validate_structures(structures: Sequence[Structure]) -> None:
     for structure in structures:
         if isinstance(structure, SectionSpec):
             _known(structure.name, "section", structure.source, SECTION_SOURCES)
-            continue
-        _known(structure.name, "table", structure.source, TABLE_COLUMNS)
-        known = TABLE_COLUMNS[structure.source]
-        for column in (*structure.columns, *structure.required_columns):
-            _known(structure.name, "column", column, known)
+        elif isinstance(structure, BlockSpec):
+            for component in structure.fields:
+                _known(structure.name, "component", component, BLOCK_COMPONENTS)
+        else:
+            _table(structure)
+
+
+def _table(structure: TableSpec) -> None:
+    _known(structure.name, "table", structure.source, TABLE_COLUMNS)
+    known = TABLE_COLUMNS[structure.source]
+    for column in (*structure.columns, *structure.required_columns):
+        _known(structure.name, "column", column, known)
 
 
 def strategies_for(spec: Collected, declares_a_pattern: bool) -> tuple[str, ...]:

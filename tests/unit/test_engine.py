@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import dataclasses
-from decimal import Decimal
 
 import pytest
 
@@ -147,20 +146,3 @@ def test_order_refuses_specs_that_depend_on_each_other() -> None:
     right = number_spec(name="b", depends_on=("a",))
     with pytest.raises(ValueError, match="depend on each other"):
         order((left, right))
-
-
-def test_a_money_field_reads_through_the_vendors_separators() -> None:
-    spec = LabelSpec(
-        name="invoice_number",
-        normalizer="parse_money",
-        validator="is_money",
-        rankers=BY_LABEL,
-    )
-    document = page("Invoice Number: 1.234,56")
-    profile = dataclasses.replace(
-        profile_with(),
-        number_format=make_profile(
-            decimal_separator=",", thousands_separators=(".",)
-        ).number_format,
-    )
-    assert run(spec, document, profile, {}).field.value == Decimal("1234.56")

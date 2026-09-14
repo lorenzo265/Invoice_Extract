@@ -8,6 +8,8 @@ document, run every spec, read the blocks and the tables, check the arithmetic, 
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
+from dataclasses import replace
 from pathlib import Path
 
 from invoice_extractor.document.model import Document
@@ -15,6 +17,7 @@ from invoice_extractor.document.pymupdf_reader import read
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import FieldResult, InvoiceResult
 from invoice_extractor.domain.parties import Party
+from invoice_extractor.extraction.block import read_totals
 from invoice_extractor.extraction.classify import classify_document
 from invoice_extractor.extraction.engine import Extraction, order, run
 from invoice_extractor.extraction.line_items import extract_line_items
@@ -24,13 +27,15 @@ from invoice_extractor.extraction.specs import (
     LINE_ITEMS,
     SECTIONS,
     SPECS,
+    TOTALS,
     VAT_SUMMARY,
 )
 from invoice_extractor.extraction.vat_summary import extract_vat_summary
 from invoice_extractor.profile.detect import ProfileScore, detect_profile
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_extractor.profile.schema import Profile
-from invoice_extractor.validation.confidence import score
+from invoice_extractor.reconcile.stage import Reconciliation, reconcile
+from invoice_extractor.validation.confidence import NO_CAP, score
 from invoice_extractor.validation.invariants import check_all
 
 NOT_DETECTED = "profile_not_detected"
@@ -47,23 +52,47 @@ def extract(pdf_path: Path, registry: ProfileRegistry) -> InvoiceResult:
 
 def _extracted(document: Document, profile: Profile) -> InvoiceResult:
     kind = classify_document(document, profile)
-    extractions = _resolve(document, profile)
     table = extract_line_items(document, profile, LINE_ITEMS)
+    summary = extract_vat_summary(document, profile, VAT_SUMMARY)
+    totals = read_totals(TOTALS, document, profile)
+    extractions = {**_resolve(document, profile), **totals.extractions}
     found = {name: extraction.field for name, extraction in extractions.items()}
-    findings = (*table.findings, *check_all(found, table.items))
+    reconciled = reconcile(found, totals.charges, table.items, summary, profile)
+    findings = (
+        *table.findings,
+        *reconciled.findings,
+        *check_all(reconciled.fields, table.items, reconciled.charges, summary),
+    )
     return InvoiceResult(
-        fields={
-            name: score(extractions[name], profile.fields.get(name), findings)
-            for name in FIELD_ORDER
-        },
+        fields=_scored(extractions, reconciled, profile, findings),
         line_items=table.items,
         findings=findings,
         profile_id=profile.id,
         document_type=kind.value,
         source_path=document.source_path,
         parties=_parties(document, profile),
-        vat_summary=extract_vat_summary(document, profile, VAT_SUMMARY),
+        vat_summary=summary,
+        charges=reconciled.charges,
+        secondary_amounts=totals.secondary,
     )
+
+
+def _scored(
+    extractions: Mapping[str, Extraction],
+    reconciled: Reconciliation,
+    profile: Profile,
+    findings: Sequence[Finding],
+) -> dict[str, FieldResult]:
+    """Every field, with the value stage 5 settled on and the cap stage 5 asked for."""
+    return {
+        name: score(
+            replace(extractions[name], field=reconciled.fields[name]),
+            profile.fields.get(name),
+            findings,
+            reconciled.caps.get(name, NO_CAP),
+        )
+        for name in FIELD_ORDER
+    }
 
 
 def _parties(document: Document, profile: Profile) -> dict[str, Party]:

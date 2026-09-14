@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from datetime import date
-from decimal import Decimal
 
 import pytest
 
@@ -11,8 +10,6 @@ from conftest import make_field_profile
 from invoice_extractor.extraction.units.validators import (
     is_date,
     is_identifier,
-    is_money,
-    is_percent,
     is_vat_id,
     matches_pattern,
 )
@@ -35,19 +32,6 @@ def test_matches_pattern_prefers_the_profiles_own_pattern() -> None:
 def test_is_date_accepts_only_a_date() -> None:
     assert is_date(date(2024, 3, 15), ANY)
     assert not is_date("2024-03-15", ANY)
-
-
-def test_is_money_accepts_a_credit_notes_negative_amount() -> None:
-    assert is_money(Decimal("-588.00"), ANY)
-    assert is_money(Decimal("588.00"), ANY)
-    assert not is_money("588.00", ANY)
-
-
-def test_is_percent_accepts_a_rate_between_nothing_and_everything() -> None:
-    assert is_percent(Decimal("20"), ANY)
-    assert is_percent(Decimal("0"), ANY)
-    assert not is_percent(Decimal("120"), ANY)
-    assert not is_percent(Decimal("-1"), ANY)
 
 
 def test_is_identifier_wants_something_shaped_like_a_reference() -> None:

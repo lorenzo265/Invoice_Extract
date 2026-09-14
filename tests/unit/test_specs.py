@@ -7,13 +7,15 @@ import pytest
 from invoice_extractor.domain.models import VALUE_TYPES
 from invoice_extractor.extraction.spec import (
     AnchorSpec,
+    BlockSpec,
     DerivedSpec,
     LabelSpec,
     SpecError,
     SpecKind,
     validate,
+    validate_structures,
 )
-from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
+from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS, TOTALS
 from invoice_extractor.extraction.units.derivations import DERIVATIONS
 
 BY_LABEL = ("valid_first", "zone_priority", "closest_to_label", "top_most")
@@ -98,3 +100,17 @@ def test_a_dependency_no_spec_resolves_is_refused() -> None:
 
 def test_a_dependency_another_spec_resolves_is_accepted() -> None:
     validate((a_spec(name="first"), a_spec(name="second", depends_on=("first",))), DERIVATIONS)
+
+
+def test_a_block_naming_a_component_that_is_no_field_is_refused() -> None:
+    with pytest.raises(SpecError, match="component"):
+        validate_structures((BlockSpec(name="totals", fields=("shipping",)),))
+
+
+def test_a_block_naming_the_catalogs_own_amounts_is_accepted() -> None:
+    validate_structures((BlockSpec(name="totals", fields=("subtotal", "vat_rate")),))
+
+
+def test_the_shipped_totals_block_publishes_the_amounts_a_report_prints() -> None:
+    assert set(TOTALS.fields) <= set(FIELD_ORDER)
+    assert TOTALS.kind is SpecKind.BLOCK

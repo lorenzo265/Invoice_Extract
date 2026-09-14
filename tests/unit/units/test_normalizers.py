@@ -13,11 +13,10 @@ from invoice_extractor.domain.models import Evidence, Strategy
 from invoice_extractor.extraction.candidate import Candidate
 from invoice_extractor.extraction.units.normalizers import (
     parse_date,
-    parse_money,
     parse_number,
-    parse_percent,
     strip_label,
     upper_alnum,
+    without_currency,
 )
 
 
@@ -37,30 +36,22 @@ def candidate(text: str, label: str | None = "Label") -> Candidate:
         ("1.234 567,89", ",", (".", " "), "1234567.89"),
     ],
 )
-def test_parse_money(
+def test_parse_number_reads_a_vendors_own_separators(
     text: str, decimal_separator: str, thousands_separators: tuple[str, ...], expected: str
 ) -> None:
     profile = make_profile(
         decimal_separator=decimal_separator, thousands_separators=thousands_separators
     )
-    assert parse_money(candidate(f"Label: {text}"), profile) == Decimal(expected)
+    assert parse_number(text, profile) == Decimal(expected)
 
 
-def test_parse_money_ignores_a_currency_code_printed_beside_the_amount() -> None:
-    assert parse_money(candidate("Label: 1,234.56 GBP"), make_profile()) == Decimal("1234.56")
+def test_a_currency_code_printed_beside_an_amount_comes_off_before_it_is_parsed() -> None:
+    profile = make_profile()
+    assert parse_number(without_currency("1,234.56 GBP", profile), profile) == Decimal("1234.56")
 
 
-def test_parse_money_returns_none_for_text_that_is_not_a_number() -> None:
-    assert parse_money(candidate("Label: abc"), make_profile()) is None
-
-
-def test_parse_number_reads_raw_text_without_a_label() -> None:
-    profile = make_profile(decimal_separator=",", thousands_separators=(" ",))
-    assert parse_number("2 670,00", profile) == Decimal("2670.00")
-
-
-def test_parse_percent_strips_the_sign() -> None:
-    assert parse_percent(candidate("Label: 20.00%"), make_profile()) == Decimal("20.00")
+def test_parse_number_returns_none_for_text_that_is_not_a_number() -> None:
+    assert parse_number("abc", make_profile()) is None
 
 
 def test_parse_date_tries_the_formats_in_the_profile_order() -> None:

@@ -8,7 +8,7 @@ from conftest import line, make_field_profile, make_profile
 from invoice_extractor.document.model import Zone
 from invoice_extractor.domain.models import Evidence, Strategy
 from invoice_extractor.extraction.candidate import Candidate
-from invoice_extractor.extraction.units.filters import looks_numeric, not_a_trap
+from invoice_extractor.extraction.units.filters import not_a_trap
 from invoice_extractor.profile.schema import Noise
 
 TRAPS = Noise(ignore_labels=("Order Date", "Print Date"))
@@ -53,30 +53,3 @@ def test_nothing_is_dropped_when_the_vendor_names_no_traps() -> None:
     field = make_field_profile(labels=("Invoice Date",))
     found = [candidate("01.02.2024", label="Order Date")]
     assert not_a_trap(found, field, make_profile()) == found
-
-
-def test_an_amount_is_kept_and_a_sentence_carrying_digits_is_not() -> None:
-    field = make_field_profile(labels=("Total",))
-    amount = candidate("1,234.56", label="Total")
-    printed = "Bergslundbanken IBAN SE81 2663 9935 1456 5769 3224 BIC XUNJSEHQZ12"
-    sentence = candidate(printed, label="Total")
-    assert looks_numeric([amount, sentence], field, make_profile()) == [amount]
-
-
-def test_an_empty_candidate_is_not_a_number() -> None:
-    field = make_field_profile(labels=("Total",))
-    assert looks_numeric([candidate("", label=None)], field, make_profile()) == []
-
-
-def test_an_amount_printed_with_its_currency_code_is_still_a_number() -> None:
-    """`19.25 GBP` is how a vendor prints an amount, and the code is not prose."""
-    field = make_field_profile(labels=("Subtotal",))
-    priced = candidate("19.25 GBP", label="Subtotal")
-    assert looks_numeric([priced], field, make_profile()) == [priced]
-
-
-def test_a_vendor_that_writes_its_thousands_with_a_space_still_reads_as_a_number() -> None:
-    field = make_field_profile(labels=("Total",))
-    spaced = candidate("2 670,00", label="Total")
-    swedish = make_profile(decimal_separator=",", thousands_separators=(" ",))
-    assert looks_numeric([spaced], field, swedish) == [spaced]

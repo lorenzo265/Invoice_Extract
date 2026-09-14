@@ -26,11 +26,13 @@ from benchmarks.run import LATEST, README, REPORT
 
 from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.models import (
+    Charge,
     Evidence,
     FieldResult,
     InvoiceResult,
     LineItem,
     Party,
+    SecondaryAmounts,
     Strategy,
     VatSummaryRow,
 )
@@ -272,3 +274,91 @@ def test_the_committed_numbers_were_produced_by_this_benchmark() -> None:
     matrix = report["matrix"]
     assert isinstance(matrix, dict)
     assert matrix["documents"]
+
+
+def charged(**amounts: object) -> dict[str, object]:
+    """A truth file that also carries charges and a total said again in another currency."""
+    printed = truth()
+    printed["charges"] = [
+        {"type": "SHIPPING", "amount": "12.50", "declared": True, "evidence": [BOX]},
+        {"type": "SURCHARGE", "amount": "5.00", "declared": False, "evidence": []},
+    ]
+    printed["secondary_amounts"] = {
+        "currency": "USD",
+        "total_amount": "84.00",
+        "exchange_rate": "1.1200",
+        "evidence": [BOX],
+    }
+    return {**printed, **amounts}
+
+
+def test_a_charge_the_block_declared_is_scored_on_its_type_and_its_amount() -> None:
+    read = dataclasses.replace(
+        result(), charges=(Charge(type="SHIPPING", amount=Decimal("12.50")),)
+    )
+    score = compare("x", charged(), read)
+    assert score.charges["declared"] == Counts(hit=1)
+
+
+def test_a_charge_read_as_the_wrong_kind_is_a_miss_on_both_sides() -> None:
+    """One charge printed and another read: the one the page names, and the one it does not."""
+    wrong = (Charge(type="ROUNDING", amount=Decimal("12.50")),)
+    score = compare("x", charged(), dataclasses.replace(result(), charges=wrong))
+    assert score.charges["declared"] == Counts(miss=2)
+
+
+def test_what_no_line_declares_is_scored_as_the_amount_the_arithmetic_found() -> None:
+    inferred = Charge(type="OTHER", amount=Decimal("5.00"), declared=False)
+    score = compare("x", charged(), dataclasses.replace(result(), charges=(inferred,)))
+    assert score.charges["undeclared"] == Counts(hit=1)
+
+
+def test_an_undeclared_charge_read_for_another_amount_is_a_miss() -> None:
+    inferred = Charge(type="OTHER", amount=Decimal("9.99"), declared=False)
+    score = compare("x", charged(), dataclasses.replace(result(), charges=(inferred,)))
+    assert score.charges["undeclared"] == Counts(miss=1)
+
+
+def test_a_document_that_carries_no_charge_is_scored_on_neither() -> None:
+    score = compare("x", truth(), result())
+    assert score.charges == {"declared": Counts(absent=1), "undeclared": Counts(absent=1)}
+
+
+def test_the_total_said_again_is_scored_part_by_part() -> None:
+    echo = SecondaryAmounts(
+        currency="USD", total_amount=Decimal("84.00"), exchange_rate=Decimal("1.1200")
+    )
+    score = compare("x", charged(), dataclasses.replace(result(), secondary_amounts=echo))
+    assert score.secondary == {
+        "currency": Counts(hit=1),
+        "total_amount": Counts(hit=1),
+        "exchange_rate": Counts(hit=1),
+    }
+
+
+def test_an_echo_read_in_the_wrong_currency_misses_on_every_part_of_it() -> None:
+    echo = SecondaryAmounts(currency="CHF", total_amount=Decimal("1.00"))
+    score = compare("x", charged(), dataclasses.replace(result(), secondary_amounts=echo))
+    assert score.secondary["currency"] == Counts(miss=1)
+    assert score.secondary["total_amount"] == Counts(miss=1)
+    assert score.secondary["exchange_rate"] == Counts(miss=1)
+
+
+def test_an_echo_the_document_does_not_print_is_absent_unless_one_was_read() -> None:
+    assert compare("x", truth(), result()).secondary["currency"] == Counts(absent=1)
+    read = dataclasses.replace(result(), secondary_amounts=SecondaryAmounts(currency="USD"))
+    assert compare("x", truth(), read).secondary["currency"] == Counts(miss=1)
+
+
+def test_an_echo_the_document_prints_and_the_reader_missed_is_a_miss() -> None:
+    assert compare("x", charged(), result()).secondary["total_amount"] == Counts(miss=1)
+
+
+def test_charges_and_echoes_are_added_up_over_the_corpus() -> None:
+    read = dataclasses.replace(
+        result(), charges=(Charge(type="SHIPPING", amount=Decimal("12.50")),)
+    )
+    built = matrices.build([compare("x", charged(), read)])
+    assert built.charges["declared"].hit == 1
+    assert built.secondary["currency"].miss == 1
+    assert "charges" in built.to_dict()

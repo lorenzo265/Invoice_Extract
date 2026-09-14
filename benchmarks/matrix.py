@@ -15,8 +15,10 @@ from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 
 from benchmarks.compare import (
+    SCORED_CHARGE_KEYS,
     SCORED_COLUMNS,
     SCORED_VAT_COLUMNS,
+    SECONDARY_KEYS,
     Counts,
     DocumentScore,
     Outcome,
@@ -89,6 +91,8 @@ class Matrix:
     columns: dict[str, Tally] = field(default_factory=dict)
     parties: dict[str, Tally] = field(default_factory=dict)
     vat_columns: dict[str, Tally] = field(default_factory=dict)
+    charges: dict[str, Tally] = field(default_factory=dict)
+    secondary: dict[str, Tally] = field(default_factory=dict)
     rows_agreed: int = 0
     vat_rows_agreed: int = 0
     vat_documents: int = 0
@@ -109,6 +113,10 @@ class Matrix:
             self.vat_columns.setdefault(column, Tally()).count(counts)
         for key, counts in score.parties.items():
             self.parties.setdefault(key, Tally()).count(counts)
+        for key, counts in score.charges.items():
+            self.charges.setdefault(key, Tally()).count(counts)
+        for key, counts in score.secondary.items():
+            self.secondary.setdefault(key, Tally()).count(counts)
 
     def _add_field(self, score: DocumentScore, scored: Scored) -> None:
         self.fields.setdefault(scored.field, Tally()).add(scored)
@@ -139,6 +147,8 @@ class Matrix:
                 "columns": _tallies(self.vat_columns, SCORED_VAT_COLUMNS),
             },
             "parties": _tallies(self.parties),
+            "charges": _tallies(self.charges, SCORED_CHARGE_KEYS),
+            "secondary_amounts": _tallies(self.secondary, SECONDARY_KEYS),
             "calibration": _calibration(self.calibration),
         }
 

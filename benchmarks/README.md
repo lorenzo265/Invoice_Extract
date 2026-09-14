@@ -27,21 +27,19 @@ extractor has no spec for is `not covered` and is never counted as wrong.
 | order_number | 250 | 0 | 0 | 100.0% |
 | our_reference | 29 | 0 | 221 | 100.0% |
 | payment_terms | 0 | 0 | 0 | -- |
-| subtotal | 248 | 2 | 0 | 99.2% |
+| subtotal | 250 | 0 | 0 | 100.0% |
 | supplier_vat_id | 250 | 0 | 0 | 100.0% |
 | supply_date | 190 | 9 | 51 | 95.5% |
 | total_amount | 250 | 0 | 0 | 100.0% |
 | vat_amount | 250 | 0 | 0 | 100.0% |
-| vat_rate | 241 | 9 | 0 | 96.4% |
+| vat_rate | 250 | 0 | 0 | 100.0% |
 | your_reference | 140 | 0 | 110 | 100.0% |
 
 ## What the misses are
 
 | Field | Miss | Found nothing | Read something else |
 | --- | ---: | ---: | ---: |
-| subtotal | 2 | 0 | 2 |
 | supply_date | 9 | 0 | 9 |
-| vat_rate | 9 | 6 | 3 |
 
 A field that found nothing is a field whose label the strategies never reached; a field that read something else reached a candidate and chose wrongly. The first is a strategy to add, the second a ranker to fix.
 
@@ -82,26 +80,38 @@ A field that found nothing is a field whose label the strategies never reached; 
 
 A party a document knows but does not print is `absent`: the truth records a box per line it drew, and a block with none was never on the page. A block's VAT id is not scored here — a document need not print one inside the block, and the customer's is a field of its own.
 
+## Charges and second currency
+
+| Reading | Hit | Miss | Absent | Hit rate |
+| --- | ---: | ---: | ---: | ---: |
+| charge, declared | 19 | 0 | 237 | 100.0% |
+| charge, undeclared | 13 | 0 | 237 | 100.0% |
+| echo, currency | 5 | 0 | 245 | 100.0% |
+| echo, total_amount | 5 | 0 | 245 | 100.0% |
+| echo, exchange_rate | 5 | 0 | 245 | 100.0% |
+
+A charge the block declares is scored on its type and its amount together. One no line declares is only a difference in the arithmetic — the page says neither what it is for nor how many of them there are — so what is scored is how much of the total nothing declared.
+
 ## By profile
 
 | Profile | contract_number | credit_reference | currency | customer_number | customer_vat_id | due_date | invoice_date | invoice_number | order_number | our_reference | subtotal | supplier_vat_id | supply_date | total_amount | vat_amount | vat_rate | your_reference |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | cs-CZ | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
 | da-DK | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- |
-| de-AT | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 92.9% | 100.0% | 92.9% | 100.0% | 100.0% | 92.9% | 100.0% |
+| de-AT | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 92.9% | 100.0% | 100.0% | 100.0% | 100.0% |
 | de-CH | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- |
-| de-DE | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 93.3% | 100.0% |
+| de-DE | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
 | el-GR | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 90.0% | 100.0% | 100.0% | 100.0% | 100.0% |
-| en-GB | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 93.8% | 100.0% |
-| en-IE | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | -- | 100.0% | 100.0% | 94.4% | 100.0% |
-| es-ES | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 92.9% | 100.0% | 100.0% | 92.9% | 100.0% |
+| en-GB | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
+| en-IE | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | -- | 100.0% | 100.0% | 100.0% | 100.0% |
+| es-ES | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 92.9% | 100.0% | 100.0% | 100.0% | 100.0% |
 | fi-FI | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
-| fr-BE | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 92.3% | 100.0% |
-| fr-FR | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 92.3% | 100.0% | 100.0% | 100.0% | 100.0% | 92.3% | 100.0% |
+| fr-BE | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
+| fr-FR | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
 | fr-LU | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | -- | 100.0% | 100.0% | 100.0% | 100.0% |
-| it-IT | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 92.9% | 100.0% | 100.0% | 92.9% | 100.0% |
+| it-IT | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 92.9% | 100.0% | 100.0% | 100.0% | 100.0% |
 | nl-BE | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 90.9% | 100.0% | 100.0% | 100.0% | 100.0% |
-| nl-NL | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 93.3% | 100.0% | 100.0% | 93.3% | 100.0% |
+| nl-NL | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 93.3% | 100.0% | 100.0% | 100.0% | 100.0% |
 | no-NO | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
 | pl-PL | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 90.9% | 100.0% | 100.0% | 100.0% | 100.0% |
 | pt-PT | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | -- |
@@ -113,47 +123,47 @@ A party a document knows but does not print is `absent`: the truth records a box
 
 | Family | contract_number | credit_reference | currency | customer_number | customer_vat_id | due_date | invoice_date | invoice_number | order_number | our_reference | subtotal | supplier_vat_id | supply_date | total_amount | vat_amount | vat_rate | your_reference |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| classic | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 94.4% | 100.0% | 100.0% | 95.6% | 100.0% |
-| minimal | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 98.5% | 100.0% | 98.2% | 100.0% | 100.0% | 98.5% | 100.0% |
+| classic | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 94.4% | 100.0% | 100.0% | 100.0% | 100.0% |
+| minimal | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 98.2% | 100.0% | 100.0% | 100.0% | 100.0% |
 | saas | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
-| stacked | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 96.8% | 100.0% | 100.0% | 100.0% | 100.0% | 87.1% | 100.0% |
-| tabular | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 89.8% | 100.0% | 100.0% | 98.4% | 100.0% |
+| stacked | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
+| tabular | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 89.8% | 100.0% | 100.0% | 100.0% | 100.0% |
 
 ## By knob
 
 | Knob | On | Off | Difference |
 | --- | ---: | ---: | ---: |
-| column_set | 99.5% | 99.4% | +0.1 pp |
-| section_subtotals | 99.5% | 99.4% | +0.1 pp |
-| discount | 99.5% | 99.4% | +0.1 pp |
-| wrapped_description | 99.7% | 99.4% | +0.3 pp |
-| sub_items | 99.7% | 99.4% | +0.3 pp |
-| multi_page | 99.8% | 99.3% | +0.5 pp |
-| thousands_variant | 100.0% | 99.4% | +0.6 pp |
-| dual_currency_echo | 100.0% | 99.4% | +0.6 pp |
-| carry_forward | 100.0% | 99.4% | +0.6 pp |
-| page_numbering | 100.0% | 99.4% | +0.6 pp |
-| stamp_copy | 100.0% | 99.4% | +0.6 pp |
-| charges | 100.0% | 99.4% | +0.6 pp |
-| declared_charge | 100.0% | 99.4% | +0.6 pp |
-| undeclared_charge | 100.0% | 99.4% | +0.6 pp |
-| rounding_total | 100.0% | 99.4% | +0.6 pp |
-| amount_in_words | 100.0% | 99.4% | +0.6 pp |
-| bank_footer | 100.0% | 99.4% | +0.6 pp |
-| noise_footer | 100.0% | 99.4% | +0.6 pp |
-| payment_terms_block | 100.0% | 99.4% | +0.6 pp |
-| repeat_letterhead | 100.0% | 99.4% | +0.6 pp |
-| credit_note | 100.0% | 99.3% | +0.7 pp |
-| supply_date | 95.9% | 99.7% | -3.8 pp |
-| extra_references | 95.9% | 99.7% | -3.8 pp |
-| trap_labels | 95.9% | 99.7% | -3.8 pp |
-| party_blocks | 95.9% | 99.7% | -3.8 pp |
-| placeholder_addresses | 95.9% | 99.7% | -3.8 pp |
-| customer_vat_position | 95.9% | 99.7% | -3.8 pp |
-| multi_rate | 95.0% | 99.7% | -4.7 pp |
-| vat_summary_table | 95.0% | 99.7% | -4.7 pp |
-| exemption_verbiage | 95.0% | 99.7% | -4.7 pp |
-| rounding_per_line | 95.0% | 99.7% | -4.7 pp |
+| thousands_variant | 100.0% | 99.7% | +0.3 pp |
+| dual_currency_echo | 100.0% | 99.7% | +0.3 pp |
+| credit_note | 100.0% | 99.7% | +0.3 pp |
+| multi_page | 100.0% | 99.7% | +0.3 pp |
+| carry_forward | 100.0% | 99.7% | +0.3 pp |
+| page_numbering | 100.0% | 99.7% | +0.3 pp |
+| stamp_copy | 100.0% | 99.7% | +0.3 pp |
+| column_set | 100.0% | 99.7% | +0.3 pp |
+| wrapped_description | 100.0% | 99.7% | +0.3 pp |
+| sub_items | 100.0% | 99.7% | +0.3 pp |
+| section_subtotals | 100.0% | 99.7% | +0.3 pp |
+| discount | 100.0% | 99.7% | +0.3 pp |
+| charges | 100.0% | 99.7% | +0.3 pp |
+| declared_charge | 100.0% | 99.7% | +0.3 pp |
+| undeclared_charge | 100.0% | 99.7% | +0.3 pp |
+| multi_rate | 100.0% | 99.7% | +0.3 pp |
+| vat_summary_table | 100.0% | 99.7% | +0.3 pp |
+| exemption_verbiage | 100.0% | 99.7% | +0.3 pp |
+| rounding_per_line | 100.0% | 99.7% | +0.3 pp |
+| rounding_total | 100.0% | 99.7% | +0.3 pp |
+| amount_in_words | 100.0% | 99.7% | +0.3 pp |
+| bank_footer | 100.0% | 99.7% | +0.3 pp |
+| noise_footer | 100.0% | 99.7% | +0.3 pp |
+| payment_terms_block | 100.0% | 99.7% | +0.3 pp |
+| repeat_letterhead | 100.0% | 99.7% | +0.3 pp |
+| supply_date | 95.9% | 100.0% | -4.1 pp |
+| extra_references | 95.9% | 100.0% | -4.1 pp |
+| trap_labels | 95.9% | 100.0% | -4.1 pp |
+| party_blocks | 95.9% | 100.0% | -4.1 pp |
+| placeholder_addresses | 95.9% | 100.0% | -4.1 pp |
+| customer_vat_position | 95.9% | 100.0% | -4.1 pp |
 
 A knob whose `on` rate sits below its `off` rate is a variation this release loses values to. Both rates are over every scalar field of every document on that side, so a knob that moves one field moves the column only a little. The base plan turns knobs on in themed bundles, so knobs that share a bundle share a row of documents and move together: what a column separates is a bundle, not always a single knob.
 
@@ -161,10 +171,10 @@ A knob whose `on` rate sits below its `off` rate is a variation this release los
 
 | Confidence | Hit | Miss | Hit rate |
 | --- | ---: | ---: | ---: |
-| 0.0-0.2 | 0 | 6 | 0.0% |
+| 0.0-0.2 | 0 | 0 | -- |
 | 0.2-0.4 | 0 | 0 | -- |
-| 0.4-0.6 | 1 | 1 | 50.0% |
-| 0.6-0.8 | 642 | 1 | 99.8% |
-| 0.8-1.0 | 2829 | 12 | 99.6% |
+| 0.4-0.6 | 13 | 0 | 100.0% |
+| 0.6-0.8 | 547 | 0 | 100.0% |
+| 0.8-1.0 | 2923 | 9 | 99.7% |
 
 The confidence the extractor prints beside a value, against how often a value in that band turned out to be right.

@@ -19,8 +19,9 @@ from invoice_extractor.profile.schema import Profile
 
 DIGITS = "0123456789"
 NOT_ALNUM = re.compile(r"[^A-Za-z0-9]")
-# A percentage may be written with the sign, or with the word, or with neither.
-PERCENT_SIGNS = ("%", "‰")
+# A number as a page prints one, from its first digit through whatever a vendor writes
+# inside a number — separators included, apostrophes among them — and no further.
+NUMBER = re.compile("-?\\d[\\d\\s.,\u2019']*")
 
 
 def parse_number(text: str, profile: Profile) -> Decimal | None:
@@ -37,6 +38,17 @@ def parse_number(text: str, profile: Profile) -> Decimal | None:
         return Decimal(f"{sign}{kept}")
     except InvalidOperation:
         return None
+
+
+def numbers_in(text: str, profile: Profile) -> list[Decimal]:
+    """Every number a line says, in the order it says them.
+
+    A vendor that writes its thousands with a space writes one number where splitting on
+    white space would find two, so a number is read as the run of characters a number is
+    made of rather than as a word.
+    """
+    found = (parse_number(match.group(0), profile) for match in NUMBER.finditer(text))
+    return [number for number in found if number is not None]
 
 
 def strip_label(candidate: Candidate, profile: Profile) -> str:
@@ -59,17 +71,6 @@ def parse_date(candidate: Candidate, profile: Profile) -> date | None:
     return read_date(strip_label(candidate, profile), profile.date_formats, profile.calendar)
 
 
-def parse_money(candidate: Candidate, profile: Profile) -> Decimal | None:
-    return parse_number(without_currency(strip_label(candidate, profile), profile), profile)
-
-
-def parse_percent(candidate: Candidate, profile: Profile) -> Decimal | None:
-    text = strip_label(candidate, profile)
-    for sign in PERCENT_SIGNS:
-        text = text.replace(sign, "")
-    return parse_number(text, profile)
-
-
 def upper_alnum(candidate: Candidate, profile: Profile) -> str:
     """Letters and digits only, upper-cased — how a VAT id or currency code is compared."""
     return NOT_ALNUM.sub("", strip_label(candidate, profile)).upper()
@@ -78,8 +79,9 @@ def upper_alnum(candidate: Candidate, profile: Profile) -> str:
 def without_currency(text: str, profile: Profile) -> str:
     """A vendor may print its code beside the amount; the amount is what is parsed.
 
-    `filters.looks_numeric` asks the same question before the parser does — `19.25 GBP` is
-    an amount and not a sentence — so the rule is written once and both of them use it.
+    A totals block that says `19.25 GBP` says one number, and the code it says it in is
+    the document's, not part of the figure. Every reader of a printed amount — the block,
+    the tables, the echo in a second currency — takes it off through here.
     """
     stripped = text
     for code in profile.currencies:

@@ -18,6 +18,7 @@ from invoice_extractor.domain.evidence import Evidence, Strategy, optional
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.parties import Party
 from invoice_extractor.domain.rows import LineItem, VatSummaryRow
+from invoice_extractor.domain.totals import Charge, SecondaryAmounts
 
 FieldValue = str | date | Decimal
 
@@ -45,12 +46,14 @@ VALUE_TYPES: Mapping[str, type] = {
 
 __all__ = [
     "VALUE_TYPES",
+    "Charge",
     "Evidence",
     "FieldResult",
     "FieldValue",
     "InvoiceResult",
     "LineItem",
     "Party",
+    "SecondaryAmounts",
     "Strategy",
     "VatSummaryRow",
 ]
@@ -87,6 +90,8 @@ class InvoiceResult:
     source_path: str
     parties: Mapping[str, Party] = field(default_factory=dict)
     vat_summary: tuple[VatSummaryRow, ...] = ()
+    charges: tuple[Charge, ...] = ()
+    secondary_amounts: SecondaryAmounts | None = None
 
     @property
     def valid(self) -> bool:
@@ -99,6 +104,8 @@ class InvoiceResult:
             "parties": {name: party.to_dict() for name, party in self.parties.items()},
             "line_items": [item.to_dict() for item in self.line_items],
             "vat_summary": [row.to_dict() for row in self.vat_summary],
+            "charges": [charge.to_dict() for charge in self.charges],
+            "secondary_amounts": _secondary_to_dict(self.secondary_amounts),
             "findings": [finding.to_dict() for finding in self.findings],
             "profile_id": self.profile_id,
             "document_type": self.document_type,
@@ -119,7 +126,18 @@ class InvoiceResult:
             source_path=str(data["source_path"]),
             parties=_parties(data),
             vat_summary=tuple(VatSummaryRow.from_dict(row) for row in _rows(data, "vat_summary")),
+            charges=tuple(Charge.from_dict(charge) for charge in _rows(data, "charges")),
+            secondary_amounts=_secondary(data.get("secondary_amounts")),
         )
+
+
+def _secondary_to_dict(amounts: SecondaryAmounts | None) -> dict[str, object] | None:
+    return None if amounts is None else amounts.to_dict()
+
+
+def _secondary(raw: object) -> SecondaryAmounts | None:
+    """The echo in another currency, which most documents do not print at all."""
+    return None if raw is None else SecondaryAmounts.from_dict(cast(Mapping[str, object], raw))
 
 
 def _parties(data: Mapping[str, object]) -> dict[str, Party]:

@@ -11,7 +11,6 @@ from invoice_extractor.extraction.candidate import Candidate, Evaluated
 from invoice_extractor.extraction.units.rankers import (
     best_match,
     closest_to_label,
-    last_page_first,
     top_most,
     valid_first,
     zone_priority,
@@ -63,12 +62,6 @@ def test_closest_to_label_is_the_gap_the_strategy_measured() -> None:
 
 def test_top_most_is_where_the_value_sits_down_the_page() -> None:
     assert top_most(evaluated(y=100.0), EXPECTED) < top_most(evaluated(y=400.0), EXPECTED)
-
-
-def test_last_page_first_prefers_the_end_of_the_document() -> None:
-    assert last_page_first(evaluated(page=3), EXPECTED) < last_page_first(
-        evaluated(page=1), EXPECTED
-    )
 
 
 def test_best_match_prefers_an_exact_hit_over_a_near_one() -> None:

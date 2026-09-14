@@ -49,12 +49,21 @@ measured.
 
 `totals`: `subtotal`, `vat_amount`, `total_amount`, `vat_rate`, `rounding`, `charges[]`
 (`type` ∈ SHIPPING, ENVIRONMENTAL_FEE, SURCHARGE, CONSOLIDATION_FEE, RECYCLING_FEE,
-ROUNDING; `amount`; `vat_rate`; `declared`).
+ROUNDING, OTHER; `amount`; `vat_rate`; `declared`).
 `secondary_amounts`: the same keys echoed in `secondary_currency`, plus `exchange_rate`.
+
+The four amounts are fields of the catalog and are published in `InvoiceResult.fields`
+like any other. The charges are not: a charge is a row of the block, and they are
+published beside the fields as `InvoiceResult.charges`, each with the box it was read
+from. `OTHER` is what a charge no line of the page declares is called — stage 5 finds it
+in the arithmetic and cannot know what it is for (`docs/ENGINE_SPEC.md` §5), and
+`declared` is `false` on it.
 
 `vat_rate` is the one rate a single-rate document charges, printed beside the tax in the
 totals block. A document that charges more than one carries them per line item and per
-VAT-summary row instead, and the block prints no single rate.
+VAT-summary row instead, and the block prints no single rate: stage 5 fills it in from
+the rate its VAT summary is mostly at, or — where it prints no summary either — from the
+rate most of what it sold is charged at, and says which in a `Finding`.
 
 ## Custom fields
 

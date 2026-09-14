@@ -31,6 +31,7 @@ class Strategy(Enum):
 
     `TABLE_CELL` and `SECTION_LINE` are values no label introduced: a cell is what its
     column says it is, and a line of an address is what the block it sits in says.
+    `BLOCK_ROW` is a label and a value read together as one row of the totals block.
     """
 
     LABEL_RIGHT = auto()
@@ -41,6 +42,7 @@ class Strategy(Enum):
     DERIVED = auto()
     TABLE_CELL = auto()
     SECTION_LINE = auto()
+    BLOCK_ROW = auto()
 
 
 @dataclass(frozen=True, slots=True)

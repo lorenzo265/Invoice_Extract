@@ -17,6 +17,8 @@ import pytest
 
 from invoice_extractor import ProfileRegistry, extract
 from invoice_extractor.domain.findings import Severity
+from invoice_extractor.reconcile.amounts import FROM_SUMMARY, FROM_TOTAL, UNDECLARED
+from invoice_extractor.reconcile.summary import AMBIGUOUS, DISAGREE
 from invoice_extractor.validation.invariants import INVARIANT_NAMES
 
 FIXTURES = Path("tests/forge/fixtures/corpus")
@@ -54,7 +56,16 @@ def test_a_document_the_extractor_cannot_read_is_reported_rather_than_raised(
     """ADR-0005 end to end: every disagreement comes back as a finding with a known code."""
     result = extract(pdf, REGISTRY)
     codes = {finding.code for finding in result.findings}
-    known = {*INVARIANT_NAMES, "line_item_cell_unreadable", "line_items_header_not_found"}
+    known = {
+        *INVARIANT_NAMES,
+        "line_item_cell_unreadable",
+        "line_items_header_not_found",
+        FROM_SUMMARY,
+        FROM_TOTAL,
+        UNDECLARED,
+        DISAGREE,
+        AMBIGUOUS,
+    }
     assert codes <= known, sorted(codes - known)
 
 

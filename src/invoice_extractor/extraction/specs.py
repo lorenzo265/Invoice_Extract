@@ -13,6 +13,7 @@ from __future__ import annotations
 from invoice_extractor.domain.rows import LINE_ITEM_COLUMNS, VAT_SUMMARY_COLUMNS
 from invoice_extractor.extraction.spec import (
     AnchorSpec,
+    BlockSpec,
     DerivedSpec,
     LabelSpec,
     SectionSpec,
@@ -28,11 +29,6 @@ from invoice_extractor.extraction.units.derivations import DERIVATIONS
 # highest on the page. One order for every labelled field: which of the three ways a
 # vendor printed a label is the document's business, and the distance settles it.
 BY_LABEL = ("valid_first", "zone_priority", "closest_to_label", "top_most")
-# An amount is asked for once, at the end: the last page settles a label a running table
-# prints on every one of them.
-BY_AMOUNT = ("valid_first", "last_page_first", "zone_priority", "closest_to_label")
-# Only what is a number gets to be one.
-NUMERIC = ("not_a_trap", "looks_numeric")
 # What a vendor prints in its header block beside the fields the catalog names. A profile
 # declares the ones it prints under `custom_fields`; a profile that declares none simply
 # never resolves them.
@@ -58,17 +54,7 @@ def _date(name: str) -> LabelSpec:
     return LabelSpec(name=name, normalizer="parse_date", validator="is_date", rankers=BY_LABEL)
 
 
-def _money(name: str) -> LabelSpec:
-    return LabelSpec(
-        name=name,
-        normalizer="parse_money",
-        validator="is_money",
-        rankers=BY_AMOUNT,
-        filters=NUMERIC,
-    )
-
-
-SPECS: tuple[Spec, ...] = (
+HEADER: tuple[Spec, ...] = (
     _identifier("invoice_number"),
     _identifier("order_number"),
     _identifier("customer_number"),
@@ -88,20 +74,24 @@ SPECS: tuple[Spec, ...] = (
         rankers=BY_LABEL,
     ),
     DerivedSpec(name="currency", derive="currency"),
-    LabelSpec(
-        name="vat_rate",
-        normalizer="parse_percent",
-        validator="is_percent",
-        rankers=BY_AMOUNT,
-        filters=NUMERIC,
-    ),
-    _money("subtotal"),
-    _money("vat_amount"),
-    _money("total_amount"),
-    *(_identifier(name, source="custom_fields") for name in DECLARED_BY_THE_VENDOR),
 )
+# The extras a vendor declares for itself, read the same way and named by the profile.
+VENDOR: tuple[Spec, ...] = tuple(
+    _identifier(name, source="custom_fields") for name in DECLARED_BY_THE_VENDOR
+)
+SPECS: tuple[Spec, ...] = (*HEADER, *VENDOR)
 
-FIELD_ORDER: tuple[str, ...] = tuple(spec.name for spec in SPECS)
+# The totals block: the amounts it names are fields of the catalog, and the charges it
+# names are not — a charge is a row of the block, published beside the fields (ADR-0007).
+TOTALS = BlockSpec(name="totals", fields=("vat_rate", "subtotal", "vat_amount", "total_amount"))
+
+# The order a report prints the fields in: the header block's, then the totals block's,
+# then whatever this vendor prints that the catalog does not name.
+FIELD_ORDER: tuple[str, ...] = (
+    *(spec.name for spec in HEADER),
+    *TOTALS.fields,
+    *(spec.name for spec in VENDOR),
+)
 
 # The line-item table: a row is a row when it says what was charged and what for.
 LINE_ITEMS = TableSpec(
@@ -128,7 +118,7 @@ SECTIONS: tuple[SectionSpec, ...] = (
     SectionSpec(name="mail_to", source="mail_to"),
 )
 
-STRUCTURES: tuple[Structure, ...] = (*SECTIONS, *TABLES)
+STRUCTURES: tuple[Structure, ...] = (*SECTIONS, *TABLES, TOTALS)
 
 validate(SPECS, DERIVATIONS)
 validate_structures(STRUCTURES)

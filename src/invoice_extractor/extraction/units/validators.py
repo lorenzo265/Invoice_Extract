@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import re
 from datetime import date
-from decimal import Decimal
 
 from invoice_extractor.domain.models import FieldValue
 from invoice_extractor.extraction.candidate import Validator
@@ -16,7 +15,6 @@ from invoice_extractor.profile.schema import FieldProfile
 
 IDENTIFIER = re.compile(r"[A-Z0-9][A-Z0-9/-]{2,}")
 VAT_ID = re.compile(r"[A-Z]{0,2}[A-Z0-9]{5,14}")
-PERCENT_RANGE = (Decimal(0), Decimal(100))
 
 
 def matches_pattern(default: str) -> Validator:
@@ -32,16 +30,6 @@ def matches_pattern(default: str) -> Validator:
 
 def is_date(value: FieldValue, field_profile: FieldProfile) -> bool:
     return isinstance(value, date)
-
-
-def is_money(value: FieldValue, field_profile: FieldProfile) -> bool:
-    """Any amount, including a negative one: a credit note reverses what it credits."""
-    return isinstance(value, Decimal)
-
-
-def is_percent(value: FieldValue, field_profile: FieldProfile) -> bool:
-    low, high = PERCENT_RANGE
-    return isinstance(value, Decimal) and low <= value <= high
 
 
 def is_identifier(value: FieldValue, field_profile: FieldProfile) -> bool:

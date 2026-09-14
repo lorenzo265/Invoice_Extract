@@ -33,17 +33,6 @@ def top_most(evaluated: Evaluated, field_profile: FieldProfile) -> float:
     return evaluated.candidate.evidence.bbox.y0
 
 
-def last_page_first(evaluated: Evaluated, field_profile: FieldProfile) -> float:
-    """The last page before an earlier one: an invoice asks to be paid once, at the end.
-
-    A table that runs over a page break prints its column headings on every page, and a
-    heading is a label like any other — `Total` over a column of amounts is the same word
-    as `Total` under them. What tells the two apart is that only one of them is the last
-    thing the document says.
-    """
-    return float(-evaluated.candidate.evidence.page)
-
-
 def best_match(evaluated: Evaluated, field_profile: FieldProfile) -> float:
     """An exact hit on an expected value before a near one (`anchor_value`'s ratio)."""
     return MISSING_ZONE - evaluated.candidate.match_ratio

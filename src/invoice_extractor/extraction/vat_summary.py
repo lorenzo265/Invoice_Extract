@@ -17,7 +17,6 @@ no rows.
 
 from __future__ import annotations
 
-import re
 from collections.abc import Mapping, Sequence
 from decimal import Decimal
 
@@ -27,12 +26,9 @@ from invoice_extractor.domain.evidence import Evidence, Strategy
 from invoice_extractor.domain.rows import VatSummaryRow
 from invoice_extractor.extraction.spec import TableSpec
 from invoice_extractor.extraction.table import Cells, read_table
-from invoice_extractor.extraction.units.normalizers import parse_number
+from invoice_extractor.extraction.units.normalizers import numbers_in, parse_number
 from invoice_extractor.profile.schema import Profile, TableProfile
 
-# A number as a page prints one, from its first digit to whatever is not part of it.
-# The apostrophes are Swiss thousands separators, typed and typeset.
-NUMBER = re.compile("-?\\d[\\d\\s.,\u2019']*")
 PERCENT = "%"
 
 
@@ -111,14 +107,14 @@ def _says(text: str, labels: Sequence[str]) -> bool:
 
 
 def _labelled(text: str, labels: Sequence[str], profile: Profile) -> Decimal | None:
-    """The number this label introduces, up to wherever that number stops."""
+    """The number this label introduces, which is the first one printed after it."""
     for label in labels:
         at = text.casefold().find(label.casefold())
         if at < 0:
             continue
-        found = NUMBER.search(text[at + len(label) :])
-        if found is not None:
-            return parse_number(found.group(0), profile)
+        found = numbers_in(text[at + len(label) :], profile)
+        if found:
+            return found[0]
     return None
 
 

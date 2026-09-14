@@ -8,11 +8,13 @@ from decimal import Decimal
 from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
+    Charge,
     Evidence,
     FieldResult,
     InvoiceResult,
     LineItem,
     Party,
+    SecondaryAmounts,
     Strategy,
     VatSummaryRow,
 )
@@ -174,3 +176,44 @@ def test_a_document_with_no_blocks_and_no_summary_prints_neither() -> None:
     printed = render(result())
     assert "Parties" not in printed
     assert "VAT summary" not in printed
+
+
+CHARGES = (
+    Charge(
+        type="SHIPPING",
+        amount=Decimal("12.50"),
+        evidence=Evidence(1, BOX, "Delivery", Strategy.BLOCK_ROW, "12.50"),
+    ),
+    Charge(type="OTHER", amount=Decimal("5.00"), declared=False),
+)
+ECHO = SecondaryAmounts(
+    currency="USD", total_amount=Decimal("658.56"), exchange_rate=Decimal("1.1200")
+)
+
+
+def test_a_report_prints_what_the_block_charged_and_where_each_charge_was_read() -> None:
+    lines = render(dataclasses.replace(result(), charges=CHARGES)).splitlines()
+    assert line_starting(lines, "Charges (2)")
+    assert line_starting(lines, "SHIPPING").split() == [
+        "SHIPPING",
+        "12.50",
+        "declared",
+        "p1",
+        "BLOCK_ROW",
+        '"Delivery"',
+    ]
+    assert line_starting(lines, "OTHER").split() == ["OTHER", "5.00", "inferred", "-"]
+
+
+def test_a_report_adds_every_charge_to_the_arithmetic_it_prints() -> None:
+    lines = render(dataclasses.replace(result(), charges=CHARGES)).splitlines()
+    added = "490.00 + 12.50 + 5.00 + 98.00 = 588.00"
+    assert line_starting(lines, "[ok]  totals_reconcile").endswith(added)
+    taxed = "20.00% x (490.00 + 12.50) = 98.00"
+    assert line_starting(lines, "[ok]  vat_rate_consistent").endswith(taxed)
+
+
+def test_a_report_prints_the_total_said_again_in_another_currency() -> None:
+    lines = render(dataclasses.replace(result(), secondary_amounts=ECHO)).splitlines()
+    assert line_starting(lines, "Second currency")
+    assert line_starting(lines, "USD").split() == ["USD", "658.56", "at", "1.1200"]

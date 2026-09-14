@@ -12,10 +12,12 @@ import pytest
 from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
+    Charge,
     Evidence,
     FieldResult,
     InvoiceResult,
     LineItem,
+    SecondaryAmounts,
     Strategy,
 )
 
@@ -76,6 +78,21 @@ def populated() -> InvoiceResult:
         profile_id="acme",
         document_type="invoice",
         source_path="samples/acme_invoice.pdf",
+        charges=(
+            Charge(
+                type="SHIPPING",
+                amount=Decimal("12.50"),
+                vat_rate=Decimal("20"),
+                evidence=Evidence(1, BOX, "Delivery", Strategy.BLOCK_ROW, "12.50"),
+            ),
+            Charge(type="OTHER", amount=Decimal("5.00"), declared=False),
+        ),
+        secondary_amounts=SecondaryAmounts(
+            currency="USD",
+            total_amount=Decimal("84.00"),
+            exchange_rate=Decimal("1.1200"),
+            evidence=Evidence(1, BOX, None, Strategy.BLOCK_ROW, "USD 84.00 at 1.1200"),
+        ),
     )
 
 
@@ -150,3 +167,35 @@ def test_missing_field_serializes_every_key_as_null() -> None:
 def test_models_are_frozen(instance: object, attribute: str) -> None:
     with pytest.raises(dataclasses.FrozenInstanceError):
         setattr(instance, attribute, "tampered")
+
+
+def test_a_charge_the_block_declared_round_trips_with_the_box_it_was_read_from() -> None:
+    charge = populated().charges[0]
+    assert Charge.from_dict(charge.to_dict()) == charge
+
+
+def test_a_charge_only_the_arithmetic_found_round_trips_without_one() -> None:
+    inferred = populated().charges[1]
+    entry = inferred.to_dict()
+    assert entry["evidence"] is None and entry["vat_rate"] is None
+    assert Charge.from_dict(entry) == inferred
+
+
+def test_the_total_said_again_in_another_currency_round_trips() -> None:
+    echo = populated().secondary_amounts
+    assert echo is not None
+    assert SecondaryAmounts.from_dict(echo.to_dict()) == echo
+
+
+def test_a_currency_echoed_with_no_amounts_round_trips_as_the_code_alone() -> None:
+    bare = SecondaryAmounts(currency="USD")
+    entry = bare.to_dict()
+    assert entry["total_amount"] is None and entry["exchange_rate"] is None
+    assert SecondaryAmounts.from_dict(entry) == bare
+
+
+def test_a_document_that_carries_no_charge_serializes_an_empty_list() -> None:
+    plain = dataclasses.replace(populated(), charges=(), secondary_amounts=None)
+    entry = plain.to_dict()
+    assert entry["charges"] == [] and entry["secondary_amounts"] is None
+    assert InvoiceResult.from_dict(entry) == plain

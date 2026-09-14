@@ -8,7 +8,7 @@ from decimal import Decimal
 import pytest
 
 from invoice_extractor.domain.findings import Severity
-from invoice_extractor.domain.models import FieldResult, LineItem
+from invoice_extractor.domain.models import Charge, FieldResult, LineItem, VatSummaryRow
 from invoice_extractor.validation.invariants import (
     INVARIANT_NAMES,
     check_all,
@@ -147,3 +147,43 @@ def test_line_items_sum_is_skipped_when_a_rows_amount_could_not_be_read() -> Non
     assert finding is not None
     assert finding.severity is Severity.WARNING
     assert "skipped" in finding.message
+
+
+def test_a_charge_the_document_carries_is_part_of_what_the_total_comes_to() -> None:
+    carried = fields(total_amount="600.50")
+    charges = (Charge(type="SHIPPING", amount=Decimal("12.50")),)
+    assert totals_reconcile(carried, charges) is None
+    assert totals_reconcile(carried) is not None, "and the same sum without it does not hold"
+
+
+def test_a_charge_names_itself_in_the_sum_the_finding_prints() -> None:
+    charges = (Charge(type="SHIPPING", amount=Decimal("12.50")),)
+    finding = totals_reconcile(fields(), charges)
+    assert finding is not None
+    assert finding.message.startswith("490.00 + 12.50 + 98.00 = 600.50")
+
+
+def test_what_is_taxed_is_the_net_and_the_charges_the_block_declared() -> None:
+    charges = (
+        Charge(type="SHIPPING", amount=Decimal("10.00")),
+        Charge(type="OTHER", amount=Decimal("100.00"), declared=False),
+    )
+    taxed = fields(vat_amount="100.00")
+    assert vat_rate_consistent(taxed, charges) is None
+
+
+def test_a_document_at_more_than_one_rate_has_no_one_rate_to_check() -> None:
+    """The check is `vat_equals_subtotal_times_rate`, and that is a single-rate document."""
+    summary = (
+        VatSummaryRow(rate=Decimal("7"), base=Decimal("100.00"), vat=Decimal("7.00")),
+        VatSummaryRow(rate=Decimal("20"), base=Decimal("390.00"), vat=Decimal("78.00")),
+    )
+    finding = vat_rate_consistent(fields(vat_amount="85.00"), (), summary)
+    assert finding is not None
+    assert finding.severity is Severity.INFO
+    assert finding.message.endswith("not applicable: the document is at more than one rate")
+
+
+def test_a_document_at_one_rate_is_checked_against_it() -> None:
+    summary = (VatSummaryRow(rate=Decimal("20"), base=Decimal("490.00"), vat=Decimal("98.00")),)
+    assert vat_rate_consistent(fields(), (), summary) is None

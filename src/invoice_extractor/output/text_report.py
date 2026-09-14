@@ -13,6 +13,8 @@ from enum import Enum, auto
 
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
+    Charge,
+    Evidence,
     FieldResult,
     FieldValue,
     InvoiceResult,
@@ -48,6 +50,11 @@ ITEM_HEADERS = ("PART NUMBER", "DESCRIPTION", "QTY", "UNIT PRICE", "NET AMOUNT")
 ITEM_ALIGN = (Align.LEFT, Align.LEFT, Align.RIGHT, Align.RIGHT, Align.RIGHT)
 VAT_HEADERS = ("CODE", "RATE", "BASE", "VAT")
 VAT_ALIGN = (Align.LEFT, Align.RIGHT, Align.RIGHT, Align.RIGHT)
+CHARGE_HEADERS = ("CHARGE", "AMOUNT", "SAID", "EVIDENCE")
+CHARGE_ALIGN = (Align.LEFT, Align.LEFT, Align.LEFT, Align.LEFT)
+# What a charge the page names is marked, and what one only the arithmetic found is.
+DECLARED = "declared"
+INFERRED = "inferred"
 PARTY_WIDTH = 11
 # What a party's own lines are joined with when the report prints the block on one line.
 JOINED = " · "
@@ -68,6 +75,7 @@ def render(result: InvoiceResult) -> str:
         *_item_table(result.line_items),
         "",
         *_vat_block(result.vat_summary),
+        *_charge_block(result),
         *_invariant_block(result),
         "",
         _counts(result.findings),
@@ -107,6 +115,25 @@ def _vat_block(rows: Sequence[VatSummaryRow]) -> list[str]:
         return []
     printed = [(_cell(row.code), _cell(row.rate), _cell(row.base), _cell(row.vat)) for row in rows]
     return [f"VAT summary ({len(rows)})", *_table(VAT_HEADERS, printed, VAT_ALIGN), ""]
+
+
+def _charge_block(result: InvoiceResult) -> list[str]:
+    """What the totals block carries beside its amounts, and the total said again."""
+    lines: list[str] = []
+    if result.charges:
+        rows = [_charge(charge) for charge in result.charges]
+        table = _table(CHARGE_HEADERS, rows, CHARGE_ALIGN)
+        lines += [f"Charges ({len(result.charges)})", *table, ""]
+    echo = result.secondary_amounts
+    if echo is not None:
+        said = f"{_cell(echo.total_amount)} at {_cell(echo.exchange_rate)}"
+        lines += ["Second currency", f"{echo.currency:<{PARTY_WIDTH}}{said}", ""]
+    return lines
+
+
+def _charge(charge: Charge) -> tuple[str, str, str, str]:
+    said = DECLARED if charge.declared else INFERRED
+    return charge.type, str(charge.amount), said, _where(charge.evidence)
 
 
 def _item_table(items: Sequence[LineItem]) -> list[str]:
@@ -167,7 +194,11 @@ def _value(value: FieldValue | None) -> str:
 
 
 def _evidence(field: FieldResult) -> str:
-    evidence = field.evidence
+    return _where(field.evidence)
+
+
+def _where(evidence: Evidence | None) -> str:
+    """Where a value was read: the page, how it was found, and the label that found it."""
     if evidence is None:
         return MISSING
     label = MISSING if evidence.matched_label is None else f'"{evidence.matched_label}"'
@@ -180,8 +211,9 @@ def _amount(result: InvoiceResult, name: str) -> str:
 
 
 def _totals_expression(result: InvoiceResult) -> str:
-    left = f"{_amount(result, 'subtotal')} + {_amount(result, 'vat_amount')}"
-    return f"{left} = {_amount(result, 'total_amount')}"
+    added = [str(charge.amount) for charge in result.charges]
+    parts = [_amount(result, "subtotal"), *added, _amount(result, "vat_amount")]
+    return f"{' + '.join(parts)} = {_amount(result, 'total_amount')}"
 
 
 def _line_items_expression(result: InvoiceResult) -> str:
@@ -190,8 +222,11 @@ def _line_items_expression(result: InvoiceResult) -> str:
 
 
 def _vat_rate_expression(result: InvoiceResult) -> str:
-    left = f"{_amount(result, 'vat_rate')}% x {_amount(result, 'subtotal')}"
-    return f"{left} = {_amount(result, 'vat_amount')}"
+    """What was taxed is the net and every charge the block declared, as the check says."""
+    declared = [str(charge.amount) for charge in result.charges if charge.declared]
+    net = _amount(result, "subtotal")
+    taxed = f"({' + '.join([net, *declared])})" if declared else net
+    return f"{_amount(result, 'vat_rate')}% x {taxed} = {_amount(result, 'vat_amount')}"
 
 
 ARITHMETIC: Mapping[str, Callable[[InvoiceResult], str]] = {

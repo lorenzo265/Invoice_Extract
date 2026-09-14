@@ -75,7 +75,7 @@ mtime changed, so a profile added at runtime is detected on the next document;
 
 | Function | Rule |
 |---|---|
-| `backfill_vat` | `vat_amount` missing or zero ← Σ `vat_summary[].vat`; fallback `total − subtotal` only when the implied rate ∈ [0, 0.30]; negative VAT only with negative total |
+| `backfill_vat` | `vat_amount` missing or zero ← Σ `vat_summary[].vat`; fallback `total − subtotal − declared charges` only when the implied rate ∈ [0, 0.30]; negative VAT only with negative total. `vat_rate` missing ← the rate of the summary line with the largest base (the higher rate on a tie), else the rate most of the line items' net is charged at |
 | `cross_check_totals_vs_summary` | three booleans (vat agrees, base agrees, arithmetic closes) → any `False` caps the confidence of the disagreeing fields at 0.5 and emits `Finding(WARNING, "totals_summary_disagree")` |
 | `link_items_to_vat_lines` | each line item and declared charge gets its VAT line by rate/code; ambiguous linkage is a finding, not a guess |
 | `resolve_charges` | declared charges from the block; an undeclared charge is inferred only when `total − subtotal − vat` is non-zero beyond tolerance and reported as `Finding(WARNING, "undeclared_charge_inferred")` with the amount |

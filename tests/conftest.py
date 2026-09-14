@@ -161,15 +161,24 @@ def make_section_profile(
     )
 
 
-def make_block_profile() -> BlockProfile:
+def make_component(
+    labels: Sequence[str],
+    kind: ComponentKind = ComponentKind.AMOUNT,
+    charge_type: str | None = None,
+) -> ComponentProfile:
+    """One line of a totals block: what a vendor calls it, and what kind of line it is."""
+    return ComponentProfile(
+        labels=tuple(labels), kind=kind, charge_type=charge_type, accumulate=False
+    )
+
+
+def make_block_profile(components: Mapping[str, ComponentProfile] | None = None) -> BlockProfile:
     """A totals block with the three components every profile must name."""
+    named = components or {
+        name: make_component((name,)) for name in ("subtotal", "vat_amount", "total_amount")
+    }
     return BlockProfile(
-        components={
-            name: ComponentProfile(
-                labels=(name,), kind=ComponentKind.AMOUNT, charge_type=None, accumulate=False
-            )
-            for name in ("subtotal", "vat_amount", "total_amount")
-        },
+        components=dict(named),
         cluster_gap=0.08,
         secondary_echo=None,
         tolerance=Tolerance(absolute=Decimal("0.01"), relative=Decimal("0.005")),
@@ -184,6 +193,8 @@ def make_profile(
     line_items: TableProfile | None = None,
     parties: Mapping[str, SectionProfile] | None = None,
     vat_summary: TableProfile | None = None,
+    totals: BlockProfile | None = None,
+    currencies: Sequence[str] = ("GBP",),
 ) -> Profile:
     """A `Profile` built in memory, so a unit test never reads `profiles/*.json`."""
     return Profile(
@@ -193,7 +204,7 @@ def make_profile(
         lexicon="en",
         number_format=NumberFormat(decimal_separator, tuple(thousands_separators)),
         date_formats=tuple(date_formats),
-        currencies=("GBP",),
+        currencies=tuple(currencies),
         vat=VatProfile(
             rates={"standard": Decimal("20")},
             id_prefix="GB",
@@ -208,7 +219,7 @@ def make_profile(
         parties=dict(parties or {}),
         line_items=line_items or make_table_profile(),
         vat_summary=vat_summary,
-        totals=make_block_profile(),
+        totals=totals or make_block_profile(),
         custom_fields=(),
         variants=(),
         document_types=DocumentTypes(

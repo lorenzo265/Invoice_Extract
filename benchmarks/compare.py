@@ -27,11 +27,13 @@ from typing import cast
 
 from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.models import (
+    Charge,
     Evidence,
     FieldResult,
     InvoiceResult,
     LineItem,
     Party,
+    SecondaryAmounts,
     VatSummaryRow,
 )
 from invoice_extractor.extraction.specs import FIELD_ORDER
@@ -56,6 +58,13 @@ SCORED_VAT_COLUMNS: tuple[str, ...] = ("rate", "base", "vat")
 # What a party block is scored on. Its VAT id is a value the document need not print in
 # the block at all — the customer's is a field of its own — so it is not scored here.
 SCORED_PARTY_KEYS: tuple[str, ...] = ("name", "lines")
+# How a charge is scored. A declared one is a row of the block and is scored as one, type
+# and amount together. An undeclared one is nothing but a difference in the arithmetic —
+# the page says neither what it is for nor how many of them there are — so what is scored
+# is what the arithmetic can know: how much of the total nothing declared.
+SCORED_CHARGE_KEYS: tuple[str, ...] = ("declared", "undeclared")
+# The three parts of an echo in another currency.
+SECONDARY_KEYS: tuple[str, ...] = ("currency", "total_amount", "exchange_rate")
 # What the extractor does not read at all, and so is never scored on: the names the
 # generator prints that no spec has learned yet.
 NOT_COVERED: tuple[str, ...] = tuple(name for name in METADATA_FIELDS if name not in FIELD_ORDER)
@@ -113,6 +122,8 @@ class DocumentScore:
     vat_columns: Mapping[str, Counts] = field(default_factory=dict)
     vat_rows_expected: int = 0
     vat_rows_found: int = 0
+    charges: Mapping[str, Counts] = field(default_factory=dict)
+    secondary: Mapping[str, Counts] = field(default_factory=dict)
 
 
 def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> DocumentScore:
@@ -134,6 +145,8 @@ def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> Do
         vat_columns=_vat_columns(truth, result.vat_summary),
         vat_rows_expected=len(_printed_vat_rows(truth)),
         vat_rows_found=len(result.vat_summary),
+        charges=_charges(truth, result.charges),
+        secondary=_secondary(truth, result.secondary_amounts),
     )
 
 
@@ -306,6 +319,83 @@ def _same_party(expected: object, read: object) -> bool:
         lines = read if isinstance(read, tuple) else ()
         return tuple(str(line) for line in expected) == lines
     return (expected or None) == (read or None)
+
+
+def _charges(truth: Mapping[str, object], found: Sequence[Charge]) -> Mapping[str, Counts]:
+    """What the block declared, scored row for row, and what only the arithmetic knows."""
+    wanted = [entry for entry in _sequence(truth, "charges") if isinstance(entry, dict)]
+    tally = {key: Counts() for key in SCORED_CHARGE_KEYS}
+    _named_charges(wanted, found, tally["declared"])
+    _unnamed_charges(wanted, found, tally["undeclared"])
+    return tally
+
+
+def _named_charges(
+    wanted: Sequence[Mapping[str, object]], found: Sequence[Charge], counts: Counts
+) -> None:
+    """Type and amount together: a shipping charge read as an environmental fee is wrong."""
+    printed = [
+        (str(entry.get("type")), _decimal(str(entry.get("amount"))))
+        for entry in wanted
+        if entry.get("declared")
+    ]
+    read = [(charge.type, charge.amount) for charge in found if charge.declared]
+    _multiset(printed, read, counts)
+
+
+def _unnamed_charges(
+    wanted: Sequence[Mapping[str, object]], found: Sequence[Charge], counts: Counts
+) -> None:
+    """How much of the total no line declares, which is all such a document says at all."""
+    printed = _summed([str(entry.get("amount")) for entry in wanted if not entry.get("declared")])
+    read = sum((charge.amount for charge in found if not charge.declared), Decimal(0))
+    if printed == 0 and read == 0:
+        counts.count(Outcome.ABSENT)
+        return
+    counts.count(Outcome.HIT if printed == read else Outcome.MISS)
+
+
+def _summed(amounts: Sequence[str]) -> Decimal:
+    return sum((_decimal(amount) or Decimal(0) for amount in amounts), Decimal(0))
+
+
+def _multiset(wanted: Sequence[object], found: Sequence[object], counts: Counts) -> None:
+    """Two bags of values compared: every one matched is a hit, everything left over a miss."""
+    remaining = list(found)
+    for entry in wanted:
+        if entry in remaining:
+            remaining.remove(entry)
+            counts.count(Outcome.HIT)
+        else:
+            counts.count(Outcome.MISS)
+    for _ in remaining:
+        counts.count(Outcome.MISS)
+    if not wanted and not found:
+        counts.count(Outcome.ABSENT)
+
+
+def _secondary(truth: Mapping[str, object], found: SecondaryAmounts | None) -> Mapping[str, Counts]:
+    """The echo in another currency, part by part; most documents print none at all."""
+    entry = truth.get("secondary_amounts")
+    printed = entry if isinstance(entry, dict) else {}
+    tally = {key: Counts() for key in SECONDARY_KEYS}
+    for key in SECONDARY_KEYS:
+        tally[key].count(_secondary_cell(printed, key, found))
+    return tally
+
+
+def _secondary_cell(
+    printed: Mapping[str, object], key: str, found: SecondaryAmounts | None
+) -> Outcome:
+    expected = printed.get(key)
+    got = None if found is None else getattr(found, key)
+    if expected is None:
+        return Outcome.ABSENT if got is None else Outcome.MISS
+    if got is None:
+        return Outcome.MISS
+    if key == "currency":
+        return Outcome.HIT if str(expected) == str(got) else Outcome.MISS
+    return Outcome.HIT if _decimal(str(expected)) == _decimal(str(got)) else Outcome.MISS
 
 
 def _mapping(data: Mapping[str, object], key: str) -> Mapping[str, object]:

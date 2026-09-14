@@ -107,7 +107,8 @@ Unknown key at any level: `"<path> is not a recognized key"`. Missing required k
 
 | Key | Meaning |
 |---|---|
-| `components` | map component → `{labels[], kind: "amount" \| "charge", charge_type?, accumulate?}` — `subtotal`, `vat_amount`, `total_amount` are required components |
+| `components` | map component → `{labels[], kind: "amount" \| "charge" \| "rate", charge_type?, accumulate?}` — `subtotal`, `vat_amount`, `total_amount` are required components |
+| | `amount` is a line of money the identity is made of; `charge` is money added to it and named as a charge, with `charge_type` naming which of the catalog's kinds it is; `rate` is the one rate a single-rate document prints in its block, read without its sign and added to nothing |
 | `cluster_gap` | float, vertical gap (fraction of page height) that closes the block (default 0.08) |
 | `secondary_echo` | `{labels[], rate_labels[]}` or absent |
 | `tolerance` | `{absolute: "0.02", relative: "0.005"}` |
@@ -171,6 +172,7 @@ And the excerpt of `profiles/_defaults.json` those keys are laid over:
     "components": { "subtotal": { "labels": ["@totals_labels.subtotal"] },
                     "vat_amount": { "labels": ["@totals_labels.vat_amount"] },
                     "total_amount": { "labels": ["@totals_labels.total_amount"] },
+                    "vat_rate": { "labels": ["@totals_labels.vat_rate"], "kind": "rate" },
                     "shipping": { "labels": ["@charge_labels.SHIPPING"],
                                   "kind": "charge", "charge_type": "SHIPPING" } },
     "tolerance": { "absolute": "0.01", "relative": "0.005" }

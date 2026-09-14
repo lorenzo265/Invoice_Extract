@@ -269,6 +269,12 @@
           "@totals_labels.vat_amount"
         ]
       },
+      "vat_rate": {
+        "labels": [
+          "@totals_labels.vat_rate"
+        ],
+        "kind": "rate"
+      },
       "total_amount": {
         "labels": [
           "@totals_labels.total_amount"

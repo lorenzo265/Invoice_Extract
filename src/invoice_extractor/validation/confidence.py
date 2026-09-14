@@ -23,12 +23,23 @@ SIGNAL_WEIGHTS: Mapping[str, float] = {
     "invariants_agree": 0.20,
 }
 PRECISION = 2
+# What a field is worth when nothing caps it: everything its signals came to.
+NO_CAP = 1.0
 
 
 def score(
-    extraction: Extraction, field_profile: FieldProfile | None, findings: Sequence[Finding]
+    extraction: Extraction,
+    field_profile: FieldProfile | None,
+    findings: Sequence[Finding],
+    cap: float = NO_CAP,
 ) -> FieldResult:
-    """The field again, with its confidence and what each signal contributed to it."""
+    """The field again, with its confidence and what each signal contributed to it.
+
+    `cap` is what stage 5 found the document disagreeing with itself about, applied here
+    and nowhere else (`docs/ENGINE_SPEC.md` §2): a value the VAT summary contradicts is
+    still the value the block printed, and the signals that lit are still the signals
+    that lit — what changes is how far any of that is worth trusting.
+    """
     field = extraction.field
     if field.value is None:
         return dataclasses.replace(field, confidence=0.0, confidence_breakdown=_nothing_lit())
@@ -36,7 +47,7 @@ def score(
     breakdown = {
         signal: weight if lit[signal] else 0.0 for signal, weight in SIGNAL_WEIGHTS.items()
     }
-    total = round(sum(breakdown.values()), PRECISION)
+    total = round(min(sum(breakdown.values()), cap), PRECISION)
     return dataclasses.replace(field, confidence=total, confidence_breakdown=breakdown)
 
 

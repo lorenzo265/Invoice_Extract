@@ -54,10 +54,10 @@ due_date          2024-06-28       0.90  p1  LABEL_BESIDE  "Échéance"
 supplier_vat_id   FR7P585117668    1.00  p1  ANCHOR  "FR7P585117668"
 customer_vat_id   FR3P030824628    0.85  p1  LABEL_RIGHT  "N° TVA du client"
 currency          EUR              0.75  p1  DERIVED  -
-vat_rate          20               0.90  p1  LABEL_BELOW  "TVA %"
-subtotal          11241.25         0.90  p1  LABEL_BESIDE  "Total HT"
-vat_amount        2248.25          0.90  p1  LABEL_BESIDE  "TVA"
-total_amount      13489.50         1.00  p1  LABEL_BESIDE  "Net à payer"
+vat_rate          20               1.00  p1  BLOCK_ROW  "Taux de TVA"
+subtotal          11241.25         1.00  p1  BLOCK_ROW  "Total HT"
+vat_amount        2248.25          1.00  p1  BLOCK_ROW  "TVA"
+total_amount      13489.50         1.00  p1  BLOCK_ROW  "Net à payer"
 contract_number   -                0.00  -
 our_reference     -                0.00  -
 your_reference    REF-1064         0.75  p1  LABEL_BESIDE  "Votre réf."
@@ -239,19 +239,21 @@ measures this release at:
 
 - **Profile detection:** 100.0% (250 of 250); a document no profile matches is
   reported and not read (ADR-0008).
-- **Scalar fields:** 99.4% (3472 of 3492) of the values the documents carry.
+- **Scalar fields:** 99.7% (3483 of 3492) of the values the documents carry.
 - **Line-item cells:** 100.0% (29077 of 29077), over
   250 of 250 documents whose row count was read
   exactly.
 - **Party blocks:** 100.0% (1390 of 1390) of the names and
   addresses the documents print.
-- **Confidence:** 0.0-0.2 at 0.0%, 0.4-0.6 at 50.0%, 0.6-0.8 at 99.8%, 0.8-1.0 at 99.6%.
+- **Totals block:** 100.0% (32 of 32) of the charges the
+  documents carry, declared on the page or inferred from the arithmetic.
+- **Confidence:** 0.4-0.6 at 100.0%, 0.6-0.8 at 100.0%, 0.8-1.0 at 99.7%.
 - **Not covered:** the generator prints these and the extractor has no spec for
   them, so they are never scored as wrong:
   `payment_terms`.
 
-6 of those 20 misses found no candidate at all, rather than reading
-the wrong one (14). A field that found nothing was printed a way none
+0 of those 9 misses found no candidate at all, rather than reading
+the wrong one (9). A field that found nothing was printed a way none
 of its strategies looks; `benchmarks/README.md` says which fields, on which
 profiles and in which families.
 

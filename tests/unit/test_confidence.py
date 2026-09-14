@@ -93,3 +93,14 @@ def test_a_failed_validator_clears_that_signal() -> None:
 def test_a_regex_match_with_no_label_clears_that_signal() -> None:
     scored = score(extraction(label=None), EXPECTED_ZONE, ())
     assert scored.confidence_breakdown["label_exact_match"] == 0.0
+
+
+def test_a_cap_stage_five_asked_for_is_the_most_a_field_is_worth() -> None:
+    """A value the summary contradicts is still the value the block printed (ENGINE_SPEC §5)."""
+    scored = score(extraction(), EXPECTED_ZONE, (), cap=0.5)
+    assert scored.confidence == 0.5
+    assert scored.confidence_breakdown["validator_passed"] > 0.0
+
+
+def test_a_cap_above_what_the_signals_came_to_changes_nothing() -> None:
+    assert score(extraction(zone=Zone(1, 1)), EXPECTED_ZONE, (), cap=1.0).confidence == 0.85
