@@ -15,6 +15,10 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Changed
 
+- **Python floor lowered to 3.10.** `requires-python`, the mypy `python_version` and the
+  ruff `target-version` now declare 3.10, and CI runs a 3.10, 3.11 and 3.12 matrix.
+  `PyMuPDFReader.__enter__` annotates its own class directly instead of `typing.Self`,
+  which does not exist before 3.11 and was the only 3.11-only construct in `src/`.
 - **`FieldSpec.strategy` is now `FieldSpec.strategies`.** One field is printed more than
   one way, and a spec cannot be asked to pick in advance: every strategy it names
   contributes its candidates and the rankers choose between them, which is what the

@@ -8,7 +8,7 @@ version = "0.2.0"
 description = "Evidence-backed extraction of structured data from PDF invoices."
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = ["PyMuPDF>=1.24"]
 
 [project.optional-dependencies]
@@ -34,7 +34,7 @@ invoice_forge = [
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py310"
 src = ["src", "tests"]
 # docs/reference holds material reproduced verbatim as a specification by example.
 # Formatting it would change the specification.
@@ -51,7 +51,7 @@ allowed-confusables = ["Α", "Β", "Ε", "Ζ", "Η", "Ι", "Κ", "Μ", "Ν", "Ο
 [tool.mypy]
 strict = true
 files = ["src", "benchmarks"]
-python_version = "3.11"
+python_version = "3.10"
 
 # PyMuPDF ships no annotations. `follow_imports = "skip"` keeps every value it hands back
 # an `Any` at the boundary, which is what the two PDF modules then convert into this

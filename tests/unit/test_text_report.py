@@ -42,7 +42,14 @@ def field(name: str, value: object) -> FieldResult:
         return FieldResult(name, None, None, None, valid=False)
     label = name.replace("_", " ").title()
     evidence = Evidence(1, BOX, label, Strategy.LABEL_RIGHT, f"{label}: {value}")
-    return FieldResult(name, value, f"{label}: {value}", evidence, valid=True, confidence=1.0)  # type: ignore[arg-type]  # VALUE_TYPES names the type each key holds
+    return FieldResult(
+        name,
+        value,  # type: ignore[arg-type]  # VALUE_TYPES names the type each key holds
+        f"{label}: {value}",
+        evidence,
+        valid=True,
+        confidence=1.0,
+    )
 
 
 def result(findings: tuple[Finding, ...] = ()) -> InvoiceResult:

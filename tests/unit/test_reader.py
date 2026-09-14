@@ -13,7 +13,7 @@ from invoice_extractor.document.reader import BBox, DocumentReader, TextLine, Zo
 def test_textline_is_immutable() -> None:
     text_line = line("Invoice Number: INV-2024-0042", 400, 76)
     with pytest.raises(dataclasses.FrozenInstanceError):
-        text_line.text = "tampered"  # type: ignore[misc]  # the point of the test is that this fails
+        text_line.text = "tampered"  # type: ignore[misc]  # the assignment failing is the test
 
 
 def test_bbox_center_is_the_midpoint_of_both_axes() -> None:

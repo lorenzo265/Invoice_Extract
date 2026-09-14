@@ -23,7 +23,8 @@ def test_cli_returns_one_for_missing_pdf(
 
 def test_cli_returns_one_for_bad_layout_with_message(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["samples/acme_invoice.pdf", "--layout", "no_such_vendor"]) == 1
-    assert capsys.readouterr().err == "layout file not found: layouts/no_such_vendor.json\n"
+    expected = Path("layouts") / "no_such_vendor.json"
+    assert capsys.readouterr().err == f"layout file not found: {expected}\n"
 
 
 def test_cli_requires_a_layout(capsys: pytest.CaptureFixture[str]) -> None:

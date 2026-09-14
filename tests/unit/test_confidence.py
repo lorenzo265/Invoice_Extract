@@ -13,6 +13,7 @@ from invoice_extractor.validation.confidence import SIGNAL_WEIGHTS, score
 
 EXPECTED_ZONE = make_field_layout(zones=(Zone.BOTTOM_RIGHT,))
 BOX = BBox(400.0, 609.25, 472.83, 622.99)
+SUBTOTAL = Decimal("490.00")
 
 
 def extraction(
@@ -20,7 +21,7 @@ def extraction(
     zone: Zone | None = Zone.BOTTOM_RIGHT,
     candidate_count: int = 1,
     valid: bool = True,
-    value: object = Decimal("490.00"),
+    value: object = SUBTOTAL,
 ) -> Extraction:
     evidence = Evidence(1, BOX, label, Strategy.LABEL_RIGHT, "Subtotal: 490.00")
     field = FieldResult(

@@ -10,7 +10,6 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 from types import TracebackType
-from typing import Self
 
 import pymupdf
 
@@ -28,7 +27,7 @@ class PyMuPDFReader:
             raise FileNotFoundError(f"PDF not found: {pdf_path}")
         self._document = pymupdf.open(str(pdf_path))
 
-    def __enter__(self) -> Self:
+    def __enter__(self) -> PyMuPDFReader:
         return self
 
     def __exit__(

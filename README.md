@@ -229,7 +229,7 @@ pass — see [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 `.github/workflows/ci.yml` runs the same `make check` on every push and pull request.
 Nothing merges that hasn't passed it.
 
-**Supported Python:** 3.11 and 3.12 — the two versions CI runs, and the floor
+**Supported Python:** 3.10, 3.11 and 3.12 — the three versions CI runs, and the floor
 `requires-python` declares.
 
 **Running one test:** `pytest tests/unit/test_normalizers.py -k parse_money --no-cov`.
@@ -243,8 +243,8 @@ three arithmetic invariants, explainable confidence, a JSON writer, a text repor
 CLI. v0.2.0 adds `invoice_forge` — a generator of synthetic invoices with exact ground
 truth, twenty-two vendor profiles in sixteen languages, five template families,
 thirty-one difficulty knobs and a 250-document base corpus — and the benchmark that
-measures the extractor against it. All of it is green under `make check` on Python 3.11
-and 3.12. This repository started from a fully specified seed — architecture, ADRs,
+measures the extractor against it. All of it is green under `make check` on Python 3.10,
+3.11 and 3.12. This repository started from a fully specified seed — architecture, ADRs,
 layout format, sample fixtures, CI — implemented afterward one gated pull request at a
 time; [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) is the plan v0.1.0 was
 built to and [docs/FORGE_PLAN.md](docs/FORGE_PLAN.md) the plan v0.2.0 was, and

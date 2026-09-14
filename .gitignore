@@ -13,3 +13,4 @@ out/
 # A corpus is its plan: the plan is committed, the documents are regenerated.
 corpus/*
 !corpus/plan.json
+lint-local.ps1

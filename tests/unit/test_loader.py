@@ -257,7 +257,8 @@ def test_stop_labels_may_be_empty(tmp_path: Path) -> None:
 def test_file_not_found_message_names_resolved_path() -> None:
     with pytest.raises(LayoutError) as raised:
         load_layout("no_such_vendor")
-    assert str(raised.value) == "layout file not found: layouts/no_such_vendor.json"
+    expected = Path("layouts") / "no_such_vendor.json"
+    assert str(raised.value) == f"layout file not found: {expected}"
 
 
 def test_invalid_json_message(tmp_path: Path) -> None:
