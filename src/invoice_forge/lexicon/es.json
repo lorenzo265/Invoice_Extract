@@ -1,0 +1,312 @@
+{
+  "language": "es",
+  "document_titles": {
+    "invoice": [
+      "FACTURA",
+      "Factura"
+    ],
+    "credit_note": [
+      "FACTURA RECTIFICATIVA",
+      "Nota de crédito"
+    ]
+  },
+  "header_labels": {
+    "invoice_number": [
+      "Número de factura",
+      "Factura n.º",
+      "N.º factura"
+    ],
+    "invoice_date": [
+      "Fecha de factura",
+      "Fecha",
+      "Fecha de emisión"
+    ],
+    "due_date": [
+      "Fecha de vencimiento",
+      "Vencimiento",
+      "Pagar antes del"
+    ],
+    "supplier_vat_id": [
+      "NIF",
+      "CIF",
+      "NIF-IVA"
+    ],
+    "customer_vat_id": [
+      "NIF del cliente",
+      "CIF cliente"
+    ],
+    "currency": [
+      "Moneda"
+    ],
+    "supply_date": [
+      "Fecha de operación",
+      "Fecha de entrega"
+    ],
+    "order_number": [
+      "Número de pedido",
+      "N.º pedido",
+      "Pedido"
+    ],
+    "customer_number": [
+      "Número de cliente",
+      "N.º cliente",
+      "Código de cliente"
+    ],
+    "contract_number": [
+      "Número de contrato",
+      "N.º contrato"
+    ],
+    "our_reference": [
+      "Nuestra referencia",
+      "Comercial"
+    ],
+    "your_reference": [
+      "Su referencia",
+      "Su ref."
+    ],
+    "payment_terms": [
+      "Condiciones de pago",
+      "Forma de pago"
+    ],
+    "credit_reference": [
+      "Factura original",
+      "Rectifica a la factura"
+    ]
+  },
+  "totals_labels": {
+    "vat_rate": [
+      "Tipo de IVA",
+      "Tipo",
+      "IVA %"
+    ],
+    "subtotal": [
+      "Base imponible",
+      "Subtotal",
+      "Total sin IVA"
+    ],
+    "vat_amount": [
+      "Cuota de IVA",
+      "Total IVA",
+      "IVA"
+    ],
+    "total_amount": [
+      "Total a pagar",
+      "Total factura",
+      "Importe total"
+    ]
+  },
+  "charge_labels": {
+    "SHIPPING": [
+      "Portes",
+      "Gastos de envío"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Ecotasa",
+      "Canon medioambiental"
+    ],
+    "SURCHARGE": [
+      "Recargo",
+      "Recargo por pedido mínimo"
+    ],
+    "CONSOLIDATION_FEE": [
+      "Gastos de gestión",
+      "Gastos de tramitación"
+    ],
+    "RECYCLING_FEE": [
+      "Tasa de reciclaje",
+      "Aportación RAEE"
+    ],
+    "ROUNDING": [
+      "Redondeo",
+      "Ajuste por redondeo"
+    ]
+  },
+  "column_headers": {
+    "sku": [
+      "Referencia",
+      "Ref.",
+      "Código artículo"
+    ],
+    "description": [
+      "Descripción",
+      "Concepto",
+      "Detalle"
+    ],
+    "quantity": [
+      "Cantidad",
+      "Uds."
+    ],
+    "unit_price": [
+      "Precio unitario",
+      "Precio",
+      "P. unit."
+    ],
+    "net_amount": [
+      "Importe",
+      "Total línea",
+      "Neto"
+    ],
+    "pos": [
+      "Pos.",
+      "Línea",
+      "N.º"
+    ],
+    "unit": [
+      "Unidad",
+      "Ud."
+    ],
+    "discount": [
+      "Descuento",
+      "Dto. %"
+    ],
+    "vat_rate": [
+      "IVA %",
+      "Código IVA"
+    ],
+    "subscription_id": [
+      "N.º suscripción",
+      "ID servicio"
+    ],
+    "billing_cycle": [
+      "Ciclo de facturación",
+      "Periodicidad"
+    ],
+    "period": [
+      "Periodo",
+      "Periodo de servicio"
+    ],
+    "share": [
+      "Cuota %",
+      "Reparto"
+    ],
+    "remaining_term": [
+      "Plazo restante",
+      "Tiempo restante"
+    ]
+  },
+  "vat_summary_headers": {
+    "code": [
+      "Código",
+      "Código IVA"
+    ],
+    "rate": [
+      "Tipo",
+      "Tipo de IVA"
+    ],
+    "base": [
+      "Base",
+      "Base imponible"
+    ],
+    "vat": [
+      "IVA",
+      "Cuota"
+    ]
+  },
+  "party_headings": {
+    "bill_to": [
+      "Facturar a",
+      "Datos de facturación"
+    ],
+    "ship_to": [
+      "Enviar a",
+      "Dirección de entrega"
+    ],
+    "mail_to": [
+      "Dirección postal",
+      "Dirección de correspondencia"
+    ]
+  },
+  "trap_labels": {
+    "order_date": [
+      "Fecha de pedido",
+      "Fecha del pedido"
+    ],
+    "delivery_date": [
+      "Fecha de entrega",
+      "Fecha de envío"
+    ],
+    "print_date": [
+      "Fecha de impresión",
+      "Impreso el"
+    ]
+  },
+  "carry_forward": {
+    "incoming": [
+      "Suma anterior",
+      "Traspaso de la página anterior"
+    ],
+    "outgoing": [
+      "Suma y sigue",
+      "Traspaso a la página siguiente"
+    ]
+  },
+  "exemption_sentences": {
+    "reverse_charge": [
+      "Inversión del sujeto pasivo."
+    ],
+    "intra_community": [
+      "Entrega intracomunitaria exenta de IVA."
+    ],
+    "export": [
+      "Exportación exenta de IVA."
+    ]
+  },
+  "page_numbering": [
+    "Página {page} de {pages}",
+    "Pág. {page}/{pages}"
+  ],
+  "payment_terms": [
+    "Pago a 30 días desde la fecha de factura.",
+    "Neto 14 días.",
+    "2 % de descuento por pago en 10 días."
+  ],
+  "legal_lines": [
+    "Todas nuestras entregas se rigen por nuestras condiciones generales de venta.",
+    "La mercancía es propiedad del vendedor hasta su pago íntegro.",
+    "Los pagos fuera de plazo devengan intereses de demora."
+  ],
+  "copy_stamps": [
+    "COPIA",
+    "DUPLICADO"
+  ],
+  "section_headings": [
+    "Hardware",
+    "Servicios",
+    "Licencias de software",
+    "Repuestos",
+    "Consumibles"
+  ],
+  "address_placeholders": [
+    "igual que la dirección de facturación",
+    "misma dirección de facturación"
+  ],
+  "months": [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre"
+  ],
+  "month_abbreviations": [
+    "ene",
+    "feb",
+    "mar",
+    "abr",
+    "may",
+    "jun",
+    "jul",
+    "ago",
+    "sep",
+    "oct",
+    "nov",
+    "dic"
+  ],
+  "diacritics": "á é í ó ú ñ ü ¿ ¡ — € ² °"
+}

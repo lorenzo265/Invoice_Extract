@@ -27,9 +27,10 @@ HEADER_RULE_ABOVE = 10.0
 HEADER_RULE_BELOW = 4.0
 HEADER_TO_FIRST_ROW = 18.0
 # A heading of several words wraps inside its column; one word cannot, which is why
-# `layout/columns.py` anchors every column wide enough for the longest word in it.
+# `layout/columns.py` anchors every column wide enough for the longest word in it. The
+# same gutter separates two columns' values, which is what a description wraps short of.
 HEADING_LEADING = 9.0
-HEADING_GUTTER = 4.0
+COLUMN_GUTTER = 4.0
 CARRY_RULE_ABOVE = 9.0
 CARRY_HEIGHT = 18.0
 # The five columns the extractor reads. The others are printed but not recorded as cells.
@@ -117,7 +118,7 @@ def _rooms(spec: ItemsSpec) -> tuple[float, ...]:
             edge = anchors[index + 1] if index + 1 < len(anchors) else anchors[index]
         else:
             edge = anchors[index - 1] if index else anchors[index]
-        rooms.append(abs(edge - column.anchor) - HEADING_GUTTER)
+        rooms.append(abs(edge - column.anchor) - COLUMN_GUTTER)
     return tuple(rooms)
 
 

@@ -1,0 +1,129 @@
+{
+  "language": "sk",
+  "qualifiers": [
+    "vrátane montážnej sady",
+    "dodanie do miesta určenia",
+    "podľa výkresu",
+    "v súlade s RoHS",
+    "minimálny odber 10 ks",
+    "nehrdzavejúca oceľ 304"
+  ],
+  "domains": {
+    "industrial": [
+      {
+        "sku": "HX-M8-040",
+        "description": "Skrutka so šesťhrannou hlavou M8 x 40, zinkovaná, DIN 933",
+        "unit": "ks",
+        "price": "0.12"
+      },
+      {
+        "sku": "BRG-6204",
+        "description": "Guľkové ložisko 6204-2RS, obojstranne tesnené",
+        "unit": "ks",
+        "price": "3.85"
+      },
+      {
+        "sku": "BRK-ST-3",
+        "description": "Oceľový držiak 3 mm, 60 x 60 x 40, bez úpravy",
+        "unit": "ks",
+        "price": "2.30"
+      },
+      {
+        "sku": "PLT-AL-2",
+        "description": "Hliníkový plech 2 mm, 1000 x 500, EN AW-5754",
+        "unit": "ks",
+        "price": "31.20"
+      },
+      {
+        "sku": "HSE-12-2",
+        "description": "Hydraulická hadica 12 mm, 2 m, lisované koncovky",
+        "unit": "ks",
+        "price": "38.0450"
+      }
+    ],
+    "electronics": [
+      {
+        "sku": "CBL-H07-25",
+        "description": "Kábel H07V-K 2,5 mm², čierny, cievka 100 m",
+        "unit": "cievka",
+        "price": "48.90"
+      },
+      {
+        "sku": "ENC-IP65",
+        "description": "Rozvádzačová skriňa IP65, 300 x 200 x 120",
+        "unit": "ks",
+        "price": "45.50"
+      },
+      {
+        "sku": "REL-24V",
+        "description": "Väzobné relé 24 V DC, 1 prepínací kontakt",
+        "unit": "ks",
+        "price": "7.95"
+      },
+      {
+        "sku": "SNS-T-PT1",
+        "description": "Teplotný snímač PT100, 3-vodičový, -50 až +200 °C",
+        "unit": "ks",
+        "price": "22.75"
+      },
+      {
+        "sku": "FLT-P-200",
+        "description": "Filtračná vložka P-200, celulóza, 10 µm",
+        "unit": "ks",
+        "price": "17.40"
+      }
+    ],
+    "software": [
+      {
+        "sku": "SW-LIC-PRO",
+        "description": "Licencia ProSuite, 1 pracovisko, 12 mesiacov",
+        "unit": "licencia",
+        "price": "349.00"
+      },
+      {
+        "sku": "SW-CLD-50",
+        "description": "Cloudové úložisko 50 GB, účtované mesačne",
+        "unit": "mesiac",
+        "price": "12.5000"
+      },
+      {
+        "sku": "SW-SUP-GLD",
+        "description": "Servisná zmluva Gold, reakcia do 4 hodín",
+        "unit": "rok",
+        "price": "1290.00"
+      },
+      {
+        "sku": "SW-API-10K",
+        "description": "Balík API, 10 000 volaní mesačne",
+        "unit": "balík",
+        "price": "89.00"
+      }
+    ],
+    "services": [
+      {
+        "sku": "SRV-INST-H",
+        "description": "Inštalácia na mieste, za hodinu",
+        "unit": "hod.",
+        "price": "95.00"
+      },
+      {
+        "sku": "SRV-TRN-D",
+        "description": "Základné školenie, 1 deň, až 8 účastníkov",
+        "unit": "deň",
+        "price": "780.00"
+      },
+      {
+        "sku": "SRV-WRT-Q",
+        "description": "Údržba, štvrťročný paušál, zariadenie typu B",
+        "unit": "paušál",
+        "price": "245.50"
+      },
+      {
+        "sku": "SRV-ANA-H",
+        "description": "Analýza a dokumentácia, za hodinu",
+        "unit": "hod.",
+        "price": "115.0000"
+      }
+    ]
+  }
+}

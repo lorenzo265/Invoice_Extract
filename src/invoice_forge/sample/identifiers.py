@@ -12,26 +12,54 @@ from string import ascii_uppercase, digits
 
 from invoice_forge.sample.patterns import fill
 
-# The national part of an IBAN, in the pattern language of `patterns.fill`.
+# The national part of an IBAN, in the pattern language of `patterns.fill`. Each one is
+# the length the country's IBAN really is, so the checksum a reader computes agrees.
 IBAN_BODIES = {
+    "AT": r"\d{16}",
+    "BE": r"\d{12}",
+    "CH": r"\d{5}[0-9A-Z]{12}",
+    "CZ": r"\d{20}",
     "DE": r"\d{18}",
-    "GB": r"[A-Z]{4}\d{14}",
+    "DK": r"\d{14}",
+    "ES": r"\d{20}",
+    "FI": r"\d{14}",
     "FR": r"\d{10}[0-9A-Z]{11}\d{2}",
+    "GB": r"[A-Z]{4}\d{14}",
+    "GR": r"\d{7}[0-9A-Z]{16}",
+    "IE": r"[A-Z]{4}\d{14}",
+    "IT": r"[A-Z]\d{10}[0-9A-Z]{12}",
+    "LU": r"\d{16}",
+    "NL": r"[A-Z]{4}\d{10}",
+    "NO": r"\d{11}",
+    "PL": r"\d{24}",
+    "PT": r"\d{21}",
     "SE": r"\d{20}",
+    "SK": r"\d{20}",
+    "TR": r"\d{5}[0-9A-Z]{17}",
 }
-DEFAULT_IBAN_BODY = r"\d{16}"
 IBAN_GROUP = 4
 IBAN_MODULUS = 97
 IBAN_REMAINDER = 1
 LETTER_OFFSET = 10
 
 INVOICE_PREFIXES = {
+    "cs": ("FA", "FV"),
+    "da": ("FA", "FAK"),
     "de": ("RE", "RG"),
+    "el": ("TIM", "TP"),
     "en": ("INV", "SI"),
+    "es": ("FAC", "FRA"),
+    "fi": ("LA", "LSK"),
     "fr": ("FA", "FAC"),
+    "it": ("FT", "FTV"),
+    "nl": ("FC", "FAC"),
+    "no": ("FA", "FAK"),
+    "pl": ("FV", "FA"),
+    "pt": ("FT", "FAT"),
+    "sk": ("FA", "FV"),
     "sv": ("FAK", "F"),
+    "tr": ("FTR", "FAT"),
 }
-DEFAULT_INVOICE_PREFIXES = ("INV",)
 SERIAL_DIGITS = 6
 
 BIC_BRANCH_LENGTH = 3
@@ -47,7 +75,9 @@ def vat_id(pattern: str, rng: Random) -> str:
 
 def iban(country: str, rng: Random) -> str:
     """A well-formed IBAN with a valid checksum and a bank code that belongs to nobody."""
-    body = fill(IBAN_BODIES.get(country, DEFAULT_IBAN_BODY), rng)
+    if country not in IBAN_BODIES:
+        raise ValueError(f"no IBAN shape for {country}; add it to identifiers.IBAN_BODIES")
+    body = fill(IBAN_BODIES[country], rng)
     check = _check_digits(country, body)
     return _grouped(f"{country}{check}{body}")
 
@@ -68,7 +98,9 @@ def bic(country: str, rng: Random) -> str:
 
 
 def invoice_number(language: str, year: int, rng: Random) -> str:
-    prefix = rng.choice(INVOICE_PREFIXES.get(language, DEFAULT_INVOICE_PREFIXES))
+    if language not in INVOICE_PREFIXES:
+        raise ValueError(f"no invoice prefix for {language}; add it to INVOICE_PREFIXES")
+    prefix = rng.choice(INVOICE_PREFIXES[language])
     serial = rng.randrange(10**SERIAL_DIGITS)
     return f"{prefix}-{year}-{serial:0{SERIAL_DIGITS}d}"
 

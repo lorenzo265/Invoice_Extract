@@ -1,0 +1,42 @@
+{
+  "id": "fr-BE",
+  "country": "BE",
+  "language": "fr",
+  "currency": "EUR",
+  "secondary_currency": null,
+  "decimal_separator": ",",
+  "thousands_separators": [
+    ".",
+    " "
+  ],
+  "date_formats": [
+    "dd/mm/yyyy"
+  ],
+  "vat_rates": {
+    "standard": "21",
+    "reduced": "6",
+    "zero": "0"
+  },
+  "vat_id_pattern": "BE0\\d{9}",
+  "address_format": {
+    "postal_code_position": "before_city",
+    "country_line": true
+  },
+  "lexicon": "fr",
+  "charges_used": [
+    "SHIPPING",
+    "RECYCLING_FEE"
+  ],
+  "prints_supply_date": true,
+  "credit_note_style": "negative_amounts",
+  "extensions": [
+    "your_reference"
+  ],
+  "families": [
+    "classic",
+    "tabular",
+    "stacked",
+    "minimal"
+  ],
+  "fonts": "serif"
+}

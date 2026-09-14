@@ -88,10 +88,9 @@ def _extra_lines(sheet: Sheet, context: RenderContext) -> tuple[tuple[str, Mark]
     if exemption is not None:
         broken = sheet.wrapped(exemption, width, spec.size)
         lines += [(line, noise("exemption")) for line in broken]
-    if spec.amount_in_words:
-        spelled = spell_amount(
-            context.document.totals.total_amount, context.lexicon.amount_in_words
-        )
+    words = context.lexicon.amount_in_words
+    if spec.amount_in_words and words is not None:
+        spelled = spell_amount(context.document.totals.total_amount, words)
         broken = sheet.wrapped(spelled, width, spec.size)
         lines += [(line, noise("amount_in_words")) for line in broken]
     return tuple(lines)

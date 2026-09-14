@@ -1,7 +1,7 @@
 """Spelling a total out in words, the way an invoice that prints one does.
 
 The words are the lexicon's; only the joining is here, and a language declares which of
-four rules it joins by. A language whose rule is none of these is a lexicon that names a
+five rules it joins by. A language whose rule is none of these is a lexicon that names a
 new style and an entry in each table below — never a test on the language code.
 
 | Style | Twenty-one | Twelve hundred | What joins the groups |
@@ -10,14 +10,21 @@ new style and an entry in each table below — never a test on the language code
 | `germanic_compound` | `einundzwanzig` | `eintausendzweihundert` | nothing: it is one word |
 | `nordic_compound` | `tjugoett` | `ett tusen tvåhundra` | a space between scale groups |
 | `romance` | `vingt et un` | `mille deux cents` | a space |
+| `spaced` | `yirmi dört` | `bin iki yüz` | a space, and nothing is ever glued |
 
 `romance` carries the three irregularities French spells numbers with: the seventies and
 the nineties count in teens (`soixante et onze`, `quatre-vingt-douze`), `et` joins
-twenty-one but not eighty-one, and `cent` and `vingt` take a plural only when the number
-ends there — `deux cents` and `quatre-vingts`, but `deux cent mille`. That last rule is
-why every function here is told whether it is spelling the end of the number.
+twenty-one but not eighty-one, and `vingt` takes a plural only when the number ends there
+— `quatre-vingts`, but `quatre-vingt mille`. That last rule is why every function here is
+told whether it is spelling the end of the number.
 
-A million is a noun rather than a scale word in all four — `eine Million`, `deux
+A scale word after a count greater than one is the lexicon's `scale_many`: French writes
+`deux cents` where it counts `cent`, Finnish `kaksisataa` where it counts `sata`. A
+language that inflects nothing lists the same two words twice. `romance` is the one style
+where the plural also waits for the end of the number, which is what tells `deux cents`
+from `deux cent mille`.
+
+A million is a noun rather than a scale word in all five — `eine Million`, `deux
 millions` — so the lexicon spells it whole and no style has an opinion about it.
 
 Amounts are spelled unsigned. A credit note prints its sign in the figures above this
@@ -49,6 +56,7 @@ ENGLISH = "english"
 GERMANIC = "germanic_compound"
 NORDIC = "nordic_compound"
 ROMANCE = "romance"
+SPACED = "spaced"
 
 Head = Callable[[int, int, bool, AmountInWords], str]
 Join = Callable[[str, str, int], str]
@@ -102,29 +110,39 @@ def _currency(forms: tuple[str, str], count: int) -> str:
 
 def _english_head(count: int, index: int, final: bool, words: AmountInWords) -> str:
     spelled = words.scale_one if count == 1 else spell_number(count, words, final=False)
-    return f"{spelled} {words.scales[index]}"
+    return f"{spelled} {_scale(count, index, words)}"
 
 
 def _germanic_head(count: int, index: int, final: bool, words: AmountInWords) -> str:
     spelled = words.scale_one if count == 1 else spell_number(count, words, final=False)
-    return f"{spelled}{words.scales[index]}"
+    return f"{spelled}{_scale(count, index, words)}"
 
 
 def _nordic_head(count: int, index: int, final: bool, words: AmountInWords) -> str:
     """One takes a space — `etthundra` compounds, `etttusen` would not be a word."""
     if count == 1:
         return f"{words.scale_one} {words.scales[index]}"
-    return f"{spell_number(count, words, final=False)}{words.scales[index]}"
+    return f"{spell_number(count, words, final=False)}{_scale(count, index, words)}"
 
 
 def _romance_head(count: int, index: int, final: bool, words: AmountInWords) -> str:
-    """`cent` and `mille` stand alone at one, and `cent` takes an s where the number ends."""
-    scale = words.scales[index]
+    """`cent` and `mille` stand alone at one, and take their plural where the number ends."""
+    scale = words.scales[index] if count == 1 or not final else words.scale_many[index]
     if count == 1:
         return scale
-    if index == HUNDRED_SCALE and final:
-        scale = f"{scale}s"
     return f"{spell_number(count, words, final=False)} {scale}"
+
+
+def _spaced_head(count: int, index: int, final: bool, words: AmountInWords) -> str:
+    """Nothing is glued, and one is not counted: `bin`, `iki bin`, `yüz`, `iki yüz`."""
+    if count == 1:
+        return words.scales[index]
+    return f"{spell_number(count, words, final=False)} {_scale(count, index, words)}"
+
+
+def _scale(count: int, index: int, words: AmountInWords) -> str:
+    """The scale word, in the form a count greater than one puts it in."""
+    return words.scales[index] if count == 1 else words.scale_many[index]
 
 
 def _english_join(head: str, rest: str, value: int) -> str:
@@ -138,6 +156,15 @@ def _compound_join(head: str, rest: str, value: int) -> str:
 
 def _spaced_join(head: str, rest: str, value: int) -> str:
     return f"{head} {rest}"
+
+
+def _spaced_small(value: int, final: bool, words: AmountInWords) -> str:
+    """The ten and the unit as two words: `yirmi dört`, `dvacet čtyři`."""
+    if value < NAMED:
+        return words.units[value]
+    ten, unit = divmod(value, TEN)
+    base = words.tens[ten - TENS_BASE]
+    return base if not unit else f"{base} {words.units[unit]}"
 
 
 def _english_small(value: int, final: bool, words: AmountInWords) -> str:
@@ -198,6 +225,7 @@ _HEADS: Mapping[str, Head] = {
     GERMANIC: _germanic_head,
     NORDIC: _nordic_head,
     ROMANCE: _romance_head,
+    SPACED: _spaced_head,
 }
 
 _JOINS: Mapping[str, Join] = {
@@ -205,6 +233,7 @@ _JOINS: Mapping[str, Join] = {
     GERMANIC: _compound_join,
     NORDIC: _spaced_join,
     ROMANCE: _spaced_join,
+    SPACED: _spaced_join,
 }
 
 _SMALL: Mapping[str, Small] = {
@@ -212,4 +241,5 @@ _SMALL: Mapping[str, Small] = {
     GERMANIC: _germanic_small,
     NORDIC: _nordic_small,
     ROMANCE: _romance_small,
+    SPACED: _spaced_small,
 }

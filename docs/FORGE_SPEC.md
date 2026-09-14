@@ -63,7 +63,9 @@ draw from), `date_formats` (list), `vat_rates` (`standard`, `reduced`, `zero`),
 fields such as contract number), `families` (which template families apply), `fonts`
 (`sans` | `serif`). Initial profiles, in build order: `en-GB`, `de-DE`, `fr-FR`, `sv-SE`;
 then `en-IE`, `de-AT`, `de-CH`, `fr-BE`, `fr-LU`, `nl-NL`, `nl-BE`, `da-DK`, `no-NO`,
-`fi-FI`, `es-ES`, `pt-PT`, `it-IT`, `pl-PL`, `cs-CZ`, `sk-SK`, `el-GR`, `tr-TR`.
+`fi-FI`, `es-ES`, `pt-PT`, `it-IT`, `pl-PL`, `cs-CZ`, `sk-SK`, `el-GR`, `tr-TR`. All
+twenty-two are bundled, and nothing falls back: a profile whose language or country the
+word tables do not cover is refused by name rather than printed in English.
 
 ### 3.2 Lexicon (data)
 
@@ -73,6 +75,16 @@ component labels, the document-type titles (invoice, credit note), the trap labe
 (order date, delivery date, print date), the carry-forward wording, the exemption
 sentences, and the amount-in-words rules. English is always present as a fallback
 synonym set, because bilingual invoices are common.
+
+The amount-in-words rules are the one optional block. A lexicon declares them by naming
+one of five joining styles — `english`, `germanic_compound`, `nordic_compound`,
+`romance`, `spaced` — and the words each style joins. A language none of the five
+spells writes no total in words at all: Finnish declines its numerals, Italian and
+Spanish elide theirs, the Slavic languages inflect after the count, and a lexicon that
+named a style anyway would print a total no native reader would accept. So
+`amount_in_words` may be absent, and the `amount_in_words` knob prints nothing on a
+document whose language has no rules for it. Eight of the sixteen bundled lexicons
+spell: `en`, `de`, `nl`, `da`, `no`, `sv`, `fr`, `tr`.
 
 ### 3.3 `TemplateFamily` (code, declarative)
 

@@ -11,8 +11,11 @@ are not the other value of the standard set's axis.
 
 Every anchor here leaves room for the **widest single word** any bundled lexicon heads
 that column with, in either face — `Artikelbezeichnung`, `Faktureringsintervall` — because
-a heading of several words wraps and one word cannot. `tests/forge/unit/test_columns.py`
-measures it rather than trusting the numbers, in every language the corpus speaks.
+a heading of several words wraps and one word cannot. A description stops one gutter short
+of the widest value its neighbour prints, rather than short of the neighbour's anchor: the
+quantity beside it is set flush right, so it reaches back across the gap the anchor leaves.
+`tests/forge/unit/test_columns.py` measures both rather than trusting the numbers, in every
+language the corpus speaks.
 """
 
 from __future__ import annotations
@@ -38,12 +41,12 @@ CLASSIC = ColumnSet(
         Column("pos", 50.0, LEFT),
         Column("sku", 88.0, LEFT),
         Column("description", 152.0, LEFT),
-        Column("quantity", 398.0, RIGHT),
-        Column("unit_price", 448.0, RIGHT),
-        Column("vat_rate", 494.0, RIGHT),
+        Column("quantity", 389.0, RIGHT),
+        Column("unit_price", 446.0, RIGHT),
+        Column("vat_rate", 492.0, RIGHT),
         Column("net_amount", 545.0, RIGHT),
     ),
-    description_width=200.0,
+    description_width=217.0,
 )
 
 CLASSIC_DISCOUNT = ColumnSet(
@@ -51,13 +54,13 @@ CLASSIC_DISCOUNT = ColumnSet(
         Column("pos", 50.0, LEFT),
         Column("sku", 88.0, LEFT),
         Column("description", 152.0, LEFT),
-        Column("quantity", 358.0, RIGHT),
-        Column("unit_price", 408.0, RIGHT),
-        Column("discount", 448.0, RIGHT),
-        Column("vat_rate", 494.0, RIGHT),
+        Column("quantity", 344.0, RIGHT),
+        Column("unit_price", 401.0, RIGHT),
+        Column("discount", 446.0, RIGHT),
+        Column("vat_rate", 492.0, RIGHT),
         Column("net_amount", 545.0, RIGHT),
     ),
-    description_width=162.0,
+    description_width=172.0,
 )
 
 # No position and no part number, and the unit of measure in their place: the table that
@@ -65,24 +68,24 @@ CLASSIC_DISCOUNT = ColumnSet(
 COMPACT = ColumnSet(
     columns=(
         Column("description", 50.0, LEFT),
-        Column("quantity", 344.0, RIGHT),
-        Column("unit", 350.0, LEFT),
-        Column("unit_price", 470.0, RIGHT),
+        Column("quantity", 352.0, RIGHT),
+        Column("unit", 360.0, LEFT),
+        Column("unit_price", 492.0, RIGHT),
         Column("net_amount", 545.0, RIGHT),
     ),
-    description_width=250.0,
+    description_width=282.0,
 )
 
 COMPACT_DISCOUNT = ColumnSet(
     columns=(
         Column("description", 50.0, LEFT),
-        Column("quantity", 324.0, RIGHT),
-        Column("unit", 330.0, LEFT),
-        Column("unit_price", 453.0, RIGHT),
-        Column("discount", 493.0, RIGHT),
+        Column("quantity", 332.0, RIGHT),
+        Column("unit", 340.0, LEFT),
+        Column("unit_price", 447.0, RIGHT),
+        Column("discount", 492.0, RIGHT),
         Column("net_amount", 545.0, RIGHT),
     ),
-    description_width=230.0,
+    description_width=262.0,
 )
 
 # A subscription line bills a period, not a piece, so the columns say which subscription,
@@ -90,16 +93,16 @@ COMPACT_DISCOUNT = ColumnSet(
 SAAS = ColumnSet(
     columns=(
         Column("subscription_id", 50.0, LEFT),
-        Column("description", 110.0, LEFT),
-        Column("period", 192.0, LEFT),
-        Column("billing_cycle", 260.0, LEFT),
-        Column("share", 372.0, RIGHT),
-        Column("remaining_term", 421.0, RIGHT),
-        Column("quantity", 457.0, RIGHT),
+        Column("description", 106.0, LEFT),
+        Column("period", 196.0, LEFT),
+        Column("billing_cycle", 258.0, LEFT),
+        Column("share", 364.0, RIGHT),
+        Column("remaining_term", 408.0, RIGHT),
+        Column("quantity", 452.0, RIGHT),
         Column("unit_price", 500.0, RIGHT),
         Column("net_amount", 545.0, RIGHT),
     ),
-    description_width=78.0,
+    description_width=84.0,
 )
 
 # Keyed by the two knobs that choose between them: `(column_set, discount)`.

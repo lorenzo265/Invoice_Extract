@@ -10,6 +10,7 @@ import pytest
 from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
 from invoice_forge.sample.identifiers import (
     IBAN_BODIES,
+    INVOICE_PREFIXES,
     bic,
     iban,
     invoice_number,
@@ -18,14 +19,19 @@ from invoice_forge.sample.identifiers import (
     vat_id,
 )
 
-COUNTRIES = (*IBAN_BODIES, "XX")
 IBAN_LENGTHS = {"DE": 22, "GB": 22, "FR": 27, "SE": 24}
 
 
-@pytest.mark.parametrize("country", COUNTRIES)
+@pytest.mark.parametrize("country", sorted(IBAN_BODIES))
 def test_every_generated_iban_passes_the_mod_97_check(country: str) -> None:
     for seed in range(25):
         assert is_valid_iban(iban(country, Random(seed))), country
+
+
+def test_a_country_with_no_iban_shape_is_refused_by_name() -> None:
+    """An IBAN of invented length is one no bank would take; refusing says which is missing."""
+    with pytest.raises(ValueError, match="no IBAN shape for XX"):
+        iban("XX", Random(0))
 
 
 @pytest.mark.parametrize(("country", "length"), sorted(IBAN_LENGTHS.items()))
@@ -62,9 +68,23 @@ def test_a_bic_is_eleven_characters_naming_its_country() -> None:
     assert printed[4:6] == "SE"
 
 
-@pytest.mark.parametrize("language", ["de", "en", "fr", "sv", "xx"])
+@pytest.mark.parametrize("language", sorted(INVOICE_PREFIXES))
 def test_an_invoice_number_carries_its_year(language: str) -> None:
     assert "-2024-" in invoice_number(language, 2024, Random(6))
+
+
+def test_a_language_with_no_invoice_prefix_is_refused_by_name() -> None:
+    with pytest.raises(ValueError, match="no invoice prefix for xx"):
+        invoice_number("xx", 2024, Random(6))
+
+
+def test_every_country_a_bundled_profile_banks_in_has_an_iban_shape() -> None:
+    assert {load_profile(name).country for name in bundled_profile_ids()} <= set(IBAN_BODIES)
+
+
+def test_every_language_a_bundled_profile_speaks_has_an_invoice_prefix() -> None:
+    spoken = {load_profile(name).language for name in bundled_profile_ids()}
+    assert spoken == set(INVOICE_PREFIXES)
 
 
 def test_a_reference_number_is_a_prefix_and_digits() -> None:

@@ -348,6 +348,10 @@
       "cent",
       "mille"
     ],
+    "scale_many": [
+      "cents",
+      "mille"
+    ],
     "million": [
       "un million",
       "millions"

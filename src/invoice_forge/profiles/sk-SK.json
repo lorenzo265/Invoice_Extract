@@ -1,0 +1,39 @@
+{
+  "id": "sk-SK",
+  "country": "SK",
+  "language": "sk",
+  "currency": "EUR",
+  "secondary_currency": null,
+  "decimal_separator": ",",
+  "thousands_separators": [
+    " ",
+    ""
+  ],
+  "date_formats": [
+    "dd.mm.yyyy"
+  ],
+  "vat_rates": {
+    "standard": "23",
+    "reduced": "19",
+    "zero": "0"
+  },
+  "vat_id_pattern": "SK\\d{10}",
+  "address_format": {
+    "postal_code_position": "before_city",
+    "country_line": true
+  },
+  "lexicon": "sk",
+  "charges_used": [
+    "SHIPPING"
+  ],
+  "prints_supply_date": true,
+  "credit_note_style": "negative_amounts",
+  "extensions": [
+    "contract_number"
+  ],
+  "families": [
+    "classic",
+    "minimal"
+  ],
+  "fonts": "sans"
+}

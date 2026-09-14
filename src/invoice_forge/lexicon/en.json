@@ -352,6 +352,10 @@
       "hundred",
       "thousand"
     ],
+    "scale_many": [
+      "hundred",
+      "thousand"
+    ],
     "million": [
       "one million",
       "million"

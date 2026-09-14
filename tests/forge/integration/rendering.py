@@ -16,8 +16,9 @@ from tempfile import TemporaryDirectory
 from typing import Any
 
 import pytest
-from make_forge_goldens import GOLDEN_SEED, golden_pairs
+from make_forge_goldens import GOLDEN_SEED
 
+from invoice_forge.corpus.plan import every_pair
 from invoice_forge.families import Family
 from invoice_forge.produce import DocumentSpec, produce
 from invoice_forge.profiles.loader import bundled_profile_ids
@@ -26,7 +27,7 @@ from invoice_forge.profiles.loader import bundled_profile_ids
 for_each_profile = pytest.mark.parametrize("profile_id", bundled_profile_ids())
 # And the golden images run once per profile and family the profile declares.
 for_each_pair = pytest.mark.parametrize(
-    ("profile_id", "family"), golden_pairs(), ids=[f"{p}-{f.value}" for p, f in golden_pairs()]
+    ("profile_id", "family"), every_pair(), ids=[f"{p}-{f.value}" for p, f in every_pair()]
 )
 
 

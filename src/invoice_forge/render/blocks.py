@@ -11,6 +11,8 @@ know how tall all of this is before a single row is placed. A test holds them to
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from invoice_forge.layout.spec import CustomerVat, PartiesSpec, Weight
 from invoice_forge.model import Document, Party
 from invoice_forge.render import text as fmt
@@ -19,6 +21,8 @@ from invoice_forge.render.placement import Mark, field, noise, party_part
 from invoice_forge.render.sheet import Sheet
 
 NAME_TO_LINES_GAP = 4.0
+# What one party block leaves between its widest line and the block beside it.
+PARTY_GUTTER = 10.0
 FOOTER_RULE_GAP = 12.0
 # Bank and IBAN, account holder, payment terms.
 PAYMENT_LINES = 3
@@ -34,7 +38,7 @@ def draw_parties(sheet: Sheet, context: RenderContext, y: float) -> float:
         return y
     top = y + spec.gap_above
     bottoms = [
-        _draw_party(sheet, context, spec, party, kind, spec.columns[index], top)
+        _draw_party(sheet, context, spec, party, kind, index, top)
         for index, (kind, party) in enumerate(_party_columns(context.document))
         if index < len(spec.columns)
     ]
@@ -131,18 +135,53 @@ def _draw_party(
     spec: PartiesSpec,
     party: Party,
     kind: str,
-    x: float,
+    index: int,
     y: float,
 ) -> float:
+    """One block, every line of it wrapped to the room the block beside it leaves.
+
+    Three blocks across an A4 page leave each about a third of it, and plenty of company
+    names are wider than that — so a name that does not fit is set over two lines, and
+    the truth carries a box per line, the way a wrapped description does.
+    """
+    x = spec.columns[index]
+    room = _party_room(spec, index, context.family.page.right)
     sheet.draw(x, y, context.wording.parties[kind], spec.heading_size, Weight.BOLD)
     top = y + spec.leading + NAME_TO_LINES_GAP
-    sheet.draw(x, top, party.name, spec.line_size, Weight.BOLD, party_part(kind, "name"))
+    name = _Entry(spec, room, Weight.BOLD, party_part(kind, "name"))
+    baseline = _draw_wrapped(sheet, x, top, party.name, name)
     lines = party.lines if party.placeholder is None else (party.placeholder,)
-    for index, line in enumerate(lines):
-        baseline = top + spec.leading * (index + 1)
-        mark = party_part(kind, "line") if party.placeholder is None else None
-        sheet.draw(x, baseline, line, spec.line_size, Weight.REGULAR, mark)
-    return top + spec.leading * (len(lines) + 1)
+    address = _Entry(
+        spec, room, Weight.REGULAR, party_part(kind, "line") if party.placeholder is None else None
+    )
+    for line in lines:
+        baseline = _draw_wrapped(sheet, x, baseline, line, address)
+    return baseline
+
+
+def _party_room(spec: PartiesSpec, index: int, right: float) -> float:
+    """How wide a block may set: up to the block beside it, or to the right margin."""
+    beside = spec.columns[index + 1] if index + 1 < len(spec.columns) else right
+    return beside - spec.columns[index] - PARTY_GUTTER
+
+
+@dataclass(frozen=True, slots=True)
+class _Entry:
+    """How one entry of a party block is set: its room, its face, and what it records."""
+
+    spec: PartiesSpec
+    room: float
+    weight: Weight
+    mark: Mark | None
+
+
+def _draw_wrapped(sheet: Sheet, x: float, y: float, text: str, entry: _Entry) -> float:
+    """Draw one entry of a block over as many lines as it takes, and return the next baseline."""
+    size = entry.spec.line_size
+    for line in sheet.wrapped(text, entry.room, size, entry.weight):
+        sheet.draw(x, y, line, size, entry.weight, entry.mark)
+        y += entry.spec.leading
+    return y
 
 
 def _draw_customer_vat(sheet: Sheet, context: RenderContext, spec: PartiesSpec, y: float) -> float:

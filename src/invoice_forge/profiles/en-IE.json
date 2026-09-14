@@ -1,0 +1,44 @@
+{
+  "id": "en-IE",
+  "country": "IE",
+  "language": "en",
+  "currency": "EUR",
+  "secondary_currency": null,
+  "decimal_separator": ".",
+  "thousands_separators": [
+    ",",
+    ""
+  ],
+  "date_formats": [
+    "dd/mm/yyyy",
+    "d Month yyyy"
+  ],
+  "vat_rates": {
+    "standard": "23",
+    "reduced": "13.5",
+    "zero": "0"
+  },
+  "vat_id_pattern": "IE\\d{7}[A-Z]{2}",
+  "address_format": {
+    "postal_code_position": "after_city",
+    "country_line": true
+  },
+  "lexicon": "en",
+  "charges_used": [
+    "SHIPPING",
+    "SURCHARGE"
+  ],
+  "prints_supply_date": false,
+  "credit_note_style": "credit_wording",
+  "extensions": [
+    "your_reference"
+  ],
+  "families": [
+    "classic",
+    "tabular",
+    "stacked",
+    "saas",
+    "minimal"
+  ],
+  "fonts": "sans"
+}

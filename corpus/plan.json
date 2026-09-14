@@ -1,0 +1,2223 @@
+{
+  "schema": "forge-plan/1",
+  "cells": [
+    {
+      "profile": "cs-CZ",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "minimal",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "da-DK",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "da-DK",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "da-DK",
+      "family": "minimal",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "de-AT",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "de-AT",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "de-AT",
+      "family": "stacked",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "de-AT",
+      "family": "minimal",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "de-CH",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "de-CH",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "de-CH",
+      "family": "minimal",
+      "seed": 1003,
+      "knobs": []
+    },
+    {
+      "profile": "de-DE",
+      "family": "classic",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "de-DE",
+      "family": "tabular",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "de-DE",
+      "family": "stacked",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "de-DE",
+      "family": "saas",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "de-DE",
+      "family": "minimal",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "el-GR",
+      "family": "classic",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "el-GR",
+      "family": "tabular",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "el-GR",
+      "family": "minimal",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "en-GB",
+      "family": "classic",
+      "seed": 1037,
+      "knobs": []
+    },
+    {
+      "profile": "en-GB",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": []
+    },
+    {
+      "profile": "en-GB",
+      "family": "stacked",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "en-GB",
+      "family": "saas",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "en-GB",
+      "family": "minimal",
+      "seed": 1004,
+      "knobs": []
+    },
+    {
+      "profile": "en-IE",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "en-IE",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "en-IE",
+      "family": "stacked",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "en-IE",
+      "family": "saas",
+      "seed": 1004,
+      "knobs": []
+    },
+    {
+      "profile": "en-IE",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "es-ES",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "es-ES",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "es-ES",
+      "family": "stacked",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "es-ES",
+      "family": "saas",
+      "seed": 1006,
+      "knobs": []
+    },
+    {
+      "profile": "es-ES",
+      "family": "minimal",
+      "seed": 1004,
+      "knobs": []
+    },
+    {
+      "profile": "fi-FI",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": []
+    },
+    {
+      "profile": "fi-FI",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": []
+    },
+    {
+      "profile": "fi-FI",
+      "family": "minimal",
+      "seed": 1004,
+      "knobs": []
+    },
+    {
+      "profile": "fr-BE",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": []
+    },
+    {
+      "profile": "fr-BE",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": []
+    },
+    {
+      "profile": "fr-BE",
+      "family": "stacked",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "fr-BE",
+      "family": "minimal",
+      "seed": 1005,
+      "knobs": []
+    },
+    {
+      "profile": "fr-FR",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "fr-FR",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "fr-FR",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "fr-FR",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "fr-LU",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "fr-LU",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "it-IT",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "it-IT",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "it-IT",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "it-IT",
+      "family": "saas",
+      "seed": 1004,
+      "knobs": []
+    },
+    {
+      "profile": "it-IT",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "nl-BE",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "nl-BE",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "nl-BE",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "nl-NL",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "nl-NL",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "nl-NL",
+      "family": "stacked",
+      "seed": 1002,
+      "knobs": []
+    },
+    {
+      "profile": "nl-NL",
+      "family": "saas",
+      "seed": 1009,
+      "knobs": []
+    },
+    {
+      "profile": "nl-NL",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "no-NO",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "no-NO",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "no-NO",
+      "family": "stacked",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "no-NO",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "pl-PL",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "pl-PL",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "pl-PL",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "pl-PL",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "pt-PT",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "pt-PT",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "pt-PT",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "sk-SK",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "sk-SK",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "sv-SE",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "sv-SE",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "sv-SE",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": []
+    },
+    {
+      "profile": "tr-TR",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "tr-TR",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "tr-TR",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": []
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "tabular",
+      "seed": 1008,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "minimal",
+      "seed": 1008,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "da-DK",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "da-DK",
+      "family": "tabular",
+      "seed": 1013,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "da-DK",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "tabular",
+      "seed": 1013,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "stacked",
+      "seed": 1021,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "saas",
+      "seed": 1002,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "el-GR",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "el-GR",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "el-GR",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "saas",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "minimal",
+      "seed": 1007,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "saas",
+      "seed": 1008,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "stacked",
+      "seed": 1003,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "saas",
+      "seed": 1001,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "fi-FI",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "fi-FI",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "fi-FI",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "stacked",
+      "seed": 1002,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "tabular",
+      "seed": 1007,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "stacked",
+      "seed": 1002,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "fr-LU",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "fr-LU",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "tabular",
+      "seed": 1004,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "stacked",
+      "seed": 1002,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "saas",
+      "seed": 1015,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "nl-BE",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "nl-BE",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "nl-BE",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "saas",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "no-NO",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "no-NO",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "no-NO",
+      "family": "stacked",
+      "seed": 1004,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "no-NO",
+      "family": "minimal",
+      "seed": 1005,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "pl-PL",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "pl-PL",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "pl-PL",
+      "family": "stacked",
+      "seed": 1003,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "pl-PL",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "pt-PT",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "pt-PT",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "pt-PT",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "sk-SK",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "sk-SK",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "sv-SE",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_rate",
+        "vat_summary_table",
+        "exemption_verbiage",
+        "rounding_per_line"
+      ]
+    },
+    {
+      "profile": "sv-SE",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge",
+        "rounding_total",
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "sv-SE",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "bank_footer",
+        "noise_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "tr-TR",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "carry_forward",
+        "page_numbering",
+        "repeat_letterhead",
+        "stamp_copy"
+      ]
+    },
+    {
+      "profile": "tr-TR",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses",
+        "customer_vat_position",
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "tr-TR",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "wrapped_description",
+        "sub_items",
+        "section_subtotals",
+        "discount",
+        "column_set"
+      ]
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "minimal",
+      "seed": 1004,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "da-DK",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "stacked",
+      "seed": 1000,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "saas",
+      "seed": 1001,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "el-GR",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "el-GR",
+      "family": "minimal",
+      "seed": 1004,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "tabular",
+      "seed": 1000,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "saas",
+      "seed": 1005,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "stacked",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "tabular",
+      "seed": 1004,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "saas",
+      "seed": 1012,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "fi-FI",
+      "family": "classic",
+      "seed": 1004,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "fi-FI",
+      "family": "minimal",
+      "seed": 1005,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "minimal",
+      "seed": 1006,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "fr-LU",
+      "family": "minimal",
+      "seed": 1004,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "saas",
+      "seed": 1018,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "nl-BE",
+      "family": "classic",
+      "seed": 1005,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "nl-BE",
+      "family": "minimal",
+      "seed": 1005,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "saas",
+      "seed": 1010,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "no-NO",
+      "family": "classic",
+      "seed": 1005,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "no-NO",
+      "family": "stacked",
+      "seed": 1006,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "pl-PL",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "pl-PL",
+      "family": "stacked",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "pt-PT",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "pt-PT",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "sk-SK",
+      "family": "minimal",
+      "seed": 1001,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "sv-SE",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "tr-TR",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "da-DK",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "classic",
+      "seed": 1004,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "minimal",
+      "seed": 1005,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "stacked",
+      "seed": 1000,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "saas",
+      "seed": 1006,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "minimal",
+      "seed": 1003,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "stacked",
+      "seed": 1003,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "fr-LU",
+      "family": "classic",
+      "seed": 1004,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "nl-BE",
+      "family": "tabular",
+      "seed": 1005,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": [
+        "amount_in_words"
+      ]
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "da-DK",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "classic",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "minimal",
+      "seed": 1004,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "saas",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "el-GR",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "el-GR",
+      "family": "minimal",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "saas",
+      "seed": 1002,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "stacked",
+      "seed": 1003,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "en-IE",
+      "family": "minimal",
+      "seed": 1004,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "saas",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "fi-FI",
+      "family": "classic",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "fi-FI",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "tabular",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "fr-BE",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "tabular",
+      "seed": 1003,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "minimal",
+      "seed": 1003,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "fr-LU",
+      "family": "minimal",
+      "seed": 1005,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "tabular",
+      "seed": 1002,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "saas",
+      "seed": 1000,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "nl-BE",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "nl-BE",
+      "family": "minimal",
+      "seed": 1002,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "tabular",
+      "seed": 1004,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "saas",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "no-NO",
+      "family": "classic",
+      "seed": 1002,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "no-NO",
+      "family": "stacked",
+      "seed": 1001,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    },
+    {
+      "profile": "pl-PL",
+      "family": "classic",
+      "seed": 1003,
+      "knobs": [
+        "multi_page",
+        "sub_items",
+        "wrapped_description"
+      ]
+    }
+  ]
+}

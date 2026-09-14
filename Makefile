@@ -10,7 +10,7 @@ demo:
 	python -m invoice_extractor samples/acme_invoice.pdf --layout acme --report
 
 corpus:
-	@echo "make corpus arrives in PR F6 of docs/FORGE_PLAN.md" >&2; exit 1
+	forge generate --plan corpus/plan.json --out corpus/
 
 bench:
 	@echo "make bench arrives in PR F7 of docs/FORGE_PLAN.md" >&2; exit 1

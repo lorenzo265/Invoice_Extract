@@ -36,6 +36,7 @@ AMOUNT_IN_WORDS_STYLES: tuple[str, ...] = (
     "germanic_compound",
     "nordic_compound",
     "romance",
+    "spaced",
 )
 
 
@@ -45,14 +46,18 @@ class AmountInWords:
 
     `scale_one` is the form of "one" that stands before a scale word, which is not always
     the word for one: German counts `ein` and Swedish `ett` where both say `eine`/`en`
-    on their own. A million is a noun rather than a scale word — `eine Million`, `deux
-    millions` — so the lexicon spells it whole, in the singular and the plural.
+    on their own. `scale_many` is the form a scale word takes after a count greater than
+    one, which several languages inflect: Finnish counts `sata` but `kaksisataa`, French
+    writes `cent` but `deux cents`. A million is a noun rather than a scale word — `eine
+    Million`, `deux millions` — so the lexicon spells it whole, in the singular and the
+    plural.
     """
 
     style: str
     units: tuple[str, ...]
     tens: tuple[str, ...]
     scales: tuple[str, ...]
+    scale_many: tuple[str, ...]
     million: tuple[str, str]
     scale_one: str
     joiner: str
@@ -84,7 +89,10 @@ class Lexicon:
     months: tuple[str, ...]
     month_abbreviations: tuple[str, ...]
     diacritics: str
-    amount_in_words: AmountInWords
+    # Absent where the language's rules for spelling a number are not among the styles
+    # above. A lexicon may not carry rules it does not follow, so the `amount_in_words`
+    # knob prints nothing for such a language — the axis is one that document has not got.
+    amount_in_words: AmountInWords | None
 
 
 SYNONYM_MAPS: Mapping[str, tuple[str, ...]] = {

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
+from decimal import Decimal
 from itertools import pairwise
 
 import pytest
@@ -25,14 +26,18 @@ from invoice_forge.layout.spec import Alignment, ItemsSpec, Weight
 from invoice_forge.lexicon.loader import bundled_lexicon_ids, load_lexicon
 from invoice_forge.profiles.schema import FontFamily
 from invoice_forge.render.sheet import Sheet
-from invoice_forge.render.table import heading_lines
+from invoice_forge.render.table import COLUMN_GUTTER, heading_lines
+from invoice_forge.render.text import NumberFormat, quantity
+from invoice_forge.sample.sampler import FRACTIONAL_QUANTITIES, QUANTITIES
 
-# The two faces and the four languages every set has to survive.
+# The two faces and every language the corpus speaks: each set has to survive all of them.
 FACES = tuple(FontFamily)
 LANGUAGES = bundled_lexicon_ids()
 # The header sizes the families set their tables in: the standard sets, and `saas`.
 STANDARD_SIZE = 8.0
-SAAS_SIZE = 7.0
+SAAS_SIZE = 6.5
+# The face size a row is set in, which is what a quantity beside a description is measured at.
+ROW_SIZE = 9.0
 # No heading the corpus offers wraps to more than this many lines.
 MOST_LINES = 4
 # What the header costs when every heading fits on one line.
@@ -73,7 +78,7 @@ def spec_for(declared: ColumnSet, size: float) -> ItemsSpec:
         ruled=True,
         description_width=declared.description_width,
         header_size=size,
-        row_size=9.0,
+        row_size=ROW_SIZE,
         row_leading=11.0,
         row_gap=6.0,
     )
@@ -154,6 +159,38 @@ def test_a_description_never_claims_more_width_than_its_column_has(
     description = next(column for column in declared.columns if column.name == "description")
     after = min(anchor for anchor in anchors if anchor > description.anchor)
     assert declared.description_width <= after - description.anchor, name
+
+
+@for_each_set
+@pytest.mark.parametrize("fonts", FACES, ids=[face.value for face in FACES])
+def test_a_description_stops_short_of_the_value_printed_beside_it(
+    name: str, declared: ColumnSet, size: float, fonts: FontFamily
+) -> None:
+    """A right-aligned neighbour reaches back from its anchor, so the anchor is not the edge.
+
+    The widest quantity the sampler can draw, set in the face the profile would set it in,
+    is what the description has to stop one gutter short of — not the anchor it hangs from.
+    """
+    sheet = _sheet(fonts)
+    description = next(column for column in declared.columns if column.name == "description")
+    after = min(
+        (column for column in declared.columns if column.anchor > description.anchor),
+        key=lambda column: column.anchor,
+    )
+    reach = _widest_quantity(sheet) if after.name == "quantity" else 0.0
+    room = after.anchor - reach - COLUMN_GUTTER - description.anchor
+    assert declared.description_width <= room, f"{name}/{fonts.value}: room is {room:.1f}"
+
+
+def _widest_quantity(sheet: Sheet) -> float:
+    """Every quantity the sampler draws from, printed both ways round the decimal mark."""
+    drawn = (*QUANTITIES, *FRACTIONAL_QUANTITIES)
+    formats = (NumberFormat(".", ","), NumberFormat(",", "."))
+    return max(
+        sheet.width(quantity(Decimal(str(value)), number_format), ROW_SIZE, Weight.REGULAR)
+        for value in drawn
+        for number_format in formats
+    )
 
 
 def test_every_family_prints_one_of_the_sets_that_was_measured() -> None:

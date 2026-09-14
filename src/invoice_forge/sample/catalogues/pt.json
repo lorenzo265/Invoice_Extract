@@ -1,0 +1,129 @@
+{
+  "language": "pt",
+  "qualifiers": [
+    "inclui kit de montagem",
+    "entregue no destino",
+    "conforme desenho",
+    "conforme RoHS",
+    "encomenda mínima 10 unidades",
+    "aço inoxidável 304"
+  ],
+  "domains": {
+    "industrial": [
+      {
+        "sku": "HX-M8-040",
+        "description": "Parafuso sextavado M8 x 40, zincado, DIN 933",
+        "unit": "un",
+        "price": "0.12"
+      },
+      {
+        "sku": "BRG-6204",
+        "description": "Rolamento rígido de esferas 6204-2RS, vedado dos dois lados",
+        "unit": "un",
+        "price": "3.85"
+      },
+      {
+        "sku": "BRK-ST-3",
+        "description": "Cantoneira de aço 3 mm, 60 x 60 x 40, sem tratamento",
+        "unit": "un",
+        "price": "2.30"
+      },
+      {
+        "sku": "PLT-AL-2",
+        "description": "Chapa de alumínio 2 mm, 1000 x 500, EN AW-5754",
+        "unit": "un",
+        "price": "31.20"
+      },
+      {
+        "sku": "HSE-12-2",
+        "description": "Mangueira hidráulica 12 mm, 2 m, terminais prensados",
+        "unit": "un",
+        "price": "38.0450"
+      }
+    ],
+    "electronics": [
+      {
+        "sku": "CBL-H07-25",
+        "description": "Cabo H07V-K 2,5 mm², preto, rolo de 100 m",
+        "unit": "rolo",
+        "price": "48.90"
+      },
+      {
+        "sku": "ENC-IP65",
+        "description": "Caixa IP65, 300 x 200 x 120",
+        "unit": "un",
+        "price": "45.50"
+      },
+      {
+        "sku": "REL-24V",
+        "description": "Relé de interface 24 V CC, 1 inversor",
+        "unit": "un",
+        "price": "7.95"
+      },
+      {
+        "sku": "SNS-T-PT1",
+        "description": "Sonda de temperatura PT100, 3 fios, -50 a +200 °C",
+        "unit": "un",
+        "price": "22.75"
+      },
+      {
+        "sku": "FLT-P-200",
+        "description": "Cartucho filtrante P-200, celulose, 10 µm",
+        "unit": "un",
+        "price": "17.40"
+      }
+    ],
+    "software": [
+      {
+        "sku": "SW-LIC-PRO",
+        "description": "Licença ProSuite, 1 posto, 12 meses",
+        "unit": "licença",
+        "price": "349.00"
+      },
+      {
+        "sku": "SW-CLD-50",
+        "description": "Armazenamento na nuvem 50 GB, faturação mensal",
+        "unit": "mês",
+        "price": "12.5000"
+      },
+      {
+        "sku": "SW-SUP-GLD",
+        "description": "Contrato de suporte Gold, resposta em 4 horas",
+        "unit": "ano",
+        "price": "1290.00"
+      },
+      {
+        "sku": "SW-API-10K",
+        "description": "Pacote de API, 10.000 chamadas por mês",
+        "unit": "pacote",
+        "price": "89.00"
+      }
+    ],
+    "services": [
+      {
+        "sku": "SRV-INST-H",
+        "description": "Instalação no local, por hora",
+        "unit": "hora",
+        "price": "95.00"
+      },
+      {
+        "sku": "SRV-TRN-D",
+        "description": "Formação de base, 1 dia, até 8 participantes",
+        "unit": "dia",
+        "price": "780.00"
+      },
+      {
+        "sku": "SRV-WRT-Q",
+        "description": "Manutenção, avença trimestral, instalação tipo B",
+        "unit": "avença",
+        "price": "245.50"
+      },
+      {
+        "sku": "SRV-ANA-H",
+        "description": "Análise e documentação, por hora",
+        "unit": "hora",
+        "price": "115.0000"
+      }
+    ]
+  }
+}

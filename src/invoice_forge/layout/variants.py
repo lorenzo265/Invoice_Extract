@@ -28,6 +28,7 @@ from invoice_forge.layout.spec import (
     FamilySpec,
     FooterSpec,
     ItemsSpec,
+    MetadataSpec,
     PageLine,
     PaginationSpec,
     PartiesSpec,
@@ -39,9 +40,12 @@ from invoice_forge.layout.spec import (
 )
 
 # One party column per block the document may print; a family caps how many it has room for.
-MAIL_TO_COLUMN = 3
+SIDE_BY_SIDE = 2
 # Payment terms as a block of their own, under the totals and above the bank block.
 TERMS_BLOCK = TermsBlockSpec(x=50.0, size=8.0, leading=11.0, gap_above=14.0)
+# What a copy stamp costs the block under it. `ΑΝΤΙΓΡΑΦΟ` set at sixteen points reaches
+# most of the way across the metadata column, so the references start a line lower.
+STAMP_LINE = 16.0
 
 
 def with_knobs(spec: FamilySpec, knobs: Sequence[Knob]) -> FamilySpec:
@@ -50,6 +54,7 @@ def with_knobs(spec: FamilySpec, knobs: Sequence[Knob]) -> FamilySpec:
     return dataclasses.replace(
         spec,
         items=_items(spec, turned),
+        metadata=_metadata(spec, turned),
         pagination=_pagination(spec, turned),
         parties=_parties(spec, turned),
         page_line=_page_line(spec, turned),
@@ -75,6 +80,13 @@ def _items(spec: FamilySpec, turned: set[Knob]) -> ItemsSpec:
     )
 
 
+def _metadata(spec: FamilySpec, turned: set[Knob]) -> MetadataSpec:
+    """A stamped document starts its references under the stamp rather than beside it."""
+    if Knob.STAMP_COPY not in turned and not spec.copy_stamp:
+        return spec.metadata
+    return dataclasses.replace(spec.metadata, top=spec.metadata.top + STAMP_LINE)
+
+
 def _pagination(spec: FamilySpec, turned: set[Knob]) -> PaginationSpec:
     return dataclasses.replace(
         spec.pagination,
@@ -85,10 +97,15 @@ def _pagination(spec: FamilySpec, turned: set[Knob]) -> PaginationSpec:
 
 
 def _parties(spec: FamilySpec, turned: set[Knob]) -> PartiesSpec | None:
-    """A third block needs a third column, which only a family with room for one can give."""
+    """A third block needs a third column, which only a family with room for one can give.
+
+    `minimal` prints one block and has nowhere to put a second, let alone a third: giving
+    it three columns at the same x would print three companies on top of each other. So
+    the knob divides the room a family already sets two blocks in, and nothing else.
+    """
     if spec.parties is None or Knob.PARTY_BLOCKS not in turned:
         return spec.parties
-    if len(spec.parties.columns) >= MAIL_TO_COLUMN:
+    if len(spec.parties.columns) != SIDE_BY_SIDE:
         return spec.parties
     left, right = spec.parties.columns[0], spec.parties.columns[-1]
     return dataclasses.replace(spec.parties, columns=(left, (left + right) / 2, right))

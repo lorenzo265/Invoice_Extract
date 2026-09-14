@@ -53,8 +53,14 @@ RATE_SCALE = 4
 # rate near 0.09, not near parity. Keyed by (currency, secondary currency), in units of
 # 10**-RATE_SCALE; a pair no vendor has declared yet gets the near-parity default.
 EXCHANGE_RATES = {
+    ("CHF", "EUR"): (10300, 10800),
+    ("CZK", "EUR"): (390, 410),
+    ("DKK", "EUR"): (1330, 1350),
     ("EUR", "USD"): (10400, 11200),
+    ("NOK", "EUR"): (820, 900),
+    ("PLN", "EUR"): (2260, 2350),
     ("SEK", "EUR"): (830, 920),
+    ("TRY", "EUR"): (240, 280),
 }
 DEFAULT_RATE_RANGE = (9000, 12000)
 REFERENCE_LETTERS = 2

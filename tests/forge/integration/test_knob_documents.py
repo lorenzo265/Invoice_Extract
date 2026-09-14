@@ -26,7 +26,7 @@ from invoice_forge.truth.verify import verify_document
 PROFILE = "de-DE"
 SEED = 3
 # A seed whose rows fill every page but the last, which then holds only the totals.
-TOTALS_ONLY_SEED = 7
+TOTALS_ONLY_SEED = 2
 # "Seite 1" cannot match "Folgeseite", which the carry-forward line also prints.
 PAGE_LINE = "Seite 1"
 # The rule above the legal lines: page height less the footer block.

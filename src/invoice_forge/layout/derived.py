@@ -44,9 +44,11 @@ TABLE_ROW_LEADING = 14.0
 TABLE_PAD = 4.0
 # What a code column ahead of the rate costs the rest of the summary.
 CODE_COLUMN_WIDTH = 40.0
-# Nine columns of subscription data need a smaller face than seven of goods do.
+# Nine columns of subscription data need a smaller face than seven of goods do, and
+# the headings smaller still: `Faktureringsintervall` beside `Ripartizione` fits on an
+# A4 page at six and a half points and at no size above it.
 SAAS_ROW_SIZE = 8.0
-SAAS_HEADER_SIZE = 7.0
+SAAS_HEADER_SIZE = 6.5
 SAAS_ROW_LEADING = 10.0
 SAAS_ROW_GAP = 5.0
 

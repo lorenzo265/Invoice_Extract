@@ -1,0 +1,370 @@
+{
+  "language": "da",
+  "document_titles": {
+    "invoice": [
+      "FAKTURA",
+      "Faktura",
+      "SALGSFAKTURA"
+    ],
+    "credit_note": [
+      "KREDITNOTA",
+      "Kreditnota"
+    ]
+  },
+  "header_labels": {
+    "invoice_number": [
+      "Fakturanummer",
+      "Fakturanr.",
+      "Faktura nr."
+    ],
+    "invoice_date": [
+      "Fakturadato",
+      "Dato",
+      "Udstedelsesdato"
+    ],
+    "due_date": [
+      "Forfaldsdato",
+      "Betalingsfrist",
+      "Forfald"
+    ],
+    "supplier_vat_id": [
+      "CVR-nr.",
+      "Momsnummer",
+      "SE-nr."
+    ],
+    "customer_vat_id": [
+      "Kundens CVR-nr.",
+      "Købers momsnr."
+    ],
+    "currency": [
+      "Valuta"
+    ],
+    "supply_date": [
+      "Leveringsdato",
+      "Ydelsesdato"
+    ],
+    "order_number": [
+      "Ordrenummer",
+      "Ordrenr.",
+      "Rekvisitionsnr."
+    ],
+    "customer_number": [
+      "Kundenummer",
+      "Kundenr.",
+      "Debitornr."
+    ],
+    "contract_number": [
+      "Kontraktnummer",
+      "Aftalenr."
+    ],
+    "our_reference": [
+      "Vores reference",
+      "Sælger"
+    ],
+    "your_reference": [
+      "Deres reference",
+      "Jeres ref."
+    ],
+    "payment_terms": [
+      "Betalingsbetingelser",
+      "Betalingsvilkår"
+    ],
+    "credit_reference": [
+      "Oprindelig faktura",
+      "Vedrører faktura"
+    ]
+  },
+  "totals_labels": {
+    "vat_rate": [
+      "Momssats",
+      "Sats",
+      "Moms %"
+    ],
+    "subtotal": [
+      "Subtotal",
+      "Nettobeløb",
+      "I alt ekskl. moms"
+    ],
+    "vat_amount": [
+      "Momsbeløb",
+      "Moms i alt",
+      "Moms"
+    ],
+    "total_amount": [
+      "Beløb at betale",
+      "Total",
+      "I alt inkl. moms"
+    ]
+  },
+  "charge_labels": {
+    "SHIPPING": [
+      "Fragt",
+      "Forsendelse"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Miljøafgift",
+      "Miljøbidrag"
+    ],
+    "SURCHARGE": [
+      "Tillæg",
+      "Småordretillæg"
+    ],
+    "CONSOLIDATION_FEE": [
+      "Ekspeditionsgebyr",
+      "Håndteringsgebyr"
+    ],
+    "RECYCLING_FEE": [
+      "Genanvendelsesbidrag",
+      "WEEE-bidrag"
+    ],
+    "ROUNDING": [
+      "Afrunding",
+      "Øreafrunding"
+    ]
+  },
+  "column_headers": {
+    "sku": [
+      "Varenr.",
+      "Vare-nr.",
+      "Varenummer"
+    ],
+    "description": [
+      "Beskrivelse",
+      "Varebetegnelse",
+      "Tekst"
+    ],
+    "quantity": [
+      "Antal",
+      "Mængde"
+    ],
+    "unit_price": [
+      "Stykpris",
+      "Pris",
+      "Enhedspris"
+    ],
+    "net_amount": [
+      "Beløb",
+      "Linjebeløb",
+      "I alt"
+    ],
+    "pos": [
+      "Pos.",
+      "Linje",
+      "Nr."
+    ],
+    "unit": [
+      "Enhed",
+      "Enh."
+    ],
+    "discount": [
+      "Rabat",
+      "Rabat %"
+    ],
+    "vat_rate": [
+      "Moms %",
+      "Momskode"
+    ],
+    "subscription_id": [
+      "Abonnementsnr.",
+      "Service-ID"
+    ],
+    "billing_cycle": [
+      "Faktureringsinterval",
+      "Frekvens"
+    ],
+    "period": [
+      "Periode",
+      "Ydelsesperiode"
+    ],
+    "share": [
+      "Andel %",
+      "Fordeling"
+    ],
+    "remaining_term": [
+      "Restløbetid",
+      "Resterende tid"
+    ]
+  },
+  "vat_summary_headers": {
+    "code": [
+      "Kode",
+      "Momskode"
+    ],
+    "rate": [
+      "Sats",
+      "Momssats"
+    ],
+    "base": [
+      "Grundlag",
+      "Netto"
+    ],
+    "vat": [
+      "Moms",
+      "Momsbeløb"
+    ]
+  },
+  "party_headings": {
+    "bill_to": [
+      "Faktureres til",
+      "Fakturaadresse"
+    ],
+    "ship_to": [
+      "Leveringsadresse",
+      "Leveres til"
+    ],
+    "mail_to": [
+      "Postadresse",
+      "Korrespondanceadresse"
+    ]
+  },
+  "trap_labels": {
+    "order_date": [
+      "Ordredato",
+      "Bestillingsdato"
+    ],
+    "delivery_date": [
+      "Leveringsdato",
+      "Afsendelsesdato"
+    ],
+    "print_date": [
+      "Udskriftsdato",
+      "Udskrevet"
+    ]
+  },
+  "carry_forward": {
+    "incoming": [
+      "Overført",
+      "Overført fra forrige side"
+    ],
+    "outgoing": [
+      "Transport",
+      "Overføres til næste side"
+    ]
+  },
+  "exemption_sentences": {
+    "reverse_charge": [
+      "Omvendt betalingspligt for moms."
+    ],
+    "intra_community": [
+      "Momsfri leverance inden for EU."
+    ],
+    "export": [
+      "Momsfri eksport uden for EU."
+    ]
+  },
+  "page_numbering": [
+    "Side {page} af {pages}",
+    "Side {page}/{pages}"
+  ],
+  "payment_terms": [
+    "Betaling senest 30 dage efter fakturadato.",
+    "Netto 14 dage.",
+    "2 % kontantrabat ved betaling inden 10 dage."
+  ],
+  "legal_lines": [
+    "Alle leverancer sker efter vores almindelige salgs- og leveringsbetingelser.",
+    "Varen forbliver vores ejendom indtil fuld betaling er modtaget.",
+    "Der beregnes renter ved for sen betaling."
+  ],
+  "copy_stamps": [
+    "KOPI",
+    "DUPLIKAT"
+  ],
+  "section_headings": [
+    "Hardware",
+    "Tjenester",
+    "Softwarelicenser",
+    "Reservedele",
+    "Forbrugsvarer"
+  ],
+  "address_placeholders": [
+    "samme som fakturaadresse",
+    "som fakturaadresse"
+  ],
+  "months": [
+    "januar",
+    "februar",
+    "marts",
+    "april",
+    "maj",
+    "juni",
+    "juli",
+    "august",
+    "september",
+    "oktober",
+    "november",
+    "december"
+  ],
+  "month_abbreviations": [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "maj",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "okt",
+    "nov",
+    "dec"
+  ],
+  "diacritics": "æ ø å Æ Ø Å — kr. ² °",
+  "amount_in_words": {
+    "style": "germanic_compound",
+    "units": [
+      "nul",
+      "en",
+      "to",
+      "tre",
+      "fire",
+      "fem",
+      "seks",
+      "syv",
+      "otte",
+      "ni",
+      "ti",
+      "elleve",
+      "tolv",
+      "tretten",
+      "fjorten",
+      "femten",
+      "seksten",
+      "sytten",
+      "atten",
+      "nitten"
+    ],
+    "tens": [
+      "tyve",
+      "tredive",
+      "fyrre",
+      "halvtreds",
+      "tres",
+      "halvfjerds",
+      "firs",
+      "halvfems"
+    ],
+    "scales": [
+      "hundrede",
+      "tusind"
+    ],
+    "scale_many": [
+      "hundrede",
+      "tusind"
+    ],
+    "million": [
+      "en million",
+      "millioner"
+    ],
+    "scale_one": "et",
+    "joiner": "og",
+    "currency_unit": [
+      "krone",
+      "kroner"
+    ],
+    "currency_fraction": [
+      "øre",
+      "øre"
+    ]
+  }
+}

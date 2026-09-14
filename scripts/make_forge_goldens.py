@@ -22,11 +22,10 @@ import sys
 import tempfile
 from pathlib import Path
 
-from invoice_forge.corpus.plan import cell_name
+from invoice_forge.corpus.plan import cell_name, every_pair
 from invoice_forge.families import Family
 from invoice_forge.knobs import Knob
 from invoice_forge.produce import DocumentSpec, produce
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
 from invoice_forge.render.pdf import page_image
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -87,15 +86,6 @@ FIXTURE_CELLS: tuple[DocumentSpec, ...] = (
 FIXTURE_CELL = FIXTURE_CELLS[0]
 
 
-def golden_pairs() -> tuple[tuple[str, Family], ...]:
-    """Every profile against every family it declares, in a stable order."""
-    return tuple(
-        (profile_id, family)
-        for profile_id in bundled_profile_ids()
-        for family in load_profile(profile_id).families
-    )
-
-
 def golden_path(profile_id: str, family: Family) -> Path:
     return FIXTURES / f"{profile_id}_{family.value}_p{GOLDEN_PAGE}.png"
 
@@ -114,7 +104,7 @@ def golden_image(profile_id: str, family: Family, directory: Path) -> bytes:
 def main() -> int:
     FIXTURES.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as scratch:
-        for profile_id, family in golden_pairs():
+        for profile_id, family in every_pair():
             image = golden_image(profile_id, family, Path(scratch))
             path = golden_path(profile_id, family)
             path.write_bytes(image)

@@ -20,6 +20,7 @@ from invoice_forge.families import FAMILY_NAMES, Family
 from invoice_forge.jsonspec import SpecError, read_object, reject_unknown, require_choices
 from invoice_forge.knobs import KNOB_NAMES, Knob, parse_knobs
 from invoice_forge.produce import DocumentSpec
+from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
 
 PLAN_SCHEMA = "forge-plan/1"
 TOP_LEVEL_KEYS = ("schema", "cells")
@@ -69,6 +70,19 @@ def plan_from_arguments(
             for family in families
             for offset in range(count)
         )
+    )
+
+
+def every_pair() -> tuple[tuple[str, Family], ...]:
+    """Every profile against every family it declares, in a stable order.
+
+    The corpus's first coverage target, and the order both the plan and the golden images
+    are built in, so the two never disagree about what a bundled profile can render.
+    """
+    return tuple(
+        (profile_id, family)
+        for profile_id in bundled_profile_ids()
+        for family in load_profile(profile_id).families
     )
 
 

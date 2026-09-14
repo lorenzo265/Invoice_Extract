@@ -51,6 +51,7 @@ WORDS_KEYS = (
     "units",
     "tens",
     "scales",
+    "scale_many",
     "million",
     "scale_one",
     "joiner",
@@ -129,27 +130,46 @@ def _month_names(data: Mapping[str, object], key: str) -> tuple[str, ...]:
     return names
 
 
-def _amount_in_words(data: Mapping[str, object]) -> AmountInWords:
+def _amount_in_words(data: Mapping[str, object]) -> AmountInWords | None:
+    """Absent where the language spells numbers by rules none of the styles carries.
+
+    A lexicon that declared a style it does not follow would put words on a page that
+    nobody writes, so the key is left out instead and no total is spelled in that language.
+    """
     path = "amount_in_words"
+    if path not in data:
+        return None
     words = require_mapping(data, path, path, "an object describing how a total is spelled")
     reject_unknown(words, WORDS_KEYS, f"{path}.", "key")
     return AmountInWords(
         style=require_choice(words, "style", f"{path}.style", AMOUNT_IN_WORDS_STYLES),
         units=require_filled_strings(words, "units", f"{path}.units"),
         tens=require_filled_strings(words, "tens", f"{path}.tens"),
-        scales=_scale_words(words, path),
+        scales=_scale_words(words, "scales", path),
+        scale_many=_scale_words(words, "scale_many", path),
         million=_word_pair(words, "million", path),
-        scale_one=require_text(words, "scale_one", f"{path}.scale_one"),
+        scale_one=_scale_one(words, path),
         joiner=require_text(words, "joiner", f"{path}.joiner"),
         currency_unit=_word_pair(words, "currency_unit", path),
         currency_fraction=_word_pair(words, "currency_fraction", path),
     )
 
 
-def _scale_words(words: Mapping[str, object], path: str) -> tuple[str, ...]:
-    values = require_filled_strings(words, "scales", f"{path}.scales")
+def _scale_one(words: Mapping[str, object], path: str) -> str:
+    """The word for one before a scale word, where the language puts one there.
+
+    Turkish counts `yüz` and `bin` with nothing in front, so it declares none; German
+    counts `einhundert` and could not do without it.
+    """
+    if "scale_one" not in words:
+        return ""
+    return require_text(words, "scale_one", f"{path}.scale_one")
+
+
+def _scale_words(words: Mapping[str, object], key: str, path: str) -> tuple[str, ...]:
+    values = require_filled_strings(words, key, f"{path}.{key}")
     if len(values) != SCALE_WORDS:
-        raise SpecError(f"{path}.scales must list the hundred and the thousand")
+        raise SpecError(f"{path}.{key} must list the hundred and the thousand")
     return values
 
 

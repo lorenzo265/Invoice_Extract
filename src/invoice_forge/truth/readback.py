@@ -136,14 +136,20 @@ def _vat_claims(truth: dict[str, object]) -> Iterator[Claim]:
 
 
 def _party_claims(truth: dict[str, object]) -> Iterator[Claim]:
-    """A party's boxes are its name and its address lines, in the order they were drawn."""
+    """Every box of a party block says part of what the block says, the way a cell does.
+
+    Not one box per value: three blocks across an A4 page leave each about a third of it,
+    and a company name wider than that is set over two lines. Which line a box holds is
+    not recorded — a party records its name and its address, not the shape they were set
+    in — so the check is the one a wrapped description gets.
+    """
     for kind, party in block(truth, "parties").items():
         if not isinstance(party, dict):
             continue
         where = f"parties.{kind}"
-        printed = [text(party, "name", where), *_address_lines(party)]
-        for value, box in zip(printed, boxes(party, where), strict=False):
-            yield Claim(where, box, value, Match.EXACT)
+        printed = " ".join([text(party, "name", where), *_address_lines(party)])
+        for box in boxes(party, where):
+            yield Claim(where, box, printed, Match.PART)
 
 
 def _secondary_claims(truth: dict[str, object]) -> Iterator[Claim]:

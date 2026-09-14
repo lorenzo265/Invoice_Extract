@@ -9,6 +9,7 @@ from typing import Any
 import pytest
 from dataspec import message, write
 
+from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
 from invoice_forge.sample.catalogue import (
     DOMAIN_NAMES,
     MIN_PRODUCTS,
@@ -51,8 +52,10 @@ def test_every_bundled_catalogue_loads(language: str) -> None:
     assert load_catalogue(language).language == language
 
 
-def test_the_bundled_catalogues_are_the_four_this_pull_request_ships() -> None:
-    assert bundled_catalogue_ids() == ("de", "en", "fr", "sv")
+def test_every_language_a_bundled_profile_speaks_has_a_catalogue() -> None:
+    """A catalogue is drawn from by language, so a missing one is a vendor with nothing to sell."""
+    spoken = {load_profile(profile_id).language for profile_id in bundled_profile_ids()}
+    assert spoken == set(bundled_catalogue_ids())
 
 
 @pytest.mark.parametrize("domain", DOMAIN_NAMES)

@@ -196,5 +196,9 @@ def test_a_bundled_profile_loads_by_id() -> None:
     assert load_profile("de-DE").language == "de"
 
 
-def test_the_bundled_profiles_are_the_four_this_pull_request_ships() -> None:
-    assert bundled_profile_ids() == ("de-DE", "en-GB", "fr-FR", "sv-SE")
+def test_every_bundled_profile_is_named_for_the_country_and_language_it_declares() -> None:
+    """`fr-BE` is French printed in Belgium; the id is the only place that says so twice."""
+    for profile_id in bundled_profile_ids():
+        profile = load_profile(profile_id)
+        assert profile.id == profile_id
+        assert profile_id == f"{profile.language}-{profile.country}"

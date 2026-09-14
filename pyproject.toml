@@ -42,6 +42,11 @@ extend-exclude = ["docs/reference"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+# The generator writes invoices in sixteen languages, so a Greek capital alpha and a
+# Turkish dotless i are the right characters rather than lookalikes for Latin ones.
+# Listed one by one, so a confusable from a script the corpus does not speak is still
+# reported as the typo it would be.
+allowed-confusables = ["Α", "Β", "Ε", "Ζ", "Η", "Ι", "Κ", "Μ", "Ν", "Ο", "Ρ", "Τ", "Υ", "Χ", "ı", "ο", "ν", "α", "ρ", "τ", "υ", "χ", "ϲ"]
 
 [tool.mypy]
 strict = true

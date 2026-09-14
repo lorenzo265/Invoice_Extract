@@ -119,6 +119,17 @@ class Sheet:
         """Write the PDF. Nothing may be drawn afterwards; the document is closed."""
         self.canvas.save(path, title)
 
-    def wrapped(self, text: str, width: float, size: float = BODY_SIZE) -> tuple[str, ...]:
-        """Break a string to fit a column, measured in the face it will be drawn in."""
-        return wrap(text, width, lambda line: self.width(line, size))
+    def wrapped(
+        self,
+        text: str,
+        width: float,
+        size: float = BODY_SIZE,
+        weight: Weight = Weight.REGULAR,
+    ) -> tuple[str, ...]:
+        """Break a string to fit a column, measured in the face it will be drawn in.
+
+        A bold line is wider than the same words set regular, so a party name that is set
+        bold is measured bold: wrapping it as if it were body text is how a company name
+        ends up half a centimetre inside the block beside it.
+        """
+        return wrap(text, width, lambda line: self.width(line, size, weight))
