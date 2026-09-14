@@ -109,10 +109,10 @@ from `latest.json`, not typed.
 
 ## Definition of done for v0.2.0
 
-- [ ] F0–F7 merged in order, CI green each.
-- [ ] `make corpus` reproducible byte for byte; `forge verify corpus/` green.
-- [ ] `forge catalog corpus/` meets every target in `docs/VARIATION_CATALOG.md`.
-- [ ] `make bench` matrix published; every extractor field either measured or listed
+- [x] F0–F7 merged in order, CI green each.
+- [x] `make corpus` reproducible byte for byte; `forge verify corpus/` green.
+- [x] `forge catalog corpus/` meets every target in `docs/VARIATION_CATALOG.md`.
+- [x] `make bench` matrix published; every extractor field either measured or listed
       as "not covered".
-- [ ] No real company, bank, person or identifier anywhere in profiles, lexicons,
+- [x] No real company, bank, person or identifier anywhere in profiles, lexicons,
       catalogues or fixtures (hygiene test).

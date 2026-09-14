@@ -5,6 +5,6 @@ from invoice_extractor.layout.loader import load_layout
 from invoice_extractor.layout.schema import Layout, LayoutError
 from invoice_extractor.pipeline import extract
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = ["InvoiceResult", "Layout", "LayoutError", "__version__", "extract", "load_layout"]

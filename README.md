@@ -131,10 +131,20 @@ src/invoice_extractor/
     output/        JSON writer and human-readable text report
     pipeline.py    The only orchestration: PDF + layout -> InvoiceResult
     cli.py         python -m invoice_extractor
+src/invoice_forge/
+    profiles/      One JSON per vendor: language, separators, rates, families
+    lexicon/       One JSON per language: every label an invoice prints, with synonyms
+    layout/        The five template families, declared; knobs applied to a declaration
+    sample/        What a document says: parties, catalogue, identifiers, variations
+    render/        The declaration drawn to a page, recording every box it printed
+    truth/         The truth file, and reading every box back out of the PDF to check it
+    corpus/        A plan, run into a directory; the coverage report over what came out
+benchmarks/         make bench: the extractor over the corpus, scored against the truth
+corpus/             plan.json (committed); the documents are regenerated, not stored
 layouts/            acme.json, nordic.json
 samples/            Generated sample PDFs + golden *.expected.json
 tests/              unit (one module each), integration (golden, determinism), hygiene
-docs/               architecture, layout format, ADRs, implementation plan
+docs/               architecture, layout format, ADRs, implementation and forge plans
 ```
 
 ## Extending
@@ -171,6 +181,37 @@ strategy stay untouched. Adding `purchase_order`, in full:
 The field appears in the JSON, in the report and in `confidence_breakdown` with no other
 change: the engine already runs whatever `FIELD_SPECS` holds.
 
+## How good is it, measured
+
+`invoice_forge` generates a corpus of synthetic invoices with exact ground truth —
+twenty-two vendor profiles over sixteen languages, five template families, and
+thirty-one difficulty knobs from [docs/VARIATION_CATALOG.md](docs/VARIATION_CATALOG.md).
+`make bench` runs this extractor over all of it and scores every value against the truth
+beside it. Each vendor gets the layout a deployment would write for it, built from that
+vendor's own labels, so what is measured is the extraction engine and not label guessing.
+
+<!-- benchmark:begin -->
+Over the 250-document base corpus (`make corpus`), `make bench`
+measures this release at:
+
+- **Scalar fields:** 19.3% (483 of 2500) of the values the documents carry.
+- **Line-item cells:** 23.0% (6817 of 29635), over
+  49 of 250 documents whose row count was read
+  exactly.
+- **Confidence:** 0.0-0.2 at 0.0%, 0.8-1.0 at 100.0%.
+- **Not covered:** the generator prints these and the extractor has no spec for
+  them, so they are never scored as wrong:
+  `contract_number`, `credit_reference`, `customer_number`, `order_number`, `our_reference`, `payment_terms`, `supply_date`, `your_reference`.
+
+Every one of those 2017 misses found no candidate at all. The corpus prints a
+label at one tab stop and its value flush right at another, as a real invoice
+does; the extractor's label strategies want the two in one line of text, and the
+two fields it does read — the VAT ids — are the two printed that way.
+
+`benchmarks/README.md` is the field-by-field matrix, by profile, by family and by
+knob.
+<!-- benchmark:end -->
+
 ## Quality gates
 
 `make check` (lint + typecheck + test + hygiene) is the one gate every pull request must
@@ -179,8 +220,10 @@ pass — see [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 | Command | Enforces |
 |---|---|
 | `make lint` | `ruff check` + `ruff format --check` (E, F, I, N, UP, B, SIM, RUF; line length 100) |
-| `make typecheck` | `mypy --strict` on `src/` (`pymupdf` is the one ignored import) |
-| `make test` | `pytest --cov=invoice_extractor --cov-fail-under=90` |
+| `make typecheck` | `mypy --strict` on `src/` and `benchmarks/` (`pymupdf` is the one ignored import) |
+| `make test` | `pytest --cov=invoice_extractor --cov=invoice_forge --cov-fail-under=90` |
+| `make corpus` | regenerates the 250-document base corpus from `corpus/plan.json`, byte for byte |
+| `make bench` | scores the extractor over that corpus and rewrites every published figure |
 | hygiene test | `src/` <= 2200 non-blank/non-comment lines; no module > 250 lines; no function > 40 lines; `pymupdf` in the two PDF modules only; no `print`, no work markers, no unjustified suppressions, no absolute paths or e-mail addresses, every relative markdown link resolves |
 
 `.github/workflows/ci.yml` runs the same `make check` on every push and pull request.
@@ -195,12 +238,16 @@ skip the 90% floor it cannot meet on its own.
 
 ## Status
 
-v0.1.0 is complete: ten scalar fields, the line-item table, three arithmetic invariants,
-explainable confidence, a JSON writer, a text report and a CLI — all of it green under
-`make check` on Python 3.11 and 3.12. This repository started from a fully specified
-seed — architecture, ADRs, layout format, sample fixtures, CI — implemented afterward
-one gated pull request at a time; [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)
-is the plan it was built to, PR0 through PR9, and
+v0.2.0 is complete. v0.1.0 was the extractor: ten scalar fields, the line-item table,
+three arithmetic invariants, explainable confidence, a JSON writer, a text report and a
+CLI. v0.2.0 adds `invoice_forge` — a generator of synthetic invoices with exact ground
+truth, twenty-two vendor profiles in sixteen languages, five template families,
+thirty-one difficulty knobs and a 250-document base corpus — and the benchmark that
+measures the extractor against it. All of it is green under `make check` on Python 3.11
+and 3.12. This repository started from a fully specified seed — architecture, ADRs,
+layout format, sample fixtures, CI — implemented afterward one gated pull request at a
+time; [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) is the plan v0.1.0 was
+built to and [docs/FORGE_PLAN.md](docs/FORGE_PLAN.md) the plan v0.2.0 was, and
 [CHANGELOG.md](CHANGELOG.md) is what shipped.
 
 ## License

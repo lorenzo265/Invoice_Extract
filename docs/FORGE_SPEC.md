@@ -217,7 +217,14 @@ product, and `generate` leaves the plan it ran beside the documents either way.
 
 `make corpus` generates the base corpus into `corpus/` from `corpus/plan.json` (the
 plan is committed; the PDFs are not — they are reproducible). `make bench` runs the
-extractor over the corpus and writes `benchmarks/`.
+extractor over the corpus and writes `benchmarks/`: `latest.json`, the markdown report
+beside it, and the block between the two markers in the repository `README.md`. Every
+published figure is rendered from `latest.json`, so none of them can be typed by hand.
+
+The layout `make bench` hands the extractor is built from the vendor's own profile and
+lexicon — every label synonym the language offers, not the one the document drew. Which
+labels a vendor uses is what a deployment writes down per vendor; what the benchmark
+measures is what the extractor does once it has been told.
 
 ## 5. Acceptance of the generator
 

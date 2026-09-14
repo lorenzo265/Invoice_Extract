@@ -7,6 +7,56 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 Nothing yet.
 
+## [0.2.0]
+
+`invoice_forge`: a generator of synthetic invoices with exact ground truth, and the
+first measured answer to "how good is the extractor".
+
+### Added
+
+- **A generator, `invoice_forge`.** `forge render-one`, `forge generate`, `forge verify`
+  and `forge catalog` produce PDFs and a `forge-truth/1` JSON beside each one, recording
+  every value, the box it was read back out of, and the noise printed beside it.
+  PyMuPDF stays the only runtime dependency.
+- **Twenty-two vendor profiles** over sixteen languages and twenty-one countries, each
+  with its own lexicon of label synonyms, product catalogue, number and date formats,
+  legal forms, cities and IBAN shape. Nothing falls back to English: a profile whose
+  words are missing is refused by name.
+- **Five template families** — `classic`, `tabular`, `stacked`, `saas`, `minimal` — the
+  last four declared as `classic` with blocks restyled or switched off, never as a
+  second renderer. A golden PNG per profile and family is compared pixel for pixel.
+- **Thirty-one difficulty knobs**, the closed vocabulary of
+  `docs/VARIATION_CATALOG.md`: multi-page tables with carried-forward subtotals, trap
+  labels, placeholder addresses, sub-items, section subtotals, several VAT rates,
+  undeclared charges, two rounding policies, dual-currency echoes, totals spelled out
+  in words, and the rest.
+- **A 250-document base corpus.** `corpus/plan.json` is committed and the documents are
+  not: `make corpus` regenerates them byte for byte, `forge verify` reads every
+  recorded box back out of the PDF, and `forge catalog` reports the corpus against
+  every coverage target the variation catalog sets.
+- **A benchmark.** `make bench` runs the extractor over the corpus with a layout built
+  from each vendor's own labels, and writes `benchmarks/latest.json`,
+  `benchmarks/README.md` and the block in `README.md` — a matrix of field by profile,
+  by family and by knob, a calibration table, and the list of fields the extractor does
+  not cover. Every published figure is generated; a test fails if one is hand-edited.
+
+### Fixed
+
+- A line-item description could run into the quantity beside it. The quantity is set
+  flush right, so it reaches back from its anchor; a description now stops one gutter
+  short of the widest quantity, measured in both faces rather than assumed.
+- `party_blocks` gave a one-column family three columns at the same x, printing three
+  companies on top of each other. The knob now only divides the room a family already
+  sets two blocks in.
+- A company name wider than its block ran into the block beside it. Party lines wrap
+  now, measured in the face they are set in.
+- A long copy stamp sat on the first line of the reference block. A stamped document
+  starts its references a line lower.
+
+### Changed
+
+- PyMuPDF is imported as `pymupdf` rather than through the deprecated `fitz` alias.
+
 ## [0.1.0]
 
 The first release: a PDF invoice becomes a typed, evidence-backed `InvoiceResult`.

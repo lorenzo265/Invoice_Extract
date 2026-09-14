@@ -13,7 +13,7 @@ corpus:
 	forge generate --plan corpus/plan.json --out corpus/
 
 bench:
-	@echo "make bench arrives in PR F7 of docs/FORGE_PLAN.md" >&2; exit 1
+	python -m benchmarks.run
 
 lint:
 	ruff check . && ruff format --check .

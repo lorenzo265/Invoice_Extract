@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "invoice-extractor"
-version = "0.1.0"
+version = "0.2.0"
 description = "Evidence-backed extraction of structured data from PDF invoices."
 readme = "README.md"
 license = { text = "MIT" }
@@ -50,7 +50,7 @@ allowed-confusables = ["Α", "Β", "Ε", "Ζ", "Η", "Ι", "Κ", "Μ", "Ν", "Ο
 
 [tool.mypy]
 strict = true
-files = ["src"]
+files = ["src", "benchmarks"]
 python_version = "3.11"
 
 # PyMuPDF ships no annotations. `follow_imports = "skip"` keeps every value it hands back
@@ -63,7 +63,7 @@ follow_imports = "skip"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src", "scripts"]
+pythonpath = ["src", "scripts", "."]
 addopts = "--cov=invoice_extractor --cov=invoice_forge --cov-report=term-missing --cov-fail-under=90"
 
 [tool.coverage.run]

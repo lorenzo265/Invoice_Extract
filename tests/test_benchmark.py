@@ -1,0 +1,228 @@
+"""The benchmark: how it scores, and that the published figures are the ones it produced.
+
+`make bench` is not part of `make check` — it needs a generated corpus and it takes
+minutes — so what runs here is the scoring and rendering against hand-built results, plus
+the one check that makes the published numbers trustworthy: every figure in the two
+markdown files is regenerated from the committed `benchmarks/latest.json` and compared.
+"""
+
+from __future__ import annotations
+
+import json
+from decimal import Decimal
+
+import pytest
+from benchmarks import matrix as matrices
+from benchmarks import report as reports
+from benchmarks.compare import DocumentScore, Outcome, compare
+from benchmarks.layouts import PATTERNS, layout_for
+from benchmarks.run import LATEST, README, REPORT
+
+from invoice_extractor.document.reader import BBox, Zone
+from invoice_extractor.domain.models import Evidence, FieldResult, InvoiceResult, LineItem, Strategy
+from invoice_extractor.layout.schema import FIELD_NAMES, LINE_ITEM_COLUMNS
+from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.schema import DateFormat
+
+BOX = {"page": 1, "bbox": [10.0, 10.0, 60.0, 20.0]}
+ELSEWHERE = {"page": 1, "bbox": [300.0, 300.0, 360.0, 310.0]}
+
+
+def truth(**fields: object) -> dict[str, object]:
+    """A truth file with one line item and whichever scalar fields a test names."""
+    entries = {
+        name: {"value": fields.get(name), "printed": None, "label": None, "evidence": [BOX]}
+        for name in FIELD_NAMES
+    }
+    return {
+        "generator": {"profile": "de-DE", "template": "classic", "knobs": ["multi_page"]},
+        "fields": entries,
+        "line_items": [
+            {
+                "sku": "A-1",
+                "description": "A thing",
+                "quantity": "2",
+                "unit_price": "3.50",
+                "net_amount": "7.00",
+            }
+        ],
+    }
+
+
+def result(**values: object) -> InvoiceResult:
+    """An extractor result carrying one matching row and whichever fields a test names."""
+    return InvoiceResult(
+        fields={name: _field(name, values.get(name)) for name in FIELD_NAMES},
+        line_items=(LineItem("A-1", "A thing", Decimal(2), Decimal("3.50"), Decimal("7.00")),),
+        findings=(),
+        layout_id="de-DE",
+        source_path="x.pdf",
+    )
+
+
+def _field(name: str, value: object, box: BBox | None = None) -> FieldResult:
+    if value is None:
+        return FieldResult(name=name, value=None, raw_text=None, evidence=None, valid=False)
+    found = box or BBox(10.0, 10.0, 60.0, 20.0)
+    evidence = Evidence(1, found, None, Strategy.LABEL_RIGHT, str(value))
+    return FieldResult(
+        name=name,
+        value=value,
+        raw_text=str(value),
+        evidence=evidence,
+        valid=True,
+        confidence=0.9,
+    )
+
+
+def outcomes(score: DocumentScore) -> dict[str, Outcome]:
+    return {scored.field: scored.outcome for scored in score.fields}
+
+
+def test_a_value_that_matches_is_a_hit() -> None:
+    score = compare("x", truth(currency="EUR"), result(currency="EUR"))
+    assert outcomes(score)["currency"] is Outcome.HIT
+
+
+def test_a_value_that_differs_is_a_miss() -> None:
+    score = compare("x", truth(currency="EUR"), result(currency="GBP"))
+    assert outcomes(score)["currency"] is Outcome.MISS
+
+
+def test_money_compares_as_a_decimal_rather_than_as_a_string() -> None:
+    """`19` and `19.00` are the same rate, and a benchmark that says otherwise is lying."""
+    score = compare("x", truth(vat_rate="19"), result(vat_rate=Decimal("19.00")))
+    assert outcomes(score)["vat_rate"] is Outcome.HIT
+
+
+def test_a_field_neither_side_claims_is_absent_and_scored_in_neither() -> None:
+    score = compare("x", truth(), result())
+    assert outcomes(score)["currency"] is Outcome.ABSENT
+    assert matrices.build([score]).fields["currency"].hit_rate is None
+
+
+def test_a_value_read_where_the_document_has_none_is_a_miss() -> None:
+    score = compare("x", truth(), result(currency="EUR"))
+    assert outcomes(score)["currency"] is Outcome.MISS
+
+
+def test_a_field_the_extractor_has_no_spec_for_is_not_covered() -> None:
+    score = compare("x", truth(), result())
+    assert outcomes(score)["supply_date"] is Outcome.NOT_COVERED
+
+
+def test_a_miss_that_found_no_candidate_is_counted_apart_from_a_wrong_one() -> None:
+    empty = compare("x", truth(currency="EUR"), result())
+    wrong = compare("x", truth(currency="EUR"), result(currency="GBP"))
+    assert matrices.build([empty]).fields["currency"].found_nothing == 1
+    assert matrices.build([wrong]).fields["currency"].found_nothing == 0
+
+
+def test_evidence_agrees_when_the_boxes_overlap() -> None:
+    agreeing = compare("x", truth(currency="EUR"), result(currency="EUR"))
+    assert matrices.build([agreeing]).fields["currency"].evidence_agreed == 1
+
+
+def test_evidence_disagrees_when_the_extractor_read_a_different_box() -> None:
+    """A right answer out of the wrong box is a warning, not a miss: it is reported apart."""
+    moved = truth(currency="EUR")
+    _entry(moved, "currency")["evidence"] = [ELSEWHERE]
+    score = compare("x", moved, result(currency="EUR"))
+    built = matrices.build([score])
+    assert built.fields["currency"].hit == 1
+    assert built.fields["currency"].evidence_agreed == 0
+
+
+def _entry(data: dict[str, object], name: str) -> dict[str, object]:
+    fields = data["fields"]
+    assert isinstance(fields, dict)
+    entry = fields[name]
+    assert isinstance(entry, dict)
+    return entry
+
+
+def test_a_row_the_extractor_did_not_find_is_one_error_per_column() -> None:
+    two_rows = truth()
+    rows = two_rows["line_items"]
+    assert isinstance(rows, list)
+    rows.append({**rows[0], "sku": "A-2"})
+    score = compare("x", two_rows, result())
+    assert score.rows_expected == 2
+    assert score.rows_found == 1
+    assert all(score.columns[column] == (1, 1) for column in LINE_ITEM_COLUMNS)
+
+
+def test_a_knob_is_tallied_on_the_side_the_document_turned_it() -> None:
+    """One document lands in the `on` column of its own knobs and the `off` of every other."""
+    built = matrices.build([compare("x", truth(currency="EUR"), result(currency="EUR"))])
+    assert built.knob_on["multi_page"].hit == 1
+    assert "multi_page" not in built.knob_off
+    assert built.knob_off["credit_note"].hit == 1
+    assert "credit_note" not in built.knob_on
+
+
+def test_confidence_lands_in_its_band() -> None:
+    built = matrices.build([compare("x", truth(currency="EUR"), result(currency="EUR"))])
+    assert built.calibration[-1].hit == 1
+
+
+@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+def test_every_profile_gets_a_layout_from_its_own_words(profile_id: str) -> None:
+    profile = load_profile(profile_id)
+    layout = layout_for(profile_id)
+    assert layout.id == profile_id
+    assert layout.decimal_separator == profile.decimal_separator
+    assert set(layout.fields) == set(FIELD_NAMES)
+    assert all(layout.fields[name].labels for name in FIELD_NAMES)
+    assert all(layout.line_items.header_labels[column] for column in LINE_ITEM_COLUMNS)
+    assert len(layout.date_formats) == len(profile.date_formats)
+
+
+def test_a_layout_tries_the_formats_that_read_numbers_first() -> None:
+    """`%B` reads month names in the C locale only, so it must never be tried first."""
+    for profile_id in bundled_profile_ids():
+        spelled = [
+            index
+            for index, pattern in enumerate(layout_for(profile_id).date_formats)
+            if "%B" in pattern or "%b" in pattern
+        ]
+        numeric = len(layout_for(profile_id).date_formats) - len(spelled)
+        assert all(index >= numeric for index in spelled), profile_id
+
+
+def test_every_date_format_a_profile_may_declare_has_a_pattern() -> None:
+    assert set(PATTERNS) == set(DateFormat)
+
+
+def test_every_field_in_a_layout_is_given_a_zone_on_the_page() -> None:
+    layout = layout_for("de-DE")
+    assert all(set(layout.fields[name].zones) <= set(Zone) for name in FIELD_NAMES)
+    assert all(layout.fields[name].zones for name in FIELD_NAMES)
+
+
+def committed() -> dict[str, object]:
+    data = json.loads(LATEST.read_text(encoding="utf-8"))
+    assert isinstance(data, dict)
+    return data
+
+
+def test_the_benchmark_report_is_the_one_the_committed_numbers_render_to() -> None:
+    """Regenerated from `latest.json`; a difference means one of the two was hand-edited."""
+    assert REPORT.read_text(encoding="utf-8") == reports.render_report(committed())
+
+
+def test_the_readme_block_is_the_one_the_committed_numbers_render_to() -> None:
+    text = README.read_text(encoding="utf-8")
+    _, _, rest = text.partition(reports.BEGIN)
+    inside, end, _ = rest.partition(reports.END)
+    assert end, "README.md has lost its benchmark:end marker"
+    rendered = reports.render_readme_block(committed())
+    assert reports.BEGIN + inside + reports.END == rendered
+
+
+def test_the_committed_numbers_were_produced_by_this_benchmark() -> None:
+    report = committed()
+    assert report["schema"] == "forge-bench/1"
+    matrix = report["matrix"]
+    assert isinstance(matrix, dict)
+    assert matrix["documents"]
