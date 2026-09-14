@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from invoice_extractor.document.reader import TextLine, Zone
+from invoice_extractor.document.model import TextLine, Zone
 from invoice_extractor.domain.models import FieldResult
 from invoice_extractor.extraction.spec import Candidate, Evaluated, FieldSpec, OnAllInvalid
 from invoice_extractor.extraction.strategies import STRATEGIES

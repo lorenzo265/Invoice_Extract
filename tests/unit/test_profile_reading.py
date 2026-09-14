@@ -10,7 +10,7 @@ from typing import Any
 
 import pytest
 
-from invoice_extractor.document.reader import Zone
+from invoice_extractor.document.model import Zone
 from invoice_extractor.profile.loader import load_profile, parse
 from invoice_extractor.profile.schema import Placement, ProfileError, TableEdge
 
@@ -120,7 +120,7 @@ def test_the_defaults_are_the_layer_a_profile_is_laid_over(tmp_path: Path) -> No
     )
     profile = load_profile("xx-XX", profiles)
     assert profile.fields["invoice_number"].labels[0] == "Belegnummer"
-    assert profile.fields["invoice_number"].zones == (Zone.TOP_RIGHT,)
+    assert profile.fields["invoice_number"].zones == (Zone(1, 3),)
 
 
 def test_an_unknown_key_names_itself() -> None:
@@ -195,7 +195,7 @@ def test_a_zone_name_may_be_a_grid_reference_or_one_of_the_nine_names(tmp_path: 
     data = base()
     data["fields"]["invoice_number"]["zones"] = ["r1c3", "bottom_left"]
     profile = load_profile("xx-XX", written(tmp_path, data))
-    assert profile.fields["invoice_number"].zones == (Zone.TOP_RIGHT, Zone.BOTTOM_LEFT)
+    assert profile.fields["invoice_number"].zones == (Zone(1, 3), Zone(3, 1))
 
 
 def test_a_zone_name_that_is_neither_says_what_one_looks_like() -> None:
@@ -251,7 +251,7 @@ def test_a_tolerance_defaults_to_a_cent_and_half_a_percent(tmp_path: Path) -> No
 def test_a_grid_other_than_thirds_is_refused() -> None:
     data = base()
     data["zones"] = {"grid": [4, 4]}
-    assert error(data) == "zones.grid must be [3, 3]: a page is classified into thirds"
+    assert error(data) == "zones.grid must be [3, 3]: the grid a page is classified on"
 
 
 def test_a_custom_field_is_a_declared_label_field(tmp_path: Path) -> None:

@@ -13,7 +13,7 @@ from __future__ import annotations
 import re
 from collections.abc import Callable, Mapping, Sequence
 
-from invoice_extractor.document.reader import BBox, TextLine
+from invoice_extractor.document.model import BBox, TextLine
 from invoice_extractor.domain.models import Evidence, Strategy
 from invoice_extractor.extraction.spec import Candidate
 from invoice_extractor.profile.schema import FieldProfile

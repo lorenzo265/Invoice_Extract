@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from decimal import Decimal
 
 from conftest import line, make_field_profile, make_profile
-from invoice_extractor.document.reader import TextLine, Zone
+from invoice_extractor.document.model import TextLine, Zone
 from invoice_extractor.domain.models import Strategy
 from invoice_extractor.extraction.engine import run
 from invoice_extractor.extraction.normalizers import parse_money
@@ -15,7 +15,7 @@ from invoice_extractor.extraction.spec import FieldSpec, OnAllInvalid, Ranker
 from invoice_extractor.extraction.validators import is_positive_money
 from invoice_extractor.profile.schema import Profile
 
-BOTH_ZONES = (Zone.BOTTOM_RIGHT, Zone.TOP_RIGHT)
+BOTH_ZONES = (Zone(3, 3), Zone(1, 3))
 
 
 def subtotal_spec(
@@ -88,4 +88,4 @@ def test_run_reports_candidate_count() -> None:
 
 def test_run_reports_zone_of_winning_line() -> None:
     extraction = run(subtotal_spec(), two_valid_lines(), subtotal_layout())
-    assert extraction.zone is Zone.BOTTOM_RIGHT
+    assert extraction.zone == Zone(3, 3)

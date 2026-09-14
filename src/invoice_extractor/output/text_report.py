@@ -13,7 +13,6 @@ from enum import Enum, auto
 
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import FieldResult, FieldValue, InvoiceResult, LineItem
-from invoice_extractor.profile.schema import Profile
 from invoice_extractor.validation.invariants import INVARIANT_NAMES
 
 RULE_WIDTH = 80
@@ -42,13 +41,13 @@ ITEM_HEADERS = ("PART NUMBER", "DESCRIPTION", "QTY", "UNIT PRICE", "NET AMOUNT")
 ITEM_ALIGN = (Align.LEFT, Align.LEFT, Align.RIGHT, Align.RIGHT, Align.RIGHT)
 
 
-def render(result: InvoiceResult, profile: Profile) -> str:
+def render(result: InvoiceResult) -> str:
     """The whole report as one string, without a trailing newline."""
     lines = [
         TITLE,
         "=" * RULE_WIDTH,
         f"{'source':<{LABEL_WIDTH}}{result.source_path}",
-        f"{'profile':<{LABEL_WIDTH}}{result.profile_id}",
+        f"{'profile':<{LABEL_WIDTH}}{result.profile_id or MISSING}",
         "",
         *_field_table(result.fields),
         "",

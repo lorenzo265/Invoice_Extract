@@ -5,19 +5,20 @@ from __future__ import annotations
 from decimal import Decimal
 
 from conftest import make_field_profile
-from invoice_extractor.document.reader import BBox, Zone
+from invoice_extractor.document.model import BBox, Zone
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import Evidence, FieldResult, Strategy
 from invoice_extractor.extraction.engine import Extraction
 from invoice_extractor.validation.confidence import SIGNAL_WEIGHTS, score
 
-EXPECTED_ZONE = make_field_profile(zones=(Zone.BOTTOM_RIGHT,))
+BOTTOM_RIGHT = Zone(3, 3)
+EXPECTED_ZONE = make_field_profile(zones=(BOTTOM_RIGHT,))
 BOX = BBox(400.0, 609.25, 472.83, 622.99)
 
 
 def extraction(
     label: str | None = "Subtotal",
-    zone: Zone | None = Zone.BOTTOM_RIGHT,
+    zone: Zone | None = BOTTOM_RIGHT,
     candidate_count: int = 1,
     valid: bool = True,
     value: object = Decimal("490.00"),
@@ -75,7 +76,7 @@ def test_a_warning_does_not_clear_the_invariants_signal() -> None:
 
 
 def test_a_zone_outside_the_layouts_list_clears_that_signal() -> None:
-    scored = score(extraction(zone=Zone.TOP_LEFT), EXPECTED_ZONE, ())
+    scored = score(extraction(zone=Zone(1, 1)), EXPECTED_ZONE, ())
     assert scored.confidence_breakdown["in_expected_zone"] == 0.0
 
 

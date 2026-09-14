@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
-from invoice_extractor.document.reader import TextLine
+from invoice_extractor.document.model import TextLine
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import LINE_ITEM_COLUMNS, LineItem
 from invoice_extractor.extraction.normalizers import parse_number

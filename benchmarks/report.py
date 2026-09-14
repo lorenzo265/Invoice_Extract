@@ -26,6 +26,8 @@ def render_readme_block(report: Mapping[str, object]) -> str:
         f"Over the {documents}-document base corpus (`make corpus`), `make bench`",
         "measures this release at:",
         "",
+        f"- **Profile detection:** {_detected(matrix)}; a document no profile matches is",
+        "  reported and not read (ADR-0008).",
         f"- **Scalar fields:** {_overall(fields)} of the values the documents carry.",
         f"- **Line-item cells:** {_overall(_mapping(items, 'columns'))}, over",
         f"  {items.get('rows_agreed', 0)} of {documents} documents whose row count was read",
@@ -42,6 +44,19 @@ def render_readme_block(report: Mapping[str, object]) -> str:
         END,
     ]
     return "\n".join(lines)
+
+
+def _detected(matrix: Mapping[str, object]) -> str:
+    """How many documents were matched to the very profile that printed them."""
+    documents = _count(matrix, "documents")
+    detected = _count(matrix, "detected")
+    share = _percent(detected / documents) if documents else "-"
+    return f"{share} ({detected} of {documents})"
+
+
+def _count(matrix: Mapping[str, object], key: str) -> int:
+    value = matrix.get(key, 0)
+    return value if isinstance(value, int) else 0
 
 
 def _diagnosis(fields: Mapping[str, object]) -> list[str]:
@@ -95,6 +110,7 @@ def _heading(report: Mapping[str, object], matrix: Mapping[str, object]) -> str:
             "this file from `benchmarks/latest.json`.",
             "",
             f"- Corpus: {matrix.get('documents', 0)} documents from `{run.get('corpus', '')}`",
+            f"- Profile detected: {_detected(matrix)}",
             f"- Extractor: {run.get('extractor_version', '')}",
             f"- Generator: {run.get('generator_version', '')}",
             "",

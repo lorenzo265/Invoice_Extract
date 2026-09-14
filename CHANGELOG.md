@@ -7,6 +7,40 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Added
 
+- **A document is read once, whole (`docs/ENGINE_SPEC.md` §2, stage 0).** `read(pdf)`
+  returns a `Document` of `Page`s, each with its lines already zoned and the four
+  anchors found on it — where the letterhead ends, where a table's header band is, where
+  the totals block starts, and where a VAT summary starts. Every anchor is found from the
+  page's own drawing, before any vendor is known, and any of them may be absent.
+- **Profile detection (ADR-0008).** `detect_profile` scores every registered profile on
+  the supplier's own name, its VAT id, the currency and the share of its label vocabulary
+  the page carries, and returns the best above `PROFILE_THRESHOLD` or `None`. A file-path
+  hint may promote a profile that was already close; it can never carry one over the
+  threshold. On the 250-document corpus, detection picks the vendor that printed the
+  document 250 times out of 250.
+- **`invoice-extractor profile lint <id>`**, which measures a profile against the median
+  of every other profile in the registry and reports a readiness tier — T0 where a
+  required field has no label, T1 where one has no zone or fewer labels than the median,
+  T2 otherwise.
+- **`InvoiceResult.valid`**, derived from the findings and never set beside them
+  (ADR-0010), and `profile_id` that is `None` when no vendor matched.
+- The benchmark reports profile detection beside the field matrix.
+
+### Changed
+
+- **`extract(pdf_path, registry)`** replaces `extract(pdf_path, profile)`: the pipeline
+  detects the vendor itself. The CLI follows — `invoice-extractor extract <pdf>` with no
+  `--profile`, and `--profiles PATH` to point at a directory of them.
+- **`Zone` is a `(row, col)` record**, not one of nine enum members, so the grid a page
+  is cut on is data rather than a fixed nine. `document/reader.py` and its
+  `DocumentReader` protocol are replaced by `document/model.py`: a test builds a
+  `Document` rather than faking a reader.
+- A profile's supplier name is matched by case-folded letters and digits **in any
+  script**, so a Greek vendor is recognised by its own name rather than scoring zero on
+  an ASCII-only fold.
+
+### Added
+
 - **Vendor profiles, shared with the generator (ADR-0006).** `profiles/<id>.json`
   describes one vendor — language, locale, currencies, VAT rules, the supplier as it
   prints itself, the label vocabulary of every field, the party blocks, the two tables

@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
 
-from invoice_extractor.document.reader import Zone
+from invoice_extractor.document.model import Zone
 
 
 class ProfileError(ValueError):

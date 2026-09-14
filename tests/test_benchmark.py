@@ -16,7 +16,7 @@ from benchmarks import report as reports
 from benchmarks.compare import DocumentScore, Outcome, compare
 from benchmarks.run import LATEST, README, REPORT
 
-from invoice_extractor.document.reader import BBox
+from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.models import (
     LINE_ITEM_COLUMNS,
     Evidence,

@@ -6,7 +6,7 @@ import json
 from decimal import Decimal
 from pathlib import Path
 
-from invoice_extractor.document.reader import BBox
+from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
     Evidence,

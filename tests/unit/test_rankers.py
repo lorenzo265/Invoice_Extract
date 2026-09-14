@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from conftest import line, make_field_profile
-from invoice_extractor.document.reader import Zone
+from invoice_extractor.document.model import Zone
 from invoice_extractor.domain.models import Evidence, Strategy
 from invoice_extractor.extraction.rankers import (
     closest_to_label,
@@ -13,7 +13,7 @@ from invoice_extractor.extraction.rankers import (
 )
 from invoice_extractor.extraction.spec import Candidate, Evaluated
 
-ZONED = make_field_profile(zones=(Zone.TOP_RIGHT, Zone.BOTTOM_RIGHT))
+ZONED = make_field_profile(zones=(Zone(1, 3), Zone(3, 3)))
 
 
 def evaluated(text: str, x: float, y: float, label_distance: float, valid: bool) -> Evaluated:

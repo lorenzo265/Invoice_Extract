@@ -38,14 +38,16 @@ JSON_INDENT = 2
 
 
 def score_corpus(directory: Path) -> Iterator[DocumentScore]:
-    """Every document in a corpus, extracted with its own vendor's profile and compared."""
+    """Every document in a corpus, read the way a deployment would read it, and compared.
+
+    No profile is handed over: the extractor is given the registry and detects the vendor
+    itself (ADR-0008), so what is measured includes finding the right vocabulary.
+    """
     registry = ProfileRegistry()
     for truth_path in sorted(directory.glob(f"*{TRUTH_SUFFIX}")):
         truth = json.loads(truth_path.read_text(encoding="utf-8"))
-        profile_id = str(truth.get("generator", {}).get("profile", ""))
         pdf = truth_path.with_name(truth_path.name.removesuffix(TRUTH_SUFFIX) + ".pdf")
-        result = extract(pdf, registry.get(profile_id))
-        yield compare(pdf.stem, truth, result)
+        yield compare(pdf.stem, truth, extract(pdf, registry))
 
 
 def build_report(directory: Path) -> dict[str, object]:

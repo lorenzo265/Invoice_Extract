@@ -10,7 +10,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum, auto
 
-from invoice_extractor.document.reader import Zone
+from invoice_extractor.document.model import Zone
 from invoice_extractor.domain.models import Evidence, FieldValue, Strategy
 from invoice_extractor.profile.schema import FieldProfile, Profile
 

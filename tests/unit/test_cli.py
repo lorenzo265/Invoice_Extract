@@ -1,4 +1,4 @@
-"""The CLI's argument handling and the two inputs it refuses to start on.
+"""The CLI's two commands, and the inputs they refuse to start on.
 
 The paths that need a real PDF live in `tests/integration/test_cli_end_to_end.py`: a unit
 test that opens a PDF is testing PyMuPDF, not this codebase.
@@ -12,26 +12,43 @@ import pytest
 
 from invoice_extractor.cli import main
 
-KNOWN_PROFILE = "en-GB"
 
-
-def test_cli_returns_one_for_missing_pdf(
+def test_extract_returns_one_for_missing_pdf(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     missing = tmp_path / "absent.pdf"
-    assert main([str(missing), "--profile", KNOWN_PROFILE]) == 1
+    assert main(["extract", str(missing)]) == 1
     assert "absent.pdf" in capsys.readouterr().err
 
 
-def test_cli_returns_one_for_unknown_profile_with_message(
+def test_extract_returns_one_when_the_profiles_are_not_where_it_looked(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    assert main([str(tmp_path / "any.pdf"), "--profile", "no_such_vendor"]) == 1
+    assert main(["extract", str(tmp_path / "any.pdf"), "--profiles", str(tmp_path)]) == 1
+    assert capsys.readouterr().err.endswith("any.pdf\n")
+
+
+def test_a_command_is_required(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit) as exit_code:
+        main([])
+    assert exit_code.value.code == 2
+    assert "extract" in capsys.readouterr().err
+
+
+def test_profile_lint_names_the_tier_it_measured(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["profile", "lint", "de-DE"]) == 0
+    assert capsys.readouterr().out.startswith("de-DE: T")
+
+
+def test_profile_lint_returns_one_for_a_vendor_that_is_not_there(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert main(["profile", "lint", "no_such_vendor"]) == 1
     assert capsys.readouterr().err == "no profile at profiles/no_such_vendor.json\n"
 
 
-def test_cli_requires_a_profile(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_profile_needs_an_action(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit) as exit_code:
-        main([str(tmp_path / "any.pdf")])
+        main(["profile"])
     assert exit_code.value.code == 2
-    assert "--profile" in capsys.readouterr().err
+    assert "lint" in capsys.readouterr().err

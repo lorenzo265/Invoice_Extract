@@ -6,7 +6,8 @@ import re
 from collections.abc import Mapping, Sequence
 from decimal import Decimal
 
-from invoice_extractor.document.reader import BBox, TextLine, Zone
+from invoice_extractor.document.anchors import anchors_of
+from invoice_extractor.document.model import BBox, Document, Page, TextLine, Zone
 from invoice_extractor.document.zones import classify
 from invoice_extractor.domain.models import LINE_ITEM_COLUMNS
 from invoice_extractor.extraction.specs import FIELD_ORDER
@@ -46,18 +47,25 @@ def line(text: str, x: float, y: float, page: int = 1) -> TextLine:
     return TextLine(page, text, bbox, classify(bbox, PAGE_WIDTH, PAGE_HEIGHT))
 
 
-class FakeDocument:
-    """A `DocumentReader` built from `(page, text, x0, y0, x1, y1)` tuples."""
+def make_document(entries: Sequence[Entry], source_path: str = "fake.pdf") -> Document:
+    """A `Document` built from `(page, text, x0, y0, x1, y1)` tuples, with no PDF anywhere."""
+    lines = [_from_entry(entry) for entry in entries]
+    numbers = sorted({line.page for line in lines})
+    return Document(
+        pages=tuple(make_page(number, lines) for number in numbers), source_path=source_path
+    )
 
-    def __init__(self, entries: Sequence[Entry]) -> None:
-        self._lines = [_from_entry(entry) for entry in entries]
 
-    @property
-    def page_count(self) -> int:
-        return max((text_line.page for text_line in self._lines), default=0)
-
-    def lines(self, page: int) -> Sequence[TextLine]:
-        return [text_line for text_line in self._lines if text_line.page == page]
+def make_page(number: int, lines: Sequence[TextLine]) -> Page:
+    """One page of a fake document, with the anchors its own lines produce."""
+    on_page = tuple(line for line in lines if line.page == number)
+    return Page(
+        number=number,
+        width=PAGE_WIDTH,
+        height=PAGE_HEIGHT,
+        lines=on_page,
+        anchors=anchors_of(on_page, PAGE_HEIGHT),
+    )
 
 
 def _from_entry(entry: Entry) -> TextLine:
@@ -68,7 +76,7 @@ def _from_entry(entry: Entry) -> TextLine:
 
 def make_field_profile(
     labels: Sequence[str] = ("Label",),
-    zones: Sequence[Zone] = (Zone.TOP_RIGHT,),
+    zones: Sequence[Zone] = (Zone(1, 3),),
     pattern: str | None = None,
 ) -> FieldProfile:
     """A `FieldProfile` for one field, with the pieces a test does not care about filled in."""

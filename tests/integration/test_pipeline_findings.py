@@ -21,6 +21,7 @@ from invoice_extractor.validation.invariants import INVARIANT_NAMES
 
 FIXTURES = Path("tests/forge/fixtures/corpus")
 TRUTH_SUFFIX = ".truth.json"
+REGISTRY = ProfileRegistry()
 
 
 def documents() -> list[tuple[Path, str, tuple[str, ...]]]:
@@ -41,7 +42,7 @@ EVERY = [(pdf, profile_id) for pdf, profile_id, _ in documents()]
 @pytest.mark.parametrize(("pdf", "profile_id"), PLAIN)
 def test_a_plain_document_reconciles(pdf: Path, profile_id: str) -> None:
     """Nothing the generator prints disagrees with itself, so no invariant may say it does."""
-    result = extract(pdf, ProfileRegistry().get(profile_id))
+    result = extract(pdf, REGISTRY)
     errors = [finding for finding in result.findings if finding.severity is Severity.ERROR]
     assert errors == [], f"{pdf.name}: {[finding.code for finding in errors]}"
 
@@ -51,22 +52,36 @@ def test_a_document_the_extractor_cannot_read_is_reported_rather_than_raised(
     pdf: Path, profile_id: str
 ) -> None:
     """ADR-0005 end to end: every disagreement comes back as a finding with a known code."""
-    result = extract(pdf, ProfileRegistry().get(profile_id))
+    result = extract(pdf, REGISTRY)
     codes = {finding.code for finding in result.findings}
     known = {*INVARIANT_NAMES, "line_item_incomplete", "line_items_header_not_found"}
     assert codes <= known, sorted(codes - known)
 
 
 @pytest.mark.parametrize(("pdf", "profile_id"), EVERY)
-def test_a_result_names_the_profile_and_the_file_it_came_from(pdf: Path, profile_id: str) -> None:
-    result = extract(pdf, ProfileRegistry().get(profile_id))
+def test_a_result_names_the_vendor_it_detected_and_the_file_it_came_from(
+    pdf: Path, profile_id: str
+) -> None:
+    """No profile is handed over: the pipeline finds the vendor itself (ADR-0008)."""
+    result = extract(pdf, REGISTRY)
     assert result.profile_id == profile_id
     assert result.source_path == pdf.as_posix()
 
 
+def test_a_document_no_profile_matches_is_reported_and_not_read(tmp_path: Path) -> None:
+    empty = tmp_path / "profiles"
+    empty.mkdir()
+    (empty / "_defaults.json").write_text("{}", encoding="utf-8")
+    result = extract(EVERY[0][0], ProfileRegistry(empty))
+    assert result.profile_id is None
+    assert result.fields == {}
+    assert not result.valid
+    assert [finding.code for finding in result.findings] == ["profile_not_detected"]
+
+
 @pytest.mark.parametrize(("pdf", "profile_id"), EVERY)
 def test_a_value_read_off_the_page_carries_the_evidence_for_it(pdf: Path, profile_id: str) -> None:
-    result = extract(pdf, ProfileRegistry().get(profile_id))
+    result = extract(pdf, REGISTRY)
     found = [field for field in result.fields.values() if field.value is not None]
     assert found, "a corpus document with no readable field would not be a corpus document"
     assert all(field.evidence is not None for field in found)
@@ -74,7 +89,7 @@ def test_a_value_read_off_the_page_carries_the_evidence_for_it(pdf: Path, profil
 
 @pytest.mark.parametrize(("pdf", "profile_id"), PLAIN)
 def test_a_field_no_finding_touched_is_reported_with_confidence(pdf: Path, profile_id: str) -> None:
-    result = extract(pdf, ProfileRegistry().get(profile_id))
+    result = extract(pdf, REGISTRY)
     touched = {finding.field for finding in result.findings}
     untouched = [
         field

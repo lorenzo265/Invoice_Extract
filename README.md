@@ -26,10 +26,15 @@ from the same `profiles/fr-FR.json` the extractor then reads it back with. `make
 runs:
 
 ```bash
-python -m invoice_extractor tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf --profile fr-FR --report
+python -m invoice_extractor extract tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf --report
 ```
 
-and prints:
+No vendor is named on that command line. The extractor is handed the directory of
+profiles and works out which one printed the document; a document that matches none of
+them comes back with `profile_not_detected`, `valid: false` and nothing read, rather than
+a plausible-looking result read with the wrong vocabulary (ADR-0008).
+
+It prints:
 
 ```
 Invoice Extraction Report
@@ -80,15 +85,16 @@ input the pipeline never even started on (a missing PDF, a malformed profile).
 ## How data flows
 
 `pipeline.py` is the only place these stages are wired together. Every module is
-independently testable against a `FakeDocument` — no PDF required.
+independently testable against a `Document` built in memory — no PDF required.
 
 ```mermaid
 flowchart LR
-    PDF[/PDF file/] --> Reader["DocumentReader<br/>pymupdf_reader.py"]
-    Reader -->|"TextLines<br/>zoned by zones.py"| Engine["FieldSpec engine<br/>extraction/engine.py"]
-    Profile[("profiles/*.json")] --> Engine
+    PDF[/PDF file/] --> Reader["read()<br/>pymupdf_reader.py"]
+    Reader -->|"Document: zoned lines<br/>+ per-page anchors"| Detect["detect_profile<br/>profile/detect.py"]
+    Profiles[("profiles/*.json")] --> Detect
+    Detect -->|"the vendor's Profile,<br/>or a finding and nothing"| Engine["FieldSpec engine<br/>extraction/engine.py"]
     Engine -->|"FieldResult × 10<br/>+ Evidence"| Items["Line items<br/>extraction/line_items.py"]
-    Profile --> Items
+    Detect --> Items
     Items -->|"LineItems"| Inv["Invariants<br/>validation/invariants.py"]
     Engine --> Inv
     Inv -->|"Findings"| Conf["Confidence<br/>validation/confidence.py"]
@@ -135,12 +141,12 @@ Full narrative: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 ```
 src/invoice_extractor/
     domain/        Evidence, FieldResult, LineItem, InvoiceResult, Money, Finding
-    document/      PDF -> TextLine, zoned on a 3x3 grid (DocumentReader Protocol)
-    profile/       Profile schema, strict loader, merge rules, mtime-aware registry
+    document/      PDF -> Document: pages of zoned TextLines, and each page's anchors
+    profile/       Profile schema, strict loader, merge rules, registry, detection, lint
     extraction/    FieldSpec engine: strategies, normalizers, validators, rankers
     validation/    Invariants (as Findings) and explainable confidence
     output/        JSON writer and human-readable text report
-    pipeline.py    The only orchestration: PDF + profile -> InvoiceResult
+    pipeline.py    The only orchestration: PDF + registry -> InvoiceResult
     cli.py         python -m invoice_extractor
 src/invoice_forge/
     layout/        The five template families, declared; knobs applied to a declaration
@@ -207,6 +213,8 @@ is measured is the extraction engine and not label guessing.
 Over the 250-document base corpus (`make corpus`), `make bench`
 measures this release at:
 
+- **Profile detection:** 100.0% (250 of 250); a document no profile matches is
+  reported and not read (ADR-0008).
 - **Scalar fields:** 82.1% (2053 of 2500) of the values the documents carry.
 - **Line-item cells:** 23.0% (6817 of 29635), over
   49 of 250 documents whose row count was read

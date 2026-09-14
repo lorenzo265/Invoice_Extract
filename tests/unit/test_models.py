@@ -9,7 +9,7 @@ from typing import Any
 
 import pytest
 
-from invoice_extractor.document.reader import BBox
+from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
     VALUE_TYPES,

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from conftest import line, make_field_profile
-from invoice_extractor.document.reader import Zone
+from invoice_extractor.document.model import Zone
 from invoice_extractor.domain.models import Strategy
 from invoice_extractor.extraction.strategies import (
     label_below,
@@ -45,7 +45,7 @@ def test_label_right_ignores_a_longer_label_that_starts_the_same() -> None:
 def test_label_right_prefers_expected_zone_then_falls_back() -> None:
     inside = line("Currency: SEK", 400, 76)
     outside = line("Currency: GBP", 56, 700)
-    field_layout = make_field_profile(labels=("Currency",), zones=(Zone.TOP_RIGHT,))
+    field_layout = make_field_profile(labels=("Currency",), zones=(Zone(1, 3),))
 
     (preferred,) = label_right([inside, outside], field_layout)
     assert preferred.raw_text == "Currency: SEK"
@@ -117,7 +117,7 @@ def test_label_beside_finds_nothing_where_the_label_stands_alone() -> None:
 def test_label_beside_prefers_expected_zone_then_falls_back() -> None:
     inside = [line("Currency:", 360, 76), line("SEK", 520, 76)]
     outside = [line("Currency:", 56, 700), line("GBP", 200, 700)]
-    field_layout = make_field_profile(labels=("Currency",), zones=(Zone.TOP_RIGHT,))
+    field_layout = make_field_profile(labels=("Currency",), zones=(Zone(1, 3),))
     (preferred,) = label_beside([*inside, *outside], field_layout)
     assert preferred.raw_text == "SEK"
     (fallback,) = label_beside(outside, field_layout)
@@ -128,7 +128,7 @@ def test_label_below_picks_nearest_line_under_anchor() -> None:
     anchor = line("Bill To", 56, 340)
     near = line("Nordwind Logistik GmbH", 56, 356)
     far = line("Friedrichstrasse 88", 56, 372)
-    field_layout = make_field_profile(labels=("Bill To",), zones=(Zone.MIDDLE_LEFT,))
+    field_layout = make_field_profile(labels=("Bill To",), zones=(Zone(2, 1),))
     (candidate,) = label_below([anchor, far, near], field_layout)
     assert candidate.raw_text == "Nordwind Logistik GmbH"
 
@@ -136,7 +136,7 @@ def test_label_below_picks_nearest_line_under_anchor() -> None:
 def test_label_below_records_distance() -> None:
     anchor = line("Bill To", 56, 340)
     below = line("Nordwind Logistik GmbH", 56, 356)
-    field_layout = make_field_profile(labels=("Bill To",), zones=(Zone.MIDDLE_LEFT,))
+    field_layout = make_field_profile(labels=("Bill To",), zones=(Zone(2, 1),))
     (candidate,) = label_below([anchor, below], field_layout)
     assert candidate.label_distance == below.bbox.y0 - anchor.bbox.y0
 
@@ -144,18 +144,18 @@ def test_label_below_records_distance() -> None:
 def test_label_below_ignores_a_line_that_does_not_overlap_horizontally() -> None:
     anchor = line("Bill To", 56, 340)
     elsewhere = line("Total Due: 588.00", 400, 356)
-    field_layout = make_field_profile(labels=("Bill To",), zones=(Zone.MIDDLE_LEFT,))
+    field_layout = make_field_profile(labels=("Bill To",), zones=(Zone(2, 1),))
     assert label_below([anchor, elsewhere], field_layout) == []
 
 
 def test_label_below_ignores_an_anchor_with_nothing_under_it() -> None:
-    field_layout = make_field_profile(labels=("Bill To",), zones=(Zone.MIDDLE_LEFT,))
+    field_layout = make_field_profile(labels=("Bill To",), zones=(Zone(2, 1),))
     assert label_below([line("Bill To", 56, 340)], field_layout) == []
 
 
 def test_regex_anchor_returns_match_text_without_label() -> None:
     lines = [line("VAT Number: GB123456789", 56, 124)]
-    field_layout = make_field_profile(zones=(Zone.TOP_LEFT,), pattern=r"GB\d{9}")
+    field_layout = make_field_profile(zones=(Zone(1, 1),), pattern=r"GB\d{9}")
     (candidate,) = regex_anchor(lines, field_layout)
     assert candidate.raw_text == "GB123456789"
     assert candidate.evidence.matched_label is None
@@ -164,4 +164,4 @@ def test_regex_anchor_returns_match_text_without_label() -> None:
 
 def test_regex_anchor_yields_nothing_without_regex() -> None:
     lines = [line("VAT Number: GB123456789", 56, 124)]
-    assert regex_anchor(lines, make_field_profile(zones=(Zone.TOP_LEFT,))) == []
+    assert regex_anchor(lines, make_field_profile(zones=(Zone(1, 1),))) == []

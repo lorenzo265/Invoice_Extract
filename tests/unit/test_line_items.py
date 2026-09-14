@@ -7,7 +7,7 @@ from decimal import Decimal
 import pytest
 
 from conftest import line, make_profile, make_table_profile
-from invoice_extractor.document.reader import TextLine
+from invoice_extractor.document.model import TextLine
 from invoice_extractor.domain.findings import Severity
 from invoice_extractor.domain.models import LINE_ITEM_COLUMNS
 from invoice_extractor.extraction.line_items import extract_line_items

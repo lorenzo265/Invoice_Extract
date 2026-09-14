@@ -24,7 +24,7 @@ from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 
-from invoice_extractor.document.reader import BBox
+from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.models import (
     LINE_ITEM_COLUMNS,
     Evidence,
@@ -76,21 +76,24 @@ class DocumentScore:
     columns: Mapping[str, tuple[int, int]]
     rows_expected: int
     rows_found: int
+    detected: bool
 
 
 def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> DocumentScore:
     """Score one document against its truth file."""
     cell = _mapping(truth, "generator")
     fields = _mapping(truth, "fields")
+    printed = str(cell.get("profile", ""))
     return DocumentScore(
         name=name,
-        profile=str(cell.get("profile", "")),
+        profile=printed,
         family=str(cell.get("template", "")),
         knobs=tuple(str(knob) for knob in _sequence(cell, "knobs")),
         fields=tuple(_score(field, fields, result) for field in (*FIELD_ORDER, *NOT_COVERED)),
         columns=_columns(truth, result.line_items),
         rows_expected=len(_sequence(truth, "line_items")),
         rows_found=len(result.line_items),
+        detected=result.profile_id == printed,
     )
 
 
@@ -98,6 +101,10 @@ def _score(name: str, fields: Mapping[str, object], result: InvoiceResult) -> Sc
     wanted = _wanted(fields, name)
     if name in NOT_COVERED:
         return Scored(name, Outcome.NOT_COVERED, 0.0, None)
+    if name not in result.fields:
+        # No profile matched, so nothing was read: every value the document carries is a
+        # miss that found nothing, which is what stopping costs and what it should cost.
+        return Scored(name, Outcome.ABSENT if wanted is None else Outcome.MISS, 0.0, None, True)
     found = result.fields[name]
     empty = found.raw_text is None
     if wanted is None:

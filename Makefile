@@ -7,7 +7,7 @@ corpus:
 	forge generate --plan corpus/plan.json --out corpus/
 
 demo:
-	python -m invoice_extractor tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf --profile fr-FR --report
+	python -m invoice_extractor extract tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf --report
 
 bench:
 	python -m benchmarks.run

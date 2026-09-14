@@ -7,6 +7,7 @@
   },
   "matrix": {
     "documents": 250,
+    "detected": 250,
     "fields": {
       "contract_number": {
         "hit": 0,

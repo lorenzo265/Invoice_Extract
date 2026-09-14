@@ -14,8 +14,8 @@ from decimal import Decimal
 from enum import Enum, auto
 from typing import cast
 
-from invoice_extractor.document.reader import BBox
-from invoice_extractor.domain.findings import Finding
+from invoice_extractor.document.model import BBox
+from invoice_extractor.domain.findings import Finding, Severity
 
 FieldValue = str | date | Decimal
 
@@ -99,13 +99,22 @@ class LineItem:
 
 @dataclass(frozen=True, slots=True)
 class InvoiceResult:
-    """Everything one invoice extracted to. `fields` always holds all ten names, in order."""
+    """Everything one invoice extracted to.
+
+    `profile_id` is `None` for a document no profile matched: there is no default
+    vocabulary to fall back on (ADR-0008), so `fields` is empty and the findings say why.
+    """
 
     fields: Mapping[str, FieldResult]
     line_items: tuple[LineItem, ...]
     findings: tuple[Finding, ...]
-    profile_id: str
+    profile_id: str | None
     source_path: str
+
+    @property
+    def valid(self) -> bool:
+        """Derived from the findings, never set beside them (ADR-0010)."""
+        return not any(finding.severity is Severity.ERROR for finding in self.findings)
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -113,6 +122,7 @@ class InvoiceResult:
             "line_items": [_line_item_to_dict(item) for item in self.line_items],
             "findings": [finding.to_dict() for finding in self.findings],
             "profile_id": self.profile_id,
+            "valid": self.valid,
             "source_path": self.source_path,
         }
 
@@ -125,9 +135,13 @@ class InvoiceResult:
             fields={name: _field_from_dict(name, entry) for name, entry in fields.items()},
             line_items=tuple(_line_item_from_dict(item) for item in items),
             findings=tuple(Finding.from_dict(entry) for entry in findings),
-            profile_id=str(data["profile_id"]),
+            profile_id=_optional_text(data["profile_id"]),
             source_path=str(data["source_path"]),
         )
+
+
+def _optional_text(raw: object) -> str | None:
+    return None if raw is None else str(raw)
 
 
 def _field_to_dict(result: FieldResult) -> dict[str, object]:

@@ -76,10 +76,12 @@ class Matrix:
     knob_off: dict[str, Tally] = field(default_factory=dict)
     columns: dict[str, Tally] = field(default_factory=dict)
     rows_agreed: int = 0
+    detected: int = 0
     calibration: list[Tally] = field(default_factory=lambda: [Tally() for _ in BANDS])
 
     def add(self, score: DocumentScore) -> None:
         self.documents += 1
+        self.detected += score.detected
         self.rows_agreed += score.rows_expected == score.rows_found
         for scored in score.fields:
             self._add_field(score, scored)
@@ -102,6 +104,7 @@ class Matrix:
     def to_dict(self) -> dict[str, object]:
         return {
             "documents": self.documents,
+            "detected": self.detected,
             "fields": _tallies(self.fields),
             "by_profile": {name: _tallies(row) for name, row in sorted(self.by_profile.items())},
             "by_family": {name: _tallies(row) for name, row in sorted(self.by_family.items())},

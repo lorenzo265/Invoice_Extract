@@ -1,28 +1,41 @@
-"""The only orchestration in the project: a PDF and a profile in, an `InvoiceResult` out.
+"""The only orchestration in the project: a PDF and a registry in, an `InvoiceResult` out.
 
 Every other module minds one concern; this one wires them together and does nothing
-itself — it does not parse a date, match a label, or compute a confidence.
+itself — it does not parse a date, match a label, or compute a confidence. The stages it
+wires are `docs/ENGINE_SPEC.md` §2, in that order.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from invoice_extractor.document.pymupdf_reader import PyMuPDFReader
-from invoice_extractor.document.reader import DocumentReader, TextLine
+from invoice_extractor.document.model import Document
+from invoice_extractor.document.pymupdf_reader import read
+from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import InvoiceResult
 from invoice_extractor.extraction.engine import run
 from invoice_extractor.extraction.line_items import extract_line_items
 from invoice_extractor.extraction.specs import FIELD_SPECS
+from invoice_extractor.profile.detect import ProfileScore, detect_profile
+from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_extractor.profile.schema import Profile
 from invoice_extractor.validation.confidence import score
 from invoice_extractor.validation.invariants import check_all
 
+NOT_DETECTED = "profile_not_detected"
 
-def extract(pdf_path: Path, profile: Profile) -> InvoiceResult:
+
+def extract(pdf_path: Path, registry: ProfileRegistry) -> InvoiceResult:
     """Extract one invoice. Raises only for input the pipeline cannot start on (ADR-0005)."""
-    with PyMuPDFReader(pdf_path) as reader:
-        lines = _all_lines(reader)
+    document = read(pdf_path)
+    profile, scores = detect_profile(document, registry, pdf_path.name)
+    if profile is None:
+        return _undetected(document, scores)
+    return _extracted(document, profile)
+
+
+def _extracted(document: Document, profile: Profile) -> InvoiceResult:
+    lines = document.lines
     extractions = {spec.name: run(spec, lines, profile) for spec in FIELD_SPECS}
     table = extract_line_items(lines, profile)
     found = {name: extraction.field for name, extraction in extractions.items()}
@@ -35,10 +48,25 @@ def extract(pdf_path: Path, profile: Profile) -> InvoiceResult:
         line_items=table.items,
         findings=findings,
         profile_id=profile.id,
-        source_path=pdf_path.as_posix(),
+        source_path=document.source_path,
     )
 
 
-def _all_lines(reader: DocumentReader) -> list[TextLine]:
-    """Every page's lines, in page order — a label may sit on any page."""
-    return [line for page in range(1, reader.page_count + 1) for line in reader.lines(page)]
+def _undetected(document: Document, scores: tuple[ProfileScore, ...]) -> InvoiceResult:
+    """No profile matched, so nothing is read: a wrong vocabulary is worse than none."""
+    return InvoiceResult(
+        fields={},
+        line_items=(),
+        findings=(_not_detected(scores),),
+        profile_id=None,
+        source_path=document.source_path,
+    )
+
+
+def _not_detected(scores: tuple[ProfileScore, ...]) -> Finding:
+    best = f"best was {scores[0].profile_id} at {scores[0].score:.2f}" if scores else "none scored"
+    return Finding(
+        severity=Severity.ERROR,
+        code=NOT_DETECTED,
+        message=f"no profile matched this document; {best}",
+    )

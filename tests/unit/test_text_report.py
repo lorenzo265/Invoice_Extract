@@ -5,8 +5,7 @@ from __future__ import annotations
 import dataclasses
 from decimal import Decimal
 
-from conftest import make_profile
-from invoice_extractor.document.reader import BBox
+from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
     VALUE_TYPES,
@@ -56,7 +55,7 @@ def result(findings: tuple[Finding, ...] = ()) -> InvoiceResult:
 
 
 def report_lines(findings: tuple[Finding, ...] = ()) -> list[str]:
-    return render(result(findings), make_profile()).splitlines()
+    return render(result(findings)).splitlines()
 
 
 def line_starting(lines: list[str], prefix: str) -> str:
@@ -126,5 +125,5 @@ def test_report_shows_a_dash_when_a_candidate_matched_no_label() -> None:
         evidence=Evidence(1, BOX, None, Strategy.REGEX_ANCHOR, "GBP"),
     )
     scoped = dataclasses.replace(result(), fields={"currency": anchored})
-    row = line_starting(render(scoped, make_profile()).splitlines(), "currency")
+    row = line_starting(render(scoped).splitlines(), "currency")
     assert row.endswith("p1  REGEX_ANCHOR  -")

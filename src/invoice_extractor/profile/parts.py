@@ -9,7 +9,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from invoice_extractor.document.reader import Zone
+from invoice_extractor.document.model import Zone
+from invoice_extractor.document.zones import ALIASES, DEFAULT_GRID
 from invoice_extractor.profile.lexicon import expand
 from invoice_extractor.profile.reading import (
     as_decimal,
@@ -55,20 +56,7 @@ NOISE_KEYS = ("ignore_labels",)
 
 DEFAULT_SECTION_LINES = 6
 
-# The nine names of a 3x3 grid, and the `r<row>c<col>` spelling that generalises them.
-ZONE_ALIASES: Mapping[str, Zone] = {
-    "top_left": Zone.TOP_LEFT,
-    "top_center": Zone.TOP_CENTER,
-    "top_right": Zone.TOP_RIGHT,
-    "middle_left": Zone.MIDDLE_LEFT,
-    "middle_center": Zone.MIDDLE_CENTER,
-    "middle_right": Zone.MIDDLE_RIGHT,
-    "bottom_left": Zone.BOTTOM_LEFT,
-    "bottom_center": Zone.BOTTOM_CENTER,
-    "bottom_right": Zone.BOTTOM_RIGHT,
-}
-GRID_ROWS = (Zone.TOP_LEFT, Zone.MIDDLE_LEFT, Zone.BOTTOM_LEFT)
-THIRDS = 3
+ROWS, COLUMNS = DEFAULT_GRID
 
 
 def number_format(data: Mapping[str, object], path: str) -> NumberFormat:
@@ -193,14 +181,15 @@ def zones(names: tuple[str, ...], path: str) -> tuple[Zone, ...]:
 
 
 def grid(data: Mapping[str, object], path: str) -> tuple[int, int]:
-    """The zone grid. Only thirds, for as long as the document reader classifies thirds."""
+    """The zone grid a profile writes its zone names on: the reader's, or nothing."""
     reject_unknown(data, ("grid",), f"{path}.")
     if "grid" not in data:
-        return (THIRDS, THIRDS)
-    declared = data["grid"]
-    if declared != [THIRDS, THIRDS]:
-        raise ProfileError(f"{path}.grid must be [3, 3]: a page is classified into thirds")
-    return (THIRDS, THIRDS)
+        return DEFAULT_GRID
+    if data["grid"] != [ROWS, COLUMNS]:
+        raise ProfileError(
+            f"{path}.grid must be [{ROWS}, {COLUMNS}]: the grid a page is classified on"
+        )
+    return DEFAULT_GRID
 
 
 def _titles(
@@ -211,18 +200,18 @@ def _titles(
 
 
 def _zone(name: str, path: str) -> Zone:
-    if name in ZONE_ALIASES:
-        return ZONE_ALIASES[name]
+    if name in ALIASES:
+        return ALIASES[name]
     row, column = _coordinates(name, path)
-    return Zone(GRID_ROWS[row - 1].value + column - 1)
+    return Zone(row=row, col=column)
 
 
 def _coordinates(name: str, path: str) -> tuple[int, int]:
     row, marker, column = name.removeprefix("r").partition("c")
     if not name.startswith("r") or not marker or not row.isdigit() or not column.isdigit():
         raise ProfileError(f"{path} must be a zone name such as r1c3 or top_right")
-    if not (1 <= int(row) <= THIRDS and 1 <= int(column) <= THIRDS):
-        raise ProfileError(f"{path} must name a zone inside a 3 by 3 grid")
+    if not (1 <= int(row) <= ROWS and 1 <= int(column) <= COLUMNS):
+        raise ProfileError(f"{path} must name a zone inside a {ROWS} by {COLUMNS} grid")
     return int(row), int(column)
 
 
