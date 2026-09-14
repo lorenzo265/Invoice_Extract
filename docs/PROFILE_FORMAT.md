@@ -98,7 +98,7 @@ Unknown key at any level: `"<path> is not a recognized key"`. Missing required k
 | `columns` | map canonical column → `labels[]` (at least `description` and `net_amount` for line items; `rate` and `vat` for the VAT summary) |
 | `min_header_matches` | int (default 3) |
 | `stop_labels[]` | end of the table on a page |
-| `page_bounds` | `{"start": "header", "end": "totals_anchor" \| "stop_label"}` |
+| `page_bounds` | `{"start": "header", "end": "totals_anchor" \| "stop_label"}` — the shipped defaults end both tables at a stop label: the totals anchor is found before any vendor is known, and a page whose rows wrap reads it in the wrong place |
 | `carry_forward_labels[]` | lines to skip as rows and to check as running subtotals |
 | `sub_item_indent` | float (points) to classify sub-items |
 | `number_columns[]` | columns parsed with the profile's number format |
@@ -164,7 +164,7 @@ And the excerpt of `profiles/_defaults.json` those keys are laid over:
                  "unit_price": ["@column_headers.unit_price"],
                  "net_amount": ["@column_headers.net_amount"] },
     "stop_labels": ["@totals_labels.subtotal", "@totals_labels.total_amount"],
-    "page_bounds": { "start": "header", "end": "totals_anchor" },
+    "page_bounds": { "start": "header", "end": "stop_label" },
     "carry_forward_labels": ["@carry_forward.incoming", "@carry_forward.outgoing"]
   },
   "totals": {

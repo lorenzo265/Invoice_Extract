@@ -49,10 +49,15 @@ def line_items_sum(
         return _skipped("line_items_sum", "subtotal")
     if not line_items:
         return _skipped("line_items_sum", LINE_ITEMS)
-    expected = sum((item.net_amount for item in line_items), Decimal(0))
+    amounts = [item.net_amount for item in line_items if item.net_amount is not None]
+    if len(amounts) != len(line_items):
+        # A row whose amount could not be read is a row this sum cannot be made of, and
+        # reporting a shortfall the document does not have would be the wrong finding.
+        return _skipped("line_items_sum", LINE_ITEMS)
+    expected = sum(amounts, Decimal(0))
     if within_tolerance(expected, subtotal):
         return None
-    expression = " + ".join(str(item.net_amount) for item in line_items)
+    expression = " + ".join(str(amount) for amount in amounts)
     return _disagrees("line_items_sum", expression, expected, "subtotal", subtotal)
 
 

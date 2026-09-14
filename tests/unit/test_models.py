@@ -65,11 +65,11 @@ def populated() -> InvoiceResult:
         fields={name: found(name, value, f"{name}: {value}") for name, value in VALUES.items()},
         line_items=(
             LineItem(
-                "ACM-1001",
-                "Hex bolt M8 x 40, zinc",
-                Decimal("500"),
-                Decimal("0.12"),
-                Decimal("60.00"),
+                part_number="ACM-1001",
+                description="Hex bolt M8 x 40, zinc",
+                quantity=Decimal("500"),
+                unit_price=Decimal("0.12"),
+                net_amount=Decimal("60.00"),
             ),
         ),
         findings=(Finding(Severity.WARNING, "line_items_sum", "skipped", "subtotal"),),
@@ -141,7 +141,7 @@ def test_missing_field_serializes_every_key_as_null() -> None:
     ("instance", "attribute"),
     [
         (BOX, "x0"),
-        (LineItem("s", "d", Decimal(1), Decimal(1), Decimal(1)), "part_number"),
+        (LineItem(part_number="s", description="d"), "part_number"),
         (FieldResult("n", None, None, None, valid=False), "value"),
         (Evidence(1, BOX, None, Strategy.LABEL_RIGHT, "raw"), "raw_text"),
         (InvoiceResult({}, (), (), "acme", "invoice", "x.pdf"), "profile_id"),

@@ -12,12 +12,12 @@ from pathlib import Path
 
 import pytest
 
-from invoice_extractor.domain.models import LINE_ITEM_COLUMNS
+from invoice_extractor.domain.rows import LINE_ITEM_COLUMNS
 from invoice_extractor.extraction.spec import LabelSpec
 from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_forge.fields import LINE_ITEM_COLUMNS as GENERATED_COLUMNS
-from invoice_forge.fields import METADATA_FIELDS, SCALAR_FIELDS
+from invoice_forge.fields import METADATA_FIELDS, SCALAR_FIELDS, TABLE_COLUMNS
 from invoice_forge.profiles.loader import load_profile, profile_ids
 
 # Which of the declared fields a profile describes where. A derived field is described
@@ -113,5 +113,15 @@ def test_every_name_the_extractor_reads_is_in_the_field_catalog() -> None:
     assert read <= NAMED_IN_CATALOG, sorted(read - NAMED_IN_CATALOG)
 
 
-def test_the_two_packages_agree_on_the_line_item_columns() -> None:
-    assert GENERATED_COLUMNS == LINE_ITEM_COLUMNS
+def test_every_column_the_corpus_records_is_one_the_extractor_reads() -> None:
+    """The generator records a box per cell of these; the extractor reads them and more.
+
+    The other columns the catalog names — `pos`, `unit`, `discount_pct`, `vat_rate` — are
+    printed by the templates and read by the extractor, and the corpus records no box for
+    them, so `benchmarks/README.md` reports them as read and not measured.
+    """
+    assert set(GENERATED_COLUMNS) <= set(LINE_ITEM_COLUMNS)
+
+
+def test_every_column_the_extractor_reads_is_one_a_document_prints() -> None:
+    assert set(LINE_ITEM_COLUMNS) <= set(TABLE_COLUMNS)

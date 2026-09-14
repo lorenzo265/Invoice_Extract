@@ -20,23 +20,42 @@ is not extraction, and a field the extractor has never heard of is not its mista
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 from enum import Enum
+from typing import cast
 
 from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.models import (
-    LINE_ITEM_COLUMNS,
     Evidence,
     FieldResult,
     InvoiceResult,
     LineItem,
+    Party,
+    VatSummaryRow,
 )
 from invoice_extractor.extraction.specs import FIELD_ORDER
 from invoice_forge.fields import METADATA_FIELDS
 
 MONEY_FIELDS = frozenset({"vat_rate", "subtotal", "vat_amount", "total_amount"})
-MONEY_COLUMNS = frozenset({"quantity", "unit_price", "net_amount"})
+MONEY_COLUMNS = frozenset({"quantity", "unit_price", "net_amount", "rate", "base", "vat"})
+# The columns the corpus records a box for, and so the only ones a cell can be scored on.
+# A document prints more than it records — `pos`, `unit`, `discount_pct` and `vat_rate` are
+# drawn but carry no box in the truth — and those are read and published without being
+# measured here, because nothing in the truth says whether the page printed them.
+SCORED_COLUMNS: tuple[str, ...] = (
+    "part_number",
+    "description",
+    "quantity",
+    "unit_price",
+    "net_amount",
+)
+# The same for a VAT-summary line: the corpus records the numbers but not the code beside
+# them, so a code this reader publishes is read and not scored.
+SCORED_VAT_COLUMNS: tuple[str, ...] = ("rate", "base", "vat")
+# What a party block is scored on. Its VAT id is a value the document need not print in
+# the block at all — the customer's is a field of its own — so it is not scored here.
+SCORED_PARTY_KEYS: tuple[str, ...] = ("name", "lines")
 # What the extractor does not read at all, and so is never scored on: the names the
 # generator prints that no spec has learned yet.
 NOT_COVERED: tuple[str, ...] = tuple(name for name in METADATA_FIELDS if name not in FIELD_ORDER)
@@ -47,6 +66,18 @@ class Outcome(Enum):
     MISS = "miss"
     ABSENT = "absent"
     NOT_COVERED = "not_covered"
+
+
+@dataclass
+class Counts:
+    """How one column or one party key came out over a document: three outcomes, tallied."""
+
+    hit: int = 0
+    miss: int = 0
+    absent: int = 0
+
+    def count(self, outcome: Outcome) -> None:
+        setattr(self, outcome.value, getattr(self, outcome.value) + 1)
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,10 +105,14 @@ class DocumentScore:
     family: str
     knobs: tuple[str, ...]
     fields: tuple[Scored, ...]
-    columns: Mapping[str, tuple[int, int]]
+    columns: Mapping[str, Counts]
     rows_expected: int
     rows_found: int
     detected: bool
+    parties: Mapping[str, Counts] = field(default_factory=dict)
+    vat_columns: Mapping[str, Counts] = field(default_factory=dict)
+    vat_rows_expected: int = 0
+    vat_rows_found: int = 0
 
 
 def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> DocumentScore:
@@ -90,11 +125,15 @@ def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> Do
         profile=printed,
         family=str(cell.get("template", "")),
         knobs=tuple(str(knob) for knob in _sequence(cell, "knobs")),
-        fields=tuple(_score(field, fields, result) for field in (*FIELD_ORDER, *NOT_COVERED)),
+        fields=tuple(_score(name, fields, result) for name in (*FIELD_ORDER, *NOT_COVERED)),
         columns=_columns(truth, result.line_items),
         rows_expected=len(_sequence(truth, "line_items")),
         rows_found=len(result.line_items),
         detected=result.profile_id == printed,
+        parties=_parties(truth, result.parties),
+        vat_columns=_vat_columns(truth, result.vat_summary),
+        vat_rows_expected=len(_printed_vat_rows(truth)),
+        vat_rows_found=len(result.vat_summary),
     )
 
 
@@ -168,28 +207,105 @@ def _intersects(one: BBox, other: BBox) -> bool:
     return one.x0 < other.x1 and other.x0 < one.x1 and one.y0 < other.y1 and other.y0 < one.y1
 
 
-def _columns(
-    truth: Mapping[str, object], found: Sequence[LineItem]
-) -> Mapping[str, tuple[int, int]]:
-    """Per column, how many cells matched and how many did not, over the longer of the two."""
+def _columns(truth: Mapping[str, object], found: Sequence[LineItem]) -> Mapping[str, Counts]:
+    """Per column, how the cells of the two tables compared, over the longer of the two."""
     rows = _sequence(truth, "line_items")
-    tally = {column: [0, 0] for column in LINE_ITEM_COLUMNS}
+    tally = {column: Counts() for column in SCORED_COLUMNS}
     for index in range(max(len(rows), len(found))):
         wanted = rows[index] if index < len(rows) else None
         row = found[index] if index < len(found) else None
-        for column in LINE_ITEM_COLUMNS:
-            tally[column][0 if _cell_matches(column, wanted, row) else 1] += 1
-    return {column: (hit, miss) for column, (hit, miss) in tally.items()}
+        for column in SCORED_COLUMNS:
+            tally[column].count(_cell(column, wanted, None if row is None else row))
+    return tally
 
 
-def _cell_matches(column: str, wanted: object, row: LineItem | None) -> bool:
-    """A row the other side does not have matches nothing, which is one error per column."""
-    if row is None or not isinstance(wanted, dict) or wanted.get(column) is None:
+def _vat_columns(
+    truth: Mapping[str, object], found: Sequence[VatSummaryRow]
+) -> Mapping[str, Counts]:
+    """The same, for the VAT summary: only the lines the document actually printed.
+
+    Every document knows what it charges per rate; not every document prints a summary
+    of it, and the truth says which by recording a box for each line it drew.
+    """
+    rows = _printed_vat_rows(truth)
+    tally = {column: Counts() for column in SCORED_VAT_COLUMNS}
+    for index in range(max(len(rows), len(found))):
+        wanted = rows[index] if index < len(rows) else None
+        row = found[index] if index < len(found) else None
+        for column in SCORED_VAT_COLUMNS:
+            tally[column].count(_cell(column, wanted, row, printed=wanted is not None))
+    return tally
+
+
+def _printed_vat_rows(truth: Mapping[str, object]) -> Sequence[object]:
+    return [
+        row
+        for row in _sequence(truth, "vat_summary")
+        if isinstance(row, dict) and row.get("evidence")
+    ]
+
+
+def _cell(column: str, wanted: object, row: object, printed: bool | None = None) -> Outcome:
+    """One cell against one cell: read right, read wrong, or never printed at all.
+
+    A cell the page does not carry is `ABSENT` and scores nothing — the truth says which
+    ones it carried by recording a box for each — while a value read where none was
+    printed is a miss like any other.
+    """
+    expected = wanted.get(column) if isinstance(wanted, dict) else None
+    drawn = printed if printed is not None else _was_printed(wanted, column)
+    got = None if row is None else getattr(row, column, None)
+    if not drawn or expected is None:
+        return Outcome.ABSENT if got is None else Outcome.MISS
+    if got is None:
+        return Outcome.MISS
+    return Outcome.HIT if _same_cell(column, str(expected), got) else Outcome.MISS
+
+
+def _was_printed(wanted: object, column: str) -> bool:
+    """The truth records a box per cell the page drew; a column with none was not drawn."""
+    if not isinstance(wanted, dict):
         return False
-    expected, got = str(wanted[column]), str(getattr(row, column))
+    cells = wanted.get("cells")
+    return isinstance(cells, dict) and column in cells
+
+
+def _same_cell(column: str, expected: str, got: object) -> bool:
     if column in MONEY_COLUMNS:
-        return _decimal(expected) == _decimal(got)
-    return expected == got
+        return _decimal(expected) == _decimal(str(got))
+    return expected == str(got)
+
+
+def _parties(truth: Mapping[str, object], found: Mapping[str, Party]) -> Mapping[str, Counts]:
+    """Per party and key, whether the block the page printed was read as it was printed."""
+    blocks = truth.get("parties")
+    entries = blocks if isinstance(blocks, dict) else {}
+    tally: dict[str, Counts] = {}
+    for name, wanted in entries.items():
+        for key in SCORED_PARTY_KEYS:
+            tally.setdefault(f"{name}.{key}", Counts()).count(
+                _party_cell(wanted, key, found.get(name))
+            )
+    return tally
+
+
+def _party_cell(wanted: object, key: str, party: Party | None) -> Outcome:
+    """A block the page does not print is absent however much the document knows about it."""
+    printed = isinstance(wanted, dict) and bool(wanted.get("evidence"))
+    read = None if party is None else getattr(party, key)
+    if not printed:
+        return Outcome.ABSENT if party is None else Outcome.MISS
+    if party is None:
+        return Outcome.MISS
+    expected = cast(Mapping[str, object], wanted)[key]
+    return Outcome.HIT if _same_party(expected, read) else Outcome.MISS
+
+
+def _same_party(expected: object, read: object) -> bool:
+    if isinstance(expected, list):
+        lines = read if isinstance(read, tuple) else ()
+        return tuple(str(line) for line in expected) == lines
+    return (expected or None) == (read or None)
 
 
 def _mapping(data: Mapping[str, object], key: str) -> Mapping[str, object]:

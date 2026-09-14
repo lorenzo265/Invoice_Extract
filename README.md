@@ -63,6 +63,11 @@ our_reference     -                0.00  -
 your_reference    REF-1064         0.75  p1  LABEL_BESIDE  "Votre réf."
 credit_reference  -                0.00  -
 
+Parties
+supplier   Valmont Systèmes SAS · 124 rue Lavoisier · 85337 Nantes · France · FR7P585117668
+bill_to    Valmont Systèmes SA · 27 avenue du Port · 99351 Toulouse · France · FR3P030824628
+ship_to    Clairbois Systèmes SARL · 179 avenue du Port · 31948 Rennes · France
+
 Line items (4)
 PART NUMBER  DESCRIPTION                                              QTY  UNIT PRICE  NET AMOUNT
 --------------------------------------------------------------------------------
@@ -70,6 +75,11 @@ SW-API-10K   Forfait API, 10 000 appels par mois                      100       
 SRV-WRT-Q    Maintenance, forfait trimestriel, installation type B    7.5      245.50     1841.25
 SW-CLD-50    Stockage cloud 50 Go, facturation mensuelle                2     12.5000       25.00
 SRV-INST-H   Installation sur site, à l'heure                           5       95.00      475.00
+
+VAT summary (1)
+CODE    RATE      BASE      VAT
+--------------------------------------------------------------------------------
+-         20  11241.25  2248.25
 
 Invariants
 [ok]  totals_reconcile     11241.25 + 2248.25 = 13489.50
@@ -102,9 +112,11 @@ flowchart LR
     Reader -->|"Document: zoned lines<br/>+ per-page anchors"| Detect["detect_profile<br/>profile/detect.py"]
     Profiles[("profiles/*.json")] --> Detect
     Detect -->|"the vendor's Profile,<br/>or a finding and nothing"| Engine["One spec engine<br/>extraction/engine.py"]
-    Engine -->|"a FieldResult per spec<br/>+ Evidence"| Items["Line items<br/>extraction/line_items.py"]
+    Detect --> Blocks["Party blocks<br/>extraction/section.py"]
     Detect --> Items
-    Items -->|"LineItems"| Inv["Invariants<br/>validation/invariants.py"]
+    Engine -->|"a FieldResult per spec<br/>+ Evidence"| Items["Tables: rows and cells<br/>extraction/table.py"]
+    Items -->|"LineItems, VAT summary"| Inv["Invariants<br/>validation/invariants.py"]
+    Blocks --> Result
     Engine --> Inv
     Inv -->|"Findings"| Conf["Confidence<br/>validation/confidence.py"]
     Conf --> Result(("InvoiceResult"))
@@ -151,10 +163,10 @@ Full narrative: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ```
 src/invoice_extractor/
-    domain/        Evidence, FieldResult, LineItem, InvoiceResult, Money, Finding
-    document/      PDF -> Document: pages of zoned TextLines, and each page's anchors
+    domain/        Evidence, FieldResult, LineItem, VatSummaryRow, Party, Finding, Money
+    document/      PDF -> Document: pages of zoned TextLines and the runs they were drawn in
     profile/       Profile schema, strict loader, merge rules, registry, detection, lint
-    extraction/    One engine, three spec kinds; units/: the vocabulary they name
+    extraction/    One engine, five spec kinds; units/: the vocabulary they name
     validation/    Invariants (as Findings) and explainable confidence
     output/        JSON writer and human-readable text report
     pipeline.py    The only orchestration: PDF + registry -> InvoiceResult
@@ -228,10 +240,12 @@ measures this release at:
 - **Profile detection:** 100.0% (250 of 250); a document no profile matches is
   reported and not read (ADR-0008).
 - **Scalar fields:** 99.4% (3472 of 3492) of the values the documents carry.
-- **Line-item cells:** 23.0% (6817 of 29635), over
-  49 of 250 documents whose row count was read
+- **Line-item cells:** 100.0% (29077 of 29077), over
+  250 of 250 documents whose row count was read
   exactly.
-- **Confidence:** 0.0-0.2 at 0.0%, 0.4-0.6 at 66.7%, 0.6-0.8 at 100.0%, 0.8-1.0 at 99.5%.
+- **Party blocks:** 100.0% (1390 of 1390) of the names and
+  addresses the documents print.
+- **Confidence:** 0.0-0.2 at 0.0%, 0.4-0.6 at 50.0%, 0.6-0.8 at 99.8%, 0.8-1.0 at 99.6%.
 - **Not covered:** the generator prints these and the extractor has no spec for
   them, so they are never scored as wrong:
   `payment_terms`.

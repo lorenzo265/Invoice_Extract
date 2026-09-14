@@ -54,7 +54,7 @@ def test_a_document_the_extractor_cannot_read_is_reported_rather_than_raised(
     """ADR-0005 end to end: every disagreement comes back as a finding with a known code."""
     result = extract(pdf, REGISTRY)
     codes = {finding.code for finding in result.findings}
-    known = {*INVARIANT_NAMES, "line_item_incomplete", "line_items_header_not_found"}
+    known = {*INVARIANT_NAMES, "line_item_cell_unreadable", "line_items_header_not_found"}
     assert codes <= known, sorted(codes - known)
 
 
@@ -99,3 +99,33 @@ def test_a_field_no_finding_touched_is_reported_with_confidence(pdf: Path, profi
     ]
     assert untouched
     assert all(field.confidence > 0.5 for field in untouched)
+
+
+@pytest.mark.parametrize(("pdf", "profile_id"), EVERY)
+def test_a_result_carries_the_rows_and_the_blocks_the_document_prints(
+    pdf: Path, profile_id: str
+) -> None:
+    """A document is not a list of fields: it has a table, and it says who it is between."""
+    result = extract(pdf, REGISTRY)
+    truth = json.loads(pdf.with_suffix("").with_suffix(".truth.json").read_text(encoding="utf-8"))
+    assert len(result.line_items) == len(truth["line_items"])
+    assert all(item.description and item.net_amount is not None for item in result.line_items)
+    printed = {name for name, party in truth["parties"].items() if (party or {}).get("evidence")}
+    assert set(result.parties) == printed
+
+
+@pytest.mark.parametrize(("pdf", "profile_id"), EVERY)
+def test_every_cell_of_every_row_points_at_the_box_it_was_read_from(
+    pdf: Path, profile_id: str
+) -> None:
+    for item in extract(pdf, REGISTRY).line_items:
+        assert item.cells, "a row read from a page carries the boxes it was read from"
+        assert all(found.page >= 1 for found in item.cells.values())
+
+
+@pytest.mark.parametrize(("pdf", "profile_id"), EVERY)
+def test_the_vat_summary_is_read_where_the_document_prints_one(pdf: Path, profile_id: str) -> None:
+    result = extract(pdf, REGISTRY)
+    truth = json.loads(pdf.with_suffix("").with_suffix(".truth.json").read_text(encoding="utf-8"))
+    printed = [row for row in truth["vat_summary"] if row.get("evidence")]
+    assert len(result.vat_summary) == len(printed)

@@ -1,8 +1,9 @@
 """What a run of the pipeline produces, and the JSON shape it round-trips through.
 
-Every scalar value here arrives with the `Evidence` that produced it — a page, a box, a
-matched label and a strategy — so any number in the output can be traced back to the
-line it was read from. `docs/FIELD_CATALOG.md` names every field this shape carries.
+Every value here arrives with the `Evidence` that produced it — a page, a box, a matched
+label and a strategy — so any number in the output can be traced back to the line it was
+read from. `docs/FIELD_CATALOG.md` names every field this shape carries; the rows and the
+parties have records of their own in `domain/rows.py` and `domain/parties.py`.
 """
 
 from __future__ import annotations
@@ -11,11 +12,12 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
-from enum import Enum, auto
 from typing import cast
 
-from invoice_extractor.document.model import BBox
+from invoice_extractor.domain.evidence import Evidence, Strategy, optional
 from invoice_extractor.domain.findings import Finding, Severity
+from invoice_extractor.domain.parties import Party
+from invoice_extractor.domain.rows import LineItem, VatSummaryRow
 
 FieldValue = str | date | Decimal
 
@@ -41,39 +43,17 @@ VALUE_TYPES: Mapping[str, type] = {
     "credit_reference": str,
 }
 
-
-class Strategy(Enum):
-    """How a candidate was found. It lives here, beside the `Evidence` that records it.
-
-    `LABEL_RIGHT` and `LABEL_BESIDE` are the same reading of a page — the value follows
-    its label along the line — found two ways, because a PDF has no idea what a line is.
-    A vendor that writes `Invoice Number: INV-42` in one run gives the reader one line;
-    a vendor that sets the label at one tab stop and the number flush right at another
-    gives it two, and the text between them is white space that was never drawn.
-    `LABEL_BELOW` is the third way: a stacked layout prints the value under its label.
-
-    `ANCHOR` is not a search at all — the value was expected from the profile and found
-    on the page — and `DERIVED` names a value no line carries, computed from ones that
-    do, with the evidence pointing at the field it was computed from.
-    """
-
-    LABEL_RIGHT = auto()
-    LABEL_BESIDE = auto()
-    LABEL_BELOW = auto()
-    LABEL_PATTERN = auto()
-    ANCHOR = auto()
-    DERIVED = auto()
-
-
-@dataclass(frozen=True, slots=True)
-class Evidence:
-    """Where a value came from: the page and box, the label matched, the text before parsing."""
-
-    page: int
-    bbox: BBox
-    matched_label: str | None
-    strategy: Strategy
-    raw_text: str
+__all__ = [
+    "VALUE_TYPES",
+    "Evidence",
+    "FieldResult",
+    "FieldValue",
+    "InvoiceResult",
+    "LineItem",
+    "Party",
+    "Strategy",
+    "VatSummaryRow",
+]
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,28 +67,6 @@ class FieldResult:
     valid: bool
     confidence: float = 0.0
     confidence_breakdown: Mapping[str, float] = field(default_factory=dict)
-
-
-# The columns of a row, in the order a report prints them. They are the fields of
-# `LineItem`, so the table and the record cannot drift apart.
-LINE_ITEM_COLUMNS: tuple[str, ...] = (
-    "part_number",
-    "description",
-    "quantity",
-    "unit_price",
-    "net_amount",
-)
-
-
-@dataclass(frozen=True, slots=True)
-class LineItem:
-    """One row of the invoice's table. Found as a table, so it carries no `Evidence`."""
-
-    part_number: str
-    description: str
-    quantity: Decimal
-    unit_price: Decimal
-    net_amount: Decimal
 
 
 @dataclass(frozen=True, slots=True)
@@ -127,6 +85,8 @@ class InvoiceResult:
     profile_id: str | None
     document_type: str | None
     source_path: str
+    parties: Mapping[str, Party] = field(default_factory=dict)
+    vat_summary: tuple[VatSummaryRow, ...] = ()
 
     @property
     def valid(self) -> bool:
@@ -136,7 +96,9 @@ class InvoiceResult:
     def to_dict(self) -> dict[str, object]:
         return {
             "fields": {name: _field_to_dict(result) for name, result in self.fields.items()},
-            "line_items": [_line_item_to_dict(item) for item in self.line_items],
+            "parties": {name: party.to_dict() for name, party in self.parties.items()},
+            "line_items": [item.to_dict() for item in self.line_items],
+            "vat_summary": [row.to_dict() for row in self.vat_summary],
             "findings": [finding.to_dict() for finding in self.findings],
             "profile_id": self.profile_id,
             "document_type": self.document_type,
@@ -147,16 +109,28 @@ class InvoiceResult:
     @classmethod
     def from_dict(cls, data: Mapping[str, object]) -> InvoiceResult:
         fields = cast(Mapping[str, Mapping[str, object]], data["fields"])
-        items = cast(Sequence[Mapping[str, str]], data["line_items"])
         findings = cast(Sequence[Mapping[str, object]], data["findings"])
         return cls(
             fields={name: _field_from_dict(name, entry) for name, entry in fields.items()},
-            line_items=tuple(_line_item_from_dict(item) for item in items),
+            line_items=tuple(LineItem.from_dict(item) for item in _rows(data, "line_items")),
             findings=tuple(Finding.from_dict(entry) for entry in findings),
             profile_id=_optional_text(data["profile_id"]),
             document_type=_optional_text(data["document_type"]),
             source_path=str(data["source_path"]),
+            parties=_parties(data),
+            vat_summary=tuple(VatSummaryRow.from_dict(row) for row in _rows(data, "vat_summary")),
         )
+
+
+def _parties(data: Mapping[str, object]) -> dict[str, Party]:
+    found = data.get("parties")
+    entries = cast(Mapping[str, Mapping[str, object]], found if isinstance(found, dict) else {})
+    return {name: Party.from_dict(entry) for name, entry in entries.items()}
+
+
+def _rows(data: Mapping[str, object], key: str) -> Sequence[Mapping[str, object]]:
+    found = data.get(key)
+    return cast(Sequence[Mapping[str, object]], found if isinstance(found, list) else ())
 
 
 def _optional_text(raw: object) -> str | None:
@@ -169,7 +143,7 @@ def _field_to_dict(result: FieldResult) -> dict[str, object]:
         "value": _value_to_json(result.value),
         "raw_text": result.raw_text,
         "valid": result.valid,
-        "evidence": None if evidence is None else _evidence_to_dict(evidence),
+        "evidence": None if evidence is None else evidence.to_dict(),
         "confidence": result.confidence,
         "confidence_breakdown": dict(result.confidence_breakdown),
     }
@@ -182,57 +156,10 @@ def _field_from_dict(name: str, data: Mapping[str, object]) -> FieldResult:
         name=name,
         value=_value_from_json(name, data["value"]),
         raw_text=None if raw_text is None else str(raw_text),
-        evidence=_optional_evidence(data["evidence"]),
+        evidence=optional(data["evidence"]),
         valid=bool(data["valid"]),
         confidence=cast(float, data.get("confidence", 0.0)),
         confidence_breakdown=dict(breakdown),
-    )
-
-
-def _optional_evidence(raw: object) -> Evidence | None:
-    return None if raw is None else _evidence_from_dict(cast(Mapping[str, object], raw))
-
-
-def _evidence_to_dict(evidence: Evidence) -> dict[str, object]:
-    box = evidence.bbox
-    return {
-        "page": evidence.page,
-        "bbox": {"x0": box.x0, "y0": box.y0, "x1": box.x1, "y1": box.y1},
-        "matched_label": evidence.matched_label,
-        "strategy": evidence.strategy.name,
-        "raw_text": evidence.raw_text,
-    }
-
-
-def _evidence_from_dict(data: Mapping[str, object]) -> Evidence:
-    box = cast(Mapping[str, float], data["bbox"])
-    label = data["matched_label"]
-    return Evidence(
-        page=cast(int, data["page"]),
-        bbox=BBox(x0=box["x0"], y0=box["y0"], x1=box["x1"], y1=box["y1"]),
-        matched_label=None if label is None else str(label),
-        strategy=Strategy[str(data["strategy"])],
-        raw_text=str(data["raw_text"]),
-    )
-
-
-def _line_item_to_dict(item: LineItem) -> dict[str, object]:
-    return {
-        "part_number": item.part_number,
-        "description": item.description,
-        "quantity": str(item.quantity),
-        "unit_price": str(item.unit_price),
-        "net_amount": str(item.net_amount),
-    }
-
-
-def _line_item_from_dict(data: Mapping[str, str]) -> LineItem:
-    return LineItem(
-        part_number=data["part_number"],
-        description=data["description"],
-        quantity=Decimal(data["quantity"]),
-        unit_price=Decimal(data["unit_price"]),
-        net_amount=Decimal(data["net_amount"]),
     )
 
 

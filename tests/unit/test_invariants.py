@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 from decimal import Decimal
 
 import pytest
@@ -23,9 +24,9 @@ CLEAN = {
     "total_amount": "588.00",
 }
 ITEMS = (
-    LineItem("ACM-1001", "Hex bolt", Decimal("500"), Decimal("0.12"), Decimal("60.00")),
-    LineItem("ACM-2210", "Bearing", Decimal("40"), Decimal("3.85"), Decimal("154.00")),
-    LineItem("ACM-3300", "Bracket", Decimal("120"), Decimal("2.30"), Decimal("276.00")),
+    LineItem(part_number="ACM-1001", description="Hex bolt", net_amount=Decimal("60.00")),
+    LineItem(part_number="ACM-2210", description="Bearing", net_amount=Decimal("154.00")),
+    LineItem(part_number="ACM-3300", description="Bracket", net_amount=Decimal("276.00")),
 )
 
 
@@ -137,3 +138,12 @@ def test_check_all_preserves_name_order() -> None:
 
 def test_check_all_drops_the_invariants_that_held() -> None:
     assert check_all(fields(), ITEMS) == ()
+
+
+def test_line_items_sum_is_skipped_when_a_rows_amount_could_not_be_read() -> None:
+    """A row nobody could read an amount off is a row this sum cannot be made of."""
+    unreadable = (*ITEMS[:2], dataclasses.replace(ITEMS[2], net_amount=None))
+    finding = line_items_sum(fields(), unreadable)
+    assert finding is not None
+    assert finding.severity is Severity.WARNING
+    assert "skipped" in finding.message

@@ -213,7 +213,7 @@
     ],
     "page_bounds": {
       "start": "header",
-      "end": "totals_anchor"
+      "end": "stop_label"
     },
     "carry_forward_labels": [
       "@carry_forward.incoming",

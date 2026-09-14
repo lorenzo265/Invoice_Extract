@@ -12,7 +12,14 @@ from datetime import date
 from enum import Enum, auto
 
 from invoice_extractor.domain.findings import Finding, Severity
-from invoice_extractor.domain.models import FieldResult, FieldValue, InvoiceResult, LineItem
+from invoice_extractor.domain.models import (
+    FieldResult,
+    FieldValue,
+    InvoiceResult,
+    LineItem,
+    Party,
+    VatSummaryRow,
+)
 from invoice_extractor.validation.invariants import INVARIANT_NAMES
 
 RULE_WIDTH = 80
@@ -39,6 +46,11 @@ FIELD_HEADERS = ("FIELD", "VALUE", "CONF", "EVIDENCE")
 FIELD_ALIGN = (Align.LEFT, Align.LEFT, Align.LEFT, Align.LEFT)
 ITEM_HEADERS = ("PART NUMBER", "DESCRIPTION", "QTY", "UNIT PRICE", "NET AMOUNT")
 ITEM_ALIGN = (Align.LEFT, Align.LEFT, Align.RIGHT, Align.RIGHT, Align.RIGHT)
+VAT_HEADERS = ("CODE", "RATE", "BASE", "VAT")
+VAT_ALIGN = (Align.LEFT, Align.RIGHT, Align.RIGHT, Align.RIGHT)
+PARTY_WIDTH = 11
+# What a party's own lines are joined with when the report prints the block on one line.
+JOINED = " · "
 
 
 def render(result: InvoiceResult) -> str:
@@ -52,8 +64,10 @@ def render(result: InvoiceResult) -> str:
         "",
         *_field_table(result.fields),
         "",
+        *_party_block(result.parties),
         *_item_table(result.line_items),
         "",
+        *_vat_block(result.vat_summary),
         *_invariant_block(result),
         "",
         _counts(result.findings),
@@ -70,18 +84,48 @@ def _field_table(fields: Mapping[str, FieldResult]) -> list[str]:
     return _table(FIELD_HEADERS, rows, FIELD_ALIGN)
 
 
+def _party_block(parties: Mapping[str, Party]) -> list[str]:
+    """Who the invoice is between, one line each, or nothing where none was printed."""
+    if not parties:
+        return []
+    lines = [f"{name:<{PARTY_WIDTH}}{_party(party)}" for name, party in parties.items()]
+    return ["Parties", *lines, ""]
+
+
+def _party(party: Party) -> str:
+    said = [party.name or MISSING, *party.lines]
+    if party.vat_id is not None:
+        said.append(party.vat_id)
+    if party.placeholder:
+        said.append("(as billed)")
+    return JOINED.join(said)
+
+
+def _vat_block(rows: Sequence[VatSummaryRow]) -> list[str]:
+    """The tax summary the document printed, where it printed one."""
+    if not rows:
+        return []
+    printed = [(_cell(row.code), _cell(row.rate), _cell(row.base), _cell(row.vat)) for row in rows]
+    return [f"VAT summary ({len(rows)})", *_table(VAT_HEADERS, printed, VAT_ALIGN), ""]
+
+
 def _item_table(items: Sequence[LineItem]) -> list[str]:
     rows = [
         (
-            item.part_number,
-            item.description,
-            str(item.quantity),
-            str(item.unit_price),
-            str(item.net_amount),
+            _cell(item.part_number),
+            _cell(item.description),
+            _cell(item.quantity),
+            _cell(item.unit_price),
+            _cell(item.net_amount),
         )
         for item in items
     ]
     return [f"Line items ({len(items)})", *_table(ITEM_HEADERS, rows, ITEM_ALIGN)]
+
+
+def _cell(value: object) -> str:
+    """A column the vendor does not print is a column this row has nothing to show for."""
+    return MISSING if value is None else str(value)
 
 
 def _invariant_block(result: InvoiceResult) -> list[str]:

@@ -3,7 +3,7 @@
 Every other module minds one concern; this one wires them together and does nothing
 itself — it does not parse a date, match a label, or compute a confidence. The stages it
 wires are `docs/ENGINE_SPEC.md` §2, in that order: read, detect the profile, classify the
-document, run every spec, read the table, check the arithmetic, score.
+document, run every spec, read the blocks and the tables, check the arithmetic, score.
 """
 
 from __future__ import annotations
@@ -14,10 +14,19 @@ from invoice_extractor.document.model import Document
 from invoice_extractor.document.pymupdf_reader import read
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import FieldResult, InvoiceResult
+from invoice_extractor.domain.parties import Party
 from invoice_extractor.extraction.classify import classify_document
 from invoice_extractor.extraction.engine import Extraction, order, run
 from invoice_extractor.extraction.line_items import extract_line_items
-from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
+from invoice_extractor.extraction.section import read_section
+from invoice_extractor.extraction.specs import (
+    FIELD_ORDER,
+    LINE_ITEMS,
+    SECTIONS,
+    SPECS,
+    VAT_SUMMARY,
+)
+from invoice_extractor.extraction.vat_summary import extract_vat_summary
 from invoice_extractor.profile.detect import ProfileScore, detect_profile
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_extractor.profile.schema import Profile
@@ -39,7 +48,7 @@ def extract(pdf_path: Path, registry: ProfileRegistry) -> InvoiceResult:
 def _extracted(document: Document, profile: Profile) -> InvoiceResult:
     kind = classify_document(document, profile)
     extractions = _resolve(document, profile)
-    table = extract_line_items(document.lines, profile)
+    table = extract_line_items(document, profile, LINE_ITEMS)
     found = {name: extraction.field for name, extraction in extractions.items()}
     findings = (*table.findings, *check_all(found, table.items))
     return InvoiceResult(
@@ -52,7 +61,15 @@ def _extracted(document: Document, profile: Profile) -> InvoiceResult:
         profile_id=profile.id,
         document_type=kind.value,
         source_path=document.source_path,
+        parties=_parties(document, profile),
+        vat_summary=extract_vat_summary(document, profile, VAT_SUMMARY),
     )
+
+
+def _parties(document: Document, profile: Profile) -> dict[str, Party]:
+    """Every party block the document prints; one it does not print is absent, not empty."""
+    read_blocks = ((spec.name, read_section(spec, document, profile)) for spec in SECTIONS)
+    return {name: party for name, party in read_blocks if party is not None}
 
 
 def _resolve(document: Document, profile: Profile) -> dict[str, Extraction]:

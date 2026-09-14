@@ -7,9 +7,9 @@ from collections.abc import Mapping, Sequence
 from decimal import Decimal
 
 from invoice_extractor.document.anchors import anchors_of
-from invoice_extractor.document.model import BBox, Document, Page, TextLine, Zone
+from invoice_extractor.document.model import BBox, Document, Page, TextLine, TextPart, Zone
 from invoice_extractor.document.zones import classify
-from invoice_extractor.domain.models import LINE_ITEM_COLUMNS
+from invoice_extractor.domain.rows import LINE_ITEM_COLUMNS, VAT_SUMMARY_COLUMNS
 from invoice_extractor.extraction.specs import FIELD_ORDER
 from invoice_extractor.profile.schema import (
     BlockProfile,
@@ -23,6 +23,7 @@ from invoice_extractor.profile.schema import (
     PageBounds,
     Placement,
     Profile,
+    SectionProfile,
     SupplierProfile,
     TableEdge,
     TableProfile,
@@ -60,10 +61,16 @@ CHAR_WIDTH = 5.5
 Entry = tuple[int, str, float, float, float, float]
 
 
-def line(text: str, x: float, y: float, page: int = 1) -> TextLine:
+def line(text: str, x: float, y: float, page: int = 1, bold: bool = False) -> TextLine:
     """A `TextLine` whose text is drawn at baseline `y`, starting at `x`."""
     bbox = BBox(x, y - ASCENT, x + CHAR_WIDTH * len(text), y + DESCENT)
-    return TextLine(page, text, bbox, classify(bbox, PAGE_WIDTH, PAGE_HEIGHT))
+    return TextLine(
+        page,
+        text,
+        bbox,
+        classify(bbox, PAGE_WIDTH, PAGE_HEIGHT),
+        parts=(TextPart(text, bbox, bold=bold),),
+    )
 
 
 def make_document(entries: Sequence[Entry], source_path: str = "fake.pdf") -> Document:
@@ -110,18 +117,47 @@ def make_field_profile(
 
 
 def make_table_profile(
-    columns: Mapping[str, Sequence[str]] | None = None, stop_labels: Sequence[str] = ()
+    columns: Mapping[str, Sequence[str]] | None = None,
+    stop_labels: Sequence[str] = (),
+    carry_forward_labels: Sequence[str] = (),
+    min_header_matches: int | None = None,
+    end: TableEdge = TableEdge.STOP_LABEL,
 ) -> TableProfile:
     """A `TableProfile` whose header words are the column names themselves."""
     declared = columns or {column: (column,) for column in LINE_ITEM_COLUMNS}
     return TableProfile(
         columns={name: tuple(labels) for name, labels in declared.items()},
-        min_header_matches=len(declared),
+        min_header_matches=len(declared) if min_header_matches is None else min_header_matches,
         stop_labels=tuple(stop_labels),
-        page_bounds=PageBounds(start="header", end=TableEdge.TOTALS_ANCHOR),
-        carry_forward_labels=(),
+        page_bounds=PageBounds(start="header", end=end),
+        carry_forward_labels=tuple(carry_forward_labels),
         sub_item_indent=8.0,
         number_columns=("quantity", "unit_price", "net_amount"),
+    )
+
+
+def make_vat_table_profile(stop_labels: Sequence[str] = ()) -> TableProfile:
+    """The VAT summary's own table: a rate, what it was charged on, and what it came to."""
+    return make_table_profile(
+        columns={column: (column,) for column in VAT_SUMMARY_COLUMNS},
+        stop_labels=stop_labels,
+        min_header_matches=2,
+    )
+
+
+def make_section_profile(
+    labels: Sequence[str] = ("Bill To",),
+    stop_labels: Sequence[str] = (),
+    placeholders: Sequence[str] = (),
+    max_lines: int = 6,
+) -> SectionProfile:
+    """A party block's description: what opens it, what closes it, what it says when it defers."""
+    return SectionProfile(
+        labels=tuple(labels),
+        stop_labels=tuple(stop_labels),
+        max_lines=max_lines,
+        placeholders=tuple(placeholders),
+        zones=(Zone(2, 1),),
     )
 
 
@@ -146,6 +182,8 @@ def make_profile(
     thousands_separators: Sequence[str] = (",",),
     date_formats: Sequence[str] = ("%d %b %Y",),
     line_items: TableProfile | None = None,
+    parties: Mapping[str, SectionProfile] | None = None,
+    vat_summary: TableProfile | None = None,
 ) -> Profile:
     """A `Profile` built in memory, so a unit test never reads `profiles/*.json`."""
     return Profile(
@@ -167,9 +205,9 @@ def make_profile(
         calendar=Calendar(months=MONTHS, abbreviations=ABBREVIATIONS),
         zones_grid=(3, 3),
         fields=dict(fields or {name: make_field_profile() for name in FIELD_ORDER}),
-        parties={},
+        parties=dict(parties or {}),
         line_items=line_items or make_table_profile(),
-        vat_summary=None,
+        vat_summary=vat_summary,
         totals=make_block_profile(),
         custom_fields=(),
         variants=(),

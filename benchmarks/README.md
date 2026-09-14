@@ -47,15 +47,40 @@ A field that found nothing is a field whose label the strategies never reached; 
 
 ## Line-item columns
 
-| Column | Hit | Miss | Hit rate |
-| --- | ---: | ---: | ---: |
-| part_number | 1498 | 4429 | 25.3% |
-| description | 1314 | 4613 | 22.2% |
-| quantity | 1508 | 4419 | 25.4% |
-| unit_price | 1086 | 4841 | 18.3% |
-| net_amount | 1411 | 4516 | 23.8% |
+| Column | Hit | Miss | Absent | Hit rate |
+| --- | ---: | ---: | ---: | ---: |
+| part_number | 5369 | 0 | 558 | 100.0% |
+| description | 5927 | 0 | 0 | 100.0% |
+| quantity | 5927 | 0 | 0 | 100.0% |
+| unit_price | 5927 | 0 | 0 | 100.0% |
+| net_amount | 5927 | 0 | 0 | 100.0% |
 
-49 of 250 documents read the row count exactly.
+250 of 250 documents read the row count exactly. A cell is scored only where the truth records a box for it: a column a vendor does not print is `absent`, and the columns the corpus prints without recording — `pos`, `unit`, `discount_pct` and `vat_rate` — are read and published without being measured here.
+
+## VAT summary
+
+| Column | Hit | Miss | Absent | Hit rate |
+| --- | ---: | ---: | ---: | ---: |
+| rate | 203 | 0 | 0 | 100.0% |
+| base | 203 | 0 | 0 | 100.0% |
+| vat | 203 | 0 | 0 | 100.0% |
+
+183 of 250 documents print a VAT summary, and 250 of 250 read as many lines as were printed. The code beside a rate is read and not scored: the corpus records the numbers of a line, not its code.
+
+## Party blocks
+
+| Block | Hit | Miss | Absent | Hit rate |
+| --- | ---: | ---: | ---: | ---: |
+| bill_to.lines | 250 | 0 | 0 | 100.0% |
+| bill_to.name | 250 | 0 | 0 | 100.0% |
+| mail_to.lines | 12 | 0 | 238 | 100.0% |
+| mail_to.name | 12 | 0 | 238 | 100.0% |
+| ship_to.lines | 183 | 0 | 67 | 100.0% |
+| ship_to.name | 183 | 0 | 67 | 100.0% |
+| supplier.lines | 250 | 0 | 0 | 100.0% |
+| supplier.name | 250 | 0 | 0 | 100.0% |
+
+A party a document knows but does not print is `absent`: the truth records a box per line it drew, and a block with none was never on the page. A block's VAT id is not scored here — a document need not print one inside the block, and the customer's is a field of its own.
 
 ## By profile
 
@@ -138,8 +163,8 @@ A knob whose `on` rate sits below its `off` rate is a variation this release los
 | --- | ---: | ---: | ---: |
 | 0.0-0.2 | 0 | 6 | 0.0% |
 | 0.2-0.4 | 0 | 0 | -- |
-| 0.4-0.6 | 2 | 1 | 66.7% |
-| 0.6-0.8 | 675 | 0 | 100.0% |
-| 0.8-1.0 | 2795 | 13 | 99.5% |
+| 0.4-0.6 | 1 | 1 | 50.0% |
+| 0.6-0.8 | 642 | 1 | 99.8% |
+| 0.8-1.0 | 2829 | 12 | 99.6% |
 
 The confidence the extractor prints beside a value, against how often a value in that band turned out to be right.

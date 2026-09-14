@@ -1,176 +1,118 @@
-"""The line-item table: find the header row, then read every row under it.
+"""The line-item table, shaped: raw cells in, `LineItem`s out.
 
-A table is located, not ranked — the header row fixes where each column starts, and every
-row below reuses those positions until a stop label ends the table. That is why a
-`LineItem` carries no `Evidence`: there is no ranking decision to audit (ADR-0002). A row
-this module cannot read becomes a `Finding`, never an exception (ADR-0005).
+`extraction/table.py` says where the rows are and what each cell says; this module says
+what a row *is*. The two are apart because reading a table and knowing what its columns
+mean are different jobs: the VAT summary is read by the same engine and shaped by
+`vat_summary.py` into something else entirely.
+
+A cell that will not parse is not a row thrown away — the row is published with that cell
+empty and a `Finding` beside it, because a quantity nobody can read is not a reason to
+lose the description and the amount (ADR-0005).
 """
 
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from decimal import Decimal
 
-from invoice_extractor.document.model import TextLine
+from invoice_extractor.document.model import Document
+from invoice_extractor.domain.evidence import Evidence
 from invoice_extractor.domain.findings import Finding, Severity
-from invoice_extractor.domain.models import LINE_ITEM_COLUMNS, LineItem
+from invoice_extractor.domain.rows import LineItem, SubItem
+from invoice_extractor.extraction.spec import TableSpec
+from invoice_extractor.extraction.table import Cell, Cells, RawRow, read_table
 from invoice_extractor.extraction.units.normalizers import parse_number
-from invoice_extractor.profile.schema import Profile, TableProfile
+from invoice_extractor.profile.schema import Profile
 
-# How far apart two cells' tops may sit and still be the same printed row, in points.
-ROW_TOLERANCE = 2.0
-
-Anchors = Sequence[tuple[float, str]]
+# The columns whose text is a number in the vendor's own format.
+NUMBERS: tuple[str, ...] = ("quantity", "unit_price", "discount_pct", "vat_rate", "net_amount")
 
 
 @dataclass(frozen=True, slots=True)
 class TableExtraction:
-    """Every row that could be read, and a finding for every row that could not."""
+    """Every row that could be read, and a finding for every cell that could not."""
 
     items: tuple[LineItem, ...]
     findings: tuple[Finding, ...]
 
 
-def extract_line_items(lines: Sequence[TextLine], profile: Profile) -> TableExtraction:
-    """Read the line-item table off every page, first page's table first."""
+def extract_line_items(document: Document, profile: Profile, spec: TableSpec) -> TableExtraction:
+    """Read the line-item table off every page it runs over, first page's rows first."""
+    reading = read_table(document, profile.line_items, spec.required_columns)
+    if reading.pages == 0:
+        return TableExtraction((), (_header_not_found(),))
     items: list[LineItem] = []
     findings: list[Finding] = []
-    headers = 0
-    for page in _pages(lines):
-        header = _header_row(page, profile.line_items)
-        if header is None:
-            continue
-        headers += 1
-        _read_page(page, header, profile, items, findings)
-    if headers == 0:
-        return TableExtraction((), (_header_not_found(),))
+    for index, row in enumerate(reading.rows):
+        items.append(_item(row, profile, index, findings, spec.columns))
     return TableExtraction(tuple(items), tuple(findings))
 
 
-def _read_page(
-    page: Sequence[TextLine],
-    header: Mapping[str, TextLine],
+def _item(
+    row: RawRow,
     profile: Profile,
-    items: list[LineItem],
+    index: int,
     findings: list[Finding],
-) -> None:
-    anchors = sorted((line.bbox.x0, column) for column, line in header.items())
-    for group in _row_groups(page, header, profile.line_items.stop_labels):
-        item, finding = _read_row(group, anchors, profile)
-        if item is not None:
-            items.append(item)
-        if finding is not None:
-            findings.append(finding)
-
-
-def _pages(lines: Sequence[TextLine]) -> list[list[TextLine]]:
-    by_page: dict[int, list[TextLine]] = {}
-    for line in lines:
-        by_page.setdefault(line.page, []).append(line)
-    return [by_page[page] for page in sorted(by_page)]
-
-
-def _header_row(lines: Sequence[TextLine], line_items: TableProfile) -> dict[str, TextLine] | None:
-    """Five header words, one per column, whose tops agree — or nothing on this page."""
-    matches = [
-        (column, line)
-        for column in LINE_ITEM_COLUMNS
-        for line in lines
-        if _is_one_of(line.text, line_items.columns[column])
-    ]
-    for _, anchor in matches:
-        row = _columns_at(matches, anchor.bbox.y0)
-        if len(row) == len(LINE_ITEM_COLUMNS):
-            return row
-    return None
-
-
-def _columns_at(matches: Sequence[tuple[str, TextLine]], y0: float) -> dict[str, TextLine]:
-    row: dict[str, TextLine] = {}
-    for column, line in matches:
-        if column not in row and abs(line.bbox.y0 - y0) <= ROW_TOLERANCE:
-            row[column] = line
-    return row
-
-
-def _row_groups(
-    page: Sequence[TextLine], header: Mapping[str, TextLine], stop_labels: Sequence[str]
-) -> list[list[TextLine]]:
-    """Everything under the header, grouped into printed rows, up to the first stop label."""
-    floor = max(line.bbox.y0 for line in header.values())
-    below = sorted(
-        (line for line in page if line.bbox.y0 > floor),
-        key=lambda line: (line.bbox.y0, line.bbox.x0),
+    columns: Sequence[str],
+) -> LineItem:
+    numbers = {column: _number(row.cells, column, profile, index, findings) for column in NUMBERS}
+    return LineItem(
+        pos=_position(row.cells, profile, index, findings),
+        part_number=_text(row.cells, "part_number"),
+        description=_text(row.cells, "description"),
+        unit=_text(row.cells, "unit"),
+        **numbers,
+        sub_items=tuple(_sub_item(sub, profile) for sub in row.sub_items),
+        cells=_evidence(row.cells, columns),
     )
-    groups: list[list[TextLine]] = []
-    for line in below:
-        if groups and abs(line.bbox.y0 - groups[-1][0].bbox.y0) <= ROW_TOLERANCE:
-            groups[-1].append(line)
-        else:
-            groups.append([line])
-    return _until_stop(groups, stop_labels)
 
 
-def _until_stop(
-    groups: Sequence[list[TextLine]], stop_labels: Sequence[str]
-) -> list[list[TextLine]]:
-    kept: list[list[TextLine]] = []
-    for group in groups:
-        if any(_starts_with_one_of(line.text, stop_labels) for line in group):
-            break
-        kept.append(group)
-    return kept
+def _sub_item(cells: Cells, profile: Profile) -> SubItem:
+    return SubItem(
+        description=_text(cells, "description") or "",
+        quantity=_parsed(cells.get("quantity"), profile),
+        unit_price=_parsed(cells.get("unit_price"), profile),
+    )
 
 
-def _read_row(
-    group: Sequence[TextLine], anchors: Anchors, profile: Profile
-) -> tuple[LineItem | None, Finding | None]:
-    cells = _cells(group, anchors)
-    absent = next((column for column in LINE_ITEM_COLUMNS if column not in cells), None)
-    if absent is not None:
-        return None, _incomplete(group, f"no {absent} cell")
-    quantity = parse_number(cells["quantity"], profile)
-    unit_price = parse_number(cells["unit_price"], profile)
-    net_amount = parse_number(cells["net_amount"], profile)
-    if quantity is None:
-        return None, _incomplete(group, "an unreadable quantity")
-    if unit_price is None:
-        return None, _incomplete(group, "an unreadable unit_price")
-    if net_amount is None:
-        return None, _incomplete(group, "an unreadable net_amount")
-    item = LineItem(cells["part_number"], cells["description"], quantity, unit_price, net_amount)
-    return item, None
+def _text(cells: Cells, column: str) -> str | None:
+    cell = cells.get(column)
+    return None if cell is None else cell.text
 
 
-def _cells(group: Sequence[TextLine], anchors: Anchors) -> dict[str, str]:
-    cells: dict[str, str] = {}
-    for line in group:
-        column = _column_of(line, anchors)
-        if column is not None and column not in cells:
-            cells[column] = line.text.strip()
-    return cells
+def _number(
+    cells: Cells, column: str, profile: Profile, index: int, findings: list[Finding]
+) -> Decimal | None:
+    cell = cells.get(column)
+    if cell is None:
+        return None
+    value = _parsed(cell, profile)
+    if value is None:
+        findings.append(_unreadable(index, column, cell.text))
+    return value
 
 
-def _column_of(cell: TextLine, anchors: Anchors) -> str | None:
-    """The rightmost column that starts at or before this cell — anchors sort ascending."""
-    left_of_cell = [column for anchor, column in anchors if anchor <= cell.bbox.x0 + ROW_TOLERANCE]
-    return left_of_cell[-1] if left_of_cell else None
+def _position(cells: Cells, profile: Profile, index: int, findings: list[Finding]) -> int | None:
+    """The row number the vendor printed, which is a count and not an amount."""
+    value = _number(cells, "pos", profile, index, findings)
+    return None if value is None else int(value)
 
 
-def _is_one_of(text: str, words: Sequence[str]) -> bool:
-    return text.strip().casefold() in {word.strip().casefold() for word in words}
+def _parsed(cell: Cell | None, profile: Profile) -> Decimal | None:
+    return None if cell is None else parse_number(cell.text, profile)
 
 
-def _starts_with_one_of(text: str, labels: Sequence[str]) -> bool:
-    stripped = text.strip().casefold()
-    return any(stripped.startswith(label.strip().casefold()) for label in labels)
+def _evidence(cells: Cells, columns: Sequence[str]) -> Mapping[str, Evidence]:
+    return {column: cells[column].evidence for column in columns if column in cells}
 
 
-def _incomplete(group: Sequence[TextLine], problem: str) -> Finding:
+def _unreadable(index: int, column: str, printed: str) -> Finding:
     return Finding(
         severity=Severity.WARNING,
-        code="line_item_incomplete",
-        message=f"row at y0={group[0].bbox.y0} has {problem}",
+        code="line_item_cell_unreadable",
+        message=f"line_items[{index}].{column} says {printed!r}, which is not a number",
+        field=column,
     )
 
 

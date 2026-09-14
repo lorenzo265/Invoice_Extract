@@ -32,6 +32,8 @@ def render_readme_block(report: Mapping[str, object]) -> str:
         f"- **Line-item cells:** {_overall(_mapping(items, 'columns'))}, over",
         f"  {items.get('rows_agreed', 0)} of {documents} documents whose row count was read",
         "  exactly.",
+        f"- **Party blocks:** {_overall(_mapping(matrix, 'parties'))} of the names and",
+        "  addresses the documents print.",
         f"- **Confidence:** {_calibrated(matrix)}",
         "- **Not covered:** the generator prints these and the extractor has no spec for",
         "  them, so they are never scored as wrong:",
@@ -92,6 +94,8 @@ def render_report(report: Mapping[str, object]) -> str:
         _fields_section(matrix),
         _misses_section(matrix),
         _columns_section(matrix),
+        _vat_section(matrix),
+        _parties_section(matrix),
         _by_section(matrix, "by_profile", "By profile", "Profile"),
         _by_section(matrix, "by_family", "By family", "Family"),
         _knob_section(matrix),
@@ -157,13 +161,54 @@ def _number(cell: Mapping[str, object], key: str) -> int:
 def _columns_section(matrix: Mapping[str, object]) -> str:
     items = _mapping(matrix, "line_items")
     rows = [
-        (name, _cell(cell, "hit"), _cell(cell, "miss"), _rate(cell))
+        (name, _cell(cell, "hit"), _cell(cell, "miss"), _cell(cell, "absent"), _rate(cell))
         for name, cell in _cells(_mapping(items, "columns"))
     ]
-    header = ("Column", "Hit", "Miss", "Hit rate")
+    header = ("Column", "Hit", "Miss", "Absent", "Hit rate")
     table = _section("Line-item columns", header, rows, _RIGHT_FROM_ONE)
     agreed, documents = items.get("rows_agreed", 0), matrix.get("documents", 0)
-    return f"{table}\n\n{agreed} of {documents} documents read the row count exactly."
+    note = (
+        f"{agreed} of {documents} documents read the row count exactly. A cell is scored"
+        " only where the truth records a box for it: a column a vendor does not print is"
+        " `absent`, and the columns the corpus prints without recording — `pos`, `unit`,"
+        " `discount_pct` and `vat_rate` — are read and published without being measured"
+        " here."
+    )
+    return f"{table}\n\n{note}"
+
+
+def _vat_section(matrix: Mapping[str, object]) -> str:
+    summary = _mapping(matrix, "vat_summary")
+    rows = [
+        (name, _cell(cell, "hit"), _cell(cell, "miss"), _cell(cell, "absent"), _rate(cell))
+        for name, cell in _cells(_mapping(summary, "columns"))
+    ]
+    header = ("Column", "Hit", "Miss", "Absent", "Hit rate")
+    table = _section("VAT summary", header, rows, _RIGHT_FROM_ONE)
+    agreed, documents = summary.get("rows_agreed", 0), matrix.get("documents", 0)
+    carried = summary.get("documents", 0)
+    note = (
+        f"{carried} of {documents} documents print a VAT summary, and {agreed} of"
+        f" {documents} read as many lines as were printed. The code beside a rate is read"
+        " and not scored: the corpus records the numbers of a line, not its code."
+    )
+    return f"{table}\n\n{note}"
+
+
+def _parties_section(matrix: Mapping[str, object]) -> str:
+    rows = [
+        (name, _cell(cell, "hit"), _cell(cell, "miss"), _cell(cell, "absent"), _rate(cell))
+        for name, cell in _cells(_mapping(matrix, "parties"))
+    ]
+    header = ("Block", "Hit", "Miss", "Absent", "Hit rate")
+    table = _section("Party blocks", header, rows, _RIGHT_FROM_ONE)
+    note = (
+        "A party a document knows but does not print is `absent`: the truth records a box"
+        " per line it drew, and a block with none was never on the page. A block's VAT id"
+        " is not scored here — a document need not print one inside the block, and the"
+        " customer's is a field of its own."
+    )
+    return f"{table}\n\n{note}"
 
 
 def _by_section(matrix: Mapping[str, object], key: str, title: str, first: str) -> str:

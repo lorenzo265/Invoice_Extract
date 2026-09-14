@@ -9,7 +9,8 @@ from __future__ import annotations
 
 import dataclasses
 
-from invoice_extractor.domain.models import LineItem as ExtractedItem
+from invoice_extractor.domain.rows import LINE_ITEM_COLUMNS as READ_COLUMNS
+from invoice_extractor.domain.rows import LineItem as ExtractedItem
 from invoice_extractor.extraction.spec import LabelSpec
 from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
 from invoice_forge.fields import (
@@ -41,9 +42,16 @@ def test_the_generator_writes_every_field_at_the_core_of_an_invoice() -> None:
     assert set(SCALAR_FIELDS) <= set(FIELD_ORDER)
 
 
-def test_a_forged_row_carries_every_column_the_extractor_reads_from_a_row() -> None:
+def test_a_forged_row_carries_every_column_the_truth_records_a_box_for() -> None:
+    """These are the cells the corpus records; the extractor reads them and four more."""
     extracted = {field.name for field in dataclasses.fields(ExtractedItem)}
-    assert set(LINE_ITEM_COLUMNS) == extracted
+    assert set(LINE_ITEM_COLUMNS) <= extracted
+
+
+def test_every_column_the_extractor_reads_is_one_a_template_family_prints() -> None:
+    """A column no family prints would be a column nothing could ever be scored on."""
+    read = {name for name in READ_COLUMNS}
+    assert read <= set(TABLE_COLUMNS)
 
 
 def test_a_forged_row_can_answer_for_every_column_it_declares() -> None:

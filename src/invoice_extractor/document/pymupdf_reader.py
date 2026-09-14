@@ -11,20 +11,26 @@ because nothing downstream may reach back into it (`docs/ENGINE_SPEC.md` §2, st
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 
 import pymupdf
 
 from invoice_extractor.document.anchors import anchors_of
-from invoice_extractor.document.model import BBox, Document, Page, TextLine
+from invoice_extractor.document.model import BBox, Document, Page, TextLine, TextPart
 from invoice_extractor.document.zones import DEFAULT_GRID, classify
 
 BBOX_PRECISION = 2
 
-# What one drawn line is, once PyMuPDF's own objects have been left behind: the box it
-# occupies, and its spans joined — a span is a run of one font, not a word.
-Drawn = tuple[Sequence[float], str]
+# What one drawn run is: the box it occupies, what it says, and how it was set. A span is
+# a run of one font, not a word, and two cells of a table drawn a few points apart are two
+# spans of one line — which is why each keeps its own box.
+Run = tuple[Sequence[float], str, bool]
+# The bit PyMuPDF sets on a span drawn in a bold face.
+BOLD_FLAG = 16
+# What one drawn line is, once PyMuPDF's own objects have been left behind: its own box,
+# the runs joined into one string, and those runs.
+Drawn = tuple[Sequence[float], str, Sequence[Run]]
 
 
 def read(pdf_path: Path, grid: tuple[int, int] = DEFAULT_GRID) -> Document:
@@ -38,7 +44,11 @@ def read(pdf_path: Path, grid: tuple[int, int] = DEFAULT_GRID) -> Document:
             drawn = source[number - 1]
             width, height = float(drawn.rect.width), float(drawn.rect.height)
             lines = [
-                (raw["bbox"], "".join(str(span["text"]) for span in raw["spans"]))
+                (
+                    raw["bbox"],
+                    "".join(str(span["text"]) for span in raw["spans"]),
+                    [(span["bbox"], str(span["text"]), _is_bold(span)) for span in raw["spans"]],
+                )
                 for block in drawn.get_text("dict")["blocks"]
                 for raw in block.get("lines", ())
             ]
@@ -69,20 +79,43 @@ def _lines(
     PyMuPDF returns lines grouped by block, and blocks are not in visual order; label
     matching reads a page top to bottom, left to right.
     """
-    found = [_line(box, text, number, width, height, grid) for box, text in drawn]
+    found = [_line(line, number, width, height, grid) for line in drawn]
     return tuple(sorted(found, key=_reading_order))
 
 
 def _line(
-    box: Sequence[float],
-    text: str,
+    drawn: Drawn,
     number: int,
     width: float,
     height: float,
     grid: tuple[int, int],
 ) -> TextLine:
+    box, text, runs = drawn
     bbox = _rounded_bbox(box)
-    return TextLine(page=number, text=text, bbox=bbox, zone=classify(bbox, width, height, grid))
+    return TextLine(
+        page=number,
+        text=text,
+        bbox=bbox,
+        zone=classify(bbox, width, height, grid),
+        parts=_parts(runs),
+    )
+
+
+def _parts(runs: Sequence[Run]) -> tuple[TextPart, ...]:
+    """The runs that say something. A run of spaces is how two cells were kept apart."""
+    return tuple(
+        TextPart(text=text, bbox=_rounded_bbox(box), bold=bold)
+        for box, text, bold in runs
+        if text.strip()
+    )
+
+
+def _is_bold(span: Mapping[str, object]) -> bool:
+    """A face is bold when the reader says so, or when the font it names says so."""
+    flags = span.get("flags")
+    if isinstance(flags, int) and flags & BOLD_FLAG:
+        return True
+    return "bold" in str(span.get("font", "")).casefold()
 
 
 def _rounded_bbox(values: Sequence[float]) -> BBox:

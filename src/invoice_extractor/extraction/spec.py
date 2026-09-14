@@ -1,12 +1,14 @@
 """What a field is: a declaration naming registered units, never values (ADR-0001, 0007).
 
-Three kinds so far, one engine behind all of them:
+Five kinds so far, one engine behind all of them:
 
 | Kind | Where the value comes from |
 |---|---|
 | `LabelSpec` | the text beside, under or matching a label the profile declares |
 | `AnchorSpec` | a value the profile already expects, found on the page |
 | `DerivedSpec` | a pure function over fields that are already resolved |
+| `SectionSpec` | the block a heading opens, down the column it was set in |
+| `TableSpec` | the rows under a header, cell by cell |
 
 A spec holds names, not functions: `units/registry.py` is the vocabulary, and `validate`
 refuses a spec that names a unit, a source or a dependency that does not exist. That
@@ -20,6 +22,8 @@ from collections.abc import Container, Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import Enum, auto
 
+from invoice_extractor.domain.parties import PARTY_NAMES
+from invoice_extractor.domain.rows import LINE_ITEM_COLUMNS, VAT_SUMMARY_COLUMNS
 from invoice_extractor.extraction.units.registry import (
     FILTERS,
     LABEL_STRATEGIES,
@@ -33,6 +37,13 @@ EXPECTED_VALUES: tuple[str, ...] = ("supplier.name", "supplier.vat_id")
 # Where a `LabelSpec` finds the field profile it reads: the catalog's fields, or the
 # vendor's own declared extras.
 SOURCES: tuple[str, ...] = ("fields", "custom_fields")
+# The tables a profile describes, and the party blocks. A `TableSpec` or a `SectionSpec`
+# names one of these, and `validate` refuses a spec that names anything else.
+TABLE_COLUMNS: Mapping[str, tuple[str, ...]] = {
+    "line_items": LINE_ITEM_COLUMNS,
+    "vat_summary": VAT_SUMMARY_COLUMNS,
+}
+SECTION_SOURCES: tuple[str, ...] = PARTY_NAMES
 
 
 class SpecKind(Enum):
@@ -42,6 +53,8 @@ class SpecKind(Enum):
     LABEL = auto()
     ANCHOR = auto()
     DERIVED = auto()
+    SECTION = auto()
+    TABLE = auto()
 
 
 class OnFailure(Enum):
@@ -92,9 +105,36 @@ class DerivedSpec:
     kind: SpecKind = field(default=SpecKind.DERIVED, init=False)
 
 
+@dataclass(frozen=True, slots=True)
+class SectionSpec:
+    """One party block: which of the profile's sections describes it."""
+
+    name: str
+    source: str
+    kind: SpecKind = field(default=SpecKind.SECTION, init=False)
+
+
+@dataclass(frozen=True, slots=True)
+class TableSpec:
+    """One table: which of the profile's tables describes it, and what a row must carry.
+
+    `required_columns` is what makes a printed row a row of this table rather than a
+    heading, a section subtotal or the line a page break carried: a row of line items has
+    something charged and what it was charged for, a VAT line has a rate and a tax.
+    """
+
+    name: str
+    source: str
+    required_columns: tuple[str, ...]
+    columns: tuple[str, ...]
+    kind: SpecKind = field(default=SpecKind.TABLE, init=False)
+
+
 # A spec whose value is collected off the page, as against one computed from others.
 Collected = LabelSpec | AnchorSpec
 Spec = LabelSpec | AnchorSpec | DerivedSpec
+# A spec that publishes a part of a document rather than one value.
+Structure = SectionSpec | TableSpec
 
 
 class SpecError(ValueError):
@@ -107,6 +147,18 @@ def validate(specs: Sequence[Spec], derivations: Mapping[str, object]) -> None:
         _validate_one(spec, derivations)
     _names_are_unique(specs)
     _dependencies_resolve(specs)
+
+
+def validate_structures(structures: Sequence[Structure]) -> None:
+    """Every block and table names a part of a profile, and a table names real columns."""
+    for structure in structures:
+        if isinstance(structure, SectionSpec):
+            _known(structure.name, "section", structure.source, SECTION_SOURCES)
+            continue
+        _known(structure.name, "table", structure.source, TABLE_COLUMNS)
+        known = TABLE_COLUMNS[structure.source]
+        for column in (*structure.columns, *structure.required_columns):
+            _known(structure.name, "column", column, known)
 
 
 def strategies_for(spec: Collected, declares_a_pattern: bool) -> tuple[str, ...]:

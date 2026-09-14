@@ -7,6 +7,44 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Added
 
+- **`TableSpec`: the line items and the VAT summary, read cell by cell.** A table's
+  columns are where *this document* drew them — the header words say so, and a cell
+  belongs to the heading whose edge it lines up with — and a state machine says what each
+  printed row under the header is: a row, the rest of a description, a component indented
+  under its row, the line a page break carried, a section's own subtotal, or the totals
+  block that ends the table. A table that runs over a page break is one table.
+- **`SectionSpec`: the party blocks.** A heading, then the column under it, down to a
+  stop label, a gap, or the profile's `max_lines`. A name too wide for its column is set
+  over two lines and read back as one name, because the page sets a name in its own
+  weight; a block that says `same as billing address` defers rather than fails; a VAT id
+  printed inside the block is a value and not a line of the address.
+- **Rows, parties and VAT lines in the result** (`domain/rows.py`, `domain/parties.py`):
+  `InvoiceResult.parties` and `InvoiceResult.vat_summary` beside `line_items`, each row
+  carrying the box every cell of it was read from (ADR-0002). A `LineItem` now holds the
+  nine columns `docs/FIELD_CATALOG.md` names, its components, and those boxes.
+- **A line's drawn runs.** `TextLine.parts` keeps the runs a reader joined into one line,
+  with the box and the weight of each: two column headings a few points apart arrive as
+  one line, and a table's columns are exactly what those two boxes say.
+- On the 250-document corpus: **every document's row count read exactly** (250 of 250,
+  up from 49), every scored line-item cell right (5,927 rows), every VAT-summary line and
+  cell right, and every party block's name and address right. No scalar field moved.
+
+### Changed
+
+- **The line-item table ends at a stop label** rather than at the totals anchor: the
+  anchor is found before any vendor is known, and a page whose descriptions wrap reads it
+  in the wrong place. `page_bounds` still says which, per profile.
+- **A VAT summary is not read out of a line-item header.** The two vocabularies overlap —
+  `Rate`, `Net`, `VAT Code` — so a row that names more of the other table's columns than
+  of this one's is that table's header. A vendor that prints the summary as a line per
+  rate instead of a table is read by the same labels.
+- **The benchmark scores a cell only where the corpus says one was printed.** The truth
+  records a box per cell a document drew; a column a vendor does not print is `absent` and
+  scored in neither direction, as an absent field already was. Parties and the VAT summary
+  are scored the same way and reported in their own sections.
+
+### Added
+
 - **One engine, several spec kinds (ADR-0007).** `extraction/engine.py` runs every field
   through the same internal pipeline — guard, collect, filter, normalize, validate, rank,
   on-failure, publish — and only the collect step differs between kinds. `LabelSpec`

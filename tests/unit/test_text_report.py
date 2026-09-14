@@ -12,7 +12,9 @@ from invoice_extractor.domain.models import (
     FieldResult,
     InvoiceResult,
     LineItem,
+    Party,
     Strategy,
+    VatSummaryRow,
 )
 from invoice_extractor.extraction.specs import FIELD_ORDER
 from invoice_extractor.output.text_report import render
@@ -31,8 +33,20 @@ VALUES: dict[str, object] = {
     "total_amount": Decimal("588.00"),
 }
 ITEMS = (
-    LineItem("ACM-1001", "Hex bolt", Decimal("500"), Decimal("0.12"), Decimal("60.00")),
-    LineItem("ACM-2210", "Bearing", Decimal("40"), Decimal("3.85"), Decimal("430.00")),
+    LineItem(
+        part_number="ACM-1001",
+        description="Hex bolt",
+        quantity=Decimal("500"),
+        unit_price=Decimal("0.12"),
+        net_amount=Decimal("60.00"),
+    ),
+    LineItem(
+        part_number="ACM-2210",
+        description="Bearing",
+        quantity=Decimal("40"),
+        unit_price=Decimal("3.85"),
+        net_amount=Decimal("430.00"),
+    ),
 )
 
 
@@ -134,3 +148,29 @@ def test_report_shows_a_dash_when_a_candidate_matched_no_label() -> None:
     scoped = dataclasses.replace(result(), fields={"currency": anchored})
     row = line_starting(render(scoped).splitlines(), "currency")
     assert row.endswith("p1  LABEL_PATTERN  -")
+
+
+def test_report_names_the_parties_the_document_printed() -> None:
+    parties = {
+        "supplier": Party(name="Acme Ltd", lines=("1 Elm Close",), vat_id="GB123456789"),
+        "ship_to": Party(name="Elsewhere Ltd", placeholder=True),
+    }
+    lines = render(dataclasses.replace(result(), parties=parties)).splitlines()
+    block = lines[lines.index("Parties") + 1 :]
+    assert block[0].endswith("Acme Ltd · 1 Elm Close · GB123456789")
+    assert block[1].endswith("Elsewhere Ltd · (as billed)")
+
+
+def test_report_lists_the_vat_summary_the_document_printed() -> None:
+    summary = (
+        VatSummaryRow(code="S", rate=Decimal(20), base=Decimal("490.00"), vat=Decimal("98.00")),
+    )
+    lines = render(dataclasses.replace(result(), vat_summary=summary)).splitlines()
+    assert line_starting(lines, "VAT summary") == "VAT summary (1)"
+    assert line_starting(lines, "S").split() == ["S", "20", "490.00", "98.00"]
+
+
+def test_a_document_with_no_blocks_and_no_summary_prints_neither() -> None:
+    printed = render(result())
+    assert "Parties" not in printed
+    assert "VAT summary" not in printed

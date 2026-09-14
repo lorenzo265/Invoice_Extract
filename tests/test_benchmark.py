@@ -8,22 +8,31 @@ markdown files is regenerated from the committed `benchmarks/latest.json` and co
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from decimal import Decimal
 
 from benchmarks import matrix as matrices
 from benchmarks import report as reports
-from benchmarks.compare import NOT_COVERED, DocumentScore, Outcome, compare
+from benchmarks.compare import (
+    NOT_COVERED,
+    SCORED_COLUMNS,
+    Counts,
+    DocumentScore,
+    Outcome,
+    compare,
+)
 from benchmarks.run import LATEST, README, REPORT
 
 from invoice_extractor.document.model import BBox
 from invoice_extractor.domain.models import (
-    LINE_ITEM_COLUMNS,
     Evidence,
     FieldResult,
     InvoiceResult,
     LineItem,
+    Party,
     Strategy,
+    VatSummaryRow,
 )
 from invoice_extractor.extraction.specs import FIELD_ORDER
 
@@ -47,8 +56,11 @@ def truth(**fields: object) -> dict[str, object]:
                 "quantity": "2",
                 "unit_price": "3.50",
                 "net_amount": "7.00",
+                "cells": {column: [BOX] for column in SCORED_COLUMNS},
             }
         ],
+        "vat_summary": [],
+        "parties": {},
     }
 
 
@@ -56,12 +68,26 @@ def result(**values: object) -> InvoiceResult:
     """An extractor result carrying one matching row and whichever fields a test names."""
     return InvoiceResult(
         fields={name: _field(name, values.get(name)) for name in FIELD_ORDER},
-        line_items=(LineItem("A-1", "A thing", Decimal(2), Decimal("3.50"), Decimal("7.00")),),
+        line_items=(
+            LineItem(
+                part_number="A-1",
+                description="A thing",
+                quantity=Decimal(2),
+                unit_price=Decimal("3.50"),
+                net_amount=Decimal("7.00"),
+                cells={column: _cell_evidence() for column in SCORED_COLUMNS},
+            ),
+        ),
         findings=(),
         profile_id="de-DE",
         document_type="invoice",
         source_path="x.pdf",
     )
+
+
+def _cell_evidence() -> Evidence:
+    """One cell's evidence: a table cell is published with the box it was read from."""
+    return Evidence(1, BBox(10.0, 10.0, 60.0, 20.0), None, Strategy.TABLE_CELL, "A thing")
 
 
 def _field(name: str, value: object, box: BBox | None = None) -> FieldResult:
@@ -154,7 +180,56 @@ def test_a_row_the_extractor_did_not_find_is_one_error_per_column() -> None:
     score = compare("x", two_rows, result())
     assert score.rows_expected == 2
     assert score.rows_found == 1
-    assert all(score.columns[column] == (1, 1) for column in LINE_ITEM_COLUMNS)
+    assert all(score.columns[column] == Counts(hit=1, miss=1) for column in SCORED_COLUMNS)
+
+
+def test_a_cell_the_page_never_printed_is_absent_rather_than_a_miss() -> None:
+    """The truth records a box per cell it drew; a column with none was not on the page."""
+    unprinted = truth()
+    rows = unprinted["line_items"]
+    assert isinstance(rows, list)
+    rows[0]["cells"] = {column: [BOX] for column in SCORED_COLUMNS if column != "part_number"}
+    without = dataclasses.replace(result().line_items[0], part_number=None)
+    score = compare("x", unprinted, dataclasses.replace(result(), line_items=(without,)))
+    assert score.columns["part_number"] == Counts(absent=1)
+
+
+def test_a_party_the_page_does_not_print_is_absent_however_much_the_truth_knows() -> None:
+    blocks = truth()
+    blocks["parties"] = {
+        "bill_to": {"name": "Acme", "lines": ["1 Street"], "vat_id": None, "evidence": []}
+    }
+    score = compare("x", blocks, result())
+    assert score.parties["bill_to.name"] == Counts(absent=1)
+
+
+def test_a_party_the_page_prints_is_scored_on_its_name_and_its_address() -> None:
+    blocks = truth()
+    blocks["parties"] = {
+        "bill_to": {"name": "Acme", "lines": ["1 Street"], "vat_id": None, "evidence": [BOX]}
+    }
+    read = dataclasses.replace(
+        result(), parties={"bill_to": Party(name="Acme", lines=("1 Street",))}
+    )
+    score = compare("x", blocks, read)
+    assert score.parties["bill_to.name"] == Counts(hit=1)
+    assert score.parties["bill_to.lines"] == Counts(hit=1)
+
+
+def test_a_vat_line_the_document_prints_is_scored_cell_by_cell() -> None:
+    printed = truth()
+    printed["vat_summary"] = [
+        {"rate": "19", "base": "7.00", "vat": "1.33", "evidence": [BOX]},
+        {"rate": "7", "base": "1.00", "vat": "0.07", "evidence": []},
+    ]
+    read = dataclasses.replace(
+        result(),
+        vat_summary=(VatSummaryRow(rate=Decimal(19), base=Decimal("7.00"), vat=Decimal("1.33")),),
+    )
+    score = compare("x", printed, read)
+    assert score.vat_rows_expected == 1
+    assert score.vat_rows_found == 1
+    assert score.vat_columns["vat"] == Counts(hit=1)
 
 
 def test_a_knob_is_tallied_on_the_side_the_document_turned_it() -> None:

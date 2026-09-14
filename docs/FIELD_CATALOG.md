@@ -28,12 +28,22 @@ truth files and reports use it verbatim. Changing a name is a schema change with
 `supplier`, `bill_to`, `ship_to`, `mail_to`, each with `name`, `lines[]`, `country`,
 `vat_id` (may be `null`); `placeholder: true` when the block says "as bill-to".
 
+A block a document does not print is absent from `parties` rather than empty in it; a
+party's `country` waits for the derivation that reads one (`customer_country`).
+
 ## Tables (`TableSpec`)
 
 `line_items[]`: `pos`, `part_number`, `description`, `quantity`, `unit`, `unit_price`,
 `discount_pct`, `vat_rate`, `vat_code`, `net_amount`, `sub_items[]`, `subscription`
 (`id`, `billing_cycle`, `period_start`, `period_end`, `share_pct`, `remaining_term`).
 `vat_summary[]`: `rate`, `code`, `base`, `vat`.
+
+Every column is optional, because every column is a vendor's choice: a table that prints
+no article number has rows without one. Each cell a row was read from carries its own box
+(`cells`), which is `Evidence` at the grain a table has. `vat_code` and `subscription`
+wait for a corpus that prints them; the corpus records a box for five of the nine
+columns, so `benchmarks/README.md` scores those five and reports the rest as read and not
+measured.
 
 ## Totals block (`BlockSpec`)
 

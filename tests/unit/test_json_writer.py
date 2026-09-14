@@ -36,11 +36,11 @@ def result() -> InvoiceResult:
         fields={"subtotal": subtotal, "due_date": absent},
         line_items=(
             LineItem(
-                "FJ-771",
-                "Kabelkanal 40x60, 2 m",
-                Decimal("30"),
-                Decimal("89.00"),
-                Decimal("2670.00"),
+                part_number="FJ-771",
+                description="Kabelkanal 40x60, 2 m",
+                quantity=Decimal("30"),
+                unit_price=Decimal("89.00"),
+                net_amount=Decimal("2670.00"),
             ),
         ),
         findings=(Finding(Severity.WARNING, "line_items_sum", "skipped", "subtotal"),),

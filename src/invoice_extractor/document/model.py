@@ -40,13 +40,41 @@ class BBox:
 
 
 @dataclass(frozen=True, slots=True)
+class TextPart:
+    """One run of text inside a line, with the box it alone occupies.
+
+    A reader joins runs drawn close together into one line — `Kód DPH` and `Sazba`, two
+    column headings a few points apart, arrive as one line of text. A table needs the two
+    boxes back, because its columns are exactly what those boxes say.
+
+    `bold` is how the run was set. A page uses weight to say what a thing is: a party's
+    name is bold and its address is not, so a name set over two lines can be read back as
+    one name rather than as a name and a street.
+    """
+
+    text: str
+    bbox: BBox
+    bold: bool = False
+
+
+@dataclass(frozen=True, slots=True)
 class TextLine:
-    """One line of text on one page, already classified into a zone. `page` is 1-indexed."""
+    """One line of text on one page, already classified into a zone. `page` is 1-indexed.
+
+    `parts` are the runs the line was joined from, in the order they were drawn. A line
+    drawn in one run is one part; a label and its value read as a single line are two.
+    """
 
     page: int
     text: str
     bbox: BBox
     zone: Zone
+    parts: tuple[TextPart, ...] = ()
+
+    @property
+    def cells(self) -> tuple[TextPart, ...]:
+        """The parts, or the whole line where a reader gave no parts for it."""
+        return self.parts or (TextPart(self.text, self.bbox),)
 
 
 @dataclass(frozen=True, slots=True)
