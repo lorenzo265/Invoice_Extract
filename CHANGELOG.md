@@ -7,6 +7,52 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Added
 
+- **Vendor profiles, shared with the generator (ADR-0006).** `profiles/<id>.json`
+  describes one vendor — language, locale, currencies, VAT rules, the supplier as it
+  prints itself, the label vocabulary of every field, the party blocks, the two tables
+  and the totals block — and both packages read the same file: `invoice_forge` draws
+  what it says, `invoice_extractor` reads it back. `profile/loader.py` is the only
+  module in this package that parses the JSON, and it raises `ProfileError` naming the
+  offending key path (`docs/PROFILE_FORMAT.md`).
+- **`profiles/_defaults.json` and lexicon references.** A profile names its language and
+  writes `"@header_labels.invoice_number"` where it means every synonym that language
+  offers; the shared defaults carry the structure every vendor has in common. Sixteen
+  languages and twenty-two vendors are described without a label list being copied
+  twice.
+- **`ProfileRegistry`**, which re-reads a profile whose file or shared defaults changed,
+  so a vendor added while the process runs is found on the next document (ADR-0008).
+- **A reader manifest as a test.** `tests/test_profile_contract.py` asserts that every
+  key the loader accepts becomes a field of the record it builds, and that every field
+  comes from a key — a profile key that does nothing fails the suite.
+
+### Changed
+
+- **`extract(pdf_path, profile)`** replaces `extract(pdf_path, layout)`, and the CLI
+  takes `--profile` instead of `--layout`. `InvoiceResult.layout_id` is now
+  `profile_id`.
+- **`part_number` and `discount_pct`** are the canonical names of the columns previously
+  called `sku` and `discount`, in both packages and in the truth files
+  (`docs/FIELD_CATALOG.md` is the one place a canonical name is named).
+- **A vendor's supplier is declared, not drawn.** Every document a profile produces now
+  carries the same supplier name, address and VAT id — the values the extractor's
+  supplier anchors will expect — instead of one sampled per document.
+- **Numbers are parsed with every thousands separator a vendor writes**, not only the
+  first one its profile lists.
+- `profiles/` and `lexicon/` moved from inside `invoice_forge` to the root of the working
+  directory, because they are now shared data rather than one package's fixtures.
+
+### Removed
+
+- **`layouts/`, `samples/` and `src/invoice_extractor/layout/`.** Profiles replace
+  layouts and the generated corpus replaces the two golden samples; `make samples` and
+  `scripts/make_samples.py` go with them, and `make demo` now extracts a committed
+  corpus fixture. `docs/LAYOUT_FORMAT.md` and `docs/SAMPLES_SPEC.md` are replaced by
+  `docs/PROFILE_FORMAT.md`.
+- `scripts/make_field_catalog.py`: `docs/FIELD_CATALOG.md` is now the contract the code
+  is measured against rather than a file generated from it.
+
+### Added
+
 - **`LABEL_BESIDE`, a fourth extraction strategy.** A vendor that sets its labels at one
   tab stop and its values flush right at another draws no text between the two, so the
   reader sees two lines rather than one and `<label>: <value>` never appears on the

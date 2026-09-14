@@ -1,0 +1,69 @@
+{
+  "id": "sk-SK",
+  "language": "sk",
+  "country": "SK",
+  "lexicon": "sk",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      " ",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd.mm.yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "23",
+      "reduced": "19",
+      "zero": "0"
+    },
+    "id_prefix": "SK",
+    "id_pattern": "\\d{10}"
+  },
+  "supplier": {
+    "name": "Dunajka Komponenty k.s.",
+    "aliases": [
+      "Dunajka"
+    ],
+    "address_lines": [
+      "Lipová 4",
+      "850 74 Nitra",
+      "Slovensko"
+    ],
+    "vat_id": "SK0597247157"
+  },
+  "custom_fields": [
+    {
+      "name": "contract_number",
+      "labels": [
+        "@header_labels.contract_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

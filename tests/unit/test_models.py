@@ -62,7 +62,7 @@ def populated() -> InvoiceResult:
             ),
         ),
         findings=(Finding(Severity.WARNING, "line_items_sum", "skipped", "subtotal"),),
-        layout_id="acme",
+        profile_id="acme",
         source_path="samples/acme_invoice.pdf",
     )
 
@@ -120,10 +120,10 @@ def test_missing_field_serializes_every_key_as_null() -> None:
     ("instance", "attribute"),
     [
         (BOX, "x0"),
-        (LineItem("s", "d", Decimal(1), Decimal(1), Decimal(1)), "sku"),
+        (LineItem("s", "d", Decimal(1), Decimal(1), Decimal(1)), "part_number"),
         (FieldResult("n", None, None, None, valid=False), "value"),
         (Evidence(1, BOX, None, Strategy.LABEL_RIGHT, "raw"), "raw_text"),
-        (InvoiceResult({}, (), (), "acme", "samples/acme_invoice.pdf"), "layout_id"),
+        (InvoiceResult({}, (), (), "acme", "samples/acme_invoice.pdf"), "profile_id"),
     ],
 )
 def test_models_are_frozen(instance: object, attribute: str) -> None:

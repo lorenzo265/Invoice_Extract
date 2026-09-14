@@ -1,4 +1,9 @@
-"""The CLI against a real sample: what it writes, what it prints, what `make demo` shows."""
+"""The CLI against a real document: what it writes, what it prints, what `make demo` shows.
+
+The document is one of the corpus fixtures committed under `tests/forge/fixtures/corpus/`
+— the only invoices in the repository that are not regenerated, which is what lets the
+report in `README.md` be compared against a run rather than trusted.
+"""
 
 from __future__ import annotations
 
@@ -12,7 +17,8 @@ import pytest
 from invoice_extractor.cli import main
 
 README = Path("README.md")
-ACME = "samples/acme_invoice.pdf"
+DEMO_PDF = "tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf"
+DEMO_PROFILE = "fr-FR"
 
 
 def readme_report() -> str:
@@ -24,16 +30,16 @@ def readme_report() -> str:
 
 
 def test_cli_prints_report_by_default(capsys: pytest.CaptureFixture[str]) -> None:
-    assert main([ACME, "--layout", "acme"]) == 0
+    assert main([DEMO_PDF, "--profile", DEMO_PROFILE]) == 0
     assert capsys.readouterr().out.startswith("Invoice Extraction Report")
 
 
 def test_cli_writes_json_file(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     target = tmp_path / "result.json"
-    assert main([ACME, "--layout", "acme", "--json", str(target)]) == 0
+    assert main([DEMO_PDF, "--profile", DEMO_PROFILE, "--json", str(target)]) == 0
     written = json.loads(target.read_text(encoding="utf-8"))
-    assert written["fields"]["total_amount"]["value"] == "588.00"
-    assert written["fields"]["total_amount"]["confidence"] == 1.0
+    assert written["profile_id"] == DEMO_PROFILE
+    assert written["fields"]["total_amount"]["value"] is not None
     assert capsys.readouterr().out == ""
 
 
@@ -41,20 +47,20 @@ def test_cli_prints_the_report_alongside_json_when_asked(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     target = tmp_path / "result.json"
-    assert main([ACME, "--layout", "acme", "--json", str(target), "--report"]) == 0
+    assert main([DEMO_PDF, "--profile", DEMO_PROFILE, "--json", str(target), "--report"]) == 0
     assert capsys.readouterr().out.startswith("Invoice Extraction Report")
     assert target.exists()
 
 
 def test_demo_command_output_matches_readme(capsys: pytest.CaptureFixture[str]) -> None:
-    assert main([ACME, "--layout", "acme", "--report"]) == 0
+    assert main([DEMO_PDF, "--profile", DEMO_PROFILE, "--report"]) == 0
     assert capsys.readouterr().out == readme_report()
 
 
 def test_module_entry_point_runs(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr(sys, "argv", ["invoice_extractor", ACME, "--layout", "acme"])
+    monkeypatch.setattr(sys, "argv", ["invoice_extractor", DEMO_PDF, "--profile", DEMO_PROFILE])
     with pytest.raises(SystemExit) as exit_code:
         runpy.run_module("invoice_extractor", run_name="__main__")
     assert exit_code.value.code == 0

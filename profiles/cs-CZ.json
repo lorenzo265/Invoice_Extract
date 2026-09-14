@@ -1,0 +1,60 @@
+{
+  "id": "cs-CZ",
+  "language": "cs",
+  "country": "CZ",
+  "lexicon": "cs",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      " ",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd.mm.yyyy"
+  ],
+  "currencies": [
+    "CZK",
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "21",
+      "reduced": "12",
+      "zero": "0"
+    },
+    "id_prefix": "CZ",
+    "id_pattern": "\\d{8}"
+  },
+  "supplier": {
+    "name": "Vltavín Komponenty v.o.s.",
+    "aliases": [
+      "Vltavín"
+    ],
+    "address_lines": [
+      "Průmyslová 83",
+      "922 02 Liberec",
+      "Česká republika"
+    ],
+    "vat_id": "CZ73999080"
+  },
+  "custom_fields": [],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "RECYCLING_FEE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

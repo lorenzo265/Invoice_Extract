@@ -12,7 +12,7 @@ from enum import Enum, auto
 
 from invoice_extractor.document.reader import Zone
 from invoice_extractor.domain.models import Evidence, FieldValue, Strategy
-from invoice_extractor.layout.schema import FieldLayout, Layout
+from invoice_extractor.profile.schema import FieldProfile, Profile
 
 
 class OnAllInvalid(Enum):
@@ -41,14 +41,14 @@ class Evaluated:
     valid: bool
 
 
-Normalizer = Callable[[Candidate, Layout], FieldValue | None]
-Validator = Callable[[FieldValue, FieldLayout], bool]
-Ranker = Callable[[Evaluated, FieldLayout], float]  # lower sorts first
+Normalizer = Callable[[Candidate, Profile], FieldValue | None]
+Validator = Callable[[FieldValue, FieldProfile], bool]
+Ranker = Callable[[Evaluated, FieldProfile], float]  # lower sorts first
 
 
 @dataclass(frozen=True, slots=True)
 class FieldSpec:
-    """One field, declared. The layout says where to look; this says how to read it.
+    """One field, declared. The profile says where to look; this says how to read it.
 
     `strategies` is a tuple because one field is printed more than one way: a label and
     its value in a single run of text, and the same pair set at two tab stops with

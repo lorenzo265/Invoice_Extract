@@ -15,7 +15,7 @@ from invoice_extractor.document.reader import TextLine, Zone
 from invoice_extractor.domain.models import FieldResult
 from invoice_extractor.extraction.spec import Candidate, Evaluated, FieldSpec, OnAllInvalid
 from invoice_extractor.extraction.strategies import STRATEGIES
-from invoice_extractor.layout.schema import FieldLayout, Layout
+from invoice_extractor.profile.schema import FieldProfile, Profile
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,43 +27,43 @@ class Extraction:
     zone: Zone | None
 
 
-def run(spec: FieldSpec, lines: Sequence[TextLine], layout: Layout) -> Extraction:
+def run(spec: FieldSpec, lines: Sequence[TextLine], profile: Profile) -> Extraction:
     """Run one spec against a document's lines and report a single result for the field."""
-    field_layout = layout.fields[spec.name]
-    candidates = _candidates(spec, lines, field_layout)
-    evaluated = [_evaluate(spec, candidate, layout, field_layout) for candidate in candidates]
-    winner = _winner(_ranked(evaluated, spec, field_layout), spec)
+    field_profile = profile.fields[spec.name]
+    candidates = _candidates(spec, lines, field_profile)
+    evaluated = [_evaluate(spec, candidate, profile, field_profile) for candidate in candidates]
+    winner = _winner(_ranked(evaluated, spec, field_profile), spec)
     if winner is None:
         return Extraction(_not_found(spec.name), len(candidates), None)
     return Extraction(_result(spec.name, winner), len(candidates), winner.candidate.zone)
 
 
 def _candidates(
-    spec: FieldSpec, lines: Sequence[TextLine], field_layout: FieldLayout
+    spec: FieldSpec, lines: Sequence[TextLine], field_profile: FieldProfile
 ) -> list[Candidate]:
     """Every way the field may be printed, pooled — the rankers decide which one won."""
     return [
         candidate
         for strategy in spec.strategies
-        for candidate in STRATEGIES[strategy](lines, field_layout)
+        for candidate in STRATEGIES[strategy](lines, field_profile)
     ]
 
 
 def _evaluate(
-    spec: FieldSpec, candidate: Candidate, layout: Layout, field_layout: FieldLayout
+    spec: FieldSpec, candidate: Candidate, profile: Profile, field_profile: FieldProfile
 ) -> Evaluated:
-    value = spec.normalizer(candidate, layout)
-    valid = value is not None and spec.validator(value, field_layout)
+    value = spec.normalizer(candidate, profile)
+    valid = value is not None and spec.validator(value, field_profile)
     return Evaluated(candidate=candidate, value=value, valid=valid)
 
 
 def _ranked(
-    evaluated: Sequence[Evaluated], spec: FieldSpec, field_layout: FieldLayout
+    evaluated: Sequence[Evaluated], spec: FieldSpec, field_profile: FieldProfile
 ) -> list[Evaluated]:
     """Sorted by every ranker in the spec's order — the first one that differs decides."""
 
     def key(item: Evaluated) -> tuple[float, ...]:
-        return tuple(rank(item, field_layout) for rank in spec.rankers)
+        return tuple(rank(item, field_profile) for rank in spec.rankers)
 
     return sorted(evaluated, key=key)
 

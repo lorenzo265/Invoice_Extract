@@ -55,7 +55,7 @@ A field that found nothing is a field whose label the strategies never reached; 
 
 | Column | Hit | Miss | Hit rate |
 | --- | ---: | ---: | ---: |
-| sku | 1498 | 4429 | 25.3% |
+| part_number | 1498 | 4429 | 25.3% |
 | description | 1314 | 4613 | 22.2% |
 | quantity | 1508 | 4419 | 25.4% |
 | unit_price | 1086 | 4841 | 18.3% |

@@ -39,7 +39,7 @@ class ColumnSet:
 CLASSIC = ColumnSet(
     columns=(
         Column("pos", 50.0, LEFT),
-        Column("sku", 88.0, LEFT),
+        Column("part_number", 88.0, LEFT),
         Column("description", 152.0, LEFT),
         Column("quantity", 389.0, RIGHT),
         Column("unit_price", 446.0, RIGHT),
@@ -52,11 +52,11 @@ CLASSIC = ColumnSet(
 CLASSIC_DISCOUNT = ColumnSet(
     columns=(
         Column("pos", 50.0, LEFT),
-        Column("sku", 88.0, LEFT),
+        Column("part_number", 88.0, LEFT),
         Column("description", 152.0, LEFT),
         Column("quantity", 344.0, RIGHT),
         Column("unit_price", 401.0, RIGHT),
-        Column("discount", 446.0, RIGHT),
+        Column("discount_pct", 446.0, RIGHT),
         Column("vat_rate", 492.0, RIGHT),
         Column("net_amount", 545.0, RIGHT),
     ),
@@ -82,7 +82,7 @@ COMPACT_DISCOUNT = ColumnSet(
         Column("quantity", 332.0, RIGHT),
         Column("unit", 340.0, LEFT),
         Column("unit_price", 447.0, RIGHT),
-        Column("discount", 492.0, RIGHT),
+        Column("discount_pct", 492.0, RIGHT),
         Column("net_amount", 545.0, RIGHT),
     ),
     description_width=262.0,

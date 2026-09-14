@@ -1,0 +1,369 @@
+{
+  "language": "sv",
+  "document_titles": {
+    "invoice": [
+      "FAKTURA",
+      "Faktura"
+    ],
+    "credit_note": [
+      "KREDITFAKTURA",
+      "Kreditnota"
+    ]
+  },
+  "header_labels": {
+    "invoice_number": [
+      "Fakturanummer",
+      "Fakturanr",
+      "Verifikationsnr"
+    ],
+    "invoice_date": [
+      "Fakturadatum",
+      "Datum"
+    ],
+    "due_date": [
+      "Förfallodatum",
+      "Förfaller",
+      "Betalas senast"
+    ],
+    "supplier_vat_id": [
+      "Momsreg.nr",
+      "VAT-nummer",
+      "Momsregistreringsnummer"
+    ],
+    "customer_vat_id": [
+      "Kundens momsreg.nr",
+      "Kundens VAT-nr"
+    ],
+    "currency": [
+      "Valuta"
+    ],
+    "supply_date": [
+      "Leveransdatum",
+      "Leveransdag"
+    ],
+    "order_number": [
+      "Ordernummer",
+      "Er order",
+      "Beställningsnr"
+    ],
+    "customer_number": [
+      "Kundnummer",
+      "Kundnr"
+    ],
+    "contract_number": [
+      "Avtalsnummer",
+      "Avtalsnr"
+    ],
+    "our_reference": [
+      "Vår referens",
+      "Handläggare"
+    ],
+    "your_reference": [
+      "Er referens",
+      "Er ref"
+    ],
+    "payment_terms": [
+      "Betalningsvillkor",
+      "Villkor"
+    ],
+    "credit_reference": [
+      "Ursprungsfaktura",
+      "Avser faktura"
+    ]
+  },
+  "totals_labels": {
+    "vat_rate": [
+      "Momssats",
+      "Moms %",
+      "Skattesats"
+    ],
+    "subtotal": [
+      "Netto",
+      "Summa exkl. moms",
+      "Delsumma"
+    ],
+    "vat_amount": [
+      "Momsbelopp",
+      "Summa moms",
+      "Moms"
+    ],
+    "total_amount": [
+      "Att betala",
+      "Totalt",
+      "Summa att betala"
+    ]
+  },
+  "charge_labels": {
+    "SHIPPING": [
+      "Frakt",
+      "Fraktkostnad",
+      "Leveransavgift"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Miljöavgift",
+      "Miljötillägg"
+    ],
+    "SURCHARGE": [
+      "Tillägg",
+      "Småorderavgift"
+    ],
+    "CONSOLIDATION_FEE": [
+      "Expeditionsavgift",
+      "Hanteringsavgift"
+    ],
+    "RECYCLING_FEE": [
+      "Återvinningsavgift",
+      "Returavgift"
+    ],
+    "ROUNDING": [
+      "Öresavrundning",
+      "Avrundning"
+    ]
+  },
+  "column_headers": {
+    "part_number": [
+      "Artikelnr",
+      "Art.nr",
+      "Artikelnummer"
+    ],
+    "description": [
+      "Beskrivning",
+      "Benämning",
+      "Artikelbenämning"
+    ],
+    "quantity": [
+      "Antal",
+      "Kvantitet"
+    ],
+    "unit_price": [
+      "Pris",
+      "Styckpris",
+      "À-pris"
+    ],
+    "net_amount": [
+      "Belopp",
+      "Summa",
+      "Radbelopp"
+    ],
+    "pos": [
+      "Pos",
+      "Rad",
+      "Nr"
+    ],
+    "unit": [
+      "Enhet",
+      "Enh"
+    ],
+    "discount_pct": [
+      "Rabatt",
+      "Rabatt %"
+    ],
+    "vat_rate": [
+      "Moms %",
+      "Momssats",
+      "Momskod"
+    ],
+    "subscription_id": [
+      "Abonnemangsnr",
+      "Tjänste-ID"
+    ],
+    "billing_cycle": [
+      "Faktureringsintervall",
+      "Period"
+    ],
+    "period": [
+      "Tidsperiod",
+      "Avtalsperiod"
+    ],
+    "share": [
+      "Andel %",
+      "Fördelning"
+    ],
+    "remaining_term": [
+      "Återstående tid",
+      "Kvarvarande löptid"
+    ]
+  },
+  "vat_summary_headers": {
+    "code": [
+      "Kod",
+      "Momskod"
+    ],
+    "rate": [
+      "Momssats",
+      "Sats"
+    ],
+    "base": [
+      "Netto",
+      "Beskattningsunderlag"
+    ],
+    "vat": [
+      "Moms",
+      "Momsbelopp"
+    ]
+  },
+  "party_headings": {
+    "bill_to": [
+      "Fakturaadress",
+      "Faktureras till"
+    ],
+    "ship_to": [
+      "Leveransadress",
+      "Levereras till"
+    ],
+    "mail_to": [
+      "Postadress",
+      "Korrespondensadress"
+    ]
+  },
+  "trap_labels": {
+    "order_date": [
+      "Orderdatum",
+      "Beställningsdatum"
+    ],
+    "delivery_date": [
+      "Leveransdatum",
+      "Utleveransdatum"
+    ],
+    "print_date": [
+      "Utskriftsdatum",
+      "Utskrivet"
+    ]
+  },
+  "carry_forward": {
+    "incoming": [
+      "Överfört från föregående sida",
+      "Överföring"
+    ],
+    "outgoing": [
+      "Delsumma / överföring",
+      "Överförs till nästa sida"
+    ]
+  },
+  "exemption_sentences": {
+    "reverse_charge": [
+      "Omvänd betalningsskyldighet för mervärdesskatt gäller."
+    ],
+    "intra_community": [
+      "Unionsintern försäljning, undantagen från moms."
+    ],
+    "export": [
+      "Export, undantagen från mervärdesskatt."
+    ]
+  },
+  "page_numbering": [
+    "Sida {page} av {pages}",
+    "Sida {page}/{pages}"
+  ],
+  "payment_terms": [
+    "Betalningsvillkor 30 dagar netto.",
+    "Betalas inom 20 dagar från fakturadatum.",
+    "2 % kassarabatt vid betalning inom 10 dagar."
+  ],
+  "legal_lines": [
+    "Våra allmänna leveransvillkor gäller för samtliga leveranser.",
+    "Varan förblir vår egendom till dess full betalning erlagts.",
+    "Dröjsmålsränta debiteras enligt räntelagen."
+  ],
+  "copy_stamps": [
+    "KOPIA",
+    "DUPLIKAT"
+  ],
+  "section_headings": [
+    "Hårdvara",
+    "Tjänster",
+    "Programlicenser",
+    "Reservdelar",
+    "Förbrukningsmaterial"
+  ],
+  "address_placeholders": [
+    "samma som fakturaadress",
+    "se fakturaadress"
+  ],
+  "months": [
+    "januari",
+    "februari",
+    "mars",
+    "april",
+    "maj",
+    "juni",
+    "juli",
+    "augusti",
+    "september",
+    "oktober",
+    "november",
+    "december"
+  ],
+  "month_abbreviations": [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "maj",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "okt",
+    "nov",
+    "dec"
+  ],
+  "diacritics": "åäö ÅÄÖ é ² °",
+  "amount_in_words": {
+    "style": "nordic_compound",
+    "units": [
+      "noll",
+      "en",
+      "två",
+      "tre",
+      "fyra",
+      "fem",
+      "sex",
+      "sju",
+      "åtta",
+      "nio",
+      "tio",
+      "elva",
+      "tolv",
+      "tretton",
+      "fjorton",
+      "femton",
+      "sexton",
+      "sjutton",
+      "arton",
+      "nitton"
+    ],
+    "tens": [
+      "tjugo",
+      "trettio",
+      "fyrtio",
+      "femtio",
+      "sextio",
+      "sjuttio",
+      "åttio",
+      "nittio"
+    ],
+    "scales": [
+      "hundra",
+      "tusen"
+    ],
+    "scale_many": [
+      "hundra",
+      "tusen"
+    ],
+    "million": [
+      "en miljon",
+      "miljoner"
+    ],
+    "scale_one": "ett",
+    "joiner": "och",
+    "currency_unit": [
+      "krona",
+      "kronor"
+    ],
+    "currency_fraction": [
+      "öre",
+      "öre"
+    ]
+  }
+}

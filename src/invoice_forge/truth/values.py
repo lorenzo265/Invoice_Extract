@@ -27,12 +27,12 @@ def item_row(item: LineItem, cells: Mapping[str, list[dict[str, object]]]) -> di
     """One line of the truth's table: the row's values, then the box of every read column."""
     return {
         "pos": item.pos,
-        "sku": item.sku,
+        "part_number": item.part_number,
         "description": item.description,
         "quantity": str(item.quantity),
         "unit": item.unit,
         "unit_price": str(item.unit_price),
-        "discount_percent": None if item.discount_percent is None else str(item.discount_percent),
+        "discount_pct": None if item.discount_pct is None else str(item.discount_pct),
         "vat_rate": str(item.vat_rate),
         "net_amount": str(item.net_amount),
         "section": item.section,

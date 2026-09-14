@@ -16,9 +16,9 @@ from collections.abc import Callable, Mapping, Sequence
 from invoice_extractor.document.reader import BBox, TextLine
 from invoice_extractor.domain.models import Evidence, Strategy
 from invoice_extractor.extraction.spec import Candidate
-from invoice_extractor.layout.schema import FieldLayout
+from invoice_extractor.profile.schema import FieldProfile
 
-StrategyFn = Callable[[Sequence[TextLine], FieldLayout], list[Candidate]]
+StrategyFn = Callable[[Sequence[TextLine], FieldProfile], list[Candidate]]
 
 # What must follow a label for the rest of the line to be its value: a colon and
 # something that is not whitespace. "Bill To" alone is a heading, not a labelled value.
@@ -29,29 +29,29 @@ AFTER_LABEL = re.compile(r"\s*:\s*\S")
 SAME_LINE_SHARE = 0.5
 
 
-def label_right(lines: Sequence[TextLine], field_layout: FieldLayout) -> list[Candidate]:
+def label_right(lines: Sequence[TextLine], field_profile: FieldProfile) -> list[Candidate]:
     """Lines of the form `<label>: <value>`; the whole line is the candidate's raw text."""
-    return _preferring_zones(_label_right(lines, field_layout), field_layout)
+    return _preferring_zones(_label_right(lines, field_profile), field_profile)
 
 
-def label_beside(lines: Sequence[TextLine], field_layout: FieldLayout) -> list[Candidate]:
+def label_beside(lines: Sequence[TextLine], field_profile: FieldProfile) -> list[Candidate]:
     """The nearest line to the right of a line that is only the label, on the same baseline.
 
     The other half of `label_right`. A vendor that sets its labels at one tab stop and its
     values flush right at another prints no text between the two, so the reader sees two
     lines rather than one and `<label>: <value>` never appears anywhere on the page.
     """
-    return _preferring_zones(_label_beside(lines, field_layout), field_layout)
+    return _preferring_zones(_label_beside(lines, field_profile), field_profile)
 
 
-def label_below(lines: Sequence[TextLine], field_layout: FieldLayout) -> list[Candidate]:
+def label_below(lines: Sequence[TextLine], field_profile: FieldProfile) -> list[Candidate]:
     """The nearest line under a line that is exactly the label, overlapping it horizontally."""
-    return _preferring_zones(_label_below(lines, field_layout), field_layout)
+    return _preferring_zones(_label_below(lines, field_profile), field_profile)
 
 
-def regex_anchor(lines: Sequence[TextLine], field_layout: FieldLayout) -> list[Candidate]:
-    """Whatever the layout's own pattern matches. No pattern, no candidates."""
-    return _preferring_zones(_regex_anchor(lines, field_layout), field_layout)
+def regex_anchor(lines: Sequence[TextLine], field_profile: FieldProfile) -> list[Candidate]:
+    """Whatever the profile's own pattern matches. No pattern, no candidates."""
+    return _preferring_zones(_regex_anchor(lines, field_profile), field_profile)
 
 
 STRATEGIES: Mapping[Strategy, StrategyFn] = {
@@ -62,16 +62,16 @@ STRATEGIES: Mapping[Strategy, StrategyFn] = {
 }
 
 
-def _preferring_zones(found: list[Candidate], field_layout: FieldLayout) -> list[Candidate]:
+def _preferring_zones(found: list[Candidate], field_profile: FieldProfile) -> list[Candidate]:
     """The candidates in the field's own zones, or every one of them if none is."""
-    inside = [candidate for candidate in found if candidate.zone in field_layout.zones]
+    inside = [candidate for candidate in found if candidate.zone in field_profile.zones]
     return inside or found
 
 
-def _label_right(lines: Sequence[TextLine], field_layout: FieldLayout) -> list[Candidate]:
+def _label_right(lines: Sequence[TextLine], field_profile: FieldProfile) -> list[Candidate]:
     return [
         _candidate(line, label, Strategy.LABEL_RIGHT, line.text, 0.0)
-        for label in field_layout.labels
+        for label in field_profile.labels
         for line in lines
         if _introduces_a_value(line.text.strip(), label)
     ]
@@ -83,9 +83,9 @@ def _introduces_a_value(text: str, label: str) -> bool:
     return AFTER_LABEL.match(text[len(label) :]) is not None
 
 
-def _label_beside(lines: Sequence[TextLine], field_layout: FieldLayout) -> list[Candidate]:
+def _label_beside(lines: Sequence[TextLine], field_profile: FieldProfile) -> list[Candidate]:
     found: list[Candidate] = []
-    for label in field_layout.labels:
+    for label in field_profile.labels:
         for anchor in lines:
             if not _is_only_the_label(anchor.text, label):
                 continue
@@ -120,9 +120,9 @@ def _shares_a_line(left: BBox, right: BBox) -> bool:
     return overlap > shorter * SAME_LINE_SHARE
 
 
-def _label_below(lines: Sequence[TextLine], field_layout: FieldLayout) -> list[Candidate]:
+def _label_below(lines: Sequence[TextLine], field_profile: FieldProfile) -> list[Candidate]:
     found: list[Candidate] = []
-    for label in field_layout.labels:
+    for label in field_profile.labels:
         for anchor in lines:
             if anchor.text.strip().lower() != label.lower():
                 continue
@@ -148,8 +148,8 @@ def _overlaps_horizontally(left: BBox, right: BBox) -> bool:
     return left.x0 < right.x1 and right.x0 < left.x1
 
 
-def _regex_anchor(lines: Sequence[TextLine], field_layout: FieldLayout) -> list[Candidate]:
-    pattern = field_layout.regex
+def _regex_anchor(lines: Sequence[TextLine], field_profile: FieldProfile) -> list[Candidate]:
+    pattern = field_profile.pattern
     if pattern is None:
         return []
     matches = ((line, pattern.search(line.text.strip())) for line in lines)

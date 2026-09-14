@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from conftest import make_field_layout
+from conftest import make_field_profile
 from invoice_extractor.document.reader import BBox, Zone
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import Evidence, FieldResult, Strategy
 from invoice_extractor.extraction.engine import Extraction
 from invoice_extractor.validation.confidence import SIGNAL_WEIGHTS, score
 
-EXPECTED_ZONE = make_field_layout(zones=(Zone.BOTTOM_RIGHT,))
+EXPECTED_ZONE = make_field_profile(zones=(Zone.BOTTOM_RIGHT,))
 BOX = BBox(400.0, 609.25, 472.83, 622.99)
 
 

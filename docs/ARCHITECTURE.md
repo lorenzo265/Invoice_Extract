@@ -1,5 +1,12 @@
 # Architecture
 
+> This document describes the v0.1 design, which series E is evolving. Where it and
+> `docs/ENGINE_SPEC.md` disagree, `ENGINE_SPEC.md` wins; PR E6 rewrites this document for
+> v0.3. What has already changed under it: a vendor is described by a **profile**
+> (`profiles/*.json`, `profile/`) rather than a layout, and the line-item column `sku` is
+> called `part_number` — `docs/PROFILE_FORMAT.md` and `docs/FIELD_CATALOG.md` are the
+> current contracts for both.
+
 `invoice-extractor` turns a PDF invoice into a typed, evidence-backed `InvoiceResult`. The design fits in one sentence: **read raw text, match it against a data-driven layout, and never let a computed value travel without the evidence that produced it.** The five boundaries in §3 keep that sentence true as the codebase grows.
 
 ## 1. Data flow

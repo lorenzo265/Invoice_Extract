@@ -1,0 +1,73 @@
+{
+  "id": "fr-FR",
+  "language": "fr",
+  "country": "FR",
+  "lexicon": "fr",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      " ",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy",
+    "d Month yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "20",
+      "reduced": "5.5",
+      "zero": "0"
+    },
+    "id_prefix": "FR",
+    "id_pattern": "[0-9A-Z]{2}\\d{9}"
+  },
+  "supplier": {
+    "name": "Valmont Systèmes SAS",
+    "aliases": [
+      "Valmont"
+    ],
+    "address_lines": [
+      "124 rue Lavoisier",
+      "85337 Nantes",
+      "France"
+    ],
+    "vat_id": "FR7P585117668"
+  },
+  "custom_fields": [
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "RECYCLING_FEE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "minimal"
+    ],
+    "fonts": "serif"
+  }
+}

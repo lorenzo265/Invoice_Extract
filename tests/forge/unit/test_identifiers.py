@@ -7,7 +7,7 @@ from random import Random
 
 import pytest
 
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.loader import load_profile, profile_ids
 from invoice_forge.sample.identifiers import (
     IBAN_BODIES,
     INVOICE_PREFIXES,
@@ -55,7 +55,7 @@ def test_something_too_short_to_be_an_iban_is_not_one() -> None:
     assert not is_valid_iban("DE1")
 
 
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+@pytest.mark.parametrize("profile_id", profile_ids())
 def test_a_vat_id_matches_the_profile_that_asked_for_it(profile_id: str) -> None:
     pattern = load_profile(profile_id).vat_id_pattern
     for seed in range(20):
@@ -79,11 +79,11 @@ def test_a_language_with_no_invoice_prefix_is_refused_by_name() -> None:
 
 
 def test_every_country_a_bundled_profile_banks_in_has_an_iban_shape() -> None:
-    assert {load_profile(name).country for name in bundled_profile_ids()} <= set(IBAN_BODIES)
+    assert {load_profile(name).country for name in profile_ids()} <= set(IBAN_BODIES)
 
 
 def test_every_language_a_bundled_profile_speaks_has_an_invoice_prefix() -> None:
-    spoken = {load_profile(name).language for name in bundled_profile_ids()}
+    spoken = {load_profile(name).language for name in profile_ids()}
     assert spoken == set(INVOICE_PREFIXES)
 
 

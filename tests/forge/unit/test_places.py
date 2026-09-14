@@ -11,7 +11,7 @@ from random import Random
 
 import pytest
 
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.loader import load_profile, profile_ids
 from invoice_forge.sample.patterns import fill
 from invoice_forge.sample.places import (
     BANK_NAMES,
@@ -33,11 +33,11 @@ MIN_CHOICES = 3
 
 
 def languages() -> frozenset[str]:
-    return frozenset(load_profile(name).language for name in bundled_profile_ids())
+    return frozenset(load_profile(name).language for name in profile_ids())
 
 
 def countries() -> frozenset[str]:
-    return frozenset(load_profile(name).country for name in bundled_profile_ids())
+    return frozenset(load_profile(name).country for name in profile_ids())
 
 
 @pytest.mark.parametrize("name", sorted(BY_LANGUAGE))
@@ -53,7 +53,7 @@ def test_a_table_keyed_by_country_covers_the_countries_and_no_others(name: str) 
 def test_every_language_names_every_country_its_own_profiles_print_in() -> None:
     """`fr` needs France, Belgium and Luxembourg; it does not need Poland."""
     needed: dict[str, set[str]] = {}
-    for name in bundled_profile_ids():
+    for name in profile_ids():
         profile = load_profile(name)
         needed.setdefault(profile.language, set()).add(profile.country)
     assert {language: set(names) for language, names in COUNTRY_NAMES.items()} == needed

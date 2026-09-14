@@ -109,7 +109,7 @@ def test_a_row_records_every_column_the_extractor_reads() -> None:
 
     item = LineItem(1, "SKU-1", "A thing", Decimal("2"), "ea", Decimal("10.00"), RATE)
     row = item_row(item, {})
-    assert row["sku"] == "SKU-1"
+    assert row["part_number"] == "SKU-1"
     assert row["quantity"] == "2"
     assert row["unit_price"] == "10.00"
     assert row["net_amount"] == "20.00"

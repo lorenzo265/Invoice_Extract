@@ -2,7 +2,7 @@
 
 Every scalar value here arrives with the `Evidence` that produced it — a page, a box, a
 matched label and a strategy — so any number in the output can be traced back to the
-line it was read from. `docs/SAMPLES_SPEC.md` fixes the JSON shape `to_dict` writes.
+line it was read from. `docs/FIELD_CATALOG.md` names every field this shape carries.
 """
 
 from __future__ import annotations
@@ -75,11 +75,22 @@ class FieldResult:
     confidence_breakdown: Mapping[str, float] = field(default_factory=dict)
 
 
+# The columns of a row, in the order a report prints them. They are the fields of
+# `LineItem`, so the table and the record cannot drift apart.
+LINE_ITEM_COLUMNS: tuple[str, ...] = (
+    "part_number",
+    "description",
+    "quantity",
+    "unit_price",
+    "net_amount",
+)
+
+
 @dataclass(frozen=True, slots=True)
 class LineItem:
     """One row of the invoice's table. Found as a table, so it carries no `Evidence`."""
 
-    sku: str
+    part_number: str
     description: str
     quantity: Decimal
     unit_price: Decimal
@@ -93,7 +104,7 @@ class InvoiceResult:
     fields: Mapping[str, FieldResult]
     line_items: tuple[LineItem, ...]
     findings: tuple[Finding, ...]
-    layout_id: str
+    profile_id: str
     source_path: str
 
     def to_dict(self) -> dict[str, object]:
@@ -101,7 +112,7 @@ class InvoiceResult:
             "fields": {name: _field_to_dict(result) for name, result in self.fields.items()},
             "line_items": [_line_item_to_dict(item) for item in self.line_items],
             "findings": [finding.to_dict() for finding in self.findings],
-            "layout_id": self.layout_id,
+            "profile_id": self.profile_id,
             "source_path": self.source_path,
         }
 
@@ -114,7 +125,7 @@ class InvoiceResult:
             fields={name: _field_from_dict(name, entry) for name, entry in fields.items()},
             line_items=tuple(_line_item_from_dict(item) for item in items),
             findings=tuple(Finding.from_dict(entry) for entry in findings),
-            layout_id=str(data["layout_id"]),
+            profile_id=str(data["profile_id"]),
             source_path=str(data["source_path"]),
         )
 
@@ -174,7 +185,7 @@ def _evidence_from_dict(data: Mapping[str, object]) -> Evidence:
 
 def _line_item_to_dict(item: LineItem) -> dict[str, object]:
     return {
-        "sku": item.sku,
+        "part_number": item.part_number,
         "description": item.description,
         "quantity": str(item.quantity),
         "unit_price": str(item.unit_price),
@@ -184,7 +195,7 @@ def _line_item_to_dict(item: LineItem) -> dict[str, object]:
 
 def _line_item_from_dict(data: Mapping[str, str]) -> LineItem:
     return LineItem(
-        sku=data["sku"],
+        part_number=data["part_number"],
         description=data["description"],
         quantity=Decimal(data["quantity"]),
         unit_price=Decimal(data["unit_price"]),

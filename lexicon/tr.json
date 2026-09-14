@@ -1,0 +1,367 @@
+{
+  "language": "tr",
+  "document_titles": {
+    "invoice": [
+      "FATURA",
+      "Satış Faturası"
+    ],
+    "credit_note": [
+      "İADE FATURASI",
+      "Alacak Dekontu"
+    ]
+  },
+  "header_labels": {
+    "invoice_number": [
+      "Fatura No",
+      "Fatura Numarası",
+      "Belge No"
+    ],
+    "invoice_date": [
+      "Fatura Tarihi",
+      "Tarih",
+      "Düzenleme Tarihi"
+    ],
+    "due_date": [
+      "Vade Tarihi",
+      "Son Ödeme Tarihi",
+      "Vade"
+    ],
+    "supplier_vat_id": [
+      "VKN",
+      "Vergi Kimlik No",
+      "Vergi No"
+    ],
+    "customer_vat_id": [
+      "Müşteri VKN",
+      "Alıcı Vergi No"
+    ],
+    "currency": [
+      "Para Birimi"
+    ],
+    "supply_date": [
+      "Teslim Tarihi",
+      "İfa Tarihi"
+    ],
+    "order_number": [
+      "Sipariş No",
+      "Sipariş Numarası",
+      "Sipariş"
+    ],
+    "customer_number": [
+      "Müşteri No",
+      "Cari Kod"
+    ],
+    "contract_number": [
+      "Sözleşme No",
+      "Sözleşme Numarası"
+    ],
+    "our_reference": [
+      "Referansımız",
+      "Satış Temsilcisi"
+    ],
+    "your_reference": [
+      "Referansınız",
+      "Sizin Ref."
+    ],
+    "payment_terms": [
+      "Ödeme Koşulları",
+      "Ödeme Şekli"
+    ],
+    "credit_reference": [
+      "Asıl Fatura",
+      "İlgili Fatura"
+    ]
+  },
+  "totals_labels": {
+    "vat_rate": [
+      "KDV Oranı",
+      "Oran",
+      "KDV %"
+    ],
+    "subtotal": [
+      "Ara Toplam",
+      "Matrah",
+      "KDV Hariç Toplam"
+    ],
+    "vat_amount": [
+      "KDV Tutarı",
+      "Toplam KDV",
+      "KDV"
+    ],
+    "total_amount": [
+      "Ödenecek Tutar",
+      "Genel Toplam",
+      "Fatura Toplamı"
+    ]
+  },
+  "charge_labels": {
+    "SHIPPING": [
+      "Nakliye",
+      "Kargo Bedeli"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Çevre Katkı Payı",
+      "Çevre Harcı"
+    ],
+    "SURCHARGE": [
+      "Ek Ücret",
+      "Küçük Sipariş Farkı"
+    ],
+    "CONSOLIDATION_FEE": [
+      "İşlem Ücreti",
+      "Hizmet Bedeli"
+    ],
+    "RECYCLING_FEE": [
+      "Geri Dönüşüm Payı",
+      "AEEE Katkı Payı"
+    ],
+    "ROUNDING": [
+      "Yuvarlama",
+      "Yuvarlama Farkı"
+    ]
+  },
+  "column_headers": {
+    "part_number": [
+      "Stok Kodu",
+      "Ürün Kodu",
+      "Kod"
+    ],
+    "description": [
+      "Açıklama",
+      "Ürün Adı",
+      "Tanım"
+    ],
+    "quantity": [
+      "Miktar",
+      "Adet"
+    ],
+    "unit_price": [
+      "Birim Fiyat",
+      "Fiyat",
+      "B. Fiyat"
+    ],
+    "net_amount": [
+      "Tutar",
+      "Satır Toplamı",
+      "Toplam"
+    ],
+    "pos": [
+      "Sıra",
+      "Satır",
+      "No"
+    ],
+    "unit": [
+      "Birim",
+      "Br."
+    ],
+    "discount_pct": [
+      "İskonto",
+      "İskonto %"
+    ],
+    "vat_rate": [
+      "KDV %",
+      "KDV Kodu"
+    ],
+    "subscription_id": [
+      "Abonelik No",
+      "Hizmet Kodu"
+    ],
+    "billing_cycle": [
+      "Fatura Dönemi",
+      "Sıklık"
+    ],
+    "period": [
+      "Dönem",
+      "Hizmet Dönemi"
+    ],
+    "share": [
+      "Pay %",
+      "Dağılım"
+    ],
+    "remaining_term": [
+      "Kalan Süre",
+      "Kalan"
+    ]
+  },
+  "vat_summary_headers": {
+    "code": [
+      "Kod",
+      "KDV Kodu"
+    ],
+    "rate": [
+      "Oran",
+      "KDV Oranı"
+    ],
+    "base": [
+      "Matrah",
+      "Net"
+    ],
+    "vat": [
+      "KDV",
+      "KDV Tutarı"
+    ]
+  },
+  "party_headings": {
+    "bill_to": [
+      "Fatura Adresi",
+      "Faturalanan"
+    ],
+    "ship_to": [
+      "Teslimat Adresi",
+      "Sevk Adresi"
+    ],
+    "mail_to": [
+      "Posta Adresi",
+      "Yazışma Adresi"
+    ]
+  },
+  "trap_labels": {
+    "order_date": [
+      "Sipariş Tarihi",
+      "Sipariş Günü"
+    ],
+    "delivery_date": [
+      "Teslim Tarihi",
+      "Sevk Tarihi"
+    ],
+    "print_date": [
+      "Baskı Tarihi",
+      "Yazdırılma Tarihi"
+    ]
+  },
+  "carry_forward": {
+    "incoming": [
+      "Nakli Yekûn",
+      "Önceki sayfadan devir"
+    ],
+    "outgoing": [
+      "Devreden",
+      "Sonraki sayfaya devir"
+    ]
+  },
+  "exemption_sentences": {
+    "reverse_charge": [
+      "Tevkifat uygulanmıştır."
+    ],
+    "intra_community": [
+      "AB içi teslim, KDV'den istisnadır."
+    ],
+    "export": [
+      "İhracat teslimi, KDV'den istisnadır."
+    ]
+  },
+  "page_numbering": [
+    "Sayfa {page} / {pages}",
+    "Sayfa {page}, toplam {pages}"
+  ],
+  "payment_terms": [
+    "Fatura tarihinden itibaren 30 gün içinde ödenir.",
+    "Net 14 gün.",
+    "10 gün içinde ödemede 2 % iskonto."
+  ],
+  "legal_lines": [
+    "Tüm teslimatlar genel satış şartlarımıza tabidir.",
+    "Mallar bedeli tamamen ödenene kadar satıcının mülkiyetindedir.",
+    "Geciken ödemeler için gecikme faizi tahakkuk ettirilir."
+  ],
+  "copy_stamps": [
+    "KOPYA",
+    "SURET"
+  ],
+  "section_headings": [
+    "Donanım",
+    "Hizmetler",
+    "Yazılım Lisansları",
+    "Yedek Parça",
+    "Sarf Malzeme"
+  ],
+  "address_placeholders": [
+    "fatura adresi ile aynı",
+    "fatura adresiyle aynıdır"
+  ],
+  "months": [
+    "Ocak",
+    "Şubat",
+    "Mart",
+    "Nisan",
+    "Mayıs",
+    "Haziran",
+    "Temmuz",
+    "Ağustos",
+    "Eylül",
+    "Ekim",
+    "Kasım",
+    "Aralık"
+  ],
+  "month_abbreviations": [
+    "Oca",
+    "Şub",
+    "Mar",
+    "Nis",
+    "May",
+    "Haz",
+    "Tem",
+    "Ağu",
+    "Eyl",
+    "Eki",
+    "Kas",
+    "Ara"
+  ],
+  "diacritics": "ç ğ ı İ ö ş ü Ç Ğ Ö Ş Ü — ² °",
+  "amount_in_words": {
+    "style": "spaced",
+    "units": [
+      "sıfır",
+      "bir",
+      "iki",
+      "üç",
+      "dört",
+      "beş",
+      "altı",
+      "yedi",
+      "sekiz",
+      "dokuz",
+      "on",
+      "on bir",
+      "on iki",
+      "on üç",
+      "on dört",
+      "on beş",
+      "on altı",
+      "on yedi",
+      "on sekiz",
+      "on dokuz"
+    ],
+    "tens": [
+      "yirmi",
+      "otuz",
+      "kırk",
+      "elli",
+      "altmış",
+      "yetmiş",
+      "seksen",
+      "doksan"
+    ],
+    "scales": [
+      "yüz",
+      "bin"
+    ],
+    "scale_many": [
+      "yüz",
+      "bin"
+    ],
+    "million": [
+      "bir milyon",
+      "milyon"
+    ],
+    "joiner": "ve",
+    "currency_unit": [
+      "lira",
+      "lira"
+    ],
+    "currency_fraction": [
+      "kuruş",
+      "kuruş"
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-"""The ten declared fields, and the two other files they must agree with."""
+"""The ten declared fields, and the files they must agree with."""
 
 from __future__ import annotations
 
@@ -16,9 +16,8 @@ from invoice_extractor.extraction.normalizers import (
 from invoice_extractor.extraction.spec import Normalizer
 from invoice_extractor.extraction.specs import FIELD_ORDER, FIELD_SPECS
 from invoice_extractor.extraction.strategies import STRATEGIES
-from invoice_extractor.layout.schema import FIELD_NAMES
 
-# The ten names, in the order docs/LAYOUT_FORMAT.md lists them.
+# The ten names, in the order docs/FIELD_CATALOG.md lists them.
 DOCUMENTED_ORDER = (
     "invoice_number",
     "invoice_date",
@@ -41,9 +40,8 @@ NORMALIZER_TYPES: dict[Normalizer, type] = {
 }
 
 
-def test_field_order_matches_layout_format_document() -> None:
+def test_field_order_matches_the_field_catalog() -> None:
     assert FIELD_ORDER == DOCUMENTED_ORDER
-    assert FIELD_NAMES == DOCUMENTED_ORDER
 
 
 def test_value_types_agree_with_models() -> None:

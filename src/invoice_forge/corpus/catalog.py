@@ -14,7 +14,7 @@ from pathlib import Path
 
 from invoice_forge.corpus.survey import Survey, survey_corpus
 from invoice_forge.knobs import KNOB_NAMES
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.loader import load_profile, profile_ids
 
 KNOB_ON = 10
 KNOB_OFF = 10
@@ -97,7 +97,7 @@ def _family_rows(survey: Survey) -> tuple[Row, ...]:
             target=">= 1",
             met=survey.pairs[profile_id, family] >= 1,
         )
-        for profile_id in bundled_profile_ids()
+        for profile_id in profile_ids()
         for family in _families_of(profile_id)
     )
 

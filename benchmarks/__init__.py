@@ -1,8 +1,8 @@
 """Measuring `invoice_extractor` against the corpus `invoice_forge` generates.
 
-The two packages know nothing about each other, and this one knows both: it builds a
-layout from each vendor profile, runs the extractor over every document in `corpus/`,
-and compares what came back against the truth beside it, by the rules in
+The two packages share their data and not their code, and this one knows both: it reads
+each document in `corpus/` with the very profile its vendor was printed from, and
+compares what came back against the truth beside it, by the rules in
 `docs/GROUND_TRUTH_SCHEMA.md`. `make bench` is `python -m benchmarks.run`.
 
 Nothing here is imported by either package, and neither package is changed to suit it.

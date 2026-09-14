@@ -16,16 +16,17 @@ hidden: a reviewer can trace any number in the output back to the pixels it came
 
 ```bash
 make install   # pip install -e ".[dev]"
-make samples   # regenerate samples/*.pdf + samples/*.expected.json, deterministically
-make demo      # extract samples/acme_invoice.pdf and print the report
+make demo      # extract one corpus document and print the report
 ```
 
-`samples/acme_invoice.pdf` is a fictional UK -> DE invoice — Acme Components Ltd
-(Manchester, VAT `GB123456789`) billing Nordwind Logistik GmbH (Hamburg, VAT
-`DE123456789`), English labels, `1,234.56`-style numbers. `make demo` runs:
+`tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf` is one of the documents
+`invoice_forge` generates and this repository commits: a French invoice from Valmont
+Systèmes SAS (Lyon, VAT `FR7P585117668`), French labels, `1 234,56`-style numbers, drawn
+from the same `profiles/fr-FR.json` the extractor then reads it back with. `make demo`
+runs:
 
 ```bash
-python -m invoice_extractor samples/acme_invoice.pdf --layout acme --report
+python -m invoice_extractor tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf --profile fr-FR --report
 ```
 
 and prints:
@@ -33,42 +34,48 @@ and prints:
 ```
 Invoice Extraction Report
 ================================================================================
-source   samples/acme_invoice.pdf
-layout   acme
+source   tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf
+profile  fr-FR
 
-FIELD            VALUE          CONF  EVIDENCE
+FIELD            VALUE            CONF  EVIDENCE
 --------------------------------------------------------------------------------
-invoice_number   INV-2024-0042  1.00  p1  LABEL_RIGHT  "Invoice Number"
-invoice_date     2024-03-15     1.00  p1  LABEL_RIGHT  "Invoice Date"
-due_date         2024-04-14     1.00  p1  LABEL_RIGHT  "Due Date"
-supplier_vat_id  GB123456789    1.00  p1  LABEL_RIGHT  "VAT Number"
-customer_vat_id  DE123456789    1.00  p1  LABEL_RIGHT  "Customer VAT Number"
-currency         GBP            1.00  p1  LABEL_RIGHT  "Currency"
-vat_rate         20.00          1.00  p1  LABEL_RIGHT  "VAT Rate"
-subtotal         490.00         1.00  p1  LABEL_RIGHT  "Subtotal"
-vat_amount       98.00          1.00  p1  LABEL_RIGHT  "VAT Amount"
-total_amount     588.00         1.00  p1  LABEL_RIGHT  "Total Due"
+invoice_number   FAC-2024-608064  1.00  p1  LABEL_BESIDE  "Facture n°"
+invoice_date     -                0.00  -
+due_date         -                0.00  -
+supplier_vat_id  FR7P585117668    1.00  p1  LABEL_RIGHT  "N° TVA intracommunautaire"
+customer_vat_id  FR3P030824628    0.85  p1  LABEL_RIGHT  "N° TVA du client"
+currency         EUR              1.00  p1  LABEL_BESIDE  "Devise"
+vat_rate         20               0.90  p1  LABEL_BESIDE  "Taux de TVA"
+subtotal         11241.25         1.00  p1  LABEL_BESIDE  "Total HT"
+vat_amount       2248.25          1.00  p1  LABEL_BESIDE  "TVA"
+total_amount     13489.50         1.00  p1  LABEL_BESIDE  "Net à payer"
 
-Line items (3)
-SKU       DESCRIPTION               QTY  UNIT PRICE  NET AMOUNT
+Line items (4)
+PART NUMBER  DESCRIPTION                                              QTY  UNIT PRICE  NET AMOUNT
 --------------------------------------------------------------------------------
-ACM-1001  Hex bolt M8 x 40, zinc    500        0.12       60.00
-ACM-2210  Bearing 6204-2RS           40        3.85      154.00
-ACM-3300  Steel bracket, 3 mm       120        2.30      276.00
+SW-API-10K   Forfait API, 10 000 appels par mois                      100       89.00     8900.00
+SRV-WRT-Q    Maintenance, forfait trimestriel, installation type B    7.5      245.50     1841.25
+SW-CLD-50    Stockage cloud 50 Go, facturation mensuelle                2     12.5000       25.00
+SRV-INST-H   Installation sur site, à l'heure                           5       95.00      475.00
 
 Invariants
-[ok]  totals_reconcile     490.00 + 98.00 = 588.00
-[ok]  line_items_sum       60.00 + 154.00 + 276.00 = 490.00
-[ok]  vat_rate_consistent  20.00% x 490.00 = 98.00
+[ok]  totals_reconcile     11241.25 + 2248.25 = 13489.50
+[ok]  line_items_sum       8900.00 + 1841.25 + 25.00 + 475.00 = 11241.25
+[ok]  vat_rate_consistent  20% x 11241.25 = 2248.25
 
 0 error, 0 warning, 0 info findings
 ================================================================================
 ```
 
+The two dates come back empty on purpose, and the report says so rather than guessing:
+this document spells its month in French, `datetime.strptime` reads month names in the C
+locale, and no format a profile can declare today reads `14 juin 2024`. It is one of the
+gaps the benchmark below counts.
+
 `--json out.json` writes the same result as machine-readable JSON — full `Evidence`
 bounding boxes included, `Decimal` values as strings, dates as ISO-8601. Exit code is
 `0` whenever extraction ran at all, however many findings it returned; non-zero only for
-input the pipeline never even started on (a missing PDF, a malformed layout).
+input the pipeline never even started on (a missing PDF, a malformed profile).
 
 ## How data flows
 
@@ -79,9 +86,9 @@ independently testable against a `FakeDocument` — no PDF required.
 flowchart LR
     PDF[/PDF file/] --> Reader["DocumentReader<br/>pymupdf_reader.py"]
     Reader -->|"TextLines<br/>zoned by zones.py"| Engine["FieldSpec engine<br/>extraction/engine.py"]
-    Layout[("layouts/*.json")] --> Engine
+    Profile[("profiles/*.json")] --> Engine
     Engine -->|"FieldResult × 10<br/>+ Evidence"| Items["Line items<br/>extraction/line_items.py"]
-    Layout --> Items
+    Profile --> Items
     Items -->|"LineItems"| Inv["Invariants<br/>validation/invariants.py"]
     Engine --> Inv
     Inv -->|"Findings"| Conf["Confidence<br/>validation/confidence.py"]
@@ -109,15 +116,19 @@ Full narrative: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
    arithmetic; a `Decimal` round-trips through JSON as a string, never a native number,
    so invariant tolerances measure real rounding, not floating-point noise. —
    [ADR-0003](docs/adr/0003-money-is-decimal-never-float.md)
-4. **A vendor layout is data.** Labels, zones, regexes and formats live in
-   `layouts/*.json`, validated by `layout/loader.py`; nothing in `extraction/`
-   hardcodes a vendor's vocabulary. The two bundled layouts — `acme` (English, GBP) and
-   `nordic` (Swedish, SEK) — exercise the same code path. —
+4. **A vendor description is data.** Labels, zones, patterns and formats live in
+   `profiles/*.json`, validated by `profile/loader.py`; nothing in `extraction/`
+   hardcodes a vendor's vocabulary. —
    [ADR-0004](docs/adr/0004-layouts-are-data.md)
 5. **Findings, not exceptions, for domain errors.** A broken invariant or an unmatched
    field becomes a `Finding` (`domain/findings.py`, severity `INFO`/`WARNING`/`ERROR`)
    on the result; exceptions stay reserved for input the pipeline cannot even start
    on. — [ADR-0005](docs/adr/0005-findings-not-exceptions-for-domain-errors.md)
+6. **The unit of configuration is a vendor profile, shared with the generator.** One
+   `profiles/<id>.json` per vendor carries its language, locale, currencies, VAT rules,
+   label vocabulary, tables and totals block; the generator draws what it says and the
+   extractor reads it back, so every profile is testable end to end. —
+   [ADR-0006](docs/adr/0006-profiles-not-layouts.md)
 
 ## Project layout
 
@@ -125,39 +136,40 @@ Full narrative: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 src/invoice_extractor/
     domain/        Evidence, FieldResult, LineItem, InvoiceResult, Money, Finding
     document/      PDF -> TextLine, zoned on a 3x3 grid (DocumentReader Protocol)
-    layout/        Layout JSON schema + loader (LayoutError names the bad key)
+    profile/       Profile schema, strict loader, merge rules, mtime-aware registry
     extraction/    FieldSpec engine: strategies, normalizers, validators, rankers
     validation/    Invariants (as Findings) and explainable confidence
     output/        JSON writer and human-readable text report
-    pipeline.py    The only orchestration: PDF + layout -> InvoiceResult
+    pipeline.py    The only orchestration: PDF + profile -> InvoiceResult
     cli.py         python -m invoice_extractor
 src/invoice_forge/
-    profiles/      One JSON per vendor: language, separators, rates, families
-    lexicon/       One JSON per language: every label an invoice prints, with synonyms
     layout/        The five template families, declared; knobs applied to a declaration
     sample/        What a document says: parties, catalogue, identifiers, variations
     render/        The declaration drawn to a page, recording every box it printed
     truth/         The truth file, and reading every box back out of the PDF to check it
     corpus/        A plan, run into a directory; the coverage report over what came out
+profiles/           One JSON per vendor, read by both packages (ADR-0006)
+lexicon/            One JSON per language: every label an invoice prints, with synonyms
 benchmarks/         make bench: the extractor over the corpus, scored against the truth
 corpus/             plan.json (committed); the documents are regenerated, not stored
-layouts/            acme.json, nordic.json
-samples/            Generated sample PDFs + golden *.expected.json
-tests/              unit (one module each), integration (golden, determinism), hygiene
-docs/               architecture, layout format, ADRs, implementation and forge plans
+tests/              unit (one module each), integration (fixtures, determinism), hygiene
+docs/               architecture, profile format, ADRs, implementation and engine plans
 ```
 
 ## Extending
 
-**Add a layout.** Drop a new `layouts/<id>.json` — labels, zones, regex, date/number
-formats (see [docs/LAYOUT_FORMAT.md](docs/LAYOUT_FORMAT.md)). `layout/loader.py`
-validates it and raises `LayoutError` naming the exact bad key. No Python change.
+**Add a vendor.** Drop a new `profiles/<id>.json` — language, locale, currencies, VAT
+rules, the supplier as it prints itself, and whatever it calls each field (see
+[docs/PROFILE_FORMAT.md](docs/PROFILE_FORMAT.md)). `profile/loader.py` validates it and
+raises `ProfileError` naming the exact bad key; `profiles/_defaults.json` and the
+language's lexicon supply everything the file does not say. No Python change, and the
+generator can render the same file to prove the profile describes a real invoice.
 
 **Add a field.** Three small edits and a test — `engine.py`, `pipeline.py` and every
 strategy stay untouched. Adding `purchase_order`, in full:
 
-1. `layout/schema.py` — add `"purchase_order"` to `FIELD_NAMES`, the closed vocabulary
-   `layout/loader.py` validates every layout against.
+1. `docs/FIELD_CATALOG.md` — add `purchase_order`, the one place a canonical name is
+   named; both packages and the benchmark read it from there.
 2. `domain/models.py` — add `"purchase_order": str` to `VALUE_TYPES`, so `from_dict`
    restores the value with the type `to_dict` wrote it as.
 3. `extraction/specs.py` — one entry, in the position the field should be reported in:
@@ -173,8 +185,9 @@ strategy stay untouched. Adding `purchase_order`, in full:
    )
    ```
 
-4. Every `layouts/*.json` — `"purchase_order": {"labels": ["Purchase Order"], "zones":
-   ["TOP_RIGHT"]}`. A layout missing it now fails to load, by design.
+4. `profiles/_defaults.json` — `"purchase_order": {"labels":
+   ["@header_labels.purchase_order"], "zones": ["r1c3"]}`, once, for every vendor that
+   prints it in its language's own words.
 5. A unit test in `tests/unit/test_specs.py`, and a `FakeDocument` case for whichever
    strategy is new to you.
 
@@ -187,8 +200,8 @@ change: the engine already runs whatever `FIELD_SPECS` holds.
 twenty-two vendor profiles over sixteen languages, five template families, and
 thirty-one difficulty knobs from [docs/VARIATION_CATALOG.md](docs/VARIATION_CATALOG.md).
 `make bench` runs this extractor over all of it and scores every value against the truth
-beside it. Each vendor gets the layout a deployment would write for it, built from that
-vendor's own labels, so what is measured is the extraction engine and not label guessing.
+beside it. Each document is read back with the very profile it was printed from, so what
+is measured is the extraction engine and not label guessing.
 
 <!-- benchmark:begin -->
 Over the 250-document base corpus (`make corpus`), `make bench`
@@ -244,10 +257,14 @@ CLI. v0.2.0 adds `invoice_forge` — a generator of synthetic invoices with exac
 truth, twenty-two vendor profiles in sixteen languages, five template families,
 thirty-one difficulty knobs and a 250-document base corpus — and the benchmark that
 measures the extractor against it. All of it is green under `make check` on Python 3.11
-and 3.12. This repository started from a fully specified seed — architecture, ADRs,
-layout format, sample fixtures, CI — implemented afterward one gated pull request at a
-time; [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) is the plan v0.1.0 was
-built to and [docs/FORGE_PLAN.md](docs/FORGE_PLAN.md) the plan v0.2.0 was, and
+and 3.12. v0.3.0 is in flight: [docs/ENGINE_PLAN.md](docs/ENGINE_PLAN.md) takes the
+extractor to the full design in [docs/ENGINE_SPEC.md](docs/ENGINE_SPEC.md) — one engine
+with six spec kinds, vendor profiles shared with the generator, reconciliation, and
+confidence calibrated on a corpus that contains negatives. This repository started from a
+fully specified seed — architecture, ADRs, the configuration format, fixtures, CI —
+implemented afterward one gated pull request at a time;
+[docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) is the plan v0.1.0 was built
+to and [docs/FORGE_PLAN.md](docs/FORGE_PLAN.md) the plan v0.2.0 was, and
 [CHANGELOG.md](CHANGELOG.md) is what shipped.
 
 ## License

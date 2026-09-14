@@ -13,7 +13,7 @@ from collections.abc import Mapping, Sequence
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import FieldResult
 from invoice_extractor.extraction.engine import Extraction
-from invoice_extractor.layout.schema import FieldLayout
+from invoice_extractor.profile.schema import FieldProfile
 
 SIGNAL_WEIGHTS: Mapping[str, float] = {
     "label_exact_match": 0.25,
@@ -26,13 +26,13 @@ PRECISION = 2
 
 
 def score(
-    extraction: Extraction, field_layout: FieldLayout, findings: Sequence[Finding]
+    extraction: Extraction, field_profile: FieldProfile, findings: Sequence[Finding]
 ) -> FieldResult:
     """The field again, with its confidence and what each signal contributed to it."""
     field = extraction.field
     if field.value is None:
         return dataclasses.replace(field, confidence=0.0, confidence_breakdown=_nothing_lit())
-    lit = _signals(extraction, field_layout, findings)
+    lit = _signals(extraction, field_profile, findings)
     breakdown = {
         signal: weight if lit[signal] else 0.0 for signal, weight in SIGNAL_WEIGHTS.items()
     }
@@ -41,14 +41,14 @@ def score(
 
 
 def _signals(
-    extraction: Extraction, field_layout: FieldLayout, findings: Sequence[Finding]
+    extraction: Extraction, field_profile: FieldProfile, findings: Sequence[Finding]
 ) -> Mapping[str, bool]:
     field = extraction.field
     evidence = field.evidence
     return {
         "label_exact_match": evidence is not None and evidence.matched_label is not None,
         # The engine already stored the winning line's zone; never recompute one here.
-        "in_expected_zone": extraction.zone in field_layout.zones,
+        "in_expected_zone": extraction.zone in field_profile.zones,
         "validator_passed": field.valid,
         "single_candidate": extraction.candidate_count == 1,
         "invariants_agree": not _contradicted(findings, field.name),

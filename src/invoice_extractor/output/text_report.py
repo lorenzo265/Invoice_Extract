@@ -2,7 +2,7 @@
 
 Pure rendering: it reads an already-built `InvoiceResult` and never re-runs an invariant,
 recomputes a confidence, or looks at the document again. Money is printed as the plain
-decimal it was read as — `Layout.currency_symbols` exists, but no v0.1.0 output uses it.
+decimal it was read as: a currency symbol is a vendor's decoration, not a value.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ from enum import Enum, auto
 
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import FieldResult, FieldValue, InvoiceResult, LineItem
-from invoice_extractor.layout.schema import Layout
+from invoice_extractor.profile.schema import Profile
 from invoice_extractor.validation.invariants import INVARIANT_NAMES
 
 RULE_WIDTH = 80
@@ -38,17 +38,17 @@ class Align(Enum):
 
 FIELD_HEADERS = ("FIELD", "VALUE", "CONF", "EVIDENCE")
 FIELD_ALIGN = (Align.LEFT, Align.LEFT, Align.LEFT, Align.LEFT)
-ITEM_HEADERS = ("SKU", "DESCRIPTION", "QTY", "UNIT PRICE", "NET AMOUNT")
+ITEM_HEADERS = ("PART NUMBER", "DESCRIPTION", "QTY", "UNIT PRICE", "NET AMOUNT")
 ITEM_ALIGN = (Align.LEFT, Align.LEFT, Align.RIGHT, Align.RIGHT, Align.RIGHT)
 
 
-def render(result: InvoiceResult, layout: Layout) -> str:
+def render(result: InvoiceResult, profile: Profile) -> str:
     """The whole report as one string, without a trailing newline."""
     lines = [
         TITLE,
         "=" * RULE_WIDTH,
         f"{'source':<{LABEL_WIDTH}}{result.source_path}",
-        f"{'layout':<{LABEL_WIDTH}}{result.layout_id}",
+        f"{'profile':<{LABEL_WIDTH}}{result.profile_id}",
         "",
         *_field_table(result.fields),
         "",
@@ -72,7 +72,13 @@ def _field_table(fields: Mapping[str, FieldResult]) -> list[str]:
 
 def _item_table(items: Sequence[LineItem]) -> list[str]:
     rows = [
-        (item.sku, item.description, str(item.quantity), str(item.unit_price), str(item.net_amount))
+        (
+            item.part_number,
+            item.description,
+            str(item.quantity),
+            str(item.unit_price),
+            str(item.net_amount),
+        )
         for item in items
     ]
     return [f"Line items ({len(items)})", *_table(ITEM_HEADERS, rows, ITEM_ALIGN)]

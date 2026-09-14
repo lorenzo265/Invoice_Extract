@@ -11,31 +11,31 @@
   "domains": {
     "industrial": [
       {
-        "sku": "HX-M8-040",
+        "part_number": "HX-M8-040",
         "description": "Altıköşe cıvata M8 x 40, galvanizli, DIN 933",
         "unit": "adet",
         "price": "0.12"
       },
       {
-        "sku": "BRG-6204",
+        "part_number": "BRG-6204",
         "description": "Sabit bilyalı rulman 6204-2RS, çift taraflı keçeli",
         "unit": "adet",
         "price": "3.85"
       },
       {
-        "sku": "BRK-ST-3",
+        "part_number": "BRK-ST-3",
         "description": "Çelik braket 3 mm, 60 x 60 x 40, işlemsiz",
         "unit": "adet",
         "price": "2.30"
       },
       {
-        "sku": "PLT-AL-2",
+        "part_number": "PLT-AL-2",
         "description": "Alüminyum levha 2 mm, 1000 x 500, EN AW-5754",
         "unit": "adet",
         "price": "31.20"
       },
       {
-        "sku": "HSE-12-2",
+        "part_number": "HSE-12-2",
         "description": "Hidrolik hortum 12 mm, 2 m, preslenmiş rakorlu",
         "unit": "adet",
         "price": "38.0450"
@@ -43,31 +43,31 @@
     ],
     "electronics": [
       {
-        "sku": "CBL-H07-25",
+        "part_number": "CBL-H07-25",
         "description": "Kablo H07V-K 2,5 mm², siyah, 100 m makara",
         "unit": "makara",
         "price": "48.90"
       },
       {
-        "sku": "ENC-IP65",
+        "part_number": "ENC-IP65",
         "description": "Pano kutusu IP65, 300 x 200 x 120",
         "unit": "adet",
         "price": "45.50"
       },
       {
-        "sku": "REL-24V",
+        "part_number": "REL-24V",
         "description": "Arayüz rölesi 24 V DC, 1 komütasyon",
         "unit": "adet",
         "price": "7.95"
       },
       {
-        "sku": "SNS-T-PT1",
+        "part_number": "SNS-T-PT1",
         "description": "Sıcaklık sensörü PT100, 3 telli, -50 ila +200 °C",
         "unit": "adet",
         "price": "22.75"
       },
       {
-        "sku": "FLT-P-200",
+        "part_number": "FLT-P-200",
         "description": "Filtre kartuşu P-200, selüloz, 10 µm",
         "unit": "adet",
         "price": "17.40"
@@ -75,25 +75,25 @@
     ],
     "software": [
       {
-        "sku": "SW-LIC-PRO",
+        "part_number": "SW-LIC-PRO",
         "description": "ProSuite lisansı, 1 kullanıcı, 12 ay",
         "unit": "lisans",
         "price": "349.00"
       },
       {
-        "sku": "SW-CLD-50",
+        "part_number": "SW-CLD-50",
         "description": "Bulut depolama 50 GB, aylık faturalanır",
         "unit": "ay",
         "price": "12.5000"
       },
       {
-        "sku": "SW-SUP-GLD",
+        "part_number": "SW-SUP-GLD",
         "description": "Gold destek sözleşmesi, 4 saat yanıt süresi",
         "unit": "yıl",
         "price": "1290.00"
       },
       {
-        "sku": "SW-API-10K",
+        "part_number": "SW-API-10K",
         "description": "API kotası, ayda 10.000 çağrı",
         "unit": "paket",
         "price": "89.00"
@@ -101,25 +101,25 @@
     ],
     "services": [
       {
-        "sku": "SRV-INST-H",
+        "part_number": "SRV-INST-H",
         "description": "Yerinde kurulum, saat başına",
         "unit": "saat",
         "price": "95.00"
       },
       {
-        "sku": "SRV-TRN-D",
+        "part_number": "SRV-TRN-D",
         "description": "Temel eğitim, 1 gün, en fazla 8 katılımcı",
         "unit": "gün",
         "price": "780.00"
       },
       {
-        "sku": "SRV-WRT-Q",
+        "part_number": "SRV-WRT-Q",
         "description": "Bakım, üç aylık abonelik, tip B tesis",
         "unit": "abonelik",
         "price": "245.50"
       },
       {
-        "sku": "SRV-ANA-H",
+        "part_number": "SRV-ANA-H",
         "description": "Analiz ve dokümantasyon, saat başına",
         "unit": "saat",
         "price": "115.0000"

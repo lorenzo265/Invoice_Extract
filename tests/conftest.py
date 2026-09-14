@@ -4,22 +4,35 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping, Sequence
+from decimal import Decimal
 
 from invoice_extractor.document.reader import BBox, TextLine, Zone
 from invoice_extractor.document.zones import classify
-from invoice_extractor.layout.schema import (
-    FIELD_NAMES,
-    LINE_ITEM_COLUMNS,
-    FieldLayout,
-    Layout,
-    LineItemsLayout,
+from invoice_extractor.domain.models import LINE_ITEM_COLUMNS
+from invoice_extractor.extraction.specs import FIELD_ORDER
+from invoice_extractor.profile.schema import (
+    BlockProfile,
+    ComponentKind,
+    ComponentProfile,
+    DocumentTypes,
+    FieldProfile,
+    Noise,
+    NumberFormat,
+    PageBounds,
+    Placement,
+    Profile,
+    SupplierProfile,
+    TableEdge,
+    TableProfile,
+    Tolerance,
+    VatProfile,
 )
 
 PAGE_WIDTH = 595.0
 PAGE_HEIGHT = 842.0
 
-# The sample PDFs' font metrics: helv at 10 pt, measured from the drawn baseline, so a
-# fake page lays out in the same coordinates docs/SAMPLES_SPEC.md gives.
+# A text font at 10 pt, measured from the drawn baseline, so a fake page lays out in the
+# same coordinates a rendered one does.
 ASCENT = 10.75
 DESCENT = 2.99
 CHAR_WIDTH = 5.5
@@ -53,32 +66,89 @@ def _from_entry(entry: Entry) -> TextLine:
     return TextLine(page, text, bbox, classify(bbox, PAGE_WIDTH, PAGE_HEIGHT))
 
 
-def make_field_layout(
+def make_field_profile(
     labels: Sequence[str] = ("Label",),
     zones: Sequence[Zone] = (Zone.TOP_RIGHT,),
-    regex: str | None = None,
-) -> FieldLayout:
-    """A `FieldLayout` for one field, with the pieces a test does not care about filled in."""
-    return FieldLayout(tuple(labels), tuple(zones), None if regex is None else re.compile(regex))
+    pattern: str | None = None,
+) -> FieldProfile:
+    """A `FieldProfile` for one field, with the pieces a test does not care about filled in."""
+    return FieldProfile(
+        labels=tuple(labels),
+        zones=tuple(zones),
+        placement=Placement.RIGHT,
+        pattern=None if pattern is None else re.compile(pattern),
+        required=True,
+        exclude_labels=(),
+    )
 
 
-def make_layout(
-    fields: Mapping[str, FieldLayout] | None = None,
+def make_table_profile(
+    columns: Mapping[str, Sequence[str]] | None = None, stop_labels: Sequence[str] = ()
+) -> TableProfile:
+    """A `TableProfile` whose header words are the column names themselves."""
+    declared = columns or {column: (column,) for column in LINE_ITEM_COLUMNS}
+    return TableProfile(
+        columns={name: tuple(labels) for name, labels in declared.items()},
+        min_header_matches=len(declared),
+        stop_labels=tuple(stop_labels),
+        page_bounds=PageBounds(start="header", end=TableEdge.TOTALS_ANCHOR),
+        carry_forward_labels=(),
+        sub_item_indent=8.0,
+        number_columns=("quantity", "unit_price", "net_amount"),
+    )
+
+
+def make_block_profile() -> BlockProfile:
+    """A totals block with the three components every profile must name."""
+    return BlockProfile(
+        components={
+            name: ComponentProfile(
+                labels=(name,), kind=ComponentKind.AMOUNT, charge_type=None, accumulate=False
+            )
+            for name in ("subtotal", "vat_amount", "total_amount")
+        },
+        cluster_gap=0.08,
+        secondary_echo=None,
+        tolerance=Tolerance(absolute=Decimal("0.01"), relative=Decimal("0.005")),
+    )
+
+
+def make_profile(
+    fields: Mapping[str, FieldProfile] | None = None,
     decimal_separator: str = ".",
-    thousands_separator: str = ",",
+    thousands_separators: Sequence[str] = (",",),
     date_formats: Sequence[str] = ("%d %b %Y",),
-) -> Layout:
-    """A `Layout` built in memory, so a unit test never reads `layouts/*.json`."""
-    return Layout(
+    line_items: TableProfile | None = None,
+) -> Profile:
+    """A `Profile` built in memory, so a unit test never reads `profiles/*.json`."""
+    return Profile(
         id="test",
         language="en",
-        decimal_separator=decimal_separator,
-        thousands_separator=thousands_separator,
+        country="GB",
+        lexicon="en",
+        number_format=NumberFormat(decimal_separator, tuple(thousands_separators)),
         date_formats=tuple(date_formats),
-        currency_symbols={"GBP": "£"},
-        fields=dict(fields or {name: make_field_layout() for name in FIELD_NAMES}),
-        line_items=LineItemsLayout(
-            header_labels={column: (column,) for column in LINE_ITEM_COLUMNS},
-            stop_labels=(),
+        currencies=("GBP",),
+        vat=VatProfile(
+            rates={"standard": Decimal("20")},
+            id_prefix="GB",
+            id_pattern=re.compile(r"\d{9}"),
         ),
+        supplier=SupplierProfile(
+            name="Test Supplies Ltd", aliases=(), address_lines=("1 Test Street",), vat_id="GB1"
+        ),
+        zones_grid=(3, 3),
+        fields=dict(fields or {name: make_field_profile() for name in FIELD_ORDER}),
+        parties={},
+        line_items=line_items or make_table_profile(),
+        vat_summary=None,
+        totals=make_block_profile(),
+        custom_fields=(),
+        variants=(),
+        document_types=DocumentTypes(
+            invoice_titles=("INVOICE",),
+            credit_note_titles=("CREDIT NOTE",),
+            credit_reference_labels=("Original invoice",),
+        ),
+        noise=Noise(ignore_labels=()),
     )

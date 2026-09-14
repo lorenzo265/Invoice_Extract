@@ -16,7 +16,7 @@ from invoice_forge.lexicon.loader import (
     load_lexicon,
 )
 from invoice_forge.lexicon.schema import MAX_SYNONYMS, MONTHS_IN_A_YEAR, SYNONYM_MAPS
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.loader import load_profile, profile_ids
 
 
 def base() -> dict[str, Any]:
@@ -44,7 +44,7 @@ def test_every_bundled_lexicon_loads(language: str) -> None:
 
 def test_every_language_a_bundled_profile_speaks_has_a_lexicon() -> None:
     """A profile whose words are missing renders nothing, so the two sets are held equal."""
-    spoken = {load_profile(profile_id).lexicon for profile_id in bundled_profile_ids()}
+    spoken = {load_profile(profile_id).lexicon for profile_id in profile_ids()}
     assert spoken == set(bundled_lexicon_ids())
 
 

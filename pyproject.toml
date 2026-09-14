@@ -27,8 +27,6 @@ invoice_forge = [
     "py.typed",
     "fonts/*.ttf",
     "fonts/LICENSE",
-    "profiles/*.json",
-    "lexicon/*.json",
     "sample/catalogues/*.json",
 ]
 

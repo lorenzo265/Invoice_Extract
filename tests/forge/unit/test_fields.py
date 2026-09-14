@@ -65,10 +65,10 @@ def test_the_table_columns_are_the_read_ones_then_the_rest() -> None:
     assert len(set(TABLE_COLUMNS)) == len(TABLE_COLUMNS)
 
 
-def test_the_article_number_column_is_called_sku_in_both_packages() -> None:
-    """`part_number` was the older name for it; nothing in either package uses it."""
-    assert "sku" in LINE_ITEM_COLUMNS
-    assert "part_number" not in TABLE_COLUMNS
+def test_the_article_number_column_is_called_part_number_in_both_packages() -> None:
+    """`docs/FIELD_CATALOG.md` names it `part_number`; `sku` was the older name."""
+    assert "part_number" in LINE_ITEM_COLUMNS
+    assert "sku" not in TABLE_COLUMNS
 
 
 def test_no_name_is_declared_twice() -> None:

@@ -15,7 +15,7 @@ from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 
 from benchmarks.compare import DocumentScore, Outcome, Scored
-from invoice_extractor.layout.schema import LINE_ITEM_COLUMNS
+from invoice_extractor.domain.models import LINE_ITEM_COLUMNS
 from invoice_forge.knobs import KNOB_NAMES
 
 BANDS: tuple[tuple[float, float], ...] = (

@@ -5,7 +5,7 @@ from __future__ import annotations
 import dataclasses
 from decimal import Decimal
 
-from conftest import make_layout
+from conftest import make_profile
 from invoice_extractor.document.reader import BBox
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
@@ -50,13 +50,13 @@ def result(findings: tuple[Finding, ...] = ()) -> InvoiceResult:
         fields={name: field(name, VALUES[name]) for name in VALUE_TYPES},
         line_items=ITEMS,
         findings=findings,
-        layout_id="acme",
+        profile_id="acme",
         source_path="samples/acme_invoice.pdf",
     )
 
 
 def report_lines(findings: tuple[Finding, ...] = ()) -> list[str]:
-    return render(result(findings), make_layout()).splitlines()
+    return render(result(findings), make_profile()).splitlines()
 
 
 def line_starting(lines: list[str], prefix: str) -> str:
@@ -110,10 +110,10 @@ def test_report_opens_and_closes_with_a_rule() -> None:
     assert lines[-1] == "=" * 80
 
 
-def test_report_names_its_source_and_layout() -> None:
+def test_report_names_its_source_and_profile() -> None:
     lines = report_lines()
     assert lines[2] == "source   samples/acme_invoice.pdf"
-    assert lines[3] == "layout   acme"
+    assert lines[3] == "profile  acme"
 
 
 def test_report_counts_the_line_items_it_lists() -> None:
@@ -126,5 +126,5 @@ def test_report_shows_a_dash_when_a_candidate_matched_no_label() -> None:
         evidence=Evidence(1, BOX, None, Strategy.REGEX_ANCHOR, "GBP"),
     )
     scoped = dataclasses.replace(result(), fields={"currency": anchored})
-    row = line_starting(render(scoped, make_layout()).splitlines(), "currency")
+    row = line_starting(render(scoped, make_profile()).splitlines(), "currency")
     assert row.endswith("p1  REGEX_ANCHOR  -")

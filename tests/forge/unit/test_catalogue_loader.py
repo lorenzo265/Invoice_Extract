@@ -9,7 +9,7 @@ from typing import Any
 import pytest
 from dataspec import message, write
 
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.loader import load_profile, profile_ids
 from invoice_forge.sample.catalogue import (
     DOMAIN_NAMES,
     MIN_PRODUCTS,
@@ -20,7 +20,7 @@ from invoice_forge.sample.catalogue import (
 
 def product(index: int) -> dict[str, Any]:
     return {
-        "sku": f"SKU-{index:03d}",
+        "part_number": f"SKU-{index:03d}",
         "description": f"A thing, size {index}",
         "unit": "pcs",
         "price": f"{index}.50",
@@ -54,7 +54,7 @@ def test_every_bundled_catalogue_loads(language: str) -> None:
 
 def test_every_language_a_bundled_profile_speaks_has_a_catalogue() -> None:
     """A catalogue is drawn from by language, so a missing one is a vendor with nothing to sell."""
-    spoken = {load_profile(profile_id).language for profile_id in bundled_profile_ids()}
+    spoken = {load_profile(profile_id).language for profile_id in profile_ids()}
     assert spoken == set(bundled_catalogue_ids())
 
 
@@ -70,7 +70,7 @@ def test_prices_never_pass_through_a_float() -> None:
         for domain in DOMAIN_NAMES:
             for item in catalogue.products(domain):
                 assert isinstance(item.price, Decimal)
-                assert item.price > 0, item.sku
+                assert item.price > 0, item.part_number
 
 
 def test_every_bundled_catalogue_offers_qualifiers_to_lengthen_a_description_with() -> None:

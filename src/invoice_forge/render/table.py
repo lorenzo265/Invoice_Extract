@@ -34,7 +34,7 @@ COLUMN_GUTTER = 4.0
 CARRY_RULE_ABOVE = 9.0
 CARRY_HEIGHT = 18.0
 # The five columns the extractor reads. The others are printed but not recorded as cells.
-TRUTH_CELLS = frozenset({"sku", "description", "quantity", "unit_price", "net_amount"})
+TRUTH_CELLS = frozenset({"part_number", "description", "quantity", "unit_price", "net_amount"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -256,11 +256,11 @@ def _cell_text(item: LineItem, column: str, wording: Wording) -> str:
     number_format = wording.number_format
     printed = {
         "pos": lambda: str(item.pos),
-        "sku": lambda: item.sku,
+        "part_number": lambda: item.part_number,
         "unit": lambda: item.unit,
         "quantity": lambda: fmt.quantity(item.quantity, number_format),
         "unit_price": lambda: fmt.price(item.unit_price, number_format),
-        "discount": lambda: _discount(item, number_format),
+        "discount_pct": lambda: _discount(item, number_format),
         "vat_rate": lambda: fmt.rate(item.vat_rate, number_format),
         "net_amount": lambda: fmt.money(item.net_amount, number_format),
         "subscription_id": lambda: _subscribed(item, "subscription_id", number_format),
@@ -276,9 +276,9 @@ def _cell_text(item: LineItem, column: str, wording: Wording) -> str:
 
 def _discount(item: LineItem, number_format: fmt.NumberFormat) -> str:
     """A row without a discount leaves the column empty, as a real table does."""
-    if item.discount_percent is None:
+    if item.discount_pct is None:
         return ""
-    return f"{fmt.rate(item.discount_percent, number_format)} %"
+    return f"{fmt.rate(item.discount_pct, number_format)} %"
 
 
 def _subscribed(item: LineItem, column: str, number_format: fmt.NumberFormat) -> str:

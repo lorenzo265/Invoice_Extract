@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import date
 from decimal import Decimal
 
-from conftest import make_field_layout
+from conftest import make_field_profile
 from invoice_extractor.extraction.validators import (
     is_currency_code,
     is_date,
@@ -14,7 +14,7 @@ from invoice_extractor.extraction.validators import (
     matches_pattern,
 )
 
-ANY_FIELD = make_field_layout()
+ANY_FIELD = make_field_profile()
 
 
 def test_matches_pattern_accepts_and_rejects_by_shape() -> None:
@@ -25,7 +25,7 @@ def test_matches_pattern_accepts_and_rejects_by_shape() -> None:
 
 def test_matches_pattern_prefers_layout_regex() -> None:
     validator = matches_pattern(r"[A-Z]{3}")
-    with_regex = make_field_layout(regex=r"\d{4}-\d{5}")
+    with_regex = make_field_profile(pattern=r"\d{4}-\d{5}")
     assert validator("2024-00873", with_regex)
     assert not validator("ABC", with_regex)
 

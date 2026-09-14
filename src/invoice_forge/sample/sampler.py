@@ -91,7 +91,7 @@ def sample_document(request: SampleRequest) -> Document:
     knobs = request.content
     profile = request.profile
     dates = _dates(request, rng)
-    supplier = _party(request, rng)
+    supplier = _supplier(request, rng)
     invoice = Document(
         type=DocumentType.INVOICE,
         profile_id=profile.id,
@@ -123,6 +123,17 @@ def _credited(invoice: Document, request: SampleRequest, rng: Random) -> Documen
         return invoice
     style: CreditNoteStyle = request.profile.credit_note_style
     return as_credit_note(invoice, number, style)
+
+
+def _supplier(request: SampleRequest, rng: Random) -> Party:
+    """The vendor its own profile declares (ADR-0006), not one drawn per document.
+
+    A party is drawn and discarded all the same, so turning a profile's supplier into
+    declared data does not shift the stream every other party is drawn from.
+    """
+    _party(request, rng)
+    declared = request.profile.supplier
+    return Party(name=declared.name, lines=declared.address_lines, vat_id=declared.vat_id)
 
 
 def _party(request: SampleRequest, rng: Random) -> Party:
@@ -187,13 +198,13 @@ def _item(request: SampleRequest, position: int, rng: Random) -> LineItem:
     knobs = request.content
     return LineItem(
         pos=position,
-        sku=product.sku,
+        part_number=product.part_number,
         description=variations.described(product, catalogue, knobs, rng),
         quantity=_quantity(rng),
         unit=product.unit,
         unit_price=product.price,
         vat_rate=variations.vat_rate(request.profile.vat_rates, knobs, rng),
-        discount_percent=variations.discount_percent(knobs, rng),
+        discount_pct=variations.discount_pct(knobs, rng),
         sub_items=variations.sub_items(domain, catalogue, knobs, rng),
         subscription=variations.subscription(request.family, rng),
     )

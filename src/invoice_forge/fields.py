@@ -1,9 +1,9 @@
 """The field names the generator writes, and the extras an invoice prints beside them.
 
-`SCALAR_FIELDS` and `LINE_ITEM_COLUMNS` are the extractor's canonical names, restated
-here rather than imported: the two packages are independent, and ADR-0004 already settled
-that a shared vocabulary is held in step by a test, not by an import.
-`tests/forge/unit/test_fields.py` is that test.
+`SCALAR_FIELDS` and `LINE_ITEM_COLUMNS` are the canonical names of
+`docs/FIELD_CATALOG.md`, restated here rather than imported: the two packages share
+their data (ADR-0006) and not their code, so a shared vocabulary is held in step by a
+test rather than by an import. `tests/forge/unit/test_fields.py` is that test.
 
 `METADATA_FIELDS` are the values a real invoice prints in its header block that the
 extractor does not read yet. The generator prints them, records them in the truth, and
@@ -26,7 +26,7 @@ SCALAR_FIELDS: tuple[str, ...] = (
 )
 
 LINE_ITEM_COLUMNS: tuple[str, ...] = (
-    "sku",
+    "part_number",
     "description",
     "quantity",
     "unit_price",
@@ -47,13 +47,11 @@ METADATA_FIELDS: tuple[str, ...] = (
 # Every name a lexicon gives label synonyms for.
 LABELLED_FIELDS: tuple[str, ...] = (*SCALAR_FIELDS, *METADATA_FIELDS)
 
-# Every column a template family may print, beyond the five the extractor reads. The
-# article number is `sku`, the catalog's name for it; `part_number` in the ground-truth
-# schema's worked example was the same column under an older name.
+# Every column a template family may print, beyond the five the extractor reads.
 EXTRA_COLUMNS: tuple[str, ...] = (
     "pos",
     "unit",
-    "discount",
+    "discount_pct",
     "vat_rate",
     "subscription_id",
     "billing_cycle",

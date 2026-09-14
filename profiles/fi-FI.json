@@ -1,0 +1,72 @@
+{
+  "id": "fi-FI",
+  "language": "fi",
+  "country": "FI",
+  "lexicon": "fi",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      " ",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd.mm.yyyy",
+    "yyyy-mm-dd"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "25.5",
+      "reduced": "14",
+      "zero": "0"
+    },
+    "id_prefix": "FI",
+    "id_pattern": "\\d{8}"
+  },
+  "supplier": {
+    "name": "Tuulimäki Kauppa Oyj",
+    "aliases": [
+      "Tuulimäki"
+    ],
+    "address_lines": [
+      "Verstaskatu 47",
+      "05672 Lahti",
+      "Suomi"
+    ],
+    "vat_id": "FI77069556"
+  },
+  "custom_fields": [
+    {
+      "name": "contract_number",
+      "labels": [
+        "@header_labels.contract_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "RECYCLING_FEE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

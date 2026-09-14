@@ -24,8 +24,7 @@ import invoice_forge
 from benchmarks import matrix as matrices
 from benchmarks import report as reports
 from benchmarks.compare import NOT_COVERED, DocumentScore, compare
-from benchmarks.layouts import layout_for
-from invoice_extractor import extract
+from invoice_extractor import ProfileRegistry, extract
 from invoice_forge.produce import TRUTH_SUFFIX
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -39,12 +38,13 @@ JSON_INDENT = 2
 
 
 def score_corpus(directory: Path) -> Iterator[DocumentScore]:
-    """Every document in a corpus, extracted with its own vendor's layout and compared."""
+    """Every document in a corpus, extracted with its own vendor's profile and compared."""
+    registry = ProfileRegistry()
     for truth_path in sorted(directory.glob(f"*{TRUTH_SUFFIX}")):
         truth = json.loads(truth_path.read_text(encoding="utf-8"))
         profile_id = str(truth.get("generator", {}).get("profile", ""))
         pdf = truth_path.with_name(truth_path.name.removesuffix(TRUTH_SUFFIX) + ".pdf")
-        result = extract(pdf, layout_for(profile_id))
+        result = extract(pdf, registry.get(profile_id))
         yield compare(pdf.stem, truth, result)
 
 

@@ -59,6 +59,20 @@ class AddressFormat:
 
 
 @dataclass(frozen=True, slots=True)
+class SupplierDetails:
+    """The vendor itself, as it prints itself on every page of every document it sends.
+
+    A profile describes one vendor (ADR-0006), so the supplier is declared rather than
+    drawn: the same name, address and VAT id on every document the profile produces, and
+    the values the extractor's supplier anchors expect to find.
+    """
+
+    name: str
+    address_lines: tuple[str, ...]
+    vat_id: str
+
+
+@dataclass(frozen=True, slots=True)
 class VendorProfile:
     """One vendor's format: its language, its numbers, its dates, its blocks."""
 
@@ -80,3 +94,4 @@ class VendorProfile:
     extensions: tuple[str, ...]
     families: tuple[Family, ...]
     fonts: FontFamily
+    supplier: SupplierDetails

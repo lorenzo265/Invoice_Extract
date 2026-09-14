@@ -1,16 +1,13 @@
-.PHONY: install samples demo corpus bench lint typecheck test check
+.PHONY: install demo corpus bench lint typecheck test check
 
 install:
 	pip install -e ".[dev]" && pre-commit install
 
-samples:
-	python scripts/make_samples.py
-
-demo:
-	python -m invoice_extractor samples/acme_invoice.pdf --layout acme --report
-
 corpus:
 	forge generate --plan corpus/plan.json --out corpus/
+
+demo:
+	python -m invoice_extractor tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf --profile fr-FR --report
 
 bench:
 	python -m benchmarks.run

@@ -13,9 +13,9 @@ from dataclasses import dataclass
 
 from invoice_extractor.document.reader import TextLine
 from invoice_extractor.domain.findings import Finding, Severity
-from invoice_extractor.domain.models import LineItem
+from invoice_extractor.domain.models import LINE_ITEM_COLUMNS, LineItem
 from invoice_extractor.extraction.normalizers import parse_number
-from invoice_extractor.layout.schema import LINE_ITEM_COLUMNS, Layout, LineItemsLayout
+from invoice_extractor.profile.schema import Profile, TableProfile
 
 # How far apart two cells' tops may sit and still be the same printed row, in points.
 ROW_TOLERANCE = 2.0
@@ -31,17 +31,17 @@ class TableExtraction:
     findings: tuple[Finding, ...]
 
 
-def extract_line_items(lines: Sequence[TextLine], layout: Layout) -> TableExtraction:
+def extract_line_items(lines: Sequence[TextLine], profile: Profile) -> TableExtraction:
     """Read the line-item table off every page, first page's table first."""
     items: list[LineItem] = []
     findings: list[Finding] = []
     headers = 0
     for page in _pages(lines):
-        header = _header_row(page, layout.line_items)
+        header = _header_row(page, profile.line_items)
         if header is None:
             continue
         headers += 1
-        _read_page(page, header, layout, items, findings)
+        _read_page(page, header, profile, items, findings)
     if headers == 0:
         return TableExtraction((), (_header_not_found(),))
     return TableExtraction(tuple(items), tuple(findings))
@@ -50,13 +50,13 @@ def extract_line_items(lines: Sequence[TextLine], layout: Layout) -> TableExtrac
 def _read_page(
     page: Sequence[TextLine],
     header: Mapping[str, TextLine],
-    layout: Layout,
+    profile: Profile,
     items: list[LineItem],
     findings: list[Finding],
 ) -> None:
     anchors = sorted((line.bbox.x0, column) for column, line in header.items())
-    for group in _row_groups(page, header, layout.line_items.stop_labels):
-        item, finding = _read_row(group, anchors, layout)
+    for group in _row_groups(page, header, profile.line_items.stop_labels):
+        item, finding = _read_row(group, anchors, profile)
         if item is not None:
             items.append(item)
         if finding is not None:
@@ -70,15 +70,13 @@ def _pages(lines: Sequence[TextLine]) -> list[list[TextLine]]:
     return [by_page[page] for page in sorted(by_page)]
 
 
-def _header_row(
-    lines: Sequence[TextLine], line_items: LineItemsLayout
-) -> dict[str, TextLine] | None:
+def _header_row(lines: Sequence[TextLine], line_items: TableProfile) -> dict[str, TextLine] | None:
     """Five header words, one per column, whose tops agree — or nothing on this page."""
     matches = [
         (column, line)
         for column in LINE_ITEM_COLUMNS
         for line in lines
-        if _is_one_of(line.text, line_items.header_labels[column])
+        if _is_one_of(line.text, line_items.columns[column])
     ]
     for _, anchor in matches:
         row = _columns_at(matches, anchor.bbox.y0)
@@ -125,22 +123,22 @@ def _until_stop(
 
 
 def _read_row(
-    group: Sequence[TextLine], anchors: Anchors, layout: Layout
+    group: Sequence[TextLine], anchors: Anchors, profile: Profile
 ) -> tuple[LineItem | None, Finding | None]:
     cells = _cells(group, anchors)
     absent = next((column for column in LINE_ITEM_COLUMNS if column not in cells), None)
     if absent is not None:
         return None, _incomplete(group, f"no {absent} cell")
-    quantity = parse_number(cells["quantity"], layout)
-    unit_price = parse_number(cells["unit_price"], layout)
-    net_amount = parse_number(cells["net_amount"], layout)
+    quantity = parse_number(cells["quantity"], profile)
+    unit_price = parse_number(cells["unit_price"], profile)
+    net_amount = parse_number(cells["net_amount"], profile)
     if quantity is None:
         return None, _incomplete(group, "an unreadable quantity")
     if unit_price is None:
         return None, _incomplete(group, "an unreadable unit_price")
     if net_amount is None:
         return None, _incomplete(group, "an unreadable net_amount")
-    item = LineItem(cells["sku"], cells["description"], quantity, unit_price, net_amount)
+    item = LineItem(cells["part_number"], cells["description"], quantity, unit_price, net_amount)
     return item, None
 
 

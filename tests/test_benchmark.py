@@ -11,18 +11,21 @@ from __future__ import annotations
 import json
 from decimal import Decimal
 
-import pytest
 from benchmarks import matrix as matrices
 from benchmarks import report as reports
 from benchmarks.compare import DocumentScore, Outcome, compare
-from benchmarks.layouts import PATTERNS, layout_for
 from benchmarks.run import LATEST, README, REPORT
 
-from invoice_extractor.document.reader import BBox, Zone
-from invoice_extractor.domain.models import Evidence, FieldResult, InvoiceResult, LineItem, Strategy
-from invoice_extractor.layout.schema import FIELD_NAMES, LINE_ITEM_COLUMNS
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
-from invoice_forge.profiles.schema import DateFormat
+from invoice_extractor.document.reader import BBox
+from invoice_extractor.domain.models import (
+    LINE_ITEM_COLUMNS,
+    Evidence,
+    FieldResult,
+    InvoiceResult,
+    LineItem,
+    Strategy,
+)
+from invoice_extractor.extraction.specs import FIELD_ORDER
 
 BOX = {"page": 1, "bbox": [10.0, 10.0, 60.0, 20.0]}
 ELSEWHERE = {"page": 1, "bbox": [300.0, 300.0, 360.0, 310.0]}
@@ -32,14 +35,14 @@ def truth(**fields: object) -> dict[str, object]:
     """A truth file with one line item and whichever scalar fields a test names."""
     entries = {
         name: {"value": fields.get(name), "printed": None, "label": None, "evidence": [BOX]}
-        for name in FIELD_NAMES
+        for name in FIELD_ORDER
     }
     return {
         "generator": {"profile": "de-DE", "template": "classic", "knobs": ["multi_page"]},
         "fields": entries,
         "line_items": [
             {
-                "sku": "A-1",
+                "part_number": "A-1",
                 "description": "A thing",
                 "quantity": "2",
                 "unit_price": "3.50",
@@ -52,10 +55,10 @@ def truth(**fields: object) -> dict[str, object]:
 def result(**values: object) -> InvoiceResult:
     """An extractor result carrying one matching row and whichever fields a test names."""
     return InvoiceResult(
-        fields={name: _field(name, values.get(name)) for name in FIELD_NAMES},
+        fields={name: _field(name, values.get(name)) for name in FIELD_ORDER},
         line_items=(LineItem("A-1", "A thing", Decimal(2), Decimal("3.50"), Decimal("7.00")),),
         findings=(),
-        layout_id="de-DE",
+        profile_id="de-DE",
         source_path="x.pdf",
     )
 
@@ -145,7 +148,7 @@ def test_a_row_the_extractor_did_not_find_is_one_error_per_column() -> None:
     two_rows = truth()
     rows = two_rows["line_items"]
     assert isinstance(rows, list)
-    rows.append({**rows[0], "sku": "A-2"})
+    rows.append({**rows[0], "part_number": "A-2"})
     score = compare("x", two_rows, result())
     assert score.rows_expected == 2
     assert score.rows_found == 1
@@ -164,40 +167,6 @@ def test_a_knob_is_tallied_on_the_side_the_document_turned_it() -> None:
 def test_confidence_lands_in_its_band() -> None:
     built = matrices.build([compare("x", truth(currency="EUR"), result(currency="EUR"))])
     assert built.calibration[-1].hit == 1
-
-
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
-def test_every_profile_gets_a_layout_from_its_own_words(profile_id: str) -> None:
-    profile = load_profile(profile_id)
-    layout = layout_for(profile_id)
-    assert layout.id == profile_id
-    assert layout.decimal_separator == profile.decimal_separator
-    assert set(layout.fields) == set(FIELD_NAMES)
-    assert all(layout.fields[name].labels for name in FIELD_NAMES)
-    assert all(layout.line_items.header_labels[column] for column in LINE_ITEM_COLUMNS)
-    assert len(layout.date_formats) == len(profile.date_formats)
-
-
-def test_a_layout_tries_the_formats_that_read_numbers_first() -> None:
-    """`%B` reads month names in the C locale only, so it must never be tried first."""
-    for profile_id in bundled_profile_ids():
-        spelled = [
-            index
-            for index, pattern in enumerate(layout_for(profile_id).date_formats)
-            if "%B" in pattern or "%b" in pattern
-        ]
-        numeric = len(layout_for(profile_id).date_formats) - len(spelled)
-        assert all(index >= numeric for index in spelled), profile_id
-
-
-def test_every_date_format_a_profile_may_declare_has_a_pattern() -> None:
-    assert set(PATTERNS) == set(DateFormat)
-
-
-def test_every_field_in_a_layout_is_given_a_zone_on_the_page() -> None:
-    layout = layout_for("de-DE")
-    assert all(set(layout.fields[name].zones) <= set(Zone) for name in FIELD_NAMES)
-    assert all(layout.fields[name].zones for name in FIELD_NAMES)
 
 
 def committed() -> dict[str, object]:

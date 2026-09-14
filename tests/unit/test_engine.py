@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from decimal import Decimal
 
-from conftest import line, make_field_layout, make_layout
+from conftest import line, make_field_profile, make_profile
 from invoice_extractor.document.reader import TextLine, Zone
 from invoice_extractor.domain.models import Strategy
 from invoice_extractor.extraction.engine import run
@@ -13,7 +13,7 @@ from invoice_extractor.extraction.normalizers import parse_money
 from invoice_extractor.extraction.rankers import top_most, valid_first, zone_priority
 from invoice_extractor.extraction.spec import FieldSpec, OnAllInvalid, Ranker
 from invoice_extractor.extraction.validators import is_positive_money
-from invoice_extractor.layout.schema import Layout
+from invoice_extractor.profile.schema import Profile
 
 BOTH_ZONES = (Zone.BOTTOM_RIGHT, Zone.TOP_RIGHT)
 
@@ -32,8 +32,8 @@ def subtotal_spec(
     )
 
 
-def subtotal_layout(zones: Sequence[Zone] = BOTH_ZONES) -> Layout:
-    return make_layout(fields={"subtotal": make_field_layout(labels=("Subtotal",), zones=zones)})
+def subtotal_layout(zones: Sequence[Zone] = BOTH_ZONES) -> Profile:
+    return make_profile(fields={"subtotal": make_field_profile(labels=("Subtotal",), zones=zones)})
 
 
 def two_valid_lines() -> list[TextLine]:

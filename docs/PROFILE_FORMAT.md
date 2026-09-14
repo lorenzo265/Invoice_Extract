@@ -3,20 +3,41 @@
 A **profile** describes one vendor's invoices: language, locale, currencies, VAT rules,
 the label vocabulary of every field, where things are expected on the page, how the
 tables and the totals block look, and the variants the vendor prints. It is JSON, one
-file per profile under `profiles/`, read by exactly one module (`profile/loader.py`)
-into a typed `Profile`. Nothing else parses the JSON. There is **one** schema: the
-dataclasses in `profile/schema.py`; the loader validates strictly and raises
-`ProfileError` whose message names the offending key path.
+file per profile under `profiles/` at the root of the working directory, read by exactly
+one module (`profile/loader.py`) into a typed `Profile`. Nothing else in this package
+parses the JSON. There is **one** schema: the dataclasses in `profile/schema.py`; the
+loader validates strictly and raises `ProfileError` whose message names the offending
+key path.
 
 Profiles are the successor of v0.1's layouts. The generator (`invoice_forge`) and the
-extractor share the same profile files: the generator draws what a profile describes,
-the extractor reads it back.
+extractor share the same profile files (ADR-0006): the generator draws what a profile
+describes, the extractor reads it back. Each program validates the half it needs and
+names the other half without parsing it, so neither can quietly stop describing the same
+vendor. The generator's half is the `render` object; everything else is this document.
 
 ## Layering
 
 `profiles/_defaults.json` → `profiles/<id>.json` → the matching `variants[]` entry.
-One merge function, one rule table: keys listed under `merge.append` are appended and
-de-duplicated; everything else is replaced. The merged result is what every stage sees.
+One merge function, one rule table (`profile/merge.py`): the key paths listed in
+`APPEND_PATHS` — every label vocabulary — are appended and de-duplicated; everything else
+is replaced. The merged result is what every stage sees.
+
+## Labels come from the language
+
+A vendor's words for "invoice number" are its language's words, and the generator prints
+them from `lexicon/<language>.json`, beside `profiles/`. Repeating those lists inside
+every profile would be sixteen languages copied into twenty-two files, so a label list
+may **reference** them instead: an entry of the form `"@<map>.<key>"` expands to every
+synonym the lexicon offers under that key, and `"@<list>"` expands a plain list of
+phrases. A plain string beside a reference is a label only this vendor prints. The
+reference is resolved while the profile is loaded; nothing downstream knows a lexicon
+exists.
+
+```json
+"invoice_number": { "labels": ["@header_labels.invoice_number", "Beleg-Nr."] }
+```
+
+A reference no lexicon entry names is a `ProfileError`, like any other bad key.
 
 ## Top-level keys
 
@@ -25,11 +46,13 @@ de-duplicated; everything else is replaced. The merged result is what every stag
 | `id` | str | yes | profile id; `InvoiceResult.profile_id` |
 | `language` | str (ISO 639-1) | yes | selects the default lexicon |
 | `country` | str (ISO 3166-1 alpha-2) | yes | supplier country |
+| `lexicon` | str | yes | the language's label vocabulary, under `lexicon/<id>.json` |
 | `number_format` | `{decimal_separator, thousands_separators[]}` | yes | drives every numeric parse; no fallback exists in code |
-| `date_formats` | list[str] | yes | `strptime` patterns tried in order |
-| `currencies` | list[str] | yes | accepted ISO 4217 codes; the first is the default |
-| `vat` | `{rates[], id_pattern, id_prefix}` | yes | rates as decimal strings; pattern is a regex without the prefix |
-| `supplier` | `{name, aliases[], address_lines[], vat_id}` | yes | expected values for the `AnchorSpec`s |
+| `date_formats` | list[str] | yes | one of `yyyy-mm-dd`, `dd.mm.yyyy`, `dd/mm/yyyy`, `d Month yyyy`, `dd-Mon-yyyy`; the generator prints them and the loader turns them into the `strptime` patterns that read them back |
+| `currencies` | list[str] | yes | accepted ISO 4217 codes; the first is the default, the second the one a document echoes |
+| `vat` | `{rates{}, id_pattern, id_prefix}` | yes | `rates` maps `standard`/`reduced`/`zero` to decimal strings; `id_pattern` is a regex for what follows the prefix, and `id_prefix` may be empty where a country's VAT id carries none |
+| `supplier` | `{name, aliases[], address_lines[], vat_id}` | yes | this vendor as it prints itself: the expected values for the `AnchorSpec`s, and what the generator draws |
+| `render` | object | yes | the generator's half of the file; this package names it and reads nothing inside it |
 | `zones` | `{grid: [rows, cols]}` | no (default `[3, 3]`) | zone names are `r<i>c<j>`, 1-based; the nine 3×3 names (`top_left`…) are accepted aliases |
 | `fields` | map name → `FieldProfile` | yes | one entry per scalar/label field the profile prints |
 | `parties` | map `{bill_to, ship_to, mail_to}` → `SectionProfile` | yes | labels, stop labels, placeholders |
@@ -40,6 +63,9 @@ de-duplicated; everything else is replaced. The merged result is what every stag
 | `variants` | list[`{id, when, overlay}`] | no | `when` ∈ `{document_type, any_text}`; overlay is a partial profile |
 | `document_types` | `{invoice_titles[], credit_note_titles[], credit_reference_labels[]}` | yes | for `classify_document` |
 | `noise` | `{ignore_labels[]}` | no | labels known to be traps (order date, print date…) |
+
+A format that spells its month sorts after one that reads digits, because `strptime`
+reads month names in the C locale only.
 
 Unknown key at any level: `"<path> is not a recognized key"`. Missing required key:
 `"<path> is required"`. Wrong type: `"<path> must be <description>"`.
@@ -64,7 +90,7 @@ Unknown key at any level: `"<path> is not a recognized key"`. Missing required k
 
 | Key | Meaning |
 |---|---|
-| `columns` | map canonical column → `labels[]` (at least `description` and one amount column for line items; `rate` and `vat` for the VAT summary) |
+| `columns` | map canonical column → `labels[]` (at least `description` and `net_amount` for line items; `rate` and `vat` for the VAT summary) |
 | `min_header_matches` | int (default 3) |
 | `stop_labels[]` | end of the table on a page |
 | `page_bounds` | `{"start": "header", "end": "totals_anchor" \| "stop_label"}` |
@@ -81,27 +107,74 @@ Unknown key at any level: `"<path> is not a recognized key"`. Missing required k
 | `secondary_echo` | `{labels[], rate_labels[]}` or absent |
 | `tolerance` | `{absolute: "0.02", relative: "0.005"}` |
 
-## Worked example (excerpt)
+## Worked example
+
+`profiles/de-DE.json`, in full — everything it does not say, `profiles/_defaults.json`
+and `lexicon/de.json` say:
 
 ```json
 {
   "id": "de-DE",
-  "language": "de", "country": "DE",
-  "number_format": { "decimal_separator": ",", "thousands_separators": ["."] },
-  "date_formats": ["%d.%m.%Y", "%d. %B %Y"],
-  "currencies": ["EUR"],
-  "vat": { "rates": ["19", "7", "0"], "id_prefix": "DE", "id_pattern": "[0-9]{9}" },
-  "supplier": { "name": "Rheinwerk Industriebedarf GmbH", "aliases": ["Rheinwerk"], "address_lines": ["Am Hafen 27", "47119 Duisburg"], "vat_id": "DE811234567" },
-  "fields": {
-    "invoice_number": { "labels": ["Rechnungsnummer", "Rechnungs-Nr."], "zones": ["r1c3"] },
-    "invoice_date":   { "labels": ["Rechnungsdatum"], "zones": ["r1c3"], "exclude_labels": ["Bestelldatum", "Lieferdatum"] }
+  "language": "de",
+  "country": "DE",
+  "lexicon": "de",
+  "number_format": { "decimal_separator": ",", "thousands_separators": [".", " "] },
+  "date_formats": ["dd.mm.yyyy", "d Month yyyy"],
+  "currencies": ["EUR", "USD"],
+  "vat": {
+    "rates": { "standard": "19", "reduced": "7", "zero": "0" },
+    "id_prefix": "DE",
+    "id_pattern": "\\d{9}"
   },
-  "line_items": { "columns": { "part_number": ["Artikel-Nr."], "description": ["Beschreibung"], "quantity": ["Menge"], "unit_price": ["Einzelpreis"], "vat_rate": ["USt %"], "net_amount": ["Betrag EUR"] },
-                  "stop_labels": ["Nettosumme"], "page_bounds": { "start": "header", "end": "totals_anchor" }, "carry_forward_labels": ["Übertrag"] },
-  "totals": { "components": { "subtotal": { "labels": ["Nettosumme"] }, "vat_amount": { "labels": ["Umsatzsteuer gesamt"] }, "total_amount": { "labels": ["Rechnungsbetrag"] },
-                              "shipping": { "labels": ["Versandkosten"], "kind": "charge", "charge_type": "SHIPPING" } },
-              "secondary_echo": { "labels": ["Gegenwert"], "rate_labels": ["Kurs"] } },
-  "document_types": { "invoice_titles": ["RECHNUNG"], "credit_note_titles": ["GUTSCHRIFT"], "credit_reference_labels": ["zu Rechnung"] }
+  "supplier": {
+    "name": "Nordlicht Industriebedarf GmbH & Co. KG",
+    "aliases": ["Nordlicht"],
+    "address_lines": ["Am Hafen 60", "91195 Leipzig", "Deutschland"],
+    "vat_id": "DE879668745"
+  },
+  "custom_fields": [
+    { "name": "contract_number", "labels": ["@header_labels.contract_number"],
+      "zones": ["r1c3", "r1c2"], "required": false }
+  ],
+  "render": { "address_format": { "postal_code_position": "before_city", "country_line": true },
+              "charges_used": ["SHIPPING", "ENVIRONMENTAL_FEE", "SURCHARGE"],
+              "prints_supply_date": true, "credit_note_style": "negative_amounts",
+              "families": ["classic", "tabular", "stacked", "saas", "minimal"],
+              "fonts": "sans" }
+}
+```
+
+And the excerpt of `profiles/_defaults.json` those keys are laid over:
+
+```json
+{
+  "fields": {
+    "invoice_number": { "labels": ["@header_labels.invoice_number"], "zones": ["r1c3", "r1c2"] },
+    "invoice_date": { "labels": ["@header_labels.invoice_date"], "zones": ["r1c3", "r1c2"] }
+  },
+  "line_items": {
+    "columns": { "part_number": ["@column_headers.part_number"],
+                 "description": ["@column_headers.description"],
+                 "quantity": ["@column_headers.quantity"],
+                 "unit_price": ["@column_headers.unit_price"],
+                 "net_amount": ["@column_headers.net_amount"] },
+    "stop_labels": ["@totals_labels.subtotal", "@totals_labels.total_amount"],
+    "page_bounds": { "start": "header", "end": "totals_anchor" },
+    "carry_forward_labels": ["@carry_forward.incoming", "@carry_forward.outgoing"]
+  },
+  "totals": {
+    "components": { "subtotal": { "labels": ["@totals_labels.subtotal"] },
+                    "vat_amount": { "labels": ["@totals_labels.vat_amount"] },
+                    "total_amount": { "labels": ["@totals_labels.total_amount"] },
+                    "shipping": { "labels": ["@charge_labels.SHIPPING"],
+                                  "kind": "charge", "charge_type": "SHIPPING" } },
+    "tolerance": { "absolute": "0.01", "relative": "0.005" }
+  },
+  "document_types": { "invoice_titles": ["@document_titles.invoice"],
+                      "credit_note_titles": ["@document_titles.credit_note"],
+                      "credit_reference_labels": ["@header_labels.credit_reference"] },
+  "noise": { "ignore_labels": ["@trap_labels.order_date", "@trap_labels.delivery_date",
+                               "@trap_labels.print_date"] }
 }
 ```
 

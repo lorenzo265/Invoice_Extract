@@ -1,0 +1,312 @@
+{
+  "language": "pl",
+  "document_titles": {
+    "invoice": [
+      "FAKTURA",
+      "Faktura VAT"
+    ],
+    "credit_note": [
+      "FAKTURA KORYGUJĄCA",
+      "Korekta"
+    ]
+  },
+  "header_labels": {
+    "invoice_number": [
+      "Numer faktury",
+      "Faktura nr",
+      "Nr faktury"
+    ],
+    "invoice_date": [
+      "Data wystawienia",
+      "Data faktury",
+      "Data"
+    ],
+    "due_date": [
+      "Termin płatności",
+      "Płatne do",
+      "Termin zapłaty"
+    ],
+    "supplier_vat_id": [
+      "NIP",
+      "Numer NIP",
+      "NIP sprzedawcy"
+    ],
+    "customer_vat_id": [
+      "NIP nabywcy",
+      "NIP klienta"
+    ],
+    "currency": [
+      "Waluta"
+    ],
+    "supply_date": [
+      "Data sprzedaży",
+      "Data dostawy"
+    ],
+    "order_number": [
+      "Numer zamówienia",
+      "Nr zamówienia",
+      "Zamówienie"
+    ],
+    "customer_number": [
+      "Numer klienta",
+      "Nr klienta",
+      "Kod kontrahenta"
+    ],
+    "contract_number": [
+      "Numer umowy",
+      "Nr umowy"
+    ],
+    "our_reference": [
+      "Nasz znak",
+      "Handlowiec"
+    ],
+    "your_reference": [
+      "Wasz znak",
+      "Państwa znak"
+    ],
+    "payment_terms": [
+      "Warunki płatności",
+      "Sposób płatności"
+    ],
+    "credit_reference": [
+      "Faktura pierwotna",
+      "Dotyczy faktury"
+    ]
+  },
+  "totals_labels": {
+    "vat_rate": [
+      "Stawka VAT",
+      "Stawka",
+      "VAT %"
+    ],
+    "subtotal": [
+      "Wartość netto",
+      "Suma netto",
+      "Razem netto"
+    ],
+    "vat_amount": [
+      "Kwota VAT",
+      "Razem VAT",
+      "VAT"
+    ],
+    "total_amount": [
+      "Do zapłaty",
+      "Razem brutto",
+      "Wartość brutto"
+    ]
+  },
+  "charge_labels": {
+    "SHIPPING": [
+      "Koszty wysyłki",
+      "Transport"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Opłata środowiskowa",
+      "Opłata ekologiczna"
+    ],
+    "SURCHARGE": [
+      "Dopłata",
+      "Dopłata za małe zamówienie"
+    ],
+    "CONSOLIDATION_FEE": [
+      "Opłata manipulacyjna",
+      "Koszty obsługi"
+    ],
+    "RECYCLING_FEE": [
+      "Opłata recyklingowa",
+      "Opłata ZSEE"
+    ],
+    "ROUNDING": [
+      "Zaokrąglenie",
+      "Różnica zaokrąglenia"
+    ]
+  },
+  "column_headers": {
+    "part_number": [
+      "Indeks",
+      "Nr katalogowy",
+      "Kod towaru"
+    ],
+    "description": [
+      "Nazwa towaru",
+      "Opis",
+      "Nazwa"
+    ],
+    "quantity": [
+      "Ilość",
+      "Liczba"
+    ],
+    "unit_price": [
+      "Cena jednostkowa",
+      "Cena",
+      "Cena netto"
+    ],
+    "net_amount": [
+      "Wartość",
+      "Kwota",
+      "Razem"
+    ],
+    "pos": [
+      "Lp.",
+      "Poz.",
+      "Nr"
+    ],
+    "unit": [
+      "Jednostka",
+      "j.m."
+    ],
+    "discount_pct": [
+      "Rabat",
+      "Rabat %"
+    ],
+    "vat_rate": [
+      "VAT %",
+      "Kod VAT"
+    ],
+    "subscription_id": [
+      "Nr abonamentu",
+      "ID usługi"
+    ],
+    "billing_cycle": [
+      "Cykl rozliczeniowy",
+      "Częstotliwość"
+    ],
+    "period": [
+      "Okres",
+      "Okres usługi"
+    ],
+    "share": [
+      "Udział %",
+      "Podział"
+    ],
+    "remaining_term": [
+      "Pozostały okres",
+      "Pozostały czas"
+    ]
+  },
+  "vat_summary_headers": {
+    "code": [
+      "Kod",
+      "Kod VAT"
+    ],
+    "rate": [
+      "Stawka",
+      "Stawka VAT"
+    ],
+    "base": [
+      "Podstawa",
+      "Netto"
+    ],
+    "vat": [
+      "VAT",
+      "Kwota VAT"
+    ]
+  },
+  "party_headings": {
+    "bill_to": [
+      "Nabywca",
+      "Dane do faktury"
+    ],
+    "ship_to": [
+      "Odbiorca",
+      "Adres dostawy"
+    ],
+    "mail_to": [
+      "Adres korespondencyjny",
+      "Adres pocztowy"
+    ]
+  },
+  "trap_labels": {
+    "order_date": [
+      "Data zamówienia",
+      "Data złożenia zamówienia"
+    ],
+    "delivery_date": [
+      "Data dostawy",
+      "Data wysyłki"
+    ],
+    "print_date": [
+      "Data wydruku",
+      "Wydrukowano"
+    ]
+  },
+  "carry_forward": {
+    "incoming": [
+      "Z przeniesienia",
+      "Przeniesienie z poprzedniej strony"
+    ],
+    "outgoing": [
+      "Do przeniesienia",
+      "Przeniesienie na następną stronę"
+    ]
+  },
+  "exemption_sentences": {
+    "reverse_charge": [
+      "Odwrotne obciążenie."
+    ],
+    "intra_community": [
+      "Wewnątrzwspólnotowa dostawa towarów zwolniona z VAT."
+    ],
+    "export": [
+      "Eksport towarów zwolniony z VAT."
+    ]
+  },
+  "page_numbering": [
+    "Strona {page} z {pages}",
+    "Str. {page}/{pages}"
+  ],
+  "payment_terms": [
+    "Płatność w terminie 30 dni od daty wystawienia.",
+    "Netto 14 dni.",
+    "2 % skonta przy płatności w ciągu 10 dni."
+  ],
+  "legal_lines": [
+    "Dostawy realizowane są na podstawie naszych ogólnych warunków sprzedaży.",
+    "Towar pozostaje własnością sprzedawcy do chwili całkowitej zapłaty.",
+    "Za opóźnienie w płatności naliczane są odsetki ustawowe."
+  ],
+  "copy_stamps": [
+    "KOPIA",
+    "DUPLIKAT"
+  ],
+  "section_headings": [
+    "Sprzęt",
+    "Usługi",
+    "Licencje oprogramowania",
+    "Części zamienne",
+    "Materiały eksploatacyjne"
+  ],
+  "address_placeholders": [
+    "jak adres do faktury",
+    "taki sam jak adres do faktury"
+  ],
+  "months": [
+    "styczeń",
+    "luty",
+    "marzec",
+    "kwiecień",
+    "maj",
+    "czerwiec",
+    "lipiec",
+    "sierpień",
+    "wrzesień",
+    "październik",
+    "listopad",
+    "grudzień"
+  ],
+  "month_abbreviations": [
+    "sty",
+    "lut",
+    "mar",
+    "kwi",
+    "maj",
+    "cze",
+    "lip",
+    "sie",
+    "wrz",
+    "paź",
+    "lis",
+    "gru"
+  ],
+  "diacritics": "ą ć ę ł ń ó ś ź ż Ą Ć Ę Ł Ń Ó Ś Ź Ż — zł ² °"
+}

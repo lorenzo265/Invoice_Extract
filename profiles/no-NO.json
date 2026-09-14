@@ -1,0 +1,72 @@
+{
+  "id": "no-NO",
+  "language": "no",
+  "country": "NO",
+  "lexicon": "no",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      " ",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd.mm.yyyy"
+  ],
+  "currencies": [
+    "NOK",
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "25",
+      "reduced": "15",
+      "zero": "0"
+    },
+    "id_prefix": "NO",
+    "id_pattern": "\\d{9}MVA"
+  },
+  "supplier": {
+    "name": "Bjørkdal Handel AS",
+    "aliases": [
+      "Bjørkdal"
+    ],
+    "address_lines": [
+      "Lindeveien 157",
+      "4251 Drammen",
+      "Norge"
+    ],
+    "vat_id": "NO240018806MVA"
+  },
+  "custom_fields": [
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

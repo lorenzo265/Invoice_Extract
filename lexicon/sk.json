@@ -1,0 +1,312 @@
+{
+  "language": "sk",
+  "document_titles": {
+    "invoice": [
+      "FAKTÚRA",
+      "Faktúra – daňový doklad"
+    ],
+    "credit_note": [
+      "OPRAVNÁ FAKTÚRA",
+      "Dobropis"
+    ]
+  },
+  "header_labels": {
+    "invoice_number": [
+      "Číslo faktúry",
+      "Faktúra č.",
+      "Č. faktúry"
+    ],
+    "invoice_date": [
+      "Dátum vystavenia",
+      "Dátum faktúry",
+      "Dátum"
+    ],
+    "due_date": [
+      "Dátum splatnosti",
+      "Splatnosť",
+      "Splatné do"
+    ],
+    "supplier_vat_id": [
+      "IČ DPH",
+      "DIČ",
+      "IČO"
+    ],
+    "customer_vat_id": [
+      "IČ DPH odberateľa",
+      "DIČ zákazníka"
+    ],
+    "currency": [
+      "Mena"
+    ],
+    "supply_date": [
+      "Dátum dodania",
+      "Dátum zdaniteľného plnenia"
+    ],
+    "order_number": [
+      "Číslo objednávky",
+      "Č. objednávky",
+      "Objednávka"
+    ],
+    "customer_number": [
+      "Číslo zákazníka",
+      "Č. zákazníka",
+      "Kód odberateľa"
+    ],
+    "contract_number": [
+      "Číslo zmluvy",
+      "Č. zmluvy"
+    ],
+    "our_reference": [
+      "Naša značka",
+      "Vybavuje"
+    ],
+    "your_reference": [
+      "Vaša značka",
+      "Váš odkaz"
+    ],
+    "payment_terms": [
+      "Platobné podmienky",
+      "Spôsob platby"
+    ],
+    "credit_reference": [
+      "Pôvodná faktúra",
+      "Opravuje faktúru"
+    ]
+  },
+  "totals_labels": {
+    "vat_rate": [
+      "Sadzba DPH",
+      "Sadzba",
+      "DPH %"
+    ],
+    "subtotal": [
+      "Základ dane",
+      "Medzisúčet",
+      "Spolu bez DPH"
+    ],
+    "vat_amount": [
+      "Výška DPH",
+      "DPH spolu",
+      "DPH"
+    ],
+    "total_amount": [
+      "Na úhradu",
+      "Spolu na zaplatenie",
+      "Spolu s DPH"
+    ]
+  },
+  "charge_labels": {
+    "SHIPPING": [
+      "Dopravné",
+      "Prepravné"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Ekologický poplatok",
+      "Poplatok za životné prostredie"
+    ],
+    "SURCHARGE": [
+      "Príplatok",
+      "Príplatok za malú objednávku"
+    ],
+    "CONSOLIDATION_FEE": [
+      "Manipulačný poplatok",
+      "Spracovateľský poplatok"
+    ],
+    "RECYCLING_FEE": [
+      "Recyklačný poplatok",
+      "Poplatok OEEZ"
+    ],
+    "ROUNDING": [
+      "Zaokrúhlenie",
+      "Rozdiel zaokrúhlenia"
+    ]
+  },
+  "column_headers": {
+    "part_number": [
+      "Kód",
+      "Katalógové číslo",
+      "Č. tovaru"
+    ],
+    "description": [
+      "Popis",
+      "Názov tovaru",
+      "Označenie"
+    ],
+    "quantity": [
+      "Množstvo",
+      "Počet"
+    ],
+    "unit_price": [
+      "Jednotková cena",
+      "Cena",
+      "Cena za MJ"
+    ],
+    "net_amount": [
+      "Suma",
+      "Spolu za riadok",
+      "Hodnota"
+    ],
+    "pos": [
+      "Por.",
+      "Riadok",
+      "Č."
+    ],
+    "unit": [
+      "Jednotka",
+      "MJ"
+    ],
+    "discount_pct": [
+      "Zľava",
+      "Zľava %"
+    ],
+    "vat_rate": [
+      "DPH %",
+      "Kód DPH"
+    ],
+    "subscription_id": [
+      "Č. predplatného",
+      "ID služby"
+    ],
+    "billing_cycle": [
+      "Fakturačný cyklus",
+      "Frekvencia"
+    ],
+    "period": [
+      "Obdobie",
+      "Obdobie služby"
+    ],
+    "share": [
+      "Podiel %",
+      "Rozdelenie"
+    ],
+    "remaining_term": [
+      "Zostávajúca doba",
+      "Zostáva"
+    ]
+  },
+  "vat_summary_headers": {
+    "code": [
+      "Kód",
+      "Kód DPH"
+    ],
+    "rate": [
+      "Sadzba",
+      "Sadzba DPH"
+    ],
+    "base": [
+      "Základ",
+      "Základ dane"
+    ],
+    "vat": [
+      "DPH",
+      "Výška DPH"
+    ]
+  },
+  "party_headings": {
+    "bill_to": [
+      "Odberateľ",
+      "Fakturačná adresa"
+    ],
+    "ship_to": [
+      "Miesto dodania",
+      "Dodacia adresa"
+    ],
+    "mail_to": [
+      "Korešpondenčná adresa",
+      "Poštová adresa"
+    ]
+  },
+  "trap_labels": {
+    "order_date": [
+      "Dátum objednávky",
+      "Objednané dňa"
+    ],
+    "delivery_date": [
+      "Dátum dodania",
+      "Dátum odoslania"
+    ],
+    "print_date": [
+      "Dátum tlače",
+      "Vytlačené"
+    ]
+  },
+  "carry_forward": {
+    "incoming": [
+      "Prevod",
+      "Prevod z predchádzajúcej strany"
+    ],
+    "outgoing": [
+      "Na prevod",
+      "Prevod na ďalšiu stranu"
+    ]
+  },
+  "exemption_sentences": {
+    "reverse_charge": [
+      "Prenesenie daňovej povinnosti."
+    ],
+    "intra_community": [
+      "Oslobodené dodanie tovaru do iného členského štátu."
+    ],
+    "export": [
+      "Oslobodený vývoz tovaru."
+    ]
+  },
+  "page_numbering": [
+    "Strana {page} z {pages}",
+    "Str. {page}/{pages}"
+  ],
+  "payment_terms": [
+    "Splatnosť 30 dní od dátumu vystavenia.",
+    "Netto 14 dní.",
+    "Zľava 2 % pri platbe do 10 dní."
+  ],
+  "legal_lines": [
+    "Všetky dodávky sa riadia našimi všeobecnými obchodnými podmienkami.",
+    "Tovar zostáva majetkom predávajúceho až do úplného zaplatenia.",
+    "Pri omeškaní platby účtujeme úrok z omeškania."
+  ],
+  "copy_stamps": [
+    "KÓPIA",
+    "DUPLIKÁT"
+  ],
+  "section_headings": [
+    "Hardvér",
+    "Služby",
+    "Softvérové licencie",
+    "Náhradné diely",
+    "Spotrebný materiál"
+  ],
+  "address_placeholders": [
+    "zhodná s fakturačnou adresou",
+    "rovnaká ako fakturačná adresa"
+  ],
+  "months": [
+    "január",
+    "február",
+    "marec",
+    "apríl",
+    "máj",
+    "jún",
+    "júl",
+    "august",
+    "september",
+    "október",
+    "november",
+    "december"
+  ],
+  "month_abbreviations": [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "máj",
+    "jún",
+    "júl",
+    "aug",
+    "sep",
+    "okt",
+    "nov",
+    "dec"
+  ],
+  "diacritics": "á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž — € ² °"
+}

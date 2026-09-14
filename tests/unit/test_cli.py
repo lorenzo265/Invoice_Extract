@@ -12,22 +12,26 @@ import pytest
 
 from invoice_extractor.cli import main
 
+KNOWN_PROFILE = "en-GB"
+
 
 def test_cli_returns_one_for_missing_pdf(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     missing = tmp_path / "absent.pdf"
-    assert main([str(missing), "--layout", "acme"]) == 1
+    assert main([str(missing), "--profile", KNOWN_PROFILE]) == 1
     assert "absent.pdf" in capsys.readouterr().err
 
 
-def test_cli_returns_one_for_bad_layout_with_message(capsys: pytest.CaptureFixture[str]) -> None:
-    assert main(["samples/acme_invoice.pdf", "--layout", "no_such_vendor"]) == 1
-    assert capsys.readouterr().err == "layout file not found: layouts/no_such_vendor.json\n"
+def test_cli_returns_one_for_unknown_profile_with_message(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main([str(tmp_path / "any.pdf"), "--profile", "no_such_vendor"]) == 1
+    assert capsys.readouterr().err == "no profile at profiles/no_such_vendor.json\n"
 
 
-def test_cli_requires_a_layout(capsys: pytest.CaptureFixture[str]) -> None:
+def test_cli_requires_a_profile(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit) as exit_code:
-        main(["samples/acme_invoice.pdf"])
+        main([str(tmp_path / "any.pdf")])
     assert exit_code.value.code == 2
-    assert "--layout" in capsys.readouterr().err
+    assert "--profile" in capsys.readouterr().err

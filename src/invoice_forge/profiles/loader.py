@@ -1,8 +1,12 @@
 """Read a vendor profile and validate it, top down, into a `VendorProfile`.
 
-Profiles are package data, not files in the working directory: a corpus must generate
-identically wherever it is generated from. `load_profile("de-DE")` therefore resolves
-inside the package, and only an argument that looks like a path is read as one.
+The profile files are shared with the extractor (ADR-0006): one file describes one
+vendor, the generator draws what it says and the extractor reads it back. Each program
+validates the half it needs and names the other half without parsing it, so neither can
+quietly stop describing the same vendor.
+
+Profiles live in `profiles/` at the root of the working directory, beside the lexicons —
+the same convention every command in this repository already runs under.
 """
 
 from __future__ import annotations
@@ -14,7 +18,6 @@ from invoice_forge.families import FAMILY_NAMES, Family
 from invoice_forge.fields import METADATA_FIELDS
 from invoice_forge.jsonspec import (
     SpecError,
-    optional_text,
     read_object,
     reject_unknown,
     require_choice,
@@ -22,6 +25,7 @@ from invoice_forge.jsonspec import (
     require_decimal,
     require_flag,
     require_mapping,
+    require_object_list,
     require_strings,
     require_text,
 )
@@ -35,42 +39,66 @@ from invoice_forge.profiles.schema import (
     DateFormat,
     FontFamily,
     PostalCodePosition,
+    SupplierDetails,
     VatRates,
     VendorProfile,
 )
 
-PROFILES_DIR = Path(__file__).parent
-TOP_LEVEL_KEYS = (
+PROFILES_DIR = Path("profiles")
+DEFAULTS_ID = "_defaults"
+
+# What the generator reads, and what the extractor reads. A key in neither list is a
+# typo; a key in the other program's list is simply not this program's business.
+GENERATOR_KEYS = (
     "id",
     "country",
     "language",
-    "currency",
-    "secondary_currency",
-    "decimal_separator",
-    "thousands_separators",
-    "date_formats",
-    "vat_rates",
-    "vat_id_pattern",
-    "address_format",
     "lexicon",
+    "number_format",
+    "date_formats",
+    "currencies",
+    "vat",
+    "supplier",
+    "custom_fields",
+    "render",
+)
+EXTRACTOR_KEYS = (
+    "zones",
+    "fields",
+    "parties",
+    "line_items",
+    "vat_summary",
+    "totals",
+    "variants",
+    "document_types",
+    "noise",
+)
+TOP_LEVEL_KEYS = (*GENERATOR_KEYS, *EXTRACTOR_KEYS)
+RENDER_KEYS = (
+    "address_format",
     "charges_used",
     "prints_supply_date",
     "credit_note_style",
-    "extensions",
     "families",
     "fonts",
 )
+NUMBER_FORMAT_KEYS = ("decimal_separator", "thousands_separators")
+VAT_KEYS = ("rates", "id_prefix", "id_pattern")
 VAT_RATE_KEYS = ("standard", "reduced", "zero")
+SUPPLIER_KEYS = ("name", "aliases", "address_lines", "vat_id")
 ADDRESS_KEYS = ("postal_code_position", "country_line")
 
 
 def load_profile(id_or_path: str) -> VendorProfile:
-    """Load a bundled profile by id, or any profile by path. Raises `SpecError`."""
+    """Load a profile by id under `profiles/`, or by path. Raises `SpecError`."""
     return _parse(read_object(_resolve(id_or_path), "profile"))
 
 
-def bundled_profile_ids() -> tuple[str, ...]:
-    return tuple(sorted(path.stem for path in PROFILES_DIR.glob("*.json")))
+def profile_ids() -> tuple[str, ...]:
+    """Every vendor under `profiles/`, in name order. The shared defaults are not one."""
+    return tuple(
+        sorted(path.stem for path in PROFILES_DIR.glob("*.json") if path.stem != DEFAULTS_ID)
+    )
 
 
 def _resolve(id_or_path: str) -> Path:
@@ -80,41 +108,72 @@ def _resolve(id_or_path: str) -> Path:
 
 def _parse(data: Mapping[str, object]) -> VendorProfile:
     reject_unknown(data, TOP_LEVEL_KEYS, "", "profile key")
+    render = _render(data)
+    currencies = _currencies(data)
+    numbers = require_mapping(data, "number_format", "number_format", "an object of separators")
+    reject_unknown(numbers, NUMBER_FORMAT_KEYS, "number_format.", "number format key")
     return VendorProfile(
         id=require_text(data, "id", "id"),
         country=require_text(data, "country", "country"),
         language=require_text(data, "language", "language"),
-        currency=require_text(data, "currency", "currency"),
-        secondary_currency=optional_text(data, "secondary_currency", "secondary_currency"),
-        decimal_separator=_decimal_separator(data),
-        thousands_separators=_thousands_separators(data),
+        currency=currencies[0],
+        secondary_currency=currencies[1] if len(currencies) > 1 else None,
+        decimal_separator=_decimal_separator(numbers),
+        thousands_separators=_thousands_separators(numbers),
         date_formats=_date_formats(data),
         vat_rates=_vat_rates(data),
-        vat_id_pattern=require_text(data, "vat_id_pattern", "vat_id_pattern"),
-        address_format=_address_format(data),
+        vat_id_pattern=_vat_id_pattern(data),
+        address_format=_address_format(render),
         lexicon=require_text(data, "lexicon", "lexicon"),
-        charges_used=_charges_used(data),
-        prints_supply_date=require_flag(data, "prints_supply_date", "prints_supply_date"),
-        credit_note_style=_credit_note_style(data),
+        charges_used=_charges_used(render),
+        prints_supply_date=require_flag(render, "prints_supply_date", "render.prints_supply_date"),
+        credit_note_style=_credit_note_style(render),
         extensions=_extensions(data),
-        families=_families(data),
-        fonts=FontFamily(require_choice(data, "fonts", "fonts", FONT_FAMILY_NAMES)),
+        families=_families(render),
+        fonts=FontFamily(require_choice(render, "fonts", "render.fonts", FONT_FAMILY_NAMES)),
+        supplier=_supplier(data),
     )
 
 
-def _decimal_separator(data: Mapping[str, object]) -> str:
-    separator = require_text(data, "decimal_separator", "decimal_separator")
+def _render(data: Mapping[str, object]) -> Mapping[str, object]:
+    render = require_mapping(data, "render", "render", "an object of drawing settings")
+    reject_unknown(render, RENDER_KEYS, "render.", "render key")
+    return render
+
+
+def _currencies(data: Mapping[str, object]) -> tuple[str, ...]:
+    currencies = require_strings(data, "currencies", "currencies")
+    if not currencies:
+        raise SpecError("currencies must be a non-empty list of strings")
+    return currencies
+
+
+def _supplier(data: Mapping[str, object]) -> SupplierDetails:
+    supplier = require_mapping(data, "supplier", "supplier", "an object describing the vendor")
+    reject_unknown(supplier, SUPPLIER_KEYS, "supplier.", "supplier key")
+    lines = require_strings(supplier, "address_lines", "supplier.address_lines")
+    if not lines:
+        raise SpecError("supplier.address_lines must be a non-empty list of strings")
+    return SupplierDetails(
+        name=require_text(supplier, "name", "supplier.name"),
+        address_lines=lines,
+        vat_id=require_text(supplier, "vat_id", "supplier.vat_id"),
+    )
+
+
+def _decimal_separator(numbers: Mapping[str, object]) -> str:
+    separator = require_text(numbers, "decimal_separator", "number_format.decimal_separator")
     if len(separator) != 1:
-        raise SpecError("decimal_separator must be a single character")
+        raise SpecError("number_format.decimal_separator must be a single character")
     return separator
 
 
-def _thousands_separators(data: Mapping[str, object]) -> tuple[str, ...]:
-    path = "thousands_separators"
-    separators = require_strings(data, "thousands_separators", path)
+def _thousands_separators(numbers: Mapping[str, object]) -> tuple[str, ...]:
+    path = "number_format.thousands_separators"
+    separators = require_strings(numbers, "thousands_separators", path)
     if not separators:
         raise SpecError(f"{path} must be a non-empty list of strings")
-    decimal_separator = _decimal_separator(data)
+    decimal_separator = _decimal_separator(numbers)
     for index, separator in enumerate(separators):
         if len(separator) > 1:
             raise SpecError(f"{path}[{index}] must be a single character or empty")
@@ -128,9 +187,15 @@ def _date_formats(data: Mapping[str, object]) -> tuple[DateFormat, ...]:
     return tuple(DateFormat(name) for name in names)
 
 
+def _vat(data: Mapping[str, object]) -> Mapping[str, object]:
+    vat = require_mapping(data, "vat", "vat", "an object with rates, id_prefix and id_pattern")
+    reject_unknown(vat, VAT_KEYS, "vat.", "vat key")
+    return vat
+
+
 def _vat_rates(data: Mapping[str, object]) -> VatRates:
-    path = "vat_rates"
-    rates = require_mapping(data, "vat_rates", path, "an object with standard, reduced and zero")
+    path = "vat.rates"
+    rates = require_mapping(_vat(data), "rates", path, "an object with standard, reduced and zero")
     reject_unknown(rates, VAT_RATE_KEYS, f"{path}.", "rate")
     return VatRates(
         standard=require_decimal(rates, "standard", f"{path}.standard"),
@@ -139,9 +204,18 @@ def _vat_rates(data: Mapping[str, object]) -> VatRates:
     )
 
 
-def _address_format(data: Mapping[str, object]) -> AddressFormat:
-    path = "address_format"
-    address = require_mapping(data, "address_format", path, "an object describing the address")
+def _vat_id_pattern(data: Mapping[str, object]) -> str:
+    """The country prefix a vendor's VAT id carries, then the digits after it."""
+    vat = _vat(data)
+    prefix = vat.get("id_prefix", "")
+    if not isinstance(prefix, str):
+        raise SpecError("vat.id_prefix must be a string")
+    return prefix + require_text(vat, "id_pattern", "vat.id_pattern")
+
+
+def _address_format(render: Mapping[str, object]) -> AddressFormat:
+    path = "render.address_format"
+    address = require_mapping(render, "address_format", path, "an object describing the address")
     reject_unknown(address, ADDRESS_KEYS, f"{path}.", "address key")
     position = require_choice(
         address, "postal_code_position", f"{path}.postal_code_position", POSTAL_CODE_POSITIONS
@@ -152,27 +226,38 @@ def _address_format(data: Mapping[str, object]) -> AddressFormat:
     )
 
 
-def _charges_used(data: Mapping[str, object]) -> tuple[ChargeType, ...]:
-    names = require_strings(data, "charges_used", "charges_used")
+def _charges_used(render: Mapping[str, object]) -> tuple[ChargeType, ...]:
+    names = require_strings(render, "charges_used", "render.charges_used")
     for index, name in enumerate(names):
         if name not in CHARGE_TYPE_NAMES:
-            raise SpecError(f"charges_used[{index}] must be one of: {', '.join(CHARGE_TYPE_NAMES)}")
+            raise SpecError(
+                f"render.charges_used[{index}] must be one of: {', '.join(CHARGE_TYPE_NAMES)}"
+            )
     return tuple(ChargeType(name) for name in names)
 
 
-def _credit_note_style(data: Mapping[str, object]) -> CreditNoteStyle:
-    path = "credit_note_style"
-    return CreditNoteStyle(require_choice(data, path, path, CREDIT_NOTE_STYLE_NAMES))
+def _credit_note_style(render: Mapping[str, object]) -> CreditNoteStyle:
+    path = "render.credit_note_style"
+    return CreditNoteStyle(
+        require_choice(render, "credit_note_style", path, CREDIT_NOTE_STYLE_NAMES)
+    )
 
 
 def _extensions(data: Mapping[str, object]) -> tuple[str, ...]:
-    names = require_strings(data, "extensions", "extensions")
+    """The optional references this vendor prints, named by its own custom fields."""
+    declared = require_object_list(data, "custom_fields", "custom_fields")
+    names = tuple(
+        require_text(entry, "name", f"custom_fields[{index}].name")
+        for index, entry in enumerate(declared)
+    )
     for index, name in enumerate(names):
         if name not in METADATA_FIELDS:
-            raise SpecError(f"extensions[{index}] must be one of: {', '.join(METADATA_FIELDS)}")
+            raise SpecError(
+                f"custom_fields[{index}].name must be one of: {', '.join(METADATA_FIELDS)}"
+            )
     return names
 
 
-def _families(data: Mapping[str, object]) -> tuple[Family, ...]:
-    names = require_choices(data, "families", "families", FAMILY_NAMES)
+def _families(render: Mapping[str, object]) -> tuple[Family, ...]:
+    names = require_choices(render, "families", "render.families", FAMILY_NAMES)
     return tuple(Family(name) for name in names)

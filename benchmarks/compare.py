@@ -25,8 +25,14 @@ from decimal import Decimal, InvalidOperation
 from enum import Enum
 
 from invoice_extractor.document.reader import BBox
-from invoice_extractor.domain.models import Evidence, FieldResult, InvoiceResult, LineItem
-from invoice_extractor.layout.schema import FIELD_NAMES, LINE_ITEM_COLUMNS
+from invoice_extractor.domain.models import (
+    LINE_ITEM_COLUMNS,
+    Evidence,
+    FieldResult,
+    InvoiceResult,
+    LineItem,
+)
+from invoice_extractor.extraction.specs import FIELD_ORDER
 from invoice_forge.fields import METADATA_FIELDS
 
 MONEY_FIELDS = frozenset({"vat_rate", "subtotal", "vat_amount", "total_amount"})
@@ -81,7 +87,7 @@ def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> Do
         profile=str(cell.get("profile", "")),
         family=str(cell.get("template", "")),
         knobs=tuple(str(knob) for knob in _sequence(cell, "knobs")),
-        fields=tuple(_score(field, fields, result) for field in (*FIELD_NAMES, *NOT_COVERED)),
+        fields=tuple(_score(field, fields, result) for field in (*FIELD_ORDER, *NOT_COVERED)),
         columns=_columns(truth, result.line_items),
         rows_expected=len(_sequence(truth, "line_items")),
         rows_found=len(result.line_items),

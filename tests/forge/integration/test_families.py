@@ -15,7 +15,7 @@ from rendering import Rendered, for_each_pair, rendered
 
 from invoice_forge.families import Family
 from invoice_forge.lexicon.loader import load_lexicon
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.loader import load_profile, profile_ids
 from invoice_forge.render.pdf import locate_all
 from invoice_forge.truth.verify import verify_document
 
@@ -60,7 +60,7 @@ def test_every_pair_prints_the_fields_an_invoice_cannot_do_without(
         assert document.truth["fields"][name]["evidence"], name
 
 
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+@pytest.mark.parametrize("profile_id", profile_ids())
 def test_a_family_changes_the_page_without_changing_what_is_billed(profile_id: str) -> None:
     """Two families, one seed: the same rows and the same total, a different page."""
     classic = rendered(profile_id, Family.CLASSIC)
@@ -136,14 +136,14 @@ def test_minimal_still_adds_up_and_still_says_what_is_owed() -> None:
 
 def test_a_family_a_profile_does_not_declare_is_a_pair_nothing_renders() -> None:
     """`forge catalog` reports profile against family, so the two lists have to agree."""
-    for profile_id in bundled_profile_ids():
+    for profile_id in profile_ids():
         declared = set(load_profile(profile_id).families)
         assert declared <= set(Family)
         assert Family.CLASSIC in declared, profile_id
 
 
 def _row_values(document: Rendered) -> list[tuple[str, str]]:
-    return [(row["sku"], row["net_amount"]) for row in document.truth["line_items"]]
+    return [(row["part_number"], row["net_amount"]) for row in document.truth["line_items"]]
 
 
 def _total(document: Rendered) -> Decimal:

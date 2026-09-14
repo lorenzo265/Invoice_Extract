@@ -5228,7 +5228,7 @@
     "line_items": {
       "rows_agreed": 49,
       "columns": {
-        "sku": {
+        "part_number": {
           "hit": 1498,
           "miss": 4429,
           "absent": 0,

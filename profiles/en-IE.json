@@ -1,0 +1,74 @@
+{
+  "id": "en-IE",
+  "language": "en",
+  "country": "IE",
+  "lexicon": "en",
+  "number_format": {
+    "decimal_separator": ".",
+    "thousands_separators": [
+      ",",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy",
+    "d Month yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "23",
+      "reduced": "13.5",
+      "zero": "0"
+    },
+    "id_prefix": "IE",
+    "id_pattern": "\\d{7}[A-Z]{2}"
+  },
+  "supplier": {
+    "name": "Mallowfield Trading Ltd",
+    "aliases": [
+      "Mallowfield"
+    ],
+    "address_lines": [
+      "18 Harbour Street",
+      "Galway M01 DY39",
+      "Ireland"
+    ],
+    "vat_id": "IE9276574PW"
+  },
+  "custom_fields": [
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "after_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "SURCHARGE"
+    ],
+    "prints_supply_date": false,
+    "credit_note_style": "credit_wording",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "saas",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

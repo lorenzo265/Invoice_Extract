@@ -37,16 +37,23 @@ truth files and reports use it verbatim. Changing a name is a schema change with
 
 ## Totals block (`BlockSpec`)
 
-`totals`: `subtotal`, `vat_amount`, `total_amount`, `rounding`, `charges[]`
-(`type` ∈ SHIPPING, FREIGHT, ENVIRONMENTAL_FEE, SURCHARGE, CONSOLIDATION_FEE,
-RECYCLING_FEE, OTHER; `amount`; `vat_rate`; `declared`).
+`totals`: `subtotal`, `vat_amount`, `total_amount`, `vat_rate`, `rounding`, `charges[]`
+(`type` ∈ SHIPPING, ENVIRONMENTAL_FEE, SURCHARGE, CONSOLIDATION_FEE, RECYCLING_FEE,
+ROUNDING; `amount`; `vat_rate`; `declared`).
 `secondary_amounts`: the same keys echoed in `secondary_currency`, plus `exchange_rate`.
+
+`vat_rate` is the one rate a single-rate document charges, printed beside the tax in the
+totals block. A document that charges more than one carries them per line item and per
+VAT-summary row instead, and the block prints no single rate.
 
 ## Custom fields
 
 Declared per profile as `LabelSpec`s under `custom_fields[]`; they appear in
 `InvoiceResult.fields` under their declared name and in the benchmark when the corpus
-emits them.
+emits them. The profiles this repository ships declare five, all of them references a
+vendor prints in its header block: `contract_number`, `our_reference`, `your_reference`,
+`payment_terms`, `credit_reference`. A name here is a name like any other in this
+catalog — the generator writes it into the truth under the same string.
 
 ## Findings vocabulary
 
