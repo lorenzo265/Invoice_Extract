@@ -5,8 +5,11 @@ vendor, the generator draws what it says and the extractor reads it back. Each p
 validates the half it needs and names the other half without parsing it, so neither can
 quietly stop describing the same vendor.
 
-Profiles live in `profiles/` at the root of the working directory, beside the lexicons —
-the same convention every command in this repository already runs under.
+The files themselves ship with the extractor, under `invoice_extractor/data/profiles/`:
+the engine is what a profile is *for*, so the engine carries it and this package asks
+the engine where it put it. The dependency runs one way and only for the path —
+nothing here imports the extractor's code, and each program still validates its own
+half of the file.
 """
 
 from __future__ import annotations
@@ -14,6 +17,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from pathlib import Path
 
+from invoice_extractor import bundled
 from invoice_forge.families import FAMILY_NAMES, Family
 from invoice_forge.fields import METADATA_FIELDS
 from invoice_forge.jsonspec import (
@@ -44,7 +48,7 @@ from invoice_forge.profiles.schema import (
     VendorProfile,
 )
 
-PROFILES_DIR = Path("profiles")
+PROFILES_DIR = bundled.PROFILES
 DEFAULTS_ID = "_defaults"
 
 # What the generator reads, and what the extractor reads. A key in neither list is a

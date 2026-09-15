@@ -3,8 +3,10 @@
 A **profile** describes one vendor's invoices: language, locale, currencies, VAT rules,
 the label vocabulary of every field, where things are expected on the page, how the
 tables and the totals block look, and the variants the vendor prints. It is JSON, one
-file per profile under `profiles/` at the root of the working directory, read by exactly
-one module (`profile/loader.py`) into a typed `Profile`. Nothing else in this package
+file per profile under `src/invoice_extractor/data/profiles/`, which is inside the package so that
+`pip install` carries it, read by exactly one module (`profile/loader.py`) into a typed
+`Profile`. A deployment keeping its own vendors elsewhere passes that directory to
+`ProfileRegistry` or to `--profiles`; everything below applies to it identically. Nothing else in this package
 parses the JSON. There is **one** schema: the dataclasses in `profile/schema.py`; the
 loader validates strictly and raises `ProfileError` whose message names the offending
 key path.
@@ -17,7 +19,7 @@ vendor. The generator's half is the `render` object; everything else is this doc
 
 ## Layering
 
-`profiles/_defaults.json` → `profiles/<id>.json` → the matching `variants[]` entry.
+`_defaults.json` → `<id>.json` → the matching `variants[]` entry.
 One merge function, one rule table (`profile/merge.py`): the key paths listed in
 `APPEND_PATHS` — every label vocabulary, and `custom_fields` — are appended and
 de-duplicated; everything else is replaced. The merged result is what every stage sees.
@@ -30,7 +32,7 @@ its own way adds that wording rather than losing the shared one.
 ## Labels come from the language
 
 A vendor's words for "invoice number" are its language's words, and the generator prints
-them from `lexicon/<language>.json`, beside `profiles/`. Repeating those lists inside
+them from `<language>.json` in the `lexicon/` directory beside the profiles'. Repeating those lists inside
 every profile would be sixteen languages copied into twenty-two files, so a label list
 may **reference** them instead: an entry of the form `"@<map>.<key>"` expands to every
 synonym the lexicon offers under that key, and `"@<list>"` expands a plain list of
@@ -51,7 +53,7 @@ A reference no lexicon entry names is a `ProfileError`, like any other bad key.
 | `id` | str | yes | profile id; `InvoiceResult.profile_id` |
 | `language` | str (ISO 639-1) | yes | selects the default lexicon |
 | `country` | str (ISO 3166-1 alpha-2) | yes | supplier country |
-| `lexicon` | str | yes | the language's label vocabulary, under `lexicon/<id>.json` |
+| `lexicon` | str | yes | the language's label vocabulary, `<id>.json` in the `lexicon/` beside the profiles |
 | `number_format` | `{decimal_separator, thousands_separators[]}` | yes | drives every numeric parse; no fallback exists in code |
 | `date_formats` | list[str] | yes | one of `yyyy-mm-dd`, `dd.mm.yyyy`, `dd/mm/yyyy`, `d Month yyyy`, `dd-Mon-yyyy`; the generator prints them and the loader turns them into the `strptime` patterns that read them back |
 | `currencies` | list[str] | yes | accepted ISO 4217 codes; the first is the default, the second the one a document echoes |
@@ -115,8 +117,8 @@ Unknown key at any level: `"<path> is not a recognized key"`. Missing required k
 
 ## Worked example
 
-`profiles/de-DE.json`, in full — everything it does not say, `profiles/_defaults.json`
-and `lexicon/de.json` say:
+`src/invoice_extractor/data/profiles/de-DE.json`, in full — everything it does not say,
+`_defaults.json` and the `de` lexicon beside it say:
 
 ```json
 {
@@ -150,7 +152,7 @@ and `lexicon/de.json` say:
 }
 ```
 
-And the excerpt of `profiles/_defaults.json` those keys are laid over:
+And the excerpt of `_defaults.json` those keys are laid over:
 
 ```json
 {

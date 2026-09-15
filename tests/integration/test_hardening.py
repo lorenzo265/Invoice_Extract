@@ -25,7 +25,7 @@ from pathlib import Path
 import pytest
 
 from conftest import make_document, make_field_profile, make_profile
-from invoice_extractor import ProfileRegistry, extract
+from invoice_extractor import ProfileRegistry, bundled, extract
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import InvoiceResult
 from invoice_extractor.extraction.engine import FIELD_MISSING, run
@@ -112,11 +112,11 @@ def _only_the_defaults(tmp_path: Path) -> Path:
     root = tmp_path / "profiles"
     root.mkdir()
     (root / "_defaults.json").write_text(
-        Path("profiles/_defaults.json").read_text(encoding="utf-8"), encoding="utf-8"
+        (bundled.PROFILES / "_defaults.json").read_text(encoding="utf-8"), encoding="utf-8"
     )
     lexicons = tmp_path / "lexicon"
     lexicons.mkdir()
-    for source in Path("lexicon").glob("*.json"):
+    for source in bundled.LEXICONS.glob("*.json"):
         (lexicons / source.name).write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
     return root
 
@@ -194,7 +194,7 @@ def test_a_profile_added_after_the_registry_was_built_is_found(tmp_path: Path) -
     held = ProfileRegistry(root)
     assert held.ids() == ()
     (root / "de-DE.json").write_text(
-        Path("profiles/de-DE.json").read_text(encoding="utf-8"), encoding="utf-8"
+        (bundled.PROFILES / "de-DE.json").read_text(encoding="utf-8"), encoding="utf-8"
     )
     assert held.ids() == ("de-DE",)
     assert held.get("de-DE").id == "de-DE"
@@ -256,7 +256,7 @@ def test_a_profile_may_declare_the_month_first_and_is_read_that_way(tmp_path: Pa
 def _declaring_dates(tmp_path: Path, *names: str) -> Profile:
     """A profile read through the real loader, so the format names are validated."""
     root = _only_the_defaults(tmp_path)
-    declared = json.loads(Path("profiles/en-GB.json").read_text(encoding="utf-8"))
+    declared = json.loads((bundled.PROFILES / "en-GB.json").read_text(encoding="utf-8"))
     declared["date_formats"] = list(names)
     (root / "us-US.json").write_text(
         json.dumps({**declared, "id": "us-US"}, ensure_ascii=False), encoding="utf-8"
@@ -304,7 +304,7 @@ def _without_the_reference_labels(tmp_path: Path) -> ProfileRegistry:
         json.dumps(lexicon, ensure_ascii=False), encoding="utf-8"
     )
     (root / "en-GB.json").write_text(
-        Path("profiles/en-GB.json").read_text(encoding="utf-8"), encoding="utf-8"
+        (bundled.PROFILES / "en-GB.json").read_text(encoding="utf-8"), encoding="utf-8"
     )
     return ProfileRegistry(root)
 

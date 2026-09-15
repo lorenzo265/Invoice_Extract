@@ -28,6 +28,19 @@ class ProfileRegistry:
     """The profiles a deployment has. Construct one per run, not one per document."""
 
     def __init__(self, root: Path = PROFILES_ROOT) -> None:
+        """Raises `ProfileError` where `root` is not a directory of vendor profiles.
+
+        Refusing here is the point. A registry pointed at a directory that does not exist
+        would list no vendors, match no document, and report every one of them as
+        `profile_not_detected` — which is the same answer a real unrecognised invoice
+        gets. A caller would have no way of telling a misconfigured deployment from a
+        vendor nobody has described yet, and the misconfiguration is the likelier of the
+        two. So a missing directory, or one with no shared defaults in it, says so now.
+
+        An existing directory holding no vendors *is* allowed: a deployment that adds its
+        first profile while running is what `ADR-0008` and the mtime cache are for.
+        """
+        _readable(root)
         self._root = root
         self._cache: dict[str, _Cached] = {}
 
@@ -64,3 +77,11 @@ class ProfileRegistry:
             return path.stat().st_mtime_ns / 1e9
         except OSError as missing:
             raise ProfileError(f"no profile at {path}") from missing
+
+
+def _readable(root: Path) -> None:
+    """A directory, with the defaults every vendor is laid over. Otherwise, why."""
+    if not root.is_dir():
+        raise ProfileError(f"no profile directory at {root}")
+    if not (root / f"{DEFAULTS_ID}.json").is_file():
+        raise ProfileError(f"{root} holds no {DEFAULTS_ID}.json, so no profile can be read")

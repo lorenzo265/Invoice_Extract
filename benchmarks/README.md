@@ -5,8 +5,8 @@ this file from `benchmarks/latest.json`.
 
 - Corpus: 270 documents from `corpus`
 - Profile detected: 100.0% (270 of 270)
-- Extractor: 0.3.0
-- Generator: 0.3.0
+- Extractor: 0.4.0
+- Generator: 0.4.0
 
 A hit rate is `hit / (hit + miss)`. A field the document does not carry and the
 extractor does not claim is `absent` and is scored in neither. A field the

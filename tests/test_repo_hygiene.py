@@ -15,6 +15,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PYPROJECT = REPO_ROOT / "pyproject.toml"
+# Two distributions are built from this one tree: the engine at the root, and the
+# generator it is proved against under `tools/forge/`. A rule about "the packaging"
+# means both, or the half it does not read is the half that ships broken.
+PYPROJECTS = (PYPROJECT, REPO_ROOT / "tools" / "forge" / "pyproject.toml")
 SRC = REPO_ROOT / "src"
 EXTRACTOR = SRC / "invoice_extractor"
 FORGE = SRC / "invoice_forge"
@@ -62,8 +66,11 @@ URL_ALLOWED_ROOTS = frozenset({"docs", ".github"})
 URL_ALLOWED_FILES = frozenset(
     {
         "README.md",
+        "CONTRIBUTING.md",
+        "tools/forge/README.md",
         ".pre-commit-config.yaml",
         "pyproject.toml",
+        "tools/forge/pyproject.toml",
         # The bundled fonts' licence is third-party text, reproduced as it must be.
         "src/invoice_forge/fonts/LICENSE",
     }
@@ -287,27 +294,36 @@ def _link_targets(document: Path) -> list[str]:
     return [target for target in found if target and "://" not in target]
 
 
+def declared_data() -> list[tuple[str, str]]:
+    """Every (package, glob) either distribution says it ships."""
+    return [
+        (package, pattern)
+        for pyproject in PYPROJECTS
+        for package, patterns in tomllib.loads(pyproject.read_text(encoding="utf-8"))["tool"][
+            "setuptools"
+        ]["package-data"].items()
+        for pattern in patterns
+    ]
+
+
 def test_every_declared_data_file_exists() -> None:
     """A data glob that matches nothing is a file that will be missing from the wheel."""
-    config = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
-    declared = config["tool"]["setuptools"]["package-data"]
     offenders = [
         f"{package}: {pattern}"
-        for package, patterns in declared.items()
-        for pattern in patterns
+        for package, pattern in declared_data()
         if not list((SRC / package).glob(pattern))
     ]
     assert not offenders, f"package data declared but not present: {offenders}"
 
 
 def test_every_data_file_under_source_is_declared() -> None:
-    """The other direction: a JSON file inside a package that no glob ships."""
-    declared = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
+    """The other direction: a JSON file inside a package that no glob ships.
+
+    Read across both distributions, because a file is shipped by whichever one owns it:
+    the profiles and lexicons travel with the engine, the catalogues with the generator.
+    """
     packaged = {
-        path
-        for package, patterns in declared["tool"]["setuptools"]["package-data"].items()
-        for pattern in patterns
-        for path in (SRC / package).glob(pattern)
+        path for package, pattern in declared_data() for path in (SRC / package).glob(pattern)
     }
     offenders = [where(path) for path in sorted(SRC.rglob("*.json")) if path not in packaged]
     assert not offenders, f"data files that would not ship: {offenders}"

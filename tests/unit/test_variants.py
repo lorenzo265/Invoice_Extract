@@ -15,6 +15,7 @@ from pathlib import Path
 import pytest
 
 from conftest import make_document
+from invoice_extractor import bundled
 from invoice_extractor.document.model import Document
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_extractor.profile.schema import Profile, ProfileError
@@ -29,13 +30,13 @@ def root_with(variants: Sequence[Mapping[str, object]], tmp_path: Path) -> Path:
     root = tmp_path / "profiles"
     root.mkdir()
     (root / "_defaults.json").write_text(
-        Path("profiles/_defaults.json").read_text(encoding="utf-8"), encoding="utf-8"
+        (bundled.PROFILES / "_defaults.json").read_text(encoding="utf-8"), encoding="utf-8"
     )
     lexicons = tmp_path / "lexicon"
     lexicons.mkdir()
-    for source in Path("lexicon").glob("*.json"):
+    for source in bundled.LEXICONS.glob("*.json"):
         (lexicons / source.name).write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
-    declared = json.loads(Path(f"profiles/{VENDOR}.json").read_text(encoding="utf-8"))
+    declared = json.loads((bundled.PROFILES / f"{VENDOR}.json").read_text(encoding="utf-8"))
     declared["variants"] = list(variants)
     (root / f"{VENDOR}.json").write_text(json.dumps(declared, ensure_ascii=False), encoding="utf-8")
     return root

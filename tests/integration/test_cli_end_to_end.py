@@ -14,6 +14,7 @@ from pathlib import Path
 
 import pytest
 
+from invoice_extractor import bundled
 from invoice_extractor.cli import main
 from invoice_extractor.validation.stage import RULE_NAMES
 
@@ -96,3 +97,49 @@ def test_calibrate_fits_a_corpus_and_says_how_far_off_it_is(
         "calibration_maps.json",
         "reliability_report.json",
     }
+
+
+def test_inspect_prints_the_page_as_the_engine_reads_it(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """What `inspect` is for: the zones and the boxes a profile has to be written against."""
+    assert main(["inspect", DEMO_PDF]) == 0
+    printed = capsys.readouterr().out
+    assert printed.startswith("Document Inspection")
+    assert "PAGE 1" in printed
+    assert "ZONE" in printed and "BOX" in printed
+    assert "Facture n°:" in printed, "every line of the page is listed, label lines included"
+    assert "r1c2" in printed, "and each carries the zone a profile would name"
+
+
+def test_inspect_reports_how_each_vendor_scored_and_against_what(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert main(["inspect", DEMO_PDF]) == 0
+    printed = capsys.readouterr().out
+    assert "Profile detection" in printed
+    assert "supplier" in printed and "vat_id" in printed, "the parts that carried the score"
+    assert f"{DEMO_PROFILE} matches" in printed
+
+
+def test_inspect_says_so_when_no_vendor_would_match(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """The case the command exists for: a document whose vendor nobody has described."""
+    root = tmp_path / "profiles"
+    root.mkdir()
+    (tmp_path / "lexicon").mkdir()
+    (root / "_defaults.json").write_text(
+        (bundled.PROFILES / "_defaults.json").read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    assert main(["inspect", DEMO_PDF, "--profiles", str(root)]) == 0
+    printed = capsys.readouterr().out
+    assert "No profile was scored" in printed
+
+
+def test_a_command_pointed_at_no_profile_directory_says_so(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Refused rather than run against nothing, which would report every document unread."""
+    assert main(["extract", DEMO_PDF, "--profiles", str(tmp_path / "nowhere")]) == 1
+    assert "no profile directory at" in capsys.readouterr().err

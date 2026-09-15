@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pytest
 
+from invoice_extractor import bundled
 from invoice_extractor.cli import main
 
 
@@ -24,8 +25,22 @@ def test_extract_returns_one_for_missing_pdf(
 def test_extract_returns_one_when_the_profiles_are_not_where_it_looked(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    """The misconfiguration is reported before the PDF is, because it is the likelier one.
+
+    A directory with no vendors in it would read every document as `profile_not_detected`
+    — the same answer a genuinely unrecognised invoice gets — so it is refused by name
+    instead.
+    """
     assert main(["extract", str(tmp_path / "any.pdf"), "--profiles", str(tmp_path)]) == 1
-    assert capsys.readouterr().err.endswith("any.pdf\n")
+    assert "holds no _defaults.json" in capsys.readouterr().err
+
+
+def test_extract_returns_one_when_the_profile_directory_is_not_there(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    nowhere = tmp_path / "nowhere"
+    assert main(["extract", str(tmp_path / "any.pdf"), "--profiles", str(nowhere)]) == 1
+    assert capsys.readouterr().err == f"no profile directory at {nowhere}\n"
 
 
 def test_a_command_is_required(capsys: pytest.CaptureFixture[str]) -> None:
@@ -44,7 +59,7 @@ def test_profile_lint_returns_one_for_a_vendor_that_is_not_there(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     assert main(["profile", "lint", "no_such_vendor"]) == 1
-    assert capsys.readouterr().err == "no profile at profiles/no_such_vendor.json\n"
+    assert capsys.readouterr().err == f"no profile at {bundled.PROFILES / 'no_such_vendor.json'}\n"
 
 
 def test_profile_needs_an_action(capsys: pytest.CaptureFixture[str]) -> None:

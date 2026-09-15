@@ -15,14 +15,15 @@ hidden: a reviewer can trace any number in the output back to the pixels it came
 ## See it run
 
 ```bash
-make install   # pip install -e ".[dev]"
+make install   # both distributions, editable
 make demo      # extract one corpus document and print the report
+invoice-extractor inspect <pdf>   # what the engine SEES, before any profile matches
 ```
 
 `tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf` is one of the documents
 `invoice_forge` generates and this repository commits: a French invoice from Valmont
 Systèmes SAS (Lyon, VAT `FR7P585117668`), French labels, `1 234,56`-style numbers, drawn
-from the same `profiles/fr-FR.json` the extractor then reads it back with. `make demo`
+from the same `fr-FR.json` profile the extractor then reads it back with. `make demo`
 runs:
 
 ```bash
@@ -126,7 +127,7 @@ independently testable against a `Document` built in memory — no PDF required.
 flowchart LR
     PDF[/PDF file/] --> Reader["read()<br/>pymupdf_reader.py"]
     Reader -->|"Document: zoned lines<br/>+ per-page anchors"| Detect["detect_profile<br/>profile/detect.py"]
-    Profiles[("profiles/*.json")] --> Detect
+    Profiles[("data/profiles/*.json")] --> Detect
     Detect -->|"the vendor's Profile,<br/>or a finding and nothing"| Engine["One spec engine<br/>extraction/engine.py"]
     Detect --> Blocks["Party blocks<br/>extraction/section.py"]
     Detect --> Items
@@ -162,7 +163,7 @@ Full narrative: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
    so invariant tolerances measure real rounding, not floating-point noise. —
    [ADR-0003](docs/adr/0003-money-is-decimal-never-float.md)
 4. **A vendor description is data.** Labels, zones, patterns and formats live in
-   `profiles/*.json`, validated by `profile/loader.py`; nothing in `extraction/`
+   `data/profiles/*.json`, validated by `profile/loader.py`; nothing in `extraction/`
    hardcodes a vendor's vocabulary. —
    [ADR-0004](docs/adr/0004-layouts-are-data.md)
 5. **Findings, not exceptions, for domain errors.** A broken invariant or an unmatched
@@ -170,7 +171,7 @@ Full narrative: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
    on the result; exceptions stay reserved for input the pipeline cannot even start
    on. — [ADR-0005](docs/adr/0005-findings-not-exceptions-for-domain-errors.md)
 6. **The unit of configuration is a vendor profile, shared with the generator.** One
-   `profiles/<id>.json` per vendor carries its language, locale, currencies, VAT rules,
+   one `<id>.json` per vendor carries its language, locale, currencies, VAT rules,
    label vocabulary, tables and totals block; the generator draws what it says and the
    extractor reads it back, so every profile is testable end to end. —
    [ADR-0006](docs/adr/0006-profiles-not-layouts.md)
@@ -178,35 +179,44 @@ Full narrative: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 ## Project layout
 
 ```
-src/invoice_extractor/
+src/invoice_extractor/          the engine — the distribution a caller installs
     domain/        Evidence, FieldResult, LineItem, VatSummaryRow, Party, Finding, Money
     document/      PDF -> Document: pages of zoned TextLines and the runs they were drawn in
     profile/       Profile schema, strict loader, merge rules, registry, detection, lint
-    extraction/    One engine, five spec kinds; units/: the vocabulary they name
-    validation/    Invariants (as Findings) and explainable confidence
-    output/        JSON writer and human-readable text report
+    extraction/    One engine, six spec kinds; units/: the vocabulary they name
+    reconcile/     What the document left out, filled in from what it did print
+    validation/    Invariants and cross-field checks, as Findings and Checks
+    scoring/       Sixteen signals to one confidence, with what it was made of
+    output/        JSON writer, text report, and `inspect`: what the engine sees
+    data/          profiles/ and lexicon/ — the vocabulary, inside the wheel
+    bundled.py     Where that vocabulary is, once installed
     pipeline.py    The only orchestration: PDF + registry -> InvoiceResult
     cli.py         python -m invoice_extractor
-src/invoice_forge/
+src/invoice_forge/              the generator — a separate distribution (tools/forge/)
     layout/        The five template families, declared; knobs applied to a declaration
     sample/        What a document says: parties, catalogue, identifiers, variations
     render/        The declaration drawn to a page, recording every box it printed
     truth/         The truth file, and reading every box back out of the PDF to check it
     corpus/        A plan, run into a directory; the coverage report over what came out
-profiles/           One JSON per vendor, read by both packages (ADR-0006)
-lexicon/            One JSON per language: every label an invoice prints, with synonyms
+tools/forge/        The generator's own pyproject: `pip install -e tools/forge`
 benchmarks/         make bench: the extractor over the corpus, scored against the truth
 corpus/             plan.json (committed); the documents are regenerated, not stored
 tests/              unit (one module each), integration (fixtures, determinism), hygiene
-docs/               architecture, profile format, ADRs, implementation and engine plans
+docs/               architecture, profile format, ADRs, conformance, plans
 ```
+
+Two distributions, one working tree. `pip install invoice-extractor` is the engine and
+the vendors it knows — 195 KB, one dependency. The generator is `invoice-forge`, which
+depends on the engine for the profiles the two share and carries the fonts it draws with;
+nobody reading an invoice needs it. [CONTRIBUTING.md](CONTRIBUTING.md) says what to read
+first and what to ignore.
 
 ## Extending
 
-**Add a vendor.** Drop a new `profiles/<id>.json` — language, locale, currencies, VAT
+**Add a vendor.** Drop a new `<id>.json` into a profiles directory — language, locale, currencies, VAT
 rules, the supplier as it prints itself, and whatever it calls each field (see
 [docs/PROFILE_FORMAT.md](docs/PROFILE_FORMAT.md)). `profile/loader.py` validates it and
-raises `ProfileError` naming the exact bad key; `profiles/_defaults.json` and the
+raises `ProfileError` naming the exact bad key; `_defaults.json` and the
 language's lexicon supply everything the file does not say. No Python change, and the
 generator can render the same file to prove the profile describes a real invoice.
 
@@ -231,7 +241,7 @@ stay untouched. Adding `purchase_order`, in full:
    Every name in it is looked up in `extraction/units/registry.py` when the module is
    imported; a behaviour no unit provides is a new unit there, registered under its name.
 
-4. `profiles/_defaults.json` — `"purchase_order": {"labels":
+4. `_defaults.json` — `"purchase_order": {"labels":
    ["@header_labels.purchase_order"], "zones": ["r1c3"]}`, once, for every vendor that
    prints it in its language's own words.
 5. A unit test in `tests/unit/test_engine.py` against a `Document` built in memory, and

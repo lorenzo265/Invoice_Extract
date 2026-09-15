@@ -3,6 +3,56 @@
 All notable changes to this project are recorded here. The format follows
 Keep a Changelog, and this project adheres to Semantic Versioning.
 
+## [0.4.0] — 2026-09-15
+
+The engine, packaged as one. v0.3.0 was a repository you cloned; this is a library you
+install. Nothing about how a document is read has changed — every number in the benchmark
+below is the one v0.3.0 measured — and everything about how the engine reaches a caller
+has.
+
+### Added
+
+- **The vendors and their languages travel inside the wheel.** `profiles/` and `lexicon/`
+  were directories at the root of the working directory, outside `src/`, so
+  `pip install` delivered an engine that knew no vendor at all and reported every
+  document as `profile_not_detected` — the same answer a genuinely unrecognised invoice
+  gets, which left a caller no way to tell a broken install from an unknown vendor. They
+  now live under `src/invoice_extractor/data/`, are declared as package data, and are
+  found through `importlib.resources` rather than relative to whatever directory the
+  caller started in. `invoice_extractor/bundled.py` is the one module that knows where.
+- **`invoice-extractor inspect <pdf>`** — the page as the engine reads it: every line
+  with the zone and the box it was drawn in, the anchors the reader found, and how each
+  known vendor scored against the document with the parts that carried the score. Writing
+  a profile means naming labels and zones, and both are properties of the page that
+  nothing else showed you. Where no vendor matches, it says which part of the score found
+  nothing, which is the question a person about to write a profile is actually asking.
+- **`CONTRIBUTING.md`** — what to read first (three modules, named and justified), what
+  may be ignored (the generator, which is 46 % of the code and none of the engine), and
+  the rules that will reject a change. `AGENTS.md` is addressed to an agent; this one is
+  for a person.
+
+### Changed
+
+- **Two distributions, one working tree.** `invoice-extractor` is the engine and the
+  vocabulary it reads with: 195 KB, one dependency. `invoice-forge`, under `tools/forge/`,
+  is the generator it is proved against — it depends on the engine for the profile files
+  the two share (ADR-0006) and carries the two megabytes of embedded fonts it draws with.
+  A caller extracting invoices was installing a generator of them; now it is not.
+  `make install` still installs both, editable, because a contributor wants both.
+- **A profile directory that is not there is refused, not read as empty.** `ProfileRegistry`
+  raises `ProfileError` naming the path when it is not a directory, or holds no
+  `_defaults.json`. It used to return no vendors and let every document come back
+  unread — the failure mode that hides a misconfiguration behind a plausible result. A
+  directory that exists and holds no vendor yet is still allowed: adding the first one
+  while running is what the mtime cache is for (ADR-0008).
+
+### Fixed
+
+- **A variant re-read the bundled lexicons instead of the caller's.** Stage 2 resolved
+  them by joining a root with an absolute default, which in `pathlib` discards the root.
+  A deployment with its own vendors would have had its own language quietly replaced the
+  moment a variant matched. Both layers go through one `lexicons_beside()` now.
+
 ## [0.3.0] — 2026-09-15
 
 The full-capability extractor: a vendor is a **profile** rather than a layout, one engine

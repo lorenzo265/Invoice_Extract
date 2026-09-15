@@ -17,9 +17,10 @@ import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 
+from invoice_extractor import bundled
 from invoice_extractor.profile.schema import ProfileError
 
-LEXICON_ROOT = Path("lexicon")
+LEXICON_ROOT = bundled.LEXICONS
 REFERENCE = "@"
 
 

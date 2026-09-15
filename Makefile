@@ -1,7 +1,10 @@
 .PHONY: install demo corpus bench lint typecheck test check
 
+# Two distributions, one working tree. `invoice-extractor` is the engine a caller
+# installs; `invoice-forge` is the generator it is proved against, which a caller has no
+# use for. A contributor wants both, editable.
 install:
-	pip install -e ".[dev]" && pre-commit install
+	pip install -e ".[dev]" -e tools/forge && pre-commit install
 
 corpus:
 	forge generate --plan corpus/plan.json --out corpus/

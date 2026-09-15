@@ -10,7 +10,8 @@ Three ideas carry the whole design:
 
 - **A vendor is a profile, not a branch** (ADR-0006). Everything that varies between
   vendors — labels, zones, separators, calendars, column headings, the components of the
-  totals block — is `profiles/*.json` plus `lexicon/*.json`. No module names a vendor.
+  totals block — is `src/invoice_extractor/data/profiles/*.json` plus the lexicons beside them,
+  which ship inside the package. No module names a vendor.
 - **One engine, six spec kinds** (ADR-0007). A field is a declaration naming registered
   units; the engine runs every kind through the same steps. Adding a field is an entry in
   `extraction/specs.py`, not a new code path.
@@ -39,7 +40,7 @@ public entry point; each hands the next one values, never control.
 flowchart TD
     PDF[("invoice.pdf")] --> READ["0 · document/pymupdf_reader.py"]
     READ -->|"Document"| DETECT["1 · profile/detect.py"]
-    PROFILES[("profiles/*.json<br/>lexicon/*.json")] --> LOADER["profile/loader.py"]
+    PROFILES[("data/profiles/*.json<br/>data/lexicon/*.json")] --> LOADER["profile/loader.py"]
     LOADER -->|"Profile"| DETECT
     DETECT -->|"Profile | none"| VARIANT["2 · profile/variants.py"]
     VARIANT -->|"Profile, with any matching variant over it"| PIPE["pipeline.py"]
@@ -191,7 +192,7 @@ Three things this diagram is saying:
 | `document/zones.py`, `anchors.py`, `rows.py` | The page's grid, the four anchors every later stage measures from, and the grouping of lines and runs into printed rows. | `document.model` |
 | `profile/schema.py` | The typed shape of a vendor: fields, parties, tables, the totals block, variants, invariant exemptions. | `document.model` (`Zone`) |
 | `profile/loader.py` + `parts.py`, `blocks.py`, `reading.py`, `lexicon.py`, `merge.py` | One strict loader: JSON → `Profile`, with the language's lexicon expanded into every `@reference` and the defaults laid under every vendor. | `profile.schema`, `document.zones` |
-| `profile/registry.py` | Every profile under `profiles/`, re-read when its file changes, so one added at runtime is detected on the next document. | `profile.loader` |
+| `profile/registry.py` | Every profile under one directory — the bundled one by default — re-read when its file changes, so one added at runtime is detected on the next document. Refuses a directory that is not there rather than holding no vendors. | `profile.loader`, `invoice_extractor.bundled` |
 | `profile/detect.py` | Scores every profile against a document — supplier anchor, VAT id, currency, labels — and returns the best above the threshold, or none. | `profile.registry`, `document.model` |
 | `profile/lint.py` | How ready a profile is: labels and zones per field against the median of its peers, as a tier. | `profile.registry` |
 | `profile/variants.py` | Stage 2: the variant this document matches, laid over the profile it belongs to. Classifies against the base profile to answer a `document_type` fingerprint, because that is the only vocabulary there is before a variant is chosen. | `profile.loader`, `profile.merge`, `extraction.classify` |

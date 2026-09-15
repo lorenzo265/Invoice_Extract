@@ -6,7 +6,7 @@ from invoice_extractor.profile.loader import load_profile
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_extractor.profile.schema import Profile, ProfileError
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 __all__ = [
     "InvoiceResult",

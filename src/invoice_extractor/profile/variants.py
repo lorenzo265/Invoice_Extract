@@ -23,10 +23,10 @@ from pathlib import Path
 
 from invoice_extractor.document.model import Document
 from invoice_extractor.extraction.classify import classify_document
-from invoice_extractor.profile.lexicon import LEXICON_ROOT
 from invoice_extractor.profile.loader import (
     DEFAULTS_ID,
     PROFILES_ROOT,
+    lexicons_beside,
     parse,
     read_profile_json,
 )
@@ -61,4 +61,4 @@ def _applied(variant: Variant, profile: Profile, root: Path) -> Profile:
     defaults = read_profile_json(root / f"{DEFAULTS_ID}.json")
     declared = read_profile_json(root / f"{profile.id}.json")
     layered = merge(defaults, declared, PROFILE_RULES)
-    return parse(merge(layered, variant.overlay, PROFILE_RULES), root.parent / LEXICON_ROOT)
+    return parse(merge(layered, variant.overlay, PROFILE_RULES), lexicons_beside(root))

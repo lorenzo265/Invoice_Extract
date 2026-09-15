@@ -1,9 +1,12 @@
 """Read a profile and validate it, top down, into a `Profile`.
 
-Three layers become one record: `profiles/_defaults.json`, which every vendor shares;
-`profiles/<id>.json`, which is what this vendor does differently; and the language's
-lexicon, which supplies the label vocabulary both this package and the generator print
-from. A failure is a `ProfileError` naming the JSON key at fault, never a traceback.
+Three layers become one record: `_defaults.json`, which every vendor shares;
+`<id>.json`, which is what this vendor does differently; and the language's lexicon,
+which supplies the label vocabulary both this package and the generator print from. A
+failure is a `ProfileError` naming the JSON key at fault, never a traceback.
+
+The directory those three are read from is `invoice_extractor/bundled.py` by default —
+what this package ships with — and whatever a caller passes instead.
 """
 
 from __future__ import annotations
@@ -12,8 +15,9 @@ import json
 from collections.abc import Mapping
 from pathlib import Path
 
+from invoice_extractor import bundled
 from invoice_extractor.profile import blocks, parts
-from invoice_extractor.profile.lexicon import LEXICON_ROOT, read_lexicon
+from invoice_extractor.profile.lexicon import read_lexicon
 from invoice_extractor.profile.merge import PROFILE_RULES, merge
 from invoice_extractor.profile.reading import (
     optional_mapping,
@@ -34,7 +38,7 @@ from invoice_extractor.profile.schema import (
     TableProfile,
 )
 
-PROFILES_ROOT = Path("profiles")
+PROFILES_ROOT = bundled.PROFILES
 DEFAULTS_ID = "_defaults"
 
 # Keys this package reads. `render` is the generator's half of the shared file: the two
@@ -88,7 +92,16 @@ def load_profile(id_or_path: str, root: Path = PROFILES_ROOT) -> Profile:
     """
     declared = read_profile_json(_resolve(id_or_path, root))
     defaults = read_profile_json(root / f"{DEFAULTS_ID}.json")
-    return parse(merge(defaults, declared, PROFILE_RULES), root.parent / LEXICON_ROOT)
+    return parse(merge(defaults, declared, PROFILE_RULES), lexicons_beside(root))
+
+
+def lexicons_beside(root: Path) -> Path:
+    """Where the lexicons of a profile directory are: the `lexicon/` beside it.
+
+    One rule for the vocabulary this package ships and for a deployment's own, so a
+    directory copied out of `data/` keeps working where it lands.
+    """
+    return root.parent / "lexicon"
 
 
 def read_profile_json(path: Path) -> Mapping[str, object]:
@@ -104,7 +117,7 @@ def read_profile_json(path: Path) -> Mapping[str, object]:
     return parsed
 
 
-def parse(data: Mapping[str, object], lexicon_root: Path = LEXICON_ROOT) -> Profile:
+def parse(data: Mapping[str, object], lexicon_root: Path = bundled.LEXICONS) -> Profile:
     """The merged JSON of one profile, validated into the record every stage reads."""
     reject_unknown(data, TOP_LEVEL_KEYS, "")
     language = require_text(data, "language", "language")

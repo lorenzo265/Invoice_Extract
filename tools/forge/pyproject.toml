@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "invoice-forge"
+version = "0.4.0"
+description = "Synthetic invoices with exact ground truth, for proving invoice-extractor."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+# The generator draws what a profile describes and the extractor reads it back, so the
+# two share one description of one vendor (ADR-0006). The engine carries those files, so
+# the generator depends on the engine — one way, and only for the shared data.
+dependencies = ["PyMuPDF>=1.24", "invoice-extractor==0.4.0"]
+
+[project.scripts]
+forge = "invoice_forge.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "../../src" }
+
+[tool.setuptools.packages.find]
+where = ["../../src"]
+include = ["invoice_forge*"]
+
+[tool.setuptools.package-data]
+invoice_forge = ["py.typed", "fonts/*.ttf", "fonts/LICENSE", "sample/catalogues/*.json"]

@@ -269,6 +269,24 @@ passes. The two rows that did not hold are the lexicon ones in §6.
 | 17 | the `en` lexicon's HMRC sentence on Irish invoices | same reason, and cosmetic |
 | 18 | the total's sign does not promote to `credit_note` | doing so would silence the advisory invariant that reports the disagreement; which behaviour is wanted is a design question |
 
+**Found after the audit, in a review of the repository as something other people install**
+
+The audit above asks whether the code does what the specifications say. A second reading
+asked a question none of the specifications poses — whether an engine other developers
+can call is what this repository actually produces — and found four things that no rule
+here was watching for, because no rule here is about distribution.
+
+| # | Finding | Fix |
+|---|---|---|
+| 20 | **`pip install` delivered an engine with no vendors at all.** `profiles/` and `lexicon/` sat at the root of the working directory, outside `src/`, so setuptools shipped neither. Every document came back `profile_not_detected` — indistinguishable from a genuinely unrecognised invoice | moved under `src/invoice_extractor/data/`, declared as package data, found through `importlib.resources`. The wheel is 195 KB and carries 23 profiles and 16 lexicons |
+| 21 | **A profile directory that was not there read as an empty registry**, silently. The worst failure mode an engine can offer a caller: a misconfiguration wearing the face of a result | `ProfileRegistry` refuses a path that is not a directory, or holds no `_defaults.json`. An existing directory with no vendors yet is still allowed — that is ADR-0008's runtime add |
+| 22 | **A caller extracting invoices was installing a generator of them**, fonts included: 2 MB of the 4.4 MB was type the engine never draws with | two distributions from one tree. `invoice-forge` moved to `tools/forge/` and depends on the engine for the profile files the two share |
+| 23 | **A variant re-read the bundled lexicons instead of the caller's.** Introduced by the move and caught by an existing test within the hour: `root.parent / LEXICON_ROOT` discards `root` once the default is absolute | one `lexicons_beside()`, used by both the loader and stage 2 |
+
+The first three are why `docs/` had nothing to say about them: every specification in this
+repository describes what the engine *does*, and none describes what it *is* to someone
+who did not clone it. `CONTRIBUTING.md` is the document that gap produced.
+
 **What the hardening cells were worth**
 
 Twenty cells were appended to `corpus/plan.json`, one per failure mode the corpus can
