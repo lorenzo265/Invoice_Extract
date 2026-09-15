@@ -52,10 +52,24 @@ validate, score, emit.
 
 ## Seeing it work
 
+**Python 3.11 or newer.** `tests/test_repo_hygiene.py` imports `tomllib`, which is
+standard library only from 3.11, and the packaging declares that floor — so `pip` refuses
+to install the project at all on an older interpreter.
+
 ```bash
 make install                  # both distributions, editable
 make demo                     # extract one invoice and print the report
 invoice-extractor inspect <pdf>   # what the engine SEES: every line, its zone, its box
+```
+
+On Windows, where `make` is usually absent, `make.ps1` runs the same commands under the
+same names. It checks the interpreter first, so too old a Python fails with a sentence
+instead of a traceback:
+
+```powershell
+.\make.ps1 install
+.\make.ps1 demo
+.\make.ps1 check
 ```
 
 `inspect` is the one to reach for when a document is not read correctly. It prints the
@@ -80,8 +94,9 @@ A profile is ready at tier **T2**. A deployment keeping its own vendors elsewher
 
 ## The rules that will reject your change
 
-`make check` is the gate, and it is the same one CI runs. It is lint, `mypy --strict` and
-the tests, and the tests include the repository's own hygiene rules:
+`make check` is the gate — `.\make.ps1 check` on Windows — and it is the same one CI
+runs. It is lint, `mypy --strict` and the tests, and the tests include the repository's
+own hygiene rules:
 
 - a module is at most 250 counted lines, a function at most 40;
 - money is `Decimal`, never `float`; records are frozen dataclasses;

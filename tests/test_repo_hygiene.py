@@ -57,7 +57,7 @@ INLINE_CODE = re.compile(r"`[^`]*`")
 MARKDOWN_LINK = re.compile(r"\]\(([^)\s]+)")
 
 TEXT_SUFFIXES = frozenset({".py", ".md", ".json", ".toml", ".yml", ".yaml", ".cfg", ".txt"})
-TEXT_FILENAMES = frozenset({"Makefile", "LICENSE", ".gitignore"})
+TEXT_FILENAMES = frozenset({"Makefile", "make.ps1", "LICENSE", ".gitignore"})
 IGNORED_DIRS = frozenset(
     {".git", ".venv", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache", "build", "dist"}
 )
