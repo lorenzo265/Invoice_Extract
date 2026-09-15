@@ -14,6 +14,7 @@ from datetime import date
 from decimal import Decimal
 from typing import cast
 
+from invoice_extractor.domain.checks import Check
 from invoice_extractor.domain.evidence import Evidence, Strategy, optional
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.parties import Party
@@ -21,6 +22,11 @@ from invoice_extractor.domain.rows import LineItem, VatSummaryRow
 from invoice_extractor.domain.totals import Charge, SecondaryAmounts
 
 FieldValue = str | date | Decimal
+
+# Where a confidence's weights came from: a fit on a corpus whose answers were known, or
+# the uniform mean of whatever signals the field emitted (ENGINE_SPEC §8).
+FITTED = "fitted"
+UNIFORM = "uniform"
 
 # How a field's value is typed, by name. `extraction/specs.py` picks the normalizer that
 # produces each of these, and `from_dict` reads them back the same way.
@@ -45,8 +51,11 @@ VALUE_TYPES: Mapping[str, type] = {
 }
 
 __all__ = [
+    "FITTED",
+    "UNIFORM",
     "VALUE_TYPES",
     "Charge",
+    "Check",
     "Evidence",
     "FieldResult",
     "FieldValue",
@@ -69,7 +78,12 @@ class FieldResult:
     evidence: Evidence | None
     valid: bool
     confidence: float = 0.0
+    # The signals the confidence was made of, by name (ENGINE_SPEC §8): what each of them
+    # is worth is the fitted `calibration/weights.json`, not this record.
     confidence_breakdown: Mapping[str, float] = field(default_factory=dict)
+    # `fitted` where weights were fitted for this field, `uniform` where the signals were
+    # simply averaged, so a number that came from a guess does not look like one that did not.
+    confidence_source: str = UNIFORM
 
 
 @dataclass(frozen=True, slots=True)
@@ -92,6 +106,7 @@ class InvoiceResult:
     vat_summary: tuple[VatSummaryRow, ...] = ()
     charges: tuple[Charge, ...] = ()
     secondary_amounts: SecondaryAmounts | None = None
+    checks: tuple[Check, ...] = ()
 
     @property
     def valid(self) -> bool:
@@ -107,6 +122,7 @@ class InvoiceResult:
             "charges": [charge.to_dict() for charge in self.charges],
             "secondary_amounts": _secondary_to_dict(self.secondary_amounts),
             "findings": [finding.to_dict() for finding in self.findings],
+            "checks": [check.to_dict() for check in self.checks],
             "profile_id": self.profile_id,
             "document_type": self.document_type,
             "valid": self.valid,
@@ -127,6 +143,7 @@ class InvoiceResult:
             parties=_parties(data),
             vat_summary=tuple(VatSummaryRow.from_dict(row) for row in _rows(data, "vat_summary")),
             charges=tuple(Charge.from_dict(charge) for charge in _rows(data, "charges")),
+            checks=tuple(Check.from_dict(check) for check in _rows(data, "checks")),
             secondary_amounts=_secondary(data.get("secondary_amounts")),
         )
 
@@ -164,6 +181,7 @@ def _field_to_dict(result: FieldResult) -> dict[str, object]:
         "evidence": None if evidence is None else evidence.to_dict(),
         "confidence": result.confidence,
         "confidence_breakdown": dict(result.confidence_breakdown),
+        "confidence_source": result.confidence_source,
     }
 
 
@@ -178,6 +196,7 @@ def _field_from_dict(name: str, data: Mapping[str, object]) -> FieldResult:
         valid=bool(data["valid"]),
         confidence=cast(float, data.get("confidence", 0.0)),
         confidence_breakdown=dict(breakdown),
+        confidence_source=str(data.get("confidence_source", UNIFORM)),
     )
 
 

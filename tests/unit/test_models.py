@@ -10,8 +10,11 @@ from typing import Any
 import pytest
 
 from invoice_extractor.document.model import BBox
+from invoice_extractor.domain.checks import Check
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
+    FITTED,
+    UNIFORM,
     Charge,
     Evidence,
     FieldResult,
@@ -137,6 +140,37 @@ def test_from_dict_restores_value_types_by_field_name() -> None:
     assert restored.fields["invoice_date"].value == date(2024, 3, 15)
     assert restored.fields["subtotal"].value == Decimal("490.00")
     assert restored.fields["invoice_number"].value == "INV-2024-0042"
+
+
+def test_a_field_says_where_the_weights_behind_its_confidence_came_from() -> None:
+    """A number that came from a guess about what matters should not look like one that did not."""
+    scored = dataclasses.replace(populated().fields["invoice_number"], confidence_source=FITTED)
+    entry = _field_to_dict_of(scored)
+    assert entry["confidence_source"] == FITTED
+    assert populated().fields["invoice_number"].confidence_source == UNIFORM
+
+
+def _field_to_dict_of(found: FieldResult) -> dict[str, object]:
+    result = dataclasses.replace(populated(), fields={"invoice_number": found})
+    entry = result.to_dict()["fields"]["invoice_number"]  # type: ignore[index]
+    assert InvoiceResult.from_dict(result.to_dict()) == result
+    return entry  # type: ignore[return-value]
+
+
+def test_a_document_whose_rules_all_ran_carries_what_they_looked_at() -> None:
+    checked = dataclasses.replace(
+        populated(), checks=(Check("dates_in_order", True, ("due_date",), "in order"),)
+    )
+    assert checked.to_dict()["checks"] == [
+        {"code": "dates_in_order", "passed": True, "fields": ["due_date"], "detail": "in order"}
+    ]
+    assert InvoiceResult.from_dict(checked.to_dict()) == checked
+
+
+def test_a_check_that_did_not_apply_round_trips_as_neither_passed_nor_failed() -> None:
+    skipped = Check("per_rate_vat_consistency", None, (), "no summary")
+    assert Check.from_dict(skipped.to_dict()) == skipped
+    assert not skipped.applied
 
 
 def test_to_dict_keeps_field_order() -> None:

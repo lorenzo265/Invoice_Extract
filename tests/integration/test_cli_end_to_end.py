@@ -18,6 +18,7 @@ from invoice_extractor.cli import main
 
 README = Path("README.md")
 DEMO_PDF = "tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf"
+CORPUS = Path("tests/forge/fixtures/corpus")
 DEMO_PROFILE = "fr-FR"
 
 
@@ -66,3 +67,18 @@ def test_module_entry_point_runs(
         runpy.run_module("invoice_extractor", run_name="__main__")
     assert exit_code.value.code == 0
     assert capsys.readouterr().out.startswith("Invoice Extraction Report")
+
+
+def test_calibrate_fits_a_corpus_and_says_how_far_off_it_is(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """The one command that writes something other than a result (ENGINE_SPEC §9)."""
+    assert main(["calibrate", "--corpus", str(CORPUS), "--out", str(tmp_path)]) == 0
+    printed = capsys.readouterr().out
+    assert "documents fitted into" in printed
+    assert "expected calibration error" in printed
+    assert {path.name for path in tmp_path.glob("*.json")} == {
+        "weights.json",
+        "calibration_maps.json",
+        "reliability_report.json",
+    }

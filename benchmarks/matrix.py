@@ -26,6 +26,7 @@ from benchmarks.compare import (
 )
 from invoice_forge.knobs import KNOB_NAMES
 
+PRECISION = 4
 BANDS: tuple[tuple[float, float], ...] = (
     (0.0, 0.2),
     (0.2, 0.4),
@@ -45,11 +46,15 @@ class Tally:
     not_covered: int = 0
     evidence_agreed: int = 0
     found_nothing: int = 0
+    # What the extractor said it was worth, added up: a band's mean predicted confidence
+    # is what the calibration error is measured against.
+    confidence: float = 0.0
 
     def add(self, scored: Scored) -> None:
         setattr(self, scored.outcome.value, getattr(self, scored.outcome.value) + 1)
         self.evidence_agreed += bool(scored.evidence_agreed)
         self.found_nothing += scored.found_nothing
+        self.confidence += scored.confidence
 
     def count(self, counts: Counts) -> None:
         """Add a document's worth of cells, which are counted rather than scored one by one."""
@@ -60,6 +65,11 @@ class Tally:
     @property
     def scored(self) -> int:
         return self.hit + self.miss
+
+    @property
+    def predicted(self) -> float | None:
+        """What this cell's values were said to be worth, on average."""
+        return None if not self.scored else self.confidence / self.scored
 
     @property
     def hit_rate(self) -> float | None:
@@ -150,6 +160,7 @@ class Matrix:
             "charges": _tallies(self.charges, SCORED_CHARGE_KEYS),
             "secondary_amounts": _tallies(self.secondary, SECONDARY_KEYS),
             "calibration": _calibration(self.calibration),
+            "expected_calibration_error": _calibration_error(self.calibration),
         }
 
 
@@ -179,6 +190,22 @@ def _knobs(on: Mapping[str, Tally], off: Mapping[str, Tally]) -> dict[str, objec
 
 def _calibration(bands: Sequence[Tally]) -> list[dict[str, object]]:
     return [
-        {"band": f"{low:.1f}-{min(high, 1.0):.1f}", **cell.to_dict()}
+        {"band": f"{low:.1f}-{min(high, 1.0):.1f}", "predicted": cell.predicted, **cell.to_dict()}
         for (low, high), cell in zip(BANDS, bands, strict=True)
     ]
+
+
+def _calibration_error(bands: Sequence[Tally]) -> float:
+    """How far the confidences were off, weighted by how many values each band spoke for.
+
+    The same measure the fit reports (`calibration/reliability_report.json`), computed
+    here over a whole benchmark run: what the extractor said a value was worth against how
+    often values it said that about were right.
+    """
+    scored = sum(cell.scored for cell in bands)
+    if not scored:
+        return 0.0
+    apart = sum(
+        cell.scored * abs((cell.predicted or 0.0) - (cell.hit_rate or 0.0)) for cell in bands
+    )
+    return round(apart / scored, PRECISION)

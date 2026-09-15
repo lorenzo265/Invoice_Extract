@@ -27,6 +27,7 @@ from invoice_extractor.profile.schema import (
     PARTY_NAMES,
     CustomFieldProfile,
     FieldProfile,
+    Invariants,
     Profile,
     ProfileError,
     SectionProfile,
@@ -58,6 +59,7 @@ TOP_LEVEL_KEYS = (
     "variants",
     "document_types",
     "noise",
+    "invariants",
     "render",
 )
 
@@ -136,7 +138,12 @@ def parse(data: Mapping[str, object], lexicon_root: Path = LEXICON_ROOT) -> Prof
             require_mapping(data, "document_types", "document_types"), "document_types", lexicon
         ),
         noise=parts.noise(optional_mapping(data, "noise", "noise"), "noise", lexicon),
+        invariants=_invariants(data),
     )
+
+
+def _invariants(data: Mapping[str, object]) -> Invariants:
+    return parts.invariants(optional_mapping(data, "invariants", "invariants"), "invariants")
 
 
 def _fields(

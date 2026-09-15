@@ -5435,6 +5435,7 @@
     "calibration": [
       {
         "band": "0.0-0.2",
+        "predicted": null,
         "hit": 0,
         "miss": 0,
         "absent": 0,
@@ -5445,6 +5446,7 @@
       },
       {
         "band": "0.2-0.4",
+        "predicted": null,
         "hit": 0,
         "miss": 0,
         "absent": 0,
@@ -5455,35 +5457,39 @@
       },
       {
         "band": "0.4-0.6",
-        "hit": 13,
+        "predicted": null,
+        "hit": 0,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 11,
+        "evidence_agreed": 0,
         "found_nothing": 0,
-        "hit_rate": 1.0
+        "hit_rate": null
       },
       {
         "band": "0.6-0.8",
-        "hit": 547,
+        "predicted": null,
+        "hit": 0,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 538,
+        "evidence_agreed": 0,
         "found_nothing": 0,
-        "hit_rate": 1.0
+        "hit_rate": null
       },
       {
         "band": "0.8-1.0",
-        "hit": 2923,
+        "predicted": 0.9926250572738275,
+        "hit": 3483,
         "miss": 9,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 2923,
+        "evidence_agreed": 3472,
         "found_nothing": 0,
-        "hit_rate": 0.9969304229195088
+        "hit_rate": 0.9974226804123711
       }
-    ]
+    ],
+    "expected_calibration_error": 0.0048
   },
   "not_covered": [
     "payment_terms"

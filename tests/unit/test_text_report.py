@@ -6,6 +6,7 @@ import dataclasses
 from decimal import Decimal
 
 from invoice_extractor.document.model import BBox
+from invoice_extractor.domain.checks import Check
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
     Charge,
@@ -71,38 +72,51 @@ def result(findings: tuple[Finding, ...] = ()) -> InvoiceResult:
     )
 
 
-def report_lines(findings: tuple[Finding, ...] = ()) -> list[str]:
-    return render(result(findings)).splitlines()
+def report_lines(findings: tuple[Finding, ...] = (), checks: tuple[Check, ...] = ()) -> list[str]:
+    return render(dataclasses.replace(result(findings), checks=checks)).splitlines()
+
+
+def _held() -> Check:
+    names = ("subtotal", "vat_amount", "total_amount")
+    return Check("subtotal_plus_vat_equals_total", True, names, "490.00 + 98.00 = 588.00")
 
 
 def line_starting(lines: list[str], prefix: str) -> str:
     return next(line for line in lines if line.startswith(prefix))
 
 
-def test_report_marks_ok_when_no_finding() -> None:
-    marked = line_starting(report_lines(), "[ok]  totals_reconcile")
-    assert marked.endswith("490.00 + 98.00 = 588.00")
-
-
-def test_report_renders_the_arithmetic_of_every_invariant_that_held() -> None:
-    lines = report_lines()
-    assert line_starting(lines, "[ok]  line_items_sum").endswith("60.00 + 430.00 = 490.00")
-    assert line_starting(lines, "[ok]  vat_rate_consistent").endswith("20.00% x 490.00 = 98.00")
-
-
-def test_report_marks_error_finding() -> None:
-    error = Finding(
-        Severity.ERROR, "totals_reconcile", "490.00 + 98.00 = 588.00 but x", "total_amount"
+def test_a_check_that_held_is_marked_and_shows_what_it_came_to() -> None:
+    lines = report_lines(checks=(_held(),))
+    assert line_starting(lines, "[ok]  subtotal_plus_vat_equals_total").endswith(
+        "490.00 + 98.00 = 588.00"
     )
-    marked = line_starting(report_lines((error,)), "[!!]  totals_reconcile")
-    assert marked.endswith("490.00 + 98.00 = 588.00 but x")
 
 
-def test_report_marks_warning_finding() -> None:
-    warning = Finding(
-        Severity.WARNING, "line_items_sum", "line_items_sum skipped: subtotal not found"
-    )
-    assert line_starting(report_lines((warning,)), "[??]  line_items_sum")
+def test_a_check_that_failed_is_marked_by_the_finding_that_says_so() -> None:
+    failed = Check("subtotal_plus_vat_equals_total", False, ("total_amount",), "588.00 but 1.00")
+    error = Finding(Severity.ERROR, failed.code, failed.detail, "total_amount")
+    marked = line_starting(report_lines((error,), (failed,)), "[!!]  subtotal_plus_vat")
+    assert marked.endswith("588.00 but 1.00")
+
+
+def test_a_check_that_failed_as_a_warning_is_marked_as_one() -> None:
+    failed = Check("document_type_matches_total_sign", False, ("total_amount",), "odd")
+    warning = Finding(Severity.WARNING, failed.code, failed.detail, "total_amount")
+    assert line_starting(report_lines((warning,), (failed,)), "[??]  document_type")
+
+
+def test_a_check_that_failed_with_no_finding_beside_it_is_marked_as_an_error() -> None:
+    failed = Check("dates_in_order", False, ("due_date",), "out of order")
+    assert line_starting(report_lines(checks=(failed,)), "[!!]  dates_in_order")
+
+
+def test_a_check_this_document_could_not_be_asked_is_marked_apart() -> None:
+    skipped = Check("per_rate_vat_consistency", None, ("vat_summary",), "no summary")
+    assert line_starting(report_lines(checks=(skipped,)), "[--]  per_rate_vat_consistency")
+
+
+def test_a_document_no_rule_was_run_against_shows_no_checks() -> None:
+    assert not [row for row in report_lines() if row.startswith("Checks")]
 
 
 def test_report_shows_dash_for_missing_field() -> None:
@@ -205,12 +219,10 @@ def test_a_report_prints_what_the_block_charged_and_where_each_charge_was_read()
     assert line_starting(lines, "OTHER").split() == ["OTHER", "5.00", "inferred", "-"]
 
 
-def test_a_report_adds_every_charge_to_the_arithmetic_it_prints() -> None:
-    lines = render(dataclasses.replace(result(), charges=CHARGES)).splitlines()
-    added = "490.00 + 12.50 + 5.00 + 98.00 = 588.00"
-    assert line_starting(lines, "[ok]  totals_reconcile").endswith(added)
-    taxed = "20.00% x (490.00 + 12.50) = 98.00"
-    assert line_starting(lines, "[ok]  vat_rate_consistent").endswith(taxed)
+def test_a_report_of_a_document_with_charges_prints_them_beside_its_checks() -> None:
+    lines = render(dataclasses.replace(result(), charges=CHARGES, checks=(_held(),))).splitlines()
+    assert line_starting(lines, "Charges (2)")
+    assert line_starting(lines, "[ok]  subtotal_plus_vat_equals_total")
 
 
 def test_a_report_prints_the_total_said_again_in_another_currency() -> None:

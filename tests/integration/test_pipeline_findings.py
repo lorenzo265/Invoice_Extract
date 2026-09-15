@@ -17,9 +17,10 @@ import pytest
 
 from invoice_extractor import ProfileRegistry, extract
 from invoice_extractor.domain.findings import Severity
+from invoice_extractor.domain.models import FITTED, UNIFORM
 from invoice_extractor.reconcile.amounts import FROM_SUMMARY, FROM_TOTAL, UNDECLARED
 from invoice_extractor.reconcile.summary import AMBIGUOUS, DISAGREE
-from invoice_extractor.validation.invariants import INVARIANT_NAMES
+from invoice_extractor.validation.stage import EXEMPT, RULE_NAMES
 
 FIXTURES = Path("tests/forge/fixtures/corpus")
 TRUTH_SUFFIX = ".truth.json"
@@ -57,7 +58,8 @@ def test_a_document_the_extractor_cannot_read_is_reported_rather_than_raised(
     result = extract(pdf, REGISTRY)
     codes = {finding.code for finding in result.findings}
     known = {
-        *INVARIANT_NAMES,
+        *RULE_NAMES,
+        EXEMPT,
         "line_item_cell_unreadable",
         "line_items_header_not_found",
         FROM_SUMMARY,
@@ -140,3 +142,30 @@ def test_the_vat_summary_is_read_where_the_document_prints_one(pdf: Path, profil
     truth = json.loads(pdf.with_suffix("").with_suffix(".truth.json").read_text(encoding="utf-8"))
     printed = [row for row in truth["vat_summary"] if row.get("evidence")]
     assert len(result.vat_summary) == len(printed)
+
+
+@pytest.mark.parametrize(("pdf", "profile_id"), EVERY)
+def test_every_rule_is_recorded_whether_or_not_it_had_anything_to_say(
+    pdf: Path, profile_id: str
+) -> None:
+    """A rule that held and a rule that never applied are different, and the checks say which."""
+    result = extract(pdf, REGISTRY)
+    assert tuple(check.code for check in result.checks) == RULE_NAMES
+    assert any(check.passed for check in result.checks)
+    assert all(check.detail for check in result.checks)
+
+
+@pytest.mark.parametrize(("pdf", "profile_id"), PLAIN)
+def test_a_plain_document_fails_none_of_the_rules_it_was_asked(pdf: Path, profile_id: str) -> None:
+    failed = [check.code for check in extract(pdf, REGISTRY).checks if check.passed is False]
+    assert failed == []
+
+
+@pytest.mark.parametrize(("pdf", "profile_id"), EVERY)
+def test_a_confidence_is_made_of_signals_the_result_can_show(pdf: Path, profile_id: str) -> None:
+    """ADR-0002 for the confidence: a number no reader can take apart is not evidence."""
+    result = extract(pdf, REGISTRY)
+    read = [found for found in result.fields.values() if found.value is not None]
+    assert all(found.confidence_breakdown for found in read)
+    assert all(0.0 < found.confidence <= 1.0 for found in read)
+    assert all(found.confidence_source in {FITTED, UNIFORM} for found in read)

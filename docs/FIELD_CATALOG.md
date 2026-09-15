@@ -79,5 +79,14 @@ same string.
 
 ## Findings vocabulary
 
-Codes are `snake_case`, stable, listed in `validation/codes.py`; severity ∈ INFO /
-WARNING / ERROR; `fields[]` names the canonical fields a finding touches.
+Codes are `snake_case` and stable; severity ∈ INFO / WARNING / ERROR. A finding that is
+about one field names it. The codes a run can produce are the seventeen rule names of
+`validation/` (ENGINE_SPEC §6 and §7, one per rule), `invariant_exempt`, the
+reconciliation's `backfilled_from_summary`, `backfilled_from_line_items`,
+`vat_implied_from_total`, `undeclared_charge_inferred`, `totals_summary_disagree` and
+`vat_line_ambiguous`, the table's `line_item_cell_unreadable` and
+`line_items_header_not_found`, and `profile_not_detected`.
+
+Beside the findings, a result carries a `Check` per rule — its code, whether it passed,
+the fields it is about and the arithmetic it came to — because a rule that held and one
+that never applied are different facts and the findings alone cannot tell them apart.

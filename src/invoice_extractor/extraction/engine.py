@@ -36,14 +36,24 @@ from invoice_extractor.extraction.units.registry import (
 )
 from invoice_extractor.profile.schema import FieldProfile, Profile
 
+# How many points of distance from its label make one candidate a clear winner over the
+# next: half an inch, which is wider than the gap between a label and its own value.
+GAP_SCALE = 36.0
+
 
 @dataclass(frozen=True, slots=True)
 class Extraction:
-    """A field result plus what `validation/confidence.py` needs to score it."""
+    """A field result plus what `scoring/` needs to judge how much to trust it.
+
+    `runner_up_gap` is how clearly the winner won, in points of distance from its label:
+    `None` where nothing else was in the running, or where what came second said the same
+    thing, because neither of those is a contest that was close.
+    """
 
     field: FieldResult
     candidate_count: int
     zone: Zone | None
+    runner_up_gap: float | None = None
 
 
 def order(specs: Sequence[Spec]) -> tuple[Spec, ...]:
@@ -73,10 +83,25 @@ def run(
         return Extraction(_not_found(spec.name), 0, None)
     candidates = _filtered(_collect(spec, document, described, profile), spec, described, profile)
     evaluated = [_evaluate(spec, candidate, profile, described) for candidate in candidates]
-    winner = _winner(_ranked(evaluated, spec, described), spec)
+    ordered = _ranked(evaluated, spec, described)
+    winner = _winner(ordered, spec)
     if winner is None:
         return Extraction(_not_found(spec.name), len(candidates), None)
-    return Extraction(_result(spec.name, winner), len(candidates), winner.candidate.zone)
+    return Extraction(
+        field=_result(spec.name, winner),
+        candidate_count=len(candidates),
+        zone=winner.candidate.zone,
+        runner_up_gap=_gap(ordered, winner),
+    )
+
+
+def _gap(ordered: Sequence[Evaluated], winner: Evaluated) -> float | None:
+    """How far behind the nearest candidate saying something else was, at most a full gap."""
+    others = [item for item in ordered if item.value != winner.value]
+    if not others:
+        return None
+    apart = others[0].candidate.label_distance - winner.candidate.label_distance
+    return min(max(apart, 0.0) / GAP_SCALE, 1.0)
 
 
 def _field_profile(spec: Collected, profile: Profile) -> FieldProfile | None:

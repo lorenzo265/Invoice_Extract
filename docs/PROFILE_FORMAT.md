@@ -185,6 +185,12 @@ And the excerpt of `profiles/_defaults.json` those keys are laid over:
 }
 ```
 
+## `invariants`
+
+| Key | Meaning |
+|---|---|
+| `exempt` | `[{code, reason}]` — the arithmetic rules this vendor's invoices are not held to, each with the reason it does not apply (e.g. a reverse-charge invoice states no tax). `code` must name one of the rules in `docs/ENGINE_SPEC.md` §6 and §7; the exemption is reported as an INFO finding, so it is visible in the result rather than silent |
+
 ## `profile lint`
 
 `invoice-extractor profile lint <id>` reports, per field, how many labels and zones the

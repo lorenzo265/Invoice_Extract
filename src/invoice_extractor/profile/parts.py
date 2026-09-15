@@ -19,6 +19,7 @@ from invoice_extractor.profile.reading import (
     optional_choice,
     optional_count,
     optional_flag,
+    optional_objects,
     optional_pattern,
     optional_plain_text,
     optional_strings,
@@ -33,7 +34,9 @@ from invoice_extractor.profile.schema import (
     Calendar,
     CustomFieldProfile,
     DocumentTypes,
+    Exemption,
     FieldProfile,
+    Invariants,
     Noise,
     NumberFormat,
     Placement,
@@ -54,6 +57,8 @@ NUMBER_FORMAT_KEYS = ("decimal_separator", "thousands_separators")
 VARIANT_KEYS = ("id", "when", "overlay")
 WHEN_KEYS = ("document_type", "any_text")
 NOISE_KEYS = ("ignore_labels",)
+INVARIANTS_KEYS = ("exempt",)
+EXEMPTION_KEYS = ("code", "reason")
 
 DEFAULT_SECTION_LINES = 6
 
@@ -174,6 +179,25 @@ def document_types(
 def noise(data: Mapping[str, object], path: str, lexicon: Mapping[str, object]) -> Noise:
     reject_unknown(data, NOISE_KEYS, f"{path}.")
     return Noise(ignore_labels=_titles(data, "ignore_labels", path, lexicon))
+
+
+def invariants(data: Mapping[str, object], path: str) -> Invariants:
+    """Which arithmetic rules this vendor is excused from. Most vendors are excused none."""
+    reject_unknown(data, INVARIANTS_KEYS, f"{path}.")
+    declared = optional_objects(data, "exempt", f"{path}.exempt")
+    return Invariants(
+        exempt=tuple(
+            _exemption(entry, f"{path}.exempt[{index}]") for index, entry in enumerate(declared)
+        )
+    )
+
+
+def _exemption(data: Mapping[str, object], path: str) -> Exemption:
+    reject_unknown(data, EXEMPTION_KEYS, f"{path}.")
+    return Exemption(
+        code=require_text(data, "code", f"{path}.code"),
+        reason=require_text(data, "reason", f"{path}.reason"),
+    )
 
 
 def variant(data: Mapping[str, object], path: str) -> Variant:

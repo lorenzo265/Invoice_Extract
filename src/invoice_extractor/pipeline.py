@@ -1,26 +1,28 @@
 """The only orchestration in the project: a PDF and a registry in, an `InvoiceResult` out.
 
 Every other module minds one concern; this one wires them together and does nothing
-itself — it does not parse a date, match a label, or compute a confidence. The stages it
-wires are `docs/ENGINE_SPEC.md` §2, in that order: read, detect the profile, classify the
-document, run every spec, read the blocks and the tables, check the arithmetic, score.
+itself — it does not parse a date, match a label, check an identity or compute a
+confidence. The stages it wires are `docs/ENGINE_SPEC.md` §2, in that order: read, detect
+the profile, classify the document, run every spec, read the blocks and the tables,
+reconcile what was left out, check what was read, and score how much to trust it.
 """
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from dataclasses import replace
 from pathlib import Path
 
 from invoice_extractor.document.model import Document
 from invoice_extractor.document.pymupdf_reader import read
+from invoice_extractor.domain.checks import Check
 from invoice_extractor.domain.findings import Finding, Severity
-from invoice_extractor.domain.models import FieldResult, InvoiceResult
+from invoice_extractor.domain.models import FieldResult, InvoiceResult, VatSummaryRow
 from invoice_extractor.domain.parties import Party
 from invoice_extractor.extraction.block import read_totals
 from invoice_extractor.extraction.classify import classify_document
 from invoice_extractor.extraction.engine import Extraction, order, run
-from invoice_extractor.extraction.line_items import extract_line_items
+from invoice_extractor.extraction.line_items import TableExtraction, extract_line_items
 from invoice_extractor.extraction.section import read_section
 from invoice_extractor.extraction.specs import (
     FIELD_ORDER,
@@ -35,8 +37,11 @@ from invoice_extractor.profile.detect import ProfileScore, detect_profile
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_extractor.profile.schema import Profile
 from invoice_extractor.reconcile.stage import Reconciliation, reconcile
-from invoice_extractor.validation.confidence import NO_CAP, score
-from invoice_extractor.validation.invariants import check_all
+from invoice_extractor.scoring.compute import compute
+from invoice_extractor.scoring.signals import ScoringContext, extract_signals
+from invoice_extractor.scoring.weights import Calibration, load
+from invoice_extractor.validation.facts import Facts
+from invoice_extractor.validation.stage import validate
 
 NOT_DETECTED = "profile_not_detected"
 
@@ -47,52 +52,103 @@ def extract(pdf_path: Path, registry: ProfileRegistry) -> InvoiceResult:
     profile, scores = detect_profile(document, registry, pdf_path.name)
     if profile is None:
         return _undetected(document, scores)
-    return _extracted(document, profile)
+    return _extracted(document, profile, scores[0].score if scores else 0.0)
 
 
-def _extracted(document: Document, profile: Profile) -> InvoiceResult:
+def _extracted(document: Document, profile: Profile, matched: float) -> InvoiceResult:
     kind = classify_document(document, profile)
     table = extract_line_items(document, profile, LINE_ITEMS)
     summary = extract_vat_summary(document, profile, VAT_SUMMARY)
     totals = read_totals(TOTALS, document, profile)
+    parties = _parties(document, profile)
     extractions = {**_resolve(document, profile), **totals.extractions}
     found = {name: extraction.field for name, extraction in extractions.items()}
     reconciled = reconcile(found, totals.charges, table.items, summary, profile)
-    findings = (
-        *table.findings,
-        *reconciled.findings,
-        *check_all(reconciled.fields, table.items, reconciled.charges, summary),
-    )
+    facts = _facts(document, profile, kind.value, reconciled, table, summary, parties)
+    findings, checks = validate(facts)
     return InvoiceResult(
-        fields=_scored(extractions, reconciled, profile, findings),
+        fields=_scored(extractions, reconciled, _context(facts, checks, matched)),
         line_items=table.items,
-        findings=findings,
+        findings=(*table.findings, *reconciled.findings, *findings),
+        checks=checks,
         profile_id=profile.id,
         document_type=kind.value,
         source_path=document.source_path,
-        parties=_parties(document, profile),
+        parties=parties,
         vat_summary=summary,
         charges=reconciled.charges,
         secondary_amounts=totals.secondary,
     )
 
 
+def _facts(
+    document: Document,
+    profile: Profile,
+    kind: str,
+    reconciled: Reconciliation,
+    table: TableExtraction,
+    summary: tuple[VatSummaryRow, ...],
+    parties: Mapping[str, Party],
+) -> Facts:
+    """What stage 6 asks its questions about: everything the earlier stages published."""
+    return Facts(
+        profile=profile,
+        fields=reconciled.fields,
+        items=table.items,
+        summary=summary,
+        charges=reconciled.charges,
+        parties=parties,
+        document_type=kind,
+        source_path=document.source_path,
+        currency_basis=reconciled.currency,
+    )
+
+
+def _context(facts: Facts, checks: tuple[Check, ...], matched: float) -> ScoringContext:
+    return ScoringContext(
+        profile=facts.profile,
+        resolved=facts.fields,
+        checks=checks,
+        profile_score=matched,
+        items=facts.items,
+        summary=facts.summary,
+        parties=facts.parties,
+    )
+
+
 def _scored(
     extractions: Mapping[str, Extraction],
     reconciled: Reconciliation,
-    profile: Profile,
-    findings: Sequence[Finding],
+    context: ScoringContext,
 ) -> dict[str, FieldResult]:
-    """Every field, with the value stage 5 settled on and the cap stage 5 asked for."""
+    """Every field, with the value stage 5 settled on and the confidence stage 7 gives it."""
+    calibration = load()
     return {
-        name: score(
+        name: _confidence(
             replace(extractions[name], field=reconciled.fields[name]),
-            profile.fields.get(name),
-            findings,
-            reconciled.caps.get(name, NO_CAP),
+            context,
+            calibration,
+            reconciled.caps.get(name),
         )
         for name in FIELD_ORDER
     }
+
+
+def _confidence(
+    extraction: Extraction,
+    context: ScoringContext,
+    calibration: Calibration,
+    cap: float | None,
+) -> FieldResult:
+    name = extraction.field.name
+    signals = extract_signals(extraction, context)
+    scored = compute(signals, calibration.weights_for(name), cap, calibration.curve_for(name))
+    return replace(
+        extraction.field,
+        confidence=scored.confidence,
+        confidence_breakdown=scored.breakdown,
+        confidence_source=scored.source,
+    )
 
 
 def _parties(document: Document, profile: Profile) -> dict[str, Party]:

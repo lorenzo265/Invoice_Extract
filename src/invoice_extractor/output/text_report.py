@@ -7,10 +7,11 @@ decimal it was read as: a currency symbol is a vendor's decoration, not a value.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Mapping, Sequence
 from datetime import date
 from enum import Enum, auto
 
+from invoice_extractor.domain.checks import Check
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
     Charge,
@@ -22,7 +23,6 @@ from invoice_extractor.domain.models import (
     Party,
     VatSummaryRow,
 )
-from invoice_extractor.validation.invariants import INVARIANT_NAMES
 
 RULE_WIDTH = 80
 PADDING = 2
@@ -30,6 +30,9 @@ LABEL_WIDTH = 9
 MISSING = "-"
 TITLE = "Invoice Extraction Report"
 OK = "[ok]"
+# A rule this document could not be asked: an operand it does not carry, an exemption,
+# a question that is not asked of this kind of document.
+SKIPPED = "[--]"
 MARKERS: Mapping[Severity, str] = {
     Severity.INFO: "[..]",
     Severity.WARNING: "[??]",
@@ -76,7 +79,7 @@ def render(result: InvoiceResult) -> str:
         "",
         *_vat_block(result.vat_summary),
         *_charge_block(result),
-        *_invariant_block(result),
+        *_check_block(result),
         "",
         _counts(result.findings),
         "=" * RULE_WIDTH,
@@ -155,16 +158,27 @@ def _cell(value: object) -> str:
     return MISSING if value is None else str(value)
 
 
-def _invariant_block(result: InvoiceResult) -> list[str]:
-    width = max(len(name) for name in INVARIANT_NAMES) + PADDING
+def _check_block(result: InvoiceResult) -> list[str]:
+    """Every rule the document was put through, and what it said (ENGINE_SPEC §6, §7)."""
+    if not result.checks:
+        return []
+    width = max(len(check.code) for check in result.checks) + PADDING
     marker_width = len(OK) + PADDING
-    lines = ["Invariants"]
-    for name in INVARIANT_NAMES:
-        finding = _finding_for(result.findings, name)
-        marker = OK if finding is None else MARKERS[finding.severity]
-        detail = ARITHMETIC[name](result) if finding is None else finding.message
-        lines.append(f"{marker:<{marker_width}}{name:<{width}}{detail}".rstrip())
+    lines = ["Checks"]
+    for check in result.checks:
+        marker = _marker(check, result.findings)
+        lines.append(f"{marker:<{marker_width}}{check.code:<{width}}{check.detail}".rstrip())
     return lines
+
+
+def _marker(check: Check, findings: Sequence[Finding]) -> str:
+    """What a check came to: it held, it did not, or it was never applicable."""
+    if check.passed is None:
+        return SKIPPED
+    if check.passed:
+        return OK
+    finding = _finding_for(findings, check.code)
+    return MARKERS[Severity.ERROR if finding is None else finding.severity]
 
 
 def _table(
@@ -203,37 +217,6 @@ def _where(evidence: Evidence | None) -> str:
         return MISSING
     label = MISSING if evidence.matched_label is None else f'"{evidence.matched_label}"'
     return f"p{evidence.page}  {evidence.strategy.name}  {label}"
-
-
-def _amount(result: InvoiceResult, name: str) -> str:
-    field = result.fields.get(name)
-    return MISSING if field is None else _value(field.value)
-
-
-def _totals_expression(result: InvoiceResult) -> str:
-    added = [str(charge.amount) for charge in result.charges]
-    parts = [_amount(result, "subtotal"), *added, _amount(result, "vat_amount")]
-    return f"{' + '.join(parts)} = {_amount(result, 'total_amount')}"
-
-
-def _line_items_expression(result: InvoiceResult) -> str:
-    added = " + ".join(str(item.net_amount) for item in result.line_items)
-    return f"{added} = {_amount(result, 'subtotal')}"
-
-
-def _vat_rate_expression(result: InvoiceResult) -> str:
-    """What was taxed is the net and every charge the block declared, as the check says."""
-    declared = [str(charge.amount) for charge in result.charges if charge.declared]
-    net = _amount(result, "subtotal")
-    taxed = f"({' + '.join([net, *declared])})" if declared else net
-    return f"{_amount(result, 'vat_rate')}% x {taxed} = {_amount(result, 'vat_amount')}"
-
-
-ARITHMETIC: Mapping[str, Callable[[InvoiceResult], str]] = {
-    "totals_reconcile": _totals_expression,
-    "line_items_sum": _line_items_expression,
-    "vat_rate_consistent": _vat_rate_expression,
-}
 
 
 def _finding_for(findings: Sequence[Finding], code: str) -> Finding | None:

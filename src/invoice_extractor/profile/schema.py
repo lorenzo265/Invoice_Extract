@@ -213,6 +213,27 @@ class Noise:
 
 
 @dataclass(frozen=True, slots=True)
+class Exemption:
+    """One invariant this vendor's invoices are not held to, and why not.
+
+    A reverse-charge invoice states no tax and is right not to; holding it to
+    `vat_equals_subtotal_times_rate` would report the vendor's own law as an error. The
+    reason is recorded with the exemption and reported as an INFO finding, so an
+    exemption is visible in the result rather than silent (ENGINE_SPEC §6).
+    """
+
+    code: str
+    reason: str
+
+
+@dataclass(frozen=True, slots=True)
+class Invariants:
+    """Which of the arithmetic rules this vendor is excused from, and why."""
+
+    exempt: tuple[Exemption, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class Profile:
     """One vendor's invoices, described. The unit of configuration (ADR-0006)."""
 
@@ -236,3 +257,4 @@ class Profile:
     variants: tuple[Variant, ...]
     document_types: DocumentTypes
     noise: Noise
+    invariants: Invariants

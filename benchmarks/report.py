@@ -37,6 +37,8 @@ def render_readme_block(report: Mapping[str, object]) -> str:
         f"- **Totals block:** {_overall(_mapping(matrix, 'charges'))} of the charges the",
         "  documents carry, declared on the page or inferred from the arithmetic.",
         f"- **Confidence:** {_calibrated(matrix)}",
+        f"- **Calibration:** the confidences are off by {_error(matrix)} on average, over the",
+        "  weights and the curve `calibration/` was fitted with.",
         "- **Not covered:** the generator prints these and the extractor has no spec for",
         "  them, so they are never scored as wrong:",
         f"  {_not_covered(fields)}.",
@@ -86,6 +88,11 @@ def _calibrated(matrix: Mapping[str, object]) -> str:
         return DASH
     parts = (f"{band.get('band', '')} at {_rate(band)}" for band in scored)
     return ", ".join(parts) + "."
+
+
+def _error(matrix: Mapping[str, object]) -> str:
+    found = matrix.get("expected_calibration_error")
+    return DASH if not isinstance(found, float) else _percent(found)
 
 
 def render_report(report: Mapping[str, object]) -> str:
@@ -286,17 +293,33 @@ def _knob_section(matrix: Mapping[str, object]) -> str:
 
 def _calibration_section(matrix: Mapping[str, object]) -> str:
     rows = [
-        (str(band.get("band", "")), _cell(band, "hit"), _cell(band, "miss"), _rate(band))
+        (
+            str(band.get("band", "")),
+            _predicted(band),
+            _cell(band, "hit"),
+            _cell(band, "miss"),
+            _rate(band),
+        )
         for band in _sequence(matrix, "calibration")
         if isinstance(band, dict)
     ]
-    header = ("Confidence", "Hit", "Miss", "Hit rate")
+    header = ("Confidence", "Said", "Hit", "Miss", "Hit rate")
     table = _section("Calibration", header, rows, _RIGHT_FROM_ONE)
+    error = matrix.get("expected_calibration_error")
     note = (
         "The confidence the extractor prints beside a value, against how often a value in"
-        " that band turned out to be right."
+        " that band turned out to be right. `Said` is what it claimed on average, and the"
+        f" expected calibration error — the two, weighted by how many values each band"
+        f" speaks for — is {_percent(float(error)) if isinstance(error, float) else DASH}."
+        " The weights and the curve behind those numbers are in `calibration/`, fitted by"
+        " `invoice-extractor calibrate` on this corpus."
     )
     return f"{table}\n\n{note}"
+
+
+def _predicted(band: Mapping[str, object]) -> str:
+    said = band.get("predicted")
+    return DASH if not isinstance(said, float) else _percent(said)
 
 
 _RIGHT_FROM_ONE = 1

@@ -18,6 +18,7 @@ from invoice_extractor.profile.schema import (
     ComponentProfile,
     DocumentTypes,
     FieldProfile,
+    Invariants,
     Noise,
     NumberFormat,
     PageBounds,
@@ -228,4 +229,5 @@ def make_profile(
             credit_reference_labels=("Original invoice",),
         ),
         noise=Noise(ignore_labels=()),
+        invariants=Invariants(exempt=()),
     )

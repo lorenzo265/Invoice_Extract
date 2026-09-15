@@ -16,6 +16,7 @@ from invoice_extractor.domain.rows import LINE_ITEM_COLUMNS
 from invoice_extractor.extraction.spec import LabelSpec
 from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
 from invoice_extractor.profile.registry import ProfileRegistry
+from invoice_extractor.validation.stage import RULE_NAMES
 from invoice_forge.fields import LINE_ITEM_COLUMNS as GENERATED_COLUMNS
 from invoice_forge.fields import METADATA_FIELDS, SCALAR_FIELDS, TABLE_COLUMNS
 from invoice_forge.profiles.loader import load_profile, profile_ids
@@ -125,3 +126,10 @@ def test_every_column_the_corpus_records_is_one_the_extractor_reads() -> None:
 
 def test_every_column_the_extractor_reads_is_one_a_document_prints() -> None:
     assert set(LINE_ITEM_COLUMNS) <= set(TABLE_COLUMNS)
+
+
+@pytest.mark.parametrize("profile_id", SHIPPED.ids())
+def test_a_vendor_is_only_excused_rules_that_exist(profile_id: str) -> None:
+    """An exemption naming no rule would excuse nothing and say it had (ENGINE_SPEC §6)."""
+    excused = [entry.code for entry in SHIPPED.get(profile_id).invariants.exempt]
+    assert set(excused) <= set(RULE_NAMES), sorted(set(excused) - set(RULE_NAMES))

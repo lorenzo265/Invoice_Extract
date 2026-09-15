@@ -1,153 +1,199 @@
-"""Does the invoice's own arithmetic add up?
+"""Does the invoice's own arithmetic add up? The ten rules of `docs/ENGINE_SPEC.md` §6.
 
-Each invariant returns `None` when it holds, a WARNING when an operand it needs is
-missing, and an ERROR naming both sides when the numbers disagree by more than a cent.
-None of them raises: a supplier's rounding mistake describes the document, it is not a
-defect in this program (ADR-0005).
+Each is a question with three answers: it held, it did not, or this document cannot be
+asked it — a rate no single-rate document has, a summary this vendor does not print, a
+row whose amount nobody could read. None of them raises: a supplier's rounding mistake
+describes the document, it is not a defect in this program (ADR-0005).
+
+They are written in the vendor's own units. The tolerance is the profile's, the rates
+are percentages because that is how a page prints them, and what is taxed is the net
+plus whatever the block declared on top of it.
 """
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable
 from decimal import Decimal
 
-from invoice_extractor.domain.findings import Finding, Severity
-from invoice_extractor.domain.models import Charge, FieldResult, LineItem, VatSummaryRow
-from invoice_extractor.domain.money import quantize_cents, within_tolerance
+from invoice_extractor.domain.findings import Severity
+from invoice_extractor.domain.money import quantize_cents
+from invoice_extractor.validation.facts import (
+    PERCENT,
+    ZERO,
+    Facts,
+    Verdict,
+    agree,
+    fails,
+    holds,
+    missing,
+    rates,
+    summed,
+)
 
-INVARIANT_NAMES: tuple[str, ...] = ("totals_reconcile", "line_items_sum", "vat_rate_consistent")
-
-PERCENT = Decimal(100)
-# The one operand that is a table rather than a field, so no `Finding.field` names it.
-LINE_ITEMS = "line_items"
+Invariant = Callable[[Facts], Verdict]
+CREDIT_NOTE = "credit_note"
 
 
-def totals_reconcile(
-    fields: Mapping[str, FieldResult], charges: Sequence[Charge] = ()
-) -> Finding | None:
-    """The subtotal, what was added to it and the VAT should be what the invoice asks for.
+def subtotal_plus_vat_equals_total(facts: Facts) -> Verdict:
+    """The net, what was added to it and the tax should be what the invoice asks for."""
+    names = ("subtotal", "vat_amount", "total_amount")
+    net, tax, total = (facts.amount(name) for name in names)
+    if net is None or tax is None or total is None:
+        return missing(names, _first_missing(facts, names))
+    terms = [str(part) for part in (net, *_charges(facts), tax)]
+    return agree(names, " + ".join(terms), net + facts.added + tax, total, facts.tolerance)
 
-    A charge is part of that sum whether the block declared it or stage 5 worked it out:
-    both are amounts the document carries, and neither is in the net.
+
+def line_items_sum_equals_subtotal(facts: Facts) -> Verdict:
+    """The rows of the table should add up to the net printed under them."""
+    names = ("line_items", "subtotal")
+    net = facts.amount("subtotal")
+    rows = summed([item.net_amount for item in facts.items])
+    if net is None:
+        return missing(names, "subtotal")
+    if rows is None:
+        return missing(names, "line_items")
+    return agree(names, f"{rows} (rows)", rows, net, facts.tolerance)
+
+
+def line_items_sum_equals_total_when_no_vat(facts: Facts) -> Verdict:
+    """Where nothing was taxed, what was sold and what is owed are the same amount."""
+    names = ("line_items", "total_amount")
+    tax, total = facts.amount("vat_amount"), facts.amount("total_amount")
+    rows = summed([item.net_amount for item in facts.items])
+    if tax is None:
+        return missing(names, "vat_amount")
+    if tax != ZERO:
+        return Verdict(None, names, "the document charges tax")
+    if total is None or rows is None:
+        return missing(names, "total_amount" if total is None else "line_items")
+    expression = f"{rows} (rows) + {facts.added}"
+    return agree(names, expression, rows + facts.added, total, facts.tolerance)
+
+
+def vat_equals_subtotal_times_rate(facts: Facts) -> Verdict:
+    """The tax should be the printed rate applied to what was taxed, to the cent.
+
+    Only a document at one rate has one rate to multiply by; a summary with several lines
+    says this one is not that document.
     """
-    subtotal = _amount(fields, "subtotal")
-    vat_amount = _amount(fields, "vat_amount")
-    total = _amount(fields, "total_amount")
-    if subtotal is None:
-        return _skipped("totals_reconcile", "subtotal")
-    if vat_amount is None:
-        return _skipped("totals_reconcile", "vat_amount")
-    if total is None:
-        return _skipped("totals_reconcile", "total_amount")
-    added = _added(charges)
-    expected = subtotal + added + vat_amount
-    if within_tolerance(expected, total):
-        return None
-    expression = " + ".join(str(part) for part in (subtotal, *_parts(added), vat_amount))
-    return _disagrees("totals_reconcile", expression, expected, "total_amount", total)
-
-
-def _added(charges: Sequence[Charge], declared_only: bool = False) -> Decimal:
-    wanted = [charge for charge in charges if charge.declared or not declared_only]
-    return sum((charge.amount for charge in wanted), Decimal(0))
-
-
-def _parts(added: Decimal) -> tuple[Decimal, ...]:
-    """A sum names what it is made of, and a document with no charges has no term for them."""
-    return () if added == 0 else (added,)
-
-
-def line_items_sum(
-    fields: Mapping[str, FieldResult], line_items: Sequence[LineItem]
-) -> Finding | None:
-    """The rows of the table should add up to the subtotal printed under them."""
-    subtotal = _amount(fields, "subtotal")
-    if subtotal is None:
-        return _skipped("line_items_sum", "subtotal")
-    if not line_items:
-        return _skipped("line_items_sum", LINE_ITEMS)
-    amounts = [item.net_amount for item in line_items if item.net_amount is not None]
-    if len(amounts) != len(line_items):
-        # A row whose amount could not be read is a row this sum cannot be made of, and
-        # reporting a shortfall the document does not have would be the wrong finding.
-        return _skipped("line_items_sum", LINE_ITEMS)
-    expected = sum(amounts, Decimal(0))
-    if within_tolerance(expected, subtotal):
-        return None
-    expression = " + ".join(str(amount) for amount in amounts)
-    return _disagrees("line_items_sum", expression, expected, "subtotal", subtotal)
-
-
-def vat_rate_consistent(
-    fields: Mapping[str, FieldResult],
-    charges: Sequence[Charge] = (),
-    summary: Sequence[VatSummaryRow] = (),
-) -> Finding | None:
-    """The VAT charged should be the printed rate applied to what is taxed, to the cent.
-
-    What is taxed is the net plus the charges the block declared: a vendor that bills for
-    delivery charges tax on the delivery. A charge no line declares is a charge nothing
-    says the tax on either, so it is not taxed here.
-
-    A document at several rates has no one rate to multiply by — its summary says so, one
-    line per rate — and this is a check on a single-rate document only.
-    """
-    if len(_rates(summary)) > 1:
-        return _not_applicable("vat_rate_consistent", "the document is at more than one rate")
-    subtotal = _amount(fields, "subtotal")
-    rate = _amount(fields, "vat_rate")
-    vat_amount = _amount(fields, "vat_amount")
-    if subtotal is None:
-        return _skipped("vat_rate_consistent", "subtotal")
-    if rate is None:
-        return _skipped("vat_rate_consistent", "vat_rate")
-    if vat_amount is None:
-        return _skipped("vat_rate_consistent", "vat_amount")
-    taxed = subtotal + _added(charges, declared_only=True)
+    names = ("vat_rate", "vat_amount")
+    if len(rates(facts.summary)) > 1:
+        return Verdict(None, names, "the document is charged at more than one rate")
+    rate, tax = facts.amount("vat_rate"), facts.amount("vat_amount")
+    net = facts.amount("subtotal")
+    if rate is None or tax is None or net is None:
+        return missing(names, _first_missing(facts, ("vat_rate", "vat_amount", "subtotal")))
+    taxed = net + facts.declared
     expected = quantize_cents(taxed * rate / PERCENT)
-    if within_tolerance(expected, vat_amount):
+    return agree(names, f"{rate}% x {taxed}", expected, tax, facts.tolerance)
+
+
+def per_rate_vat_consistency(facts: Facts) -> Verdict:
+    """Every line of the summary should tax its own base at its own rate."""
+    names = ("vat_summary",)
+    lines = [row for row in facts.summary if _complete(row.rate, row.base, row.vat)]
+    if not lines:
+        return Verdict(None, names, "no line of a summary states a rate, a base and a tax")
+    wrong = [row for row in lines if not _taxes_its_base(row.rate, row.base, row.vat, facts)]
+    if not wrong:
+        return holds(names, f"{len(lines)} line(s) tax their base at their rate")
+    first = wrong[0]
+    return fails(names, f"{first.rate}% x {first.base} is not {first.vat}")
+
+
+def summary_base_sums_equal_subtotal(facts: Facts) -> Verdict:
+    """What the summary says was taxed should be the net plus what the block declared."""
+    names = ("vat_summary", "subtotal")
+    net = facts.amount("subtotal")
+    bases = summed([row.base for row in facts.summary])
+    if net is None or bases is None:
+        return missing(names, "subtotal" if net is None else "vat_summary")
+    return agree(names, f"{bases} (bases)", bases, net + facts.declared, facts.tolerance)
+
+
+def summary_vat_sums_equal_vat_total(facts: Facts) -> Verdict:
+    """What the summary charges per rate should come to the tax the block states."""
+    names = ("vat_summary", "vat_amount")
+    tax = facts.amount("vat_amount")
+    taxed = summed([row.vat for row in facts.summary])
+    if tax is None or taxed is None:
+        return missing(names, "vat_amount" if tax is None else "vat_summary")
+    return agree(names, f"{taxed} (summary)", taxed, tax, facts.tolerance)
+
+
+def line_totals_plus_charges_equal_grand_total(facts: Facts) -> Verdict:
+    """The rows, the charges and the tax together should be what is owed."""
+    names = ("line_items", "total_amount")
+    tax, total = facts.amount("vat_amount"), facts.amount("total_amount")
+    rows = summed([item.net_amount for item in facts.items])
+    if rows is None or tax is None or total is None:
+        return missing(names, "line_items" if rows is None else _first_missing(facts, names[1:]))
+    expression = " + ".join(str(part) for part in (rows, *_charges(facts), tax))
+    return agree(names, expression, rows + facts.added + tax, total, facts.tolerance)
+
+
+def line_items_vat_sum_equals_vat_total(facts: Facts) -> Verdict:
+    """Each row taxed at its own rate should come to the tax the document states."""
+    names = ("line_items", "vat_amount")
+    tax = facts.amount("vat_amount")
+    rows = summed([_taxed(item.net_amount, item.vat_rate) for item in facts.items])
+    if tax is None or rows is None:
+        return missing(names, "vat_amount" if tax is None else "line_items")
+    on_charges = _taxed(facts.declared, facts.amount("vat_rate"))
+    charged = quantize_cents(rows + (ZERO if on_charges is None else on_charges))
+    return agree(names, f"{charged} (rows)", charged, tax, facts.tolerance)
+
+
+def document_type_matches_total_sign(facts: Facts) -> Verdict:
+    """A credit note gives money back, and an invoice asks for it. Advisory, not an error."""
+    names = ("total_amount",)
+    total = facts.amount("total_amount")
+    if total is None or total == ZERO:
+        return missing(names, "total_amount")
+    credit = facts.document_type == CREDIT_NOTE
+    if credit == (total < ZERO):
+        return holds(names, f"{facts.document_type} with a total of {total}")
+    detail = f"{facts.document_type} with a total of {total}"
+    return fails(names, detail, Severity.WARNING)
+
+
+INVARIANTS: tuple[Invariant, ...] = (
+    subtotal_plus_vat_equals_total,
+    line_items_sum_equals_subtotal,
+    line_items_sum_equals_total_when_no_vat,
+    vat_equals_subtotal_times_rate,
+    per_rate_vat_consistency,
+    summary_base_sums_equal_subtotal,
+    summary_vat_sums_equal_vat_total,
+    line_totals_plus_charges_equal_grand_total,
+    line_items_vat_sum_equals_vat_total,
+    document_type_matches_total_sign,
+)
+INVARIANT_NAMES: tuple[str, ...] = tuple(rule.__name__ for rule in INVARIANTS)
+
+
+def _charges(facts: Facts) -> tuple[Decimal, ...]:
+    """The charges as terms of a sum; a document with none has no term for them."""
+    return tuple(charge.amount for charge in facts.charges)
+
+
+def _first_missing(facts: Facts, names: tuple[str, ...]) -> str:
+    return next(name for name in names if facts.amount(name) is None)
+
+
+def _complete(*values: Decimal | None) -> bool:
+    return all(value is not None for value in values)
+
+
+def _taxes_its_base(
+    rate: Decimal | None, base: Decimal | None, vat: Decimal | None, facts: Facts
+) -> bool:
+    expected = _taxed(base, rate)
+    return expected is not None and vat is not None and abs(expected - vat) <= facts.tolerance
+
+
+def _taxed(net: Decimal | None, rate: Decimal | None) -> Decimal | None:
+    if net is None or rate is None:
         return None
-    expression = f"{rate}% x {taxed}"
-    return _disagrees("vat_rate_consistent", expression, expected, "vat_amount", vat_amount)
-
-
-def check_all(
-    fields: Mapping[str, FieldResult],
-    line_items: Sequence[LineItem],
-    charges: Sequence[Charge] = (),
-    summary: Sequence[VatSummaryRow] = (),
-) -> tuple[Finding, ...]:
-    """Every invariant, in `INVARIANT_NAMES` order, with the ones that held dropped."""
-    checked = (
-        totals_reconcile(fields, charges),
-        line_items_sum(fields, line_items),
-        vat_rate_consistent(fields, charges, summary),
-    )
-    return tuple(finding for finding in checked if finding is not None)
-
-
-def _rates(summary: Sequence[VatSummaryRow]) -> frozenset[Decimal]:
-    return frozenset(row.rate for row in summary if row.rate is not None)
-
-
-def _amount(fields: Mapping[str, FieldResult], name: str) -> Decimal | None:
-    result = fields.get(name)
-    value = None if result is None else result.value
-    return value if isinstance(value, Decimal) else None
-
-
-def _skipped(name: str, operand: str) -> Finding:
-    field = None if operand == LINE_ITEMS else operand
-    return Finding(Severity.WARNING, name, f"{name} skipped: {operand} not found", field=field)
-
-
-def _not_applicable(name: str, why: str) -> Finding:
-    """A check this document is not the kind of document for. It ran; it does not apply."""
-    return Finding(Severity.INFO, name, f"{name} not applicable: {why}")
-
-
-def _disagrees(
-    name: str, expression: str, expected: Decimal, field: str, found: Decimal
-) -> Finding:
-    message = f"{expression} = {expected} but {field} is {found}"
-    return Finding(Severity.ERROR, name, message, field=field)
+    return quantize_cents(net * rate / PERCENT)

@@ -45,22 +45,22 @@ kind     invoice
 
 FIELD             VALUE            CONF  EVIDENCE
 --------------------------------------------------------------------------------
-invoice_number    FAC-2024-608064  0.90  p1  LABEL_BESIDE  "Facture n°"
-order_number      PO-835601        0.90  p1  LABEL_BESIDE  "Commande n°"
-customer_number   C-59795          0.90  p1  LABEL_BESIDE  "Numéro client"
-invoice_date      2024-06-14       0.90  p1  LABEL_BESIDE  "Date"
-supply_date       2024-06-08       0.90  p1  LABEL_BESIDE  "Date de livraison"
-due_date          2024-06-28       0.90  p1  LABEL_BESIDE  "Échéance"
+invoice_number    FAC-2024-608064  1.00  p1  LABEL_BESIDE  "Facture n°"
+order_number      PO-835601        1.00  p1  LABEL_BESIDE  "Commande n°"
+customer_number   C-59795          1.00  p1  LABEL_BESIDE  "Numéro client"
+invoice_date      2024-06-14       1.00  p1  LABEL_BESIDE  "Date"
+supply_date       2024-06-08       0.95  p1  LABEL_BESIDE  "Date de livraison"
+due_date          2024-06-28       1.00  p1  LABEL_BESIDE  "Échéance"
 supplier_vat_id   FR7P585117668    1.00  p1  ANCHOR  "FR7P585117668"
-customer_vat_id   FR3P030824628    0.85  p1  LABEL_RIGHT  "N° TVA du client"
-currency          EUR              0.75  p1  DERIVED  -
+customer_vat_id   FR3P030824628    1.00  p1  LABEL_RIGHT  "N° TVA du client"
+currency          EUR              1.00  p1  DERIVED  -
 vat_rate          20               1.00  p1  BLOCK_ROW  "Taux de TVA"
 subtotal          11241.25         1.00  p1  BLOCK_ROW  "Total HT"
 vat_amount        2248.25          1.00  p1  BLOCK_ROW  "TVA"
 total_amount      13489.50         1.00  p1  BLOCK_ROW  "Net à payer"
 contract_number   -                0.00  -
 our_reference     -                0.00  -
-your_reference    REF-1064         0.75  p1  LABEL_BESIDE  "Votre réf."
+your_reference    REF-1064         0.99  p1  LABEL_BESIDE  "Votre réf."
 credit_reference  -                0.00  -
 
 Parties
@@ -81,10 +81,24 @@ CODE    RATE      BASE      VAT
 --------------------------------------------------------------------------------
 -         20  11241.25  2248.25
 
-Invariants
-[ok]  totals_reconcile     11241.25 + 2248.25 = 13489.50
-[ok]  line_items_sum       8900.00 + 1841.25 + 25.00 + 475.00 = 11241.25
-[ok]  vat_rate_consistent  20% x 11241.25 = 2248.25
+Checks
+[ok]  subtotal_plus_vat_equals_total              11241.25 + 2248.25 = 13489.50
+[ok]  line_items_sum_equals_subtotal              11241.25 (rows) = 11241.25
+[--]  line_items_sum_equals_total_when_no_vat     the document charges tax
+[ok]  vat_equals_subtotal_times_rate              20% x 11241.25 = 2248.25
+[ok]  per_rate_vat_consistency                    1 line(s) tax their base at their rate
+[ok]  summary_base_sums_equal_subtotal            11241.25 (bases) = 11241.25
+[ok]  summary_vat_sums_equal_vat_total            2248.25 (summary) = 2248.25
+[ok]  line_totals_plus_charges_equal_grand_total  11241.25 + 2248.25 = 13489.50
+[ok]  line_items_vat_sum_equals_vat_total         2248.25 (rows) = 2248.25
+[ok]  document_type_matches_total_sign            invoice with a total of 13489.50
+[--]  invoice_number_in_filename                  the file name claims no document
+[ok]  vat_prefix_matches_country                  FR7P585117668 is a FR registration
+[ok]  dates_in_order                              2024-06-08 <= 2024-06-14 <= 2024-06-28
+[ok]  currency_agrees_across_families             the amounts add up in EUR
+[ok]  customer_vat_differs_from_supplier          FR3P030824628 is not FR7P585117668
+[ok]  bill_to_country_matches_customer_vat        billed in France
+[--]  credit_note_references_invoice              the document is not a credit note
 
 0 error, 0 warning, 0 info findings
 ================================================================================
@@ -247,7 +261,9 @@ measures this release at:
   addresses the documents print.
 - **Totals block:** 100.0% (32 of 32) of the charges the
   documents carry, declared on the page or inferred from the arithmetic.
-- **Confidence:** 0.4-0.6 at 100.0%, 0.6-0.8 at 100.0%, 0.8-1.0 at 99.7%.
+- **Confidence:** 0.8-1.0 at 99.7%.
+- **Calibration:** the confidences are off by 0.5% on average, over the
+  weights and the curve `calibration/` was fitted with.
 - **Not covered:** the generator prints these and the extractor has no spec for
   them, so they are never scored as wrong:
   `payment_terms`.
@@ -260,6 +276,20 @@ profiles and in which families.
 `benchmarks/README.md` is the field-by-field matrix, by profile, by family and by
 knob.
 <!-- benchmark:end -->
+
+The confidence beside a value is fitted rather than assumed. `invoice-extractor
+calibrate --corpus corpus/ --out calibration/` measures, per field, what each of the
+sixteen signals tells apart and what a score of each size has actually been worth, and
+writes [calibration/weights.json](calibration/weights.json),
+[calibration/calibration_maps.json](calibration/calibration_maps.json) and
+[calibration/reliability_report.json](calibration/reliability_report.json) — predicted
+against observed, in ten bands, per field. The run is deterministic and the files are
+committed like code: promoting a fit is a reviewed change, not a side effect.
+
+On this corpus no signal yet separates the nine values the extractor gets wrong from the
+3,483 it gets right, so `weights.json` is empty and every field is scored with the
+uniform mean of the signals it emitted; the curve is what the fit has to say so far, and
+`reliability_report.json` marks each field `fitted: false` to say exactly that.
 
 ## Quality gates
 

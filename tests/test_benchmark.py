@@ -12,6 +12,7 @@ import dataclasses
 import json
 from decimal import Decimal
 
+import pytest
 from benchmarks import matrix as matrices
 from benchmarks import report as reports
 from benchmarks.compare import (
@@ -362,3 +363,24 @@ def test_charges_and_echoes_are_added_up_over_the_corpus() -> None:
     assert built.charges["declared"].hit == 1
     assert built.secondary["currency"].miss == 1
     assert "charges" in built.to_dict()
+
+
+def test_how_far_off_the_confidences_were_is_measured_over_the_whole_run() -> None:
+    """The gate `docs/ENGINE_PLAN.md` E5 sets: expected calibration error on the corpus."""
+    sure = dataclasses.replace(result(currency="EUR"), fields=_at(0.9))
+    built = matrices.build([compare("x", truth(currency="EUR"), sure)])
+    entry = built.to_dict()
+    assert entry["expected_calibration_error"] == pytest.approx(0.1, abs=0.01)
+    band = next(band for band in built.calibration if band.scored)
+    assert band.predicted == pytest.approx(0.9)
+
+
+def test_a_run_that_scored_nothing_is_not_off_by_anything() -> None:
+    assert matrices.build([]).to_dict()["expected_calibration_error"] == 0.0
+    assert matrices.Tally().predicted is None
+
+
+def _at(confidence: float) -> dict[str, FieldResult]:
+    """The same result, with one confidence on every field it read."""
+    read = result(currency="EUR").fields
+    return {name: dataclasses.replace(found, confidence=confidence) for name, found in read.items()}

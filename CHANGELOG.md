@@ -7,6 +7,36 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Added
 
+- **Ten invariants and seven cross-field checks, each recorded whether or not it had
+  anything to say** (`validation/`, ENGINE_SPEC §6–§7). The arithmetic is asked ten
+  questions — the block against itself, the rows against the block, the summary against
+  both, the sign of the total against what kind of document it says it is — and the
+  values are asked seven more: the dates in the order dates run in, the VAT prefix its
+  country writes, one registration not being both parties, a credit note saying what it
+  credits. Each answers yes, no, or *this document cannot be asked that*, and every
+  answer becomes a `Check` on the result: a rule that held and a rule that never applied
+  are different facts, and the findings alone could not tell them apart.
+- **`InvoiceResult.checks`**, and a profile key to go with them: `invariants.exempt[]`
+  excuses a vendor from a rule with a reason — a reverse-charge invoice states no tax and
+  is right not to — and the exemption is reported as an INFO finding rather than being
+  silent.
+- **Sixteen named signals and a fitted confidence** (`scoring/`, ENGINE_SPEC §8). A
+  field's confidence is the weighted mean of the signals it could emit — the label it
+  matched and how near it was to the declared one, the shape of the value, the zone, how
+  many candidates there were and how clearly the winner won, which rules corroborate it,
+  how well the vendor was recognised, how much of the document came back. A signal a
+  field cannot be asked is absent rather than zero, and the weights are renormalised over
+  the ones it did emit. `confidence_breakdown` now carries those signals, so any number
+  the extractor prints can be taken apart by the reader (ADR-0002 for the confidence).
+- **`invoice-extractor calibrate`** and the `calibration/` it writes (ENGINE_SPEC §9):
+  weights fitted where a corpus with known answers got a field wrong, a monotone curve
+  per field saying what a score of each size has been worth, and
+  `reliability_report.json` — predicted against observed, in ten bands, per field. Same
+  corpus, same files, byte for byte. Every band is credited with one hit and one miss
+  before it is believed, so a fit never claims more than the corpus behind it supports.
+- On the 250-document corpus: the confidences are off by **0.5 %** on average (expected
+  calibration error 0.0048, against the ≤ 0.05 the plan asks for), and `make bench` now
+  reports that figure beside the calibration curve.
 - **`BlockSpec`: the totals block, read as the block it is.** The block is the run of
   rows that names the most of a profile's components, in one column, close together — so
   a table heading that says `VAT %` loses to a block that names four — and the longest
@@ -55,6 +85,10 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Changed
 
+- **The confidence is fitted rather than assumed.** The five hand-weighted signals of
+  v0.1 are gone; a field with no fitted weights is scored with the uniform mean and says
+  so in `confidence_source`. The text report prints the seventeen checks in place of the
+  three invariants, each with the arithmetic it came to.
 - **The totals are read from the block, not from labels.** `subtotal`, `vat_amount`,
   `total_amount` and `vat_rate` are published by the `BlockSpec` rather than by four
   `LabelSpec`s, with `Strategy.BLOCK_ROW` on their evidence. The units only those four

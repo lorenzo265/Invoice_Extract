@@ -169,12 +169,12 @@ A knob whose `on` rate sits below its `off` rate is a variation this release los
 
 ## Calibration
 
-| Confidence | Hit | Miss | Hit rate |
-| --- | ---: | ---: | ---: |
-| 0.0-0.2 | 0 | 0 | -- |
-| 0.2-0.4 | 0 | 0 | -- |
-| 0.4-0.6 | 13 | 0 | 100.0% |
-| 0.6-0.8 | 547 | 0 | 100.0% |
-| 0.8-1.0 | 2923 | 9 | 99.7% |
+| Confidence | Said | Hit | Miss | Hit rate |
+| --- | ---: | ---: | ---: | ---: |
+| 0.0-0.2 | -- | 0 | 0 | -- |
+| 0.2-0.4 | -- | 0 | 0 | -- |
+| 0.4-0.6 | -- | 0 | 0 | -- |
+| 0.6-0.8 | -- | 0 | 0 | -- |
+| 0.8-1.0 | 99.3% | 3483 | 9 | 99.7% |
 
-The confidence the extractor prints beside a value, against how often a value in that band turned out to be right.
+The confidence the extractor prints beside a value, against how often a value in that band turned out to be right. `Said` is what it claimed on average, and the expected calibration error — the two, weighted by how many values each band speaks for — is 0.5%. The weights and the curve behind those numbers are in `calibration/`, fitted by `invoice-extractor calibrate` on this corpus.

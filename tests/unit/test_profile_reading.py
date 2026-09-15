@@ -12,7 +12,7 @@ import pytest
 
 from invoice_extractor.document.model import Zone
 from invoice_extractor.profile.loader import load_profile, parse
-from invoice_extractor.profile.schema import Placement, ProfileError, TableEdge
+from invoice_extractor.profile.schema import Exemption, Placement, ProfileError, TableEdge
 
 LEXICON: Mapping[str, Any] = {
     "header_labels": {"invoice_number": ["Rechnungsnummer", "Beleg-Nr."]},
@@ -327,3 +327,37 @@ def test_a_table_may_say_where_it_ends_on_a_page(tmp_path: Path) -> None:
     data["line_items"]["page_bounds"] = {"start": "header", "end": "stop_label"}
     bounds = load_profile("xx-XX", written(tmp_path, data)).line_items.page_bounds
     assert bounds.end is TableEdge.STOP_LABEL
+
+
+def test_a_vendor_may_be_excused_an_invariant_with_a_reason(tmp_path: Path) -> None:
+    """A reverse-charge invoice states no tax and is right not to (ENGINE_SPEC §6)."""
+    data = base()
+    data["invariants"] = {
+        "exempt": [{"code": "vat_equals_subtotal_times_rate", "reason": "reverse charge"}]
+    }
+    profile = load_profile("xx-XX", written(tmp_path, data))
+    assert profile.invariants.exempt == (
+        Exemption(code="vat_equals_subtotal_times_rate", reason="reverse charge"),
+    )
+
+
+def test_a_vendor_that_excuses_nothing_is_excused_nothing(tmp_path: Path) -> None:
+    assert load_profile("xx-XX", written(tmp_path, base())).invariants.exempt == ()
+
+
+def test_an_exemption_that_gives_no_reason_is_refused() -> None:
+    data = base()
+    data["invariants"] = {"exempt": [{"code": "dates_in_order"}]}
+    assert "invariants.exempt[0].reason is required" in error(data)
+
+
+def test_an_exemption_key_nobody_reads_is_refused() -> None:
+    data = base()
+    data["invariants"] = {"exempt": [{"code": "x", "reason": "y", "severity": "info"}]}
+    assert "invariants.exempt[0].severity" in error(data)
+
+
+def test_an_invariants_key_nobody_reads_is_refused() -> None:
+    data = base()
+    data["invariants"] = {"exempt": [], "relax": True}
+    assert "invariants.relax" in error(data)
