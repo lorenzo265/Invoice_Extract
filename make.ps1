@@ -5,9 +5,18 @@
     The Makefile's targets, for shells where make is not on the path.
 
 .DESCRIPTION
-    Each target runs exactly the command the Makefile runs, so a contributor on Windows
-    proves the same things CI does. The Makefile is the original and this file is the
-    copy: where the two disagree, this one is wrong.
+    Each target runs the same tools on the same arguments the Makefile does, so a
+    contributor on Windows proves the same things CI does. The Makefile is the original
+    and this file is the copy: where the two disagree about what is checked, this one is
+    wrong.
+
+    Every tool is invoked as `python -m name` rather than through the executable pip
+    generates in Scripts\. Those shims are unsigned binaries written at install time, and
+    a managed Windows machine running Application Control refuses to start them: the same
+    policy that makes invoice-extractor.exe fail is the one that lets
+    "python -m invoice_extractor" run. It is also the more precise form, because it uses
+    the module in the active environment rather than whatever the PATH resolves a bare
+    name to.
 
     Kept to ASCII on purpose. Windows PowerShell 5.1 reads a script without a byte order
     mark in the system codepage, so a non-ASCII character here would arrive mangled on
@@ -71,12 +80,14 @@ function Invoke-Target {
     switch ($Name) {
         'install' {
             Invoke-Step 'install (both distributions, editable)' {
-                pip install -e '.[dev]' -e tools/forge
+                python -m pip install -e '.[dev]' -e ./tools/forge
             }
-            Invoke-Step 'install (pre-commit hooks)' { pre-commit install }
+            Invoke-Step 'install (pre-commit hooks)' { python -m pre_commit install }
         }
         'corpus' {
-            Invoke-Step 'corpus' { forge generate --plan corpus/plan.json --out corpus/ }
+            Invoke-Step 'corpus' {
+                python -m invoice_forge generate --plan corpus/plan.json --out corpus/
+            }
         }
         'demo' {
             Invoke-Step 'demo' { python -m invoice_extractor extract $DemoDocument --report }
@@ -85,14 +96,14 @@ function Invoke-Target {
             Invoke-Step 'bench' { python -m benchmarks.run }
         }
         'lint' {
-            Invoke-Step 'lint (ruff check)' { ruff check . }
-            Invoke-Step 'lint (ruff format)' { ruff format --check . }
+            Invoke-Step 'lint (ruff check)' { python -m ruff check . }
+            Invoke-Step 'lint (ruff format)' { python -m ruff format --check . }
         }
         'typecheck' {
-            Invoke-Step 'typecheck' { mypy }
+            Invoke-Step 'typecheck' { python -m mypy }
         }
         'test' {
-            Invoke-Step 'test' { pytest }
+            Invoke-Step 'test' { python -m pytest }
         }
         'check' {
             Invoke-Target 'lint'

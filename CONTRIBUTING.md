@@ -62,14 +62,24 @@ make demo                     # extract one invoice and print the report
 invoice-extractor inspect <pdf>   # what the engine SEES: every line, its zone, its box
 ```
 
-On Windows, where `make` is usually absent, `make.ps1` runs the same commands under the
-same names. It checks the interpreter first, so too old a Python fails with a sentence
+On Windows, where `make` is usually absent, `make.ps1` runs the same tools under the same
+target names. It checks the interpreter first, so too old a Python fails with a sentence
 instead of a traceback:
 
 ```powershell
 .\make.ps1 install
 .\make.ps1 demo
 .\make.ps1 check
+```
+
+Every command in it is `python -m <name>`, never the executable `pip` writes into
+`Scripts\`. Those shims are unsigned binaries generated at install time, and a managed
+machine running Application Control refuses to start them — `invoice-extractor.exe` fails
+where `python -m invoice_extractor` runs. Anywhere this document names the CLI, the module
+form works too:
+
+```powershell
+python -m invoice_extractor inspect <pdf>
 ```
 
 `inspect` is the one to reach for when a document is not read correctly. It prints the
