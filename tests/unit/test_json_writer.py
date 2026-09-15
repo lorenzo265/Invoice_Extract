@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from decimal import Decimal
 from pathlib import Path
 
 from invoice_extractor.document.model import BBox
+from invoice_extractor.domain.checks import Check
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
     Evidence,
@@ -15,7 +17,13 @@ from invoice_extractor.domain.models import (
     LineItem,
     Strategy,
 )
-from invoice_extractor.output.json_writer import to_json, write_json
+from invoice_extractor.output.json_writer import (
+    emit,
+    findings_path,
+    to_findings_json,
+    to_json,
+    write_json,
+)
 
 
 def result() -> InvoiceResult:
@@ -75,3 +83,32 @@ def test_write_json_writes_exactly_what_to_json_returns(tmp_path: Path) -> None:
     path = tmp_path / "out.json"
     write_json(result(), path)
     assert path.read_text(encoding="utf-8") == to_json(result())
+
+
+def checked() -> InvoiceResult:
+    """The same result, with something to say about itself and a record of what was asked."""
+    return dataclasses.replace(
+        result(),
+        findings=(Finding(Severity.WARNING, "dates_in_order", "due before invoice", "due_date"),),
+        checks=(Check("dates_in_order", False, ("due_date",), "due before invoice"),),
+    )
+
+
+def test_the_findings_mirror_carries_what_was_found_and_what_was_asked() -> None:
+    mirror = json.loads(to_findings_json(checked()))
+    assert mirror["findings"] == [finding.to_dict() for finding in checked().findings]
+    assert mirror["checks"] == [check.to_dict() for check in checked().checks]
+    assert mirror["valid"] is True, "a warning is not what makes a document invalid"
+    assert mirror["source_path"] == checked().source_path
+    assert mirror["profile_id"] == checked().profile_id
+
+
+def test_the_mirror_is_named_after_the_result_it_mirrors(tmp_path: Path) -> None:
+    assert findings_path(tmp_path / "acme.json").name == "acme.findings.json"
+
+
+def test_emit_writes_the_result_and_its_findings_together(tmp_path: Path) -> None:
+    written, mirror = emit(checked(), tmp_path / "acme.json")
+    assert written.read_text(encoding="utf-8") == to_json(checked())
+    assert mirror.read_text(encoding="utf-8") == to_findings_json(checked())
+    assert {path.name for path in tmp_path.iterdir()} == {"acme.json", "acme.findings.json"}

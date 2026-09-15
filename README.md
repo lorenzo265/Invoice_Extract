@@ -43,25 +43,26 @@ source   tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf
 profile  fr-FR
 kind     invoice
 
-FIELD             VALUE            CONF  EVIDENCE
+FIELD             VALUE                              CONF  EVIDENCE
 --------------------------------------------------------------------------------
-invoice_number    FAC-2024-608064  1.00  p1  LABEL_BESIDE  "Facture n°"
-order_number      PO-835601        1.00  p1  LABEL_BESIDE  "Commande n°"
-customer_number   C-59795          1.00  p1  LABEL_BESIDE  "Numéro client"
-invoice_date      2024-06-14       1.00  p1  LABEL_BESIDE  "Date"
-supply_date       2024-06-08       0.95  p1  LABEL_BESIDE  "Date de livraison"
-due_date          2024-06-28       1.00  p1  LABEL_BESIDE  "Échéance"
-supplier_vat_id   FR7P585117668    1.00  p1  ANCHOR  "FR7P585117668"
-customer_vat_id   FR3P030824628    1.00  p1  LABEL_RIGHT  "N° TVA du client"
-currency          EUR              1.00  p1  DERIVED  -
-vat_rate          20               1.00  p1  BLOCK_ROW  "Taux de TVA"
-subtotal          11241.25         1.00  p1  BLOCK_ROW  "Total HT"
-vat_amount        2248.25          1.00  p1  BLOCK_ROW  "TVA"
-total_amount      13489.50         1.00  p1  BLOCK_ROW  "Net à payer"
-contract_number   -                0.00  -
-our_reference     -                0.00  -
-your_reference    REF-1064         0.99  p1  LABEL_BESIDE  "Votre réf."
-credit_reference  -                0.00  -
+invoice_number    FAC-2024-608064                    1.00  p1  LABEL_BESIDE  "Facture n°"
+order_number      PO-835601                          1.00  p1  LABEL_BESIDE  "Commande n°"
+customer_number   C-59795                            1.00  p1  LABEL_BESIDE  "Numéro client"
+invoice_date      2024-06-14                         1.00  p1  LABEL_BESIDE  "Date"
+supply_date       2024-06-08                         0.95  p1  LABEL_BESIDE  "Date de livraison"
+due_date          2024-06-28                         1.00  p1  LABEL_BESIDE  "Échéance"
+supplier_vat_id   FR7P585117668                      1.00  p1  ANCHOR  "FR7P585117668"
+customer_vat_id   FR3P030824628                      1.00  p1  LABEL_RIGHT  "N° TVA du client"
+currency          EUR                                1.00  p1  DERIVED  -
+vat_rate          20                                 1.00  p1  BLOCK_ROW  "Taux de TVA"
+subtotal          11241.25                           1.00  p1  BLOCK_ROW  "Total HT"
+vat_amount        2248.25                            1.00  p1  BLOCK_ROW  "TVA"
+total_amount      13489.50                           1.00  p1  BLOCK_ROW  "Net à payer"
+contract_number   -                                  0.00  -
+our_reference     -                                  0.00  -
+your_reference    REF-1064                           0.99  p1  LABEL_BESIDE  "Votre réf."
+credit_reference  -                                  0.00  -
+payment_terms     Règlement à 45 jours fin de mois.  0.99  p1  LABEL_RIGHT  "Modalités de règlement"
 
 Parties
 supplier   Valmont Systèmes SAS · 124 rue Lavoisier · 85337 Nantes · France · FR7P585117668
@@ -253,7 +254,7 @@ measures this release at:
 
 - **Profile detection:** 100.0% (250 of 250); a document no profile matches is
   reported and not read (ADR-0008).
-- **Scalar fields:** 99.7% (3483 of 3492) of the values the documents carry.
+- **Scalar fields:** 99.8% (3672 of 3681) of the values the documents carry.
 - **Line-item cells:** 100.0% (29077 of 29077), over
   250 of 250 documents whose row count was read
   exactly.
@@ -261,12 +262,12 @@ measures this release at:
   addresses the documents print.
 - **Totals block:** 100.0% (32 of 32) of the charges the
   documents carry, declared on the page or inferred from the arithmetic.
-- **Confidence:** 0.8-1.0 at 99.7%.
+- **Confidence:** 0.8-1.0 at 99.8%.
 - **Calibration:** the confidences are off by 0.5% on average, over the
   weights and the curve `calibration/` was fitted with.
 - **Not covered:** the generator prints these and the extractor has no spec for
   them, so they are never scored as wrong:
-  `payment_terms`.
+  nothing.
 
 0 of those 9 misses found no candidate at all, rather than reading
 the wrong one (9). A field that found nothing was printed a way none
@@ -317,16 +318,19 @@ skip the 90% floor it cannot meet on its own.
 
 ## Status
 
-v0.2.0 is complete. v0.1.0 was the extractor: ten scalar fields, the line-item table,
-three arithmetic invariants, explainable confidence, a JSON writer, a text report and a
-CLI. v0.2.0 adds `invoice_forge` — a generator of synthetic invoices with exact ground
-truth, twenty-two vendor profiles in sixteen languages, five template families,
-thirty-one difficulty knobs and a 250-document base corpus — and the benchmark that
-measures the extractor against it. All of it is green under `make check` on Python 3.11
-and 3.12. v0.3.0 is in flight: [docs/ENGINE_PLAN.md](docs/ENGINE_PLAN.md) takes the
-extractor to the full design in [docs/ENGINE_SPEC.md](docs/ENGINE_SPEC.md) — one engine
-with six spec kinds, vendor profiles shared with the generator, reconciliation, and
-confidence calibrated on a corpus that contains negatives. This repository started from a
+v0.3.0 is the full-capability extractor. v0.1.0 was ten scalar fields, a line-item table,
+three invariants and a text report. v0.2.0 added `invoice_forge` — a generator of
+synthetic invoices with exact ground truth, twenty-two vendor profiles in sixteen
+languages, five template families, thirty-one difficulty knobs and a 250-document base
+corpus — and the benchmark that measures the extractor against it. v0.3.0 rebuilt the
+extractor on that: a vendor is a **profile** rather than a layout, one engine runs six
+kinds of spec over it, the result carries the rows, the party blocks, the totals block,
+the charges and the second currency, every rule the document was put through comes back
+as a `Check`, and the confidence beside every value is fitted on the corpus rather than
+assumed. [docs/ENGINE_SPEC.md](docs/ENGINE_SPEC.md) is the design and
+[docs/ENGINE_PLAN.md](docs/ENGINE_PLAN.md) the plan it was built to, one gated pull
+request at a time. All of it is green under `make check` on Python 3.11 and 3.12. This
+repository started from a
 fully specified seed — architecture, ADRs, the configuration format, fixtures, CI —
 implemented afterward one gated pull request at a time;
 [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) is the plan v0.1.0 was built

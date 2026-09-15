@@ -373,6 +373,18 @@
         "r1c2"
       ],
       "required": false
+    },
+    {
+      "name": "payment_terms",
+      "labels": [
+        "@header_labels.payment_terms"
+      ],
+      "zones": [
+        "r2c1",
+        "r3c1",
+        "r1c1"
+      ],
+      "required": false
     }
   ],
   "variants": [],

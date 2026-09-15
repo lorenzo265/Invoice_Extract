@@ -1,7 +1,7 @@
 {
   "schema": "forge-truth/1",
   "generator": {
-    "version": "0.2.0",
+    "version": "0.3.0",
     "seed": 7,
     "profile": "de-DE",
     "template": "tabular",

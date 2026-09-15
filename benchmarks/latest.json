@@ -2,8 +2,8 @@
   "schema": "forge-bench/1",
   "run": {
     "corpus": "corpus",
-    "extractor_version": "0.2.0",
-    "generator_version": "0.2.0"
+    "extractor_version": "0.3.0",
+    "generator_version": "0.3.0"
   },
   "matrix": {
     "documents": 250,
@@ -100,13 +100,13 @@
         "hit_rate": 1.0
       },
       "payment_terms": {
-        "hit": 0,
+        "hit": 189,
         "miss": 0,
-        "absent": 0,
-        "not_covered": 250,
-        "evidence_agreed": 0,
+        "absent": 61,
+        "not_covered": 0,
+        "evidence_agreed": 189,
         "found_nothing": 0,
-        "hit_rate": null
+        "hit_rate": 1.0
       },
       "subtotal": {
         "hit": 250,
@@ -265,13 +265,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 6,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 10,
-          "evidence_agreed": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 6,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 10,
@@ -429,13 +429,13 @@
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 8,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 9,
-          "evidence_agreed": 0,
+          "absent": 1,
+          "not_covered": 0,
+          "evidence_agreed": 8,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 9,
@@ -593,13 +593,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 11,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 14,
-          "evidence_agreed": 0,
+          "absent": 3,
+          "not_covered": 0,
+          "evidence_agreed": 11,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 14,
@@ -757,13 +757,13 @@
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 6,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 11,
-          "evidence_agreed": 0,
+          "absent": 5,
+          "not_covered": 0,
+          "evidence_agreed": 6,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 11,
@@ -921,13 +921,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 14,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 15,
-          "evidence_agreed": 0,
+          "absent": 1,
+          "not_covered": 0,
+          "evidence_agreed": 14,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 15,
@@ -1085,13 +1085,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 6,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 10,
-          "evidence_agreed": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 6,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 10,
@@ -1249,13 +1249,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 14,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 16,
-          "evidence_agreed": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 14,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 16,
@@ -1413,13 +1413,13 @@
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 13,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 18,
-          "evidence_agreed": 0,
+          "absent": 5,
+          "not_covered": 0,
+          "evidence_agreed": 13,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 18,
@@ -1577,13 +1577,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 13,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 14,
-          "evidence_agreed": 0,
+          "absent": 1,
+          "not_covered": 0,
+          "evidence_agreed": 13,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 14,
@@ -1741,13 +1741,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 6,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 10,
-          "evidence_agreed": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 6,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 10,
@@ -1905,13 +1905,13 @@
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 9,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 13,
-          "evidence_agreed": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 9,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 13,
@@ -2069,13 +2069,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 9,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 13,
-          "evidence_agreed": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 9,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 13,
@@ -2233,13 +2233,13 @@
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 3,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 7,
-          "evidence_agreed": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 3,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 7,
@@ -2397,13 +2397,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 13,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 14,
-          "evidence_agreed": 0,
+          "absent": 1,
+          "not_covered": 0,
+          "evidence_agreed": 13,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 14,
@@ -2561,13 +2561,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 7,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 11,
-          "evidence_agreed": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 7,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 11,
@@ -2725,13 +2725,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 13,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 15,
-          "evidence_agreed": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 13,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 15,
@@ -2889,13 +2889,13 @@
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 11,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 12,
-          "evidence_agreed": 0,
+          "absent": 1,
+          "not_covered": 0,
+          "evidence_agreed": 11,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 12,
@@ -3053,13 +3053,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 9,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 11,
-          "evidence_agreed": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 9,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 11,
@@ -3217,13 +3217,13 @@
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 5,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 8,
-          "evidence_agreed": 0,
+          "absent": 3,
+          "not_covered": 0,
+          "evidence_agreed": 5,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 8,
@@ -3381,13 +3381,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 2,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 5,
-          "evidence_agreed": 0,
+          "absent": 3,
+          "not_covered": 0,
+          "evidence_agreed": 2,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 5,
@@ -3545,13 +3545,13 @@
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 6,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 7,
-          "evidence_agreed": 0,
+          "absent": 1,
+          "not_covered": 0,
+          "evidence_agreed": 6,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 7,
@@ -3709,13 +3709,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 5,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 7,
-          "evidence_agreed": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 5,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 7,
@@ -3875,13 +3875,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
-          "not_covered": 68,
-          "evidence_agreed": 0,
+          "not_covered": 0,
+          "evidence_agreed": 68,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 68,
@@ -4039,13 +4039,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 6,
           "miss": 0,
-          "absent": 0,
-          "not_covered": 67,
-          "evidence_agreed": 0,
+          "absent": 61,
+          "not_covered": 0,
+          "evidence_agreed": 6,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 67,
@@ -4203,13 +4203,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 23,
           "miss": 0,
           "absent": 0,
-          "not_covered": 23,
-          "evidence_agreed": 0,
+          "not_covered": 0,
+          "evidence_agreed": 23,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 23,
@@ -4367,13 +4367,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 31,
           "miss": 0,
           "absent": 0,
-          "not_covered": 31,
-          "evidence_agreed": 0,
+          "not_covered": 0,
+          "evidence_agreed": 31,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 31,
@@ -4531,13 +4531,13 @@
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 0,
+          "hit": 61,
           "miss": 0,
           "absent": 0,
-          "not_covered": 61,
-          "evidence_agreed": 0,
+          "not_covered": 0,
+          "evidence_agreed": 61,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "subtotal": {
           "hit": 61,
@@ -4607,622 +4607,622 @@
     "by_knob": {
       "thousands_variant": {
         "on": {
-          "hit": 177,
+          "hit": 189,
           "miss": 0,
-          "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 45,
+          "not_covered": 0,
+          "evidence_agreed": 188,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3483,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 774,
+          "not_covered": 0,
+          "evidence_agreed": 3473,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974226804123711
         }
       },
       "dual_currency_echo": {
         "on": {
-          "hit": 177,
+          "hit": 189,
           "miss": 0,
-          "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 45,
+          "not_covered": 0,
+          "evidence_agreed": 188,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3483,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 774,
+          "not_covered": 0,
+          "evidence_agreed": 3473,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974226804123711
         }
       },
       "credit_note": {
         "on": {
-          "hit": 587,
+          "hit": 616,
           "miss": 0,
-          "absent": 93,
-          "not_covered": 40,
-          "evidence_agreed": 587,
+          "absent": 104,
+          "not_covered": 0,
+          "evidence_agreed": 616,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 2896,
+          "hit": 3056,
           "miss": 9,
-          "absent": 665,
-          "not_covered": 210,
-          "evidence_agreed": 2885,
+          "absent": 715,
+          "not_covered": 0,
+          "evidence_agreed": 3045,
           "found_nothing": 0,
-          "hit_rate": 0.9969018932874355
+          "hit_rate": 0.9970636215334421
         }
       },
       "multi_page": {
         "on": {
-          "hit": 658,
+          "hit": 692,
           "miss": 0,
-          "absent": 158,
-          "not_covered": 48,
-          "evidence_agreed": 657,
+          "absent": 172,
+          "not_covered": 0,
+          "evidence_agreed": 691,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 2825,
+          "hit": 2980,
           "miss": 9,
-          "absent": 600,
-          "not_covered": 202,
-          "evidence_agreed": 2815,
+          "absent": 647,
+          "not_covered": 0,
+          "evidence_agreed": 2970,
           "found_nothing": 0,
-          "hit_rate": 0.9968242766407904
+          "hit_rate": 0.9969889595182335
         }
       },
       "carry_forward": {
         "on": {
-          "hit": 190,
+          "hit": 199,
           "miss": 0,
-          "absent": 48,
-          "not_covered": 14,
-          "evidence_agreed": 190,
+          "absent": 53,
+          "not_covered": 0,
+          "evidence_agreed": 199,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3293,
+          "hit": 3473,
           "miss": 9,
-          "absent": 710,
-          "not_covered": 236,
-          "evidence_agreed": 3282,
+          "absent": 766,
+          "not_covered": 0,
+          "evidence_agreed": 3462,
           "found_nothing": 0,
-          "hit_rate": 0.997274379164143
+          "hit_rate": 0.9974152785755313
         }
       },
       "page_numbering": {
         "on": {
-          "hit": 190,
+          "hit": 199,
           "miss": 0,
-          "absent": 48,
-          "not_covered": 14,
-          "evidence_agreed": 190,
+          "absent": 53,
+          "not_covered": 0,
+          "evidence_agreed": 199,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3293,
+          "hit": 3473,
           "miss": 9,
-          "absent": 710,
-          "not_covered": 236,
-          "evidence_agreed": 3282,
+          "absent": 766,
+          "not_covered": 0,
+          "evidence_agreed": 3462,
           "found_nothing": 0,
-          "hit_rate": 0.997274379164143
+          "hit_rate": 0.9974152785755313
         }
       },
       "stamp_copy": {
         "on": {
-          "hit": 190,
+          "hit": 199,
           "miss": 0,
-          "absent": 48,
-          "not_covered": 14,
-          "evidence_agreed": 190,
+          "absent": 53,
+          "not_covered": 0,
+          "evidence_agreed": 199,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3293,
+          "hit": 3473,
           "miss": 9,
-          "absent": 710,
-          "not_covered": 236,
-          "evidence_agreed": 3282,
+          "absent": 766,
+          "not_covered": 0,
+          "evidence_agreed": 3462,
           "found_nothing": 0,
-          "hit_rate": 0.997274379164143
+          "hit_rate": 0.9974152785755313
         }
       },
       "supply_date": {
         "on": {
-          "hit": 211,
+          "hit": 223,
           "miss": 9,
-          "absent": 18,
-          "not_covered": 14,
-          "evidence_agreed": 210,
+          "absent": 20,
+          "not_covered": 0,
+          "evidence_agreed": 222,
           "found_nothing": 0,
-          "hit_rate": 0.9590909090909091
+          "hit_rate": 0.9612068965517241
         },
         "off": {
-          "hit": 3272,
+          "hit": 3449,
           "miss": 0,
-          "absent": 740,
-          "not_covered": 236,
-          "evidence_agreed": 3262,
+          "absent": 799,
+          "not_covered": 0,
+          "evidence_agreed": 3439,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "extra_references": {
         "on": {
-          "hit": 211,
+          "hit": 223,
           "miss": 9,
-          "absent": 18,
-          "not_covered": 14,
-          "evidence_agreed": 210,
+          "absent": 20,
+          "not_covered": 0,
+          "evidence_agreed": 222,
           "found_nothing": 0,
-          "hit_rate": 0.9590909090909091
+          "hit_rate": 0.9612068965517241
         },
         "off": {
-          "hit": 3272,
+          "hit": 3449,
           "miss": 0,
-          "absent": 740,
-          "not_covered": 236,
-          "evidence_agreed": 3262,
+          "absent": 799,
+          "not_covered": 0,
+          "evidence_agreed": 3439,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "trap_labels": {
         "on": {
-          "hit": 211,
+          "hit": 223,
           "miss": 9,
-          "absent": 18,
-          "not_covered": 14,
-          "evidence_agreed": 210,
+          "absent": 20,
+          "not_covered": 0,
+          "evidence_agreed": 222,
           "found_nothing": 0,
-          "hit_rate": 0.9590909090909091
+          "hit_rate": 0.9612068965517241
         },
         "off": {
-          "hit": 3272,
+          "hit": 3449,
           "miss": 0,
-          "absent": 740,
-          "not_covered": 236,
-          "evidence_agreed": 3262,
+          "absent": 799,
+          "not_covered": 0,
+          "evidence_agreed": 3439,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "party_blocks": {
         "on": {
-          "hit": 211,
+          "hit": 223,
           "miss": 9,
-          "absent": 18,
-          "not_covered": 14,
-          "evidence_agreed": 210,
+          "absent": 20,
+          "not_covered": 0,
+          "evidence_agreed": 222,
           "found_nothing": 0,
-          "hit_rate": 0.9590909090909091
+          "hit_rate": 0.9612068965517241
         },
         "off": {
-          "hit": 3272,
+          "hit": 3449,
           "miss": 0,
-          "absent": 740,
-          "not_covered": 236,
-          "evidence_agreed": 3262,
+          "absent": 799,
+          "not_covered": 0,
+          "evidence_agreed": 3439,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "placeholder_addresses": {
         "on": {
-          "hit": 211,
+          "hit": 223,
           "miss": 9,
-          "absent": 18,
-          "not_covered": 14,
-          "evidence_agreed": 210,
+          "absent": 20,
+          "not_covered": 0,
+          "evidence_agreed": 222,
           "found_nothing": 0,
-          "hit_rate": 0.9590909090909091
+          "hit_rate": 0.9612068965517241
         },
         "off": {
-          "hit": 3272,
+          "hit": 3449,
           "miss": 0,
-          "absent": 740,
-          "not_covered": 236,
-          "evidence_agreed": 3262,
+          "absent": 799,
+          "not_covered": 0,
+          "evidence_agreed": 3439,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "customer_vat_position": {
         "on": {
-          "hit": 211,
+          "hit": 223,
           "miss": 9,
-          "absent": 18,
-          "not_covered": 14,
-          "evidence_agreed": 210,
+          "absent": 20,
+          "not_covered": 0,
+          "evidence_agreed": 222,
           "found_nothing": 0,
-          "hit_rate": 0.9590909090909091
+          "hit_rate": 0.9612068965517241
         },
         "off": {
-          "hit": 3272,
+          "hit": 3449,
           "miss": 0,
-          "absent": 740,
-          "not_covered": 236,
-          "evidence_agreed": 3262,
+          "absent": 799,
+          "not_covered": 0,
+          "evidence_agreed": 3439,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "column_set": {
         "on": {
-          "hit": 193,
+          "hit": 201,
           "miss": 0,
-          "absent": 45,
-          "not_covered": 14,
-          "evidence_agreed": 193,
+          "absent": 51,
+          "not_covered": 0,
+          "evidence_agreed": 201,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3290,
+          "hit": 3471,
           "miss": 9,
-          "absent": 713,
-          "not_covered": 236,
-          "evidence_agreed": 3279,
+          "absent": 768,
+          "not_covered": 0,
+          "evidence_agreed": 3460,
           "found_nothing": 0,
-          "hit_rate": 0.9972719005759321
+          "hit_rate": 0.9974137931034482
         }
       },
       "wrapped_description": {
         "on": {
-          "hit": 661,
+          "hit": 694,
           "miss": 0,
-          "absent": 155,
-          "not_covered": 48,
-          "evidence_agreed": 660,
+          "absent": 170,
+          "not_covered": 0,
+          "evidence_agreed": 693,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 2822,
+          "hit": 2978,
           "miss": 9,
-          "absent": 603,
-          "not_covered": 202,
-          "evidence_agreed": 2812,
+          "absent": 649,
+          "not_covered": 0,
+          "evidence_agreed": 2968,
           "found_nothing": 0,
-          "hit_rate": 0.9968209113387495
+          "hit_rate": 0.9969869434214932
         }
       },
       "sub_items": {
         "on": {
-          "hit": 661,
+          "hit": 694,
           "miss": 0,
-          "absent": 155,
-          "not_covered": 48,
-          "evidence_agreed": 660,
+          "absent": 170,
+          "not_covered": 0,
+          "evidence_agreed": 693,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 2822,
+          "hit": 2978,
           "miss": 9,
-          "absent": 603,
-          "not_covered": 202,
-          "evidence_agreed": 2812,
+          "absent": 649,
+          "not_covered": 0,
+          "evidence_agreed": 2968,
           "found_nothing": 0,
-          "hit_rate": 0.9968209113387495
+          "hit_rate": 0.9969869434214932
         }
       },
       "section_subtotals": {
         "on": {
-          "hit": 193,
+          "hit": 201,
           "miss": 0,
-          "absent": 45,
-          "not_covered": 14,
-          "evidence_agreed": 193,
+          "absent": 51,
+          "not_covered": 0,
+          "evidence_agreed": 201,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3290,
+          "hit": 3471,
           "miss": 9,
-          "absent": 713,
-          "not_covered": 236,
-          "evidence_agreed": 3279,
+          "absent": 768,
+          "not_covered": 0,
+          "evidence_agreed": 3460,
           "found_nothing": 0,
-          "hit_rate": 0.9972719005759321
+          "hit_rate": 0.9974137931034482
         }
       },
       "discount": {
         "on": {
-          "hit": 193,
+          "hit": 201,
           "miss": 0,
-          "absent": 45,
-          "not_covered": 14,
-          "evidence_agreed": 193,
+          "absent": 51,
+          "not_covered": 0,
+          "evidence_agreed": 201,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3290,
+          "hit": 3471,
           "miss": 9,
-          "absent": 713,
-          "not_covered": 236,
-          "evidence_agreed": 3279,
+          "absent": 768,
+          "not_covered": 0,
+          "evidence_agreed": 3460,
           "found_nothing": 0,
-          "hit_rate": 0.9972719005759321
+          "hit_rate": 0.9974137931034482
         }
       },
       "charges": {
         "on": {
-          "hit": 177,
+          "hit": 189,
           "miss": 0,
-          "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 45,
+          "not_covered": 0,
+          "evidence_agreed": 188,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3483,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 774,
+          "not_covered": 0,
+          "evidence_agreed": 3473,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974226804123711
         }
       },
       "declared_charge": {
         "on": {
-          "hit": 177,
+          "hit": 189,
           "miss": 0,
-          "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 45,
+          "not_covered": 0,
+          "evidence_agreed": 188,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3483,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 774,
+          "not_covered": 0,
+          "evidence_agreed": 3473,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974226804123711
         }
       },
       "undeclared_charge": {
         "on": {
-          "hit": 177,
+          "hit": 189,
           "miss": 0,
-          "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 45,
+          "not_covered": 0,
+          "evidence_agreed": 188,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3483,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 774,
+          "not_covered": 0,
+          "evidence_agreed": 3473,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974226804123711
         }
       },
       "multi_rate": {
         "on": {
-          "hit": 179,
+          "hit": 190,
           "miss": 0,
-          "absent": 42,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 44,
+          "not_covered": 0,
+          "evidence_agreed": 187,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3304,
+          "hit": 3482,
           "miss": 9,
-          "absent": 716,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 775,
+          "not_covered": 0,
+          "evidence_agreed": 3474,
           "found_nothing": 0,
-          "hit_rate": 0.99728342891639
+          "hit_rate": 0.9974219421369235
         }
       },
       "vat_summary_table": {
         "on": {
-          "hit": 179,
+          "hit": 190,
           "miss": 0,
-          "absent": 42,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 44,
+          "not_covered": 0,
+          "evidence_agreed": 187,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3304,
+          "hit": 3482,
           "miss": 9,
-          "absent": 716,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 775,
+          "not_covered": 0,
+          "evidence_agreed": 3474,
           "found_nothing": 0,
-          "hit_rate": 0.99728342891639
+          "hit_rate": 0.9974219421369235
         }
       },
       "exemption_verbiage": {
         "on": {
-          "hit": 179,
+          "hit": 190,
           "miss": 0,
-          "absent": 42,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 44,
+          "not_covered": 0,
+          "evidence_agreed": 187,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3304,
+          "hit": 3482,
           "miss": 9,
-          "absent": 716,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 775,
+          "not_covered": 0,
+          "evidence_agreed": 3474,
           "found_nothing": 0,
-          "hit_rate": 0.99728342891639
+          "hit_rate": 0.9974219421369235
         }
       },
       "rounding_per_line": {
         "on": {
-          "hit": 179,
+          "hit": 190,
           "miss": 0,
-          "absent": 42,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 44,
+          "not_covered": 0,
+          "evidence_agreed": 187,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3304,
+          "hit": 3482,
           "miss": 9,
-          "absent": 716,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 775,
+          "not_covered": 0,
+          "evidence_agreed": 3474,
           "found_nothing": 0,
-          "hit_rate": 0.99728342891639
+          "hit_rate": 0.9974219421369235
         }
       },
       "rounding_total": {
         "on": {
-          "hit": 177,
+          "hit": 189,
           "miss": 0,
-          "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "absent": 45,
+          "not_covered": 0,
+          "evidence_agreed": 188,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3483,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 774,
+          "not_covered": 0,
+          "evidence_agreed": 3473,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974226804123711
         }
       },
       "amount_in_words": {
         "on": {
-          "hit": 191,
+          "hit": 202,
           "miss": 0,
-          "absent": 47,
-          "not_covered": 14,
-          "evidence_agreed": 190,
+          "absent": 50,
+          "not_covered": 0,
+          "evidence_agreed": 201,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3292,
+          "hit": 3470,
           "miss": 9,
-          "absent": 711,
-          "not_covered": 236,
-          "evidence_agreed": 3282,
+          "absent": 769,
+          "not_covered": 0,
+          "evidence_agreed": 3460,
           "found_nothing": 0,
-          "hit_rate": 0.9972735534686459
+          "hit_rate": 0.997413049726933
         }
       },
       "bank_footer": {
         "on": {
-          "hit": 177,
+          "hit": 190,
           "miss": 0,
           "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "not_covered": 0,
+          "evidence_agreed": 189,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3482,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 775,
+          "not_covered": 0,
+          "evidence_agreed": 3472,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974219421369235
         }
       },
       "noise_footer": {
         "on": {
-          "hit": 177,
+          "hit": 190,
           "miss": 0,
           "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "not_covered": 0,
+          "evidence_agreed": 189,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3482,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 775,
+          "not_covered": 0,
+          "evidence_agreed": 3472,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974219421369235
         }
       },
       "payment_terms_block": {
         "on": {
-          "hit": 177,
+          "hit": 190,
           "miss": 0,
           "absent": 44,
-          "not_covered": 13,
-          "evidence_agreed": 176,
+          "not_covered": 0,
+          "evidence_agreed": 189,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3306,
+          "hit": 3482,
           "miss": 9,
-          "absent": 714,
-          "not_covered": 237,
-          "evidence_agreed": 3296,
+          "absent": 775,
+          "not_covered": 0,
+          "evidence_agreed": 3472,
           "found_nothing": 0,
-          "hit_rate": 0.9972850678733032
+          "hit_rate": 0.9974219421369235
         }
       },
       "repeat_letterhead": {
         "on": {
-          "hit": 190,
+          "hit": 199,
           "miss": 0,
-          "absent": 48,
-          "not_covered": 14,
-          "evidence_agreed": 190,
+          "absent": 53,
+          "not_covered": 0,
+          "evidence_agreed": 199,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3293,
+          "hit": 3473,
           "miss": 9,
-          "absent": 710,
-          "not_covered": 236,
-          "evidence_agreed": 3282,
+          "absent": 766,
+          "not_covered": 0,
+          "evidence_agreed": 3462,
           "found_nothing": 0,
-          "hit_rate": 0.997274379164143
+          "hit_rate": 0.9974152785755313
         }
       }
     },
@@ -5479,19 +5479,17 @@
       },
       {
         "band": "0.8-1.0",
-        "predicted": 0.9926250572738275,
-        "hit": 3483,
+        "predicted": 0.9927367291497438,
+        "hit": 3672,
         "miss": 9,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 3472,
+        "evidence_agreed": 3661,
         "found_nothing": 0,
-        "hit_rate": 0.9974226804123711
+        "hit_rate": 0.9975550122249389
       }
     ],
     "expected_calibration_error": 0.0048
   },
-  "not_covered": [
-    "payment_terms"
-  ]
+  "not_covered": []
 }

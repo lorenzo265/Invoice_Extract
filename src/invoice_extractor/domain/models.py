@@ -48,6 +48,7 @@ VALUE_TYPES: Mapping[str, type] = {
     "our_reference": str,
     "your_reference": str,
     "credit_reference": str,
+    "payment_terms": str,
 }
 
 __all__ = [

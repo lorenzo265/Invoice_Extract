@@ -38,6 +38,9 @@ DECLARED_BY_THE_VENDOR = (
     "your_reference",
     "credit_reference",
 )
+# The one extra that is a sentence rather than a reference: a vendor's terms of payment
+# are words, and words are judged by reading like words rather than by a shape.
+IN_WORDS = "payment_terms"
 
 
 def _identifier(name: str, source: str = "fields") -> LabelSpec:
@@ -47,6 +50,16 @@ def _identifier(name: str, source: str = "fields") -> LabelSpec:
         validator="is_identifier",
         rankers=BY_LABEL,
         source=source,
+    )
+
+
+def _sentence(name: str) -> LabelSpec:
+    return LabelSpec(
+        name=name,
+        normalizer="strip_label",
+        validator="is_sentence",
+        rankers=BY_LABEL,
+        source="custom_fields",
     )
 
 
@@ -76,8 +89,9 @@ HEADER: tuple[Spec, ...] = (
     DerivedSpec(name="currency", derive="currency"),
 )
 # The extras a vendor declares for itself, read the same way and named by the profile.
-VENDOR: tuple[Spec, ...] = tuple(
-    _identifier(name, source="custom_fields") for name in DECLARED_BY_THE_VENDOR
+VENDOR: tuple[Spec, ...] = (
+    *(_identifier(name, source="custom_fields") for name in DECLARED_BY_THE_VENDOR),
+    _sentence(IN_WORDS),
 )
 SPECS: tuple[Spec, ...] = (*HEADER, *VENDOR)
 

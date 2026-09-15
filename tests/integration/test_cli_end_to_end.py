@@ -15,6 +15,7 @@ from pathlib import Path
 import pytest
 
 from invoice_extractor.cli import main
+from invoice_extractor.validation.stage import RULE_NAMES
 
 README = Path("README.md")
 DEMO_PDF = "tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf"
@@ -42,7 +43,20 @@ def test_cli_writes_json_file(tmp_path: Path, capsys: pytest.CaptureFixture[str]
     assert written["profile_id"] == DEMO_PROFILE
     assert written["valid"] is True
     assert written["fields"]["total_amount"]["value"] is not None
-    assert capsys.readouterr().out == ""
+    assert capsys.readouterr().out == "", "nothing is printed where a file was asked for"
+
+
+def test_cli_writes_the_findings_beside_the_result(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Stage 8 writes two files: everything, and what a reviewer queues on."""
+    target = tmp_path / "result.json"
+    assert main(["extract", DEMO_PDF, "--json", str(target)]) == 0
+    mirror = json.loads((tmp_path / "result.findings.json").read_text(encoding="utf-8"))
+    assert mirror["profile_id"] == DEMO_PROFILE
+    assert mirror["findings"] == []
+    assert [check["code"] for check in mirror["checks"]] == list(RULE_NAMES)
+    assert "result.findings.json" in capsys.readouterr().err
 
 
 def test_cli_prints_the_report_alongside_json_when_asked(

@@ -39,15 +39,15 @@ so, in each direction.
 | ADR | Decision | Governs |
 |---|---|---|
 | [0001](0001-field-specs-declared-not-subclassed.md) | A field is declared as data, not subclassed | `extraction/spec.py`, `extraction/specs.py` |
-| [0002](0002-every-value-carries-evidence.md) | Every extracted value carries its evidence | `domain/models.py` (`Evidence`, `FieldResult`) |
+| [0002](0002-every-value-carries-evidence.md) | Every extracted value carries its evidence | `domain/evidence.py`, `domain/models.py`, `domain/rows.py` |
 | [0003](0003-money-is-decimal-never-float.md) | Money is `Decimal`, never `float` | `domain/money.py` |
-| [0004](0004-layouts-are-data.md) | A vendor layout is JSON, not code | `layout/schema.py`, `layout/loader.py`, `layouts/*.json` |
-| [0005](0005-findings-not-exceptions-for-domain-errors.md) | Domain disagreements are `Finding`s, not exceptions | `domain/findings.py`, `validation/invariants.py` |
+| [0004](0004-layouts-are-data.md) | A vendor layout is JSON, not code — *superseded by 0006* | — (`layout/` was deleted) |
+| [0005](0005-findings-not-exceptions-for-domain-errors.md) | Domain disagreements are `Finding`s, not exceptions | `domain/findings.py`, `validation/`, `reconcile/` |
 | [0006](0006-profiles-not-layouts.md) | The unit of configuration is a vendor profile | `profile/`, `profiles/*.json` |
-| [0007](0007-one-engine-six-spec-kinds.md) | One engine runs six spec kinds | `extraction/engine.py`, `extraction/spec/` |
+| [0007](0007-one-engine-six-spec-kinds.md) | One engine runs six spec kinds | `extraction/spec.py`, `extraction/specs.py`, `extraction/engine.py` |
 | [0008](0008-no-default-profile.md) | An undetected profile stops extraction | `profile/detect.py` |
-| [0009](0009-calibration-needs-negatives.md) | Confidence is calibrated offline on the synthetic corpus | `scoring/`, `calibration/` |
-| [0010](0010-findings-and-checks-always-serialized.md) | Findings and checks are always serialized | `validation/`, `output/json_writer.py` |
+| [0009](0009-calibration-needs-negatives.md) | Confidence is calibrated offline on the synthetic corpus | `scoring/`, `calibration/`, `invoice_forge/` |
+| [0010](0010-findings-and-checks-always-serialized.md) | Findings and checks are always serialized | `domain/checks.py`, `validation/stage.py`, `output/json_writer.py` |
 
 Read in this order for the fastest route through how the pipeline reasons: 0006 (what
 varies between invoices, and what a profile is) → 0001 and 0007 (how a field is

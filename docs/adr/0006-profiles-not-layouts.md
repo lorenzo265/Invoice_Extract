@@ -1,6 +1,6 @@
 # ADR-0006: Profiles, not layouts (and not countries)
 
-Status: Accepted
+Status: Accepted. Supersedes [ADR-0004](0004-layouts-are-data.md)
 
 ## Context
 v0.1 configured extraction per *layout*, a name that suggests page geometry only. Real

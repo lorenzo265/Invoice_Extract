@@ -68,14 +68,15 @@ rate most of what it sold is charged at, and says which in a `Finding`.
 ## Custom fields
 
 Declared per profile as `LabelSpec`s under `custom_fields[]`; they appear in
-`InvoiceResult.fields` under their declared name and in the benchmark when the corpus
-emits them. The names this repository ships are five, all of them things a vendor prints
-in its header block: `contract_number`, `our_reference`, `your_reference`,
-`payment_terms`, `credit_reference`. Four of them are declared in
-`profiles/_defaults.json`, so any vendor that prints one is read; `payment_terms` is a
-sentence rather than a reference and is read by the block that carries it. A name here is
-a name like any other in this catalog — the generator writes it into the truth under the
-same string.
+`InvoiceResult.fields` under their declared name and in the benchmark beside every other
+field. The names this repository ships are five, all of them things a vendor prints
+around its header block: `contract_number`, `our_reference`, `your_reference`,
+`credit_reference` and `payment_terms`. All five are declared in
+`profiles/_defaults.json`, so any vendor that prints one is read. Four are references and
+are judged as such; `payment_terms` is a sentence, and a sentence has no shape worth
+declaring — it is judged by reading like one (`is_sentence`). A name here is a name like
+any other in this catalog: the generator writes it into the truth under the same string,
+and a value the page never printed is absent rather than missed.
 
 ## Findings vocabulary
 

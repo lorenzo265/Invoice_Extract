@@ -15,6 +15,9 @@ from invoice_extractor.profile.schema import FieldProfile
 
 IDENTIFIER = re.compile(r"[A-Z0-9][A-Z0-9/-]{2,}")
 VAT_ID = re.compile(r"[A-Z]{0,2}[A-Z0-9]{5,14}")
+# How long a line of a document runs before it is a paragraph of one. The longest terms
+# the corpus prints are 54 characters; twice that is a line and not a page.
+SENTENCE_LIMIT = 120
 
 
 def matches_pattern(default: str) -> Validator:
@@ -30,6 +33,17 @@ def matches_pattern(default: str) -> Validator:
 
 def is_date(value: FieldValue, field_profile: FieldProfile) -> bool:
     return isinstance(value, date)
+
+
+def is_sentence(value: FieldValue, field_profile: FieldProfile) -> bool:
+    """Words, not a reference: what a vendor writes where its terms of payment go.
+
+    An identifier is checked against a shape; a sentence has none worth declaring, so
+    what is checked is that it reads like one — some letters in it, and short enough to
+    be a line of a document rather than a paragraph of one.
+    """
+    text = str(value).strip()
+    return bool(text) and len(text) <= SENTENCE_LIMIT and any(one.isalpha() for one in text)
 
 
 def is_identifier(value: FieldValue, field_profile: FieldProfile) -> bool:

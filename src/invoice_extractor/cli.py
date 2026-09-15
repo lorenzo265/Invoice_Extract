@@ -21,7 +21,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from invoice_extractor.output.json_writer import write_json
+from invoice_extractor.output.json_writer import emit
 from invoice_extractor.output.text_report import render
 from invoice_extractor.pipeline import extract
 from invoice_extractor.profile import lint as linting
@@ -53,7 +53,8 @@ def main(argv: Sequence[str] | None = None) -> int:
 def _extract(arguments: argparse.Namespace, registry: ProfileRegistry) -> int:
     result = extract(Path(arguments.pdf), registry)
     if arguments.json is not None:
-        write_json(result, Path(arguments.json))
+        written, mirror = emit(result, Path(arguments.json))
+        sys.stderr.write(f"wrote {written} and {mirror}\n")
     if arguments.report or arguments.json is None:
         sys.stdout.write(f"{render(result)}\n")
     return 0
@@ -87,7 +88,11 @@ def _parse(argv: Sequence[str] | None) -> argparse.Namespace:
 def _extract_parser(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("pdf", help="path to the invoice PDF")
     parser.add_argument("--profiles", default=str(PROFILES_ROOT), help=ROOT_HELP)
-    parser.add_argument("--json", metavar="PATH", help="write the full result as JSON to PATH")
+    parser.add_argument(
+        "--json",
+        metavar="PATH",
+        help="write the full result to PATH, and its findings beside it",
+    )
     parser.add_argument("--report", action="store_true", help="print the human-readable report")
 
 

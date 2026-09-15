@@ -13,6 +13,7 @@ import json
 from decimal import Decimal
 
 import pytest
+from benchmarks import compare as comparisons
 from benchmarks import matrix as matrices
 from benchmarks import report as reports
 from benchmarks.compare import (
@@ -139,10 +140,38 @@ def test_a_value_read_where_the_document_has_none_is_a_miss() -> None:
     assert outcomes(score)["currency"] is Outcome.MISS
 
 
-def test_a_field_the_extractor_has_no_spec_for_is_not_covered() -> None:
+def test_a_field_the_extractor_has_no_spec_for_is_not_covered(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The generator may print a name before a spec learns it. That is not a wrong answer."""
+    monkeypatch.setattr(comparisons, "NOT_COVERED", ("iban",))
     score = compare("x", truth(), result())
-    assert NOT_COVERED, "a corpus the extractor covers entirely has nothing to report here"
-    assert outcomes(score)[NOT_COVERED[0]] is Outcome.NOT_COVERED
+    assert outcomes(score)["iban"] is Outcome.NOT_COVERED
+
+
+def test_every_name_the_generator_prints_is_one_this_release_reads() -> None:
+    """`docs/ENGINE_PLAN.md` §4: every field of the catalog is measured, none excused."""
+    assert NOT_COVERED == ()
+
+
+def test_a_value_the_page_never_printed_is_absent_rather_than_missed() -> None:
+    """A vendor knows its payment terms and may print them nowhere; that is not a miss."""
+    known = truth()
+    known["fields"]["order_number"] = {"value": "PO-1", "printed": None, "evidence": []}
+    assert outcomes(compare("x", known, result()))["order_number"] is Outcome.ABSENT
+
+
+def test_a_value_worked_out_where_the_page_printed_none_is_still_the_right_answer() -> None:
+    """A rate no page prints and the arithmetic works out is a value, not an invention."""
+    known = truth()
+    known["fields"]["order_number"] = {"value": "PO-1", "printed": None, "evidence": []}
+    assert outcomes(compare("x", known, result(order_number="PO-1")))["order_number"] is Outcome.HIT
+    wrong = result(order_number="PO-2")
+    assert outcomes(compare("x", known, wrong))["order_number"] is Outcome.MISS
+
+
+def test_a_value_the_page_printed_and_nobody_read_is_a_miss() -> None:
+    assert outcomes(compare("x", truth(currency="EUR"), result()))["currency"] is Outcome.MISS
 
 
 def test_a_miss_that_found_no_candidate_is_counted_apart_from_a_wrong_one() -> None:

@@ -6,12 +6,20 @@ for row and column for column, an extra or a missing row costing one error per c
 
 Four outcomes rather than two, because "wrong" and "not asked" are different failures:
 
-| Outcome | The truth says | The extractor says |
+| Outcome | The document carries | The extractor says |
 |---|---|---|
 | `HIT` | a value | the same value |
-| `MISS` | a value | nothing, or a different one — or nothing was there and it read something |
-| `ABSENT` | nothing | nothing |
+| `MISS` | a value the page printed | nothing |
+| `MISS` | a value | a different one |
+| `MISS` | nothing | something |
+| `ABSENT` | nothing, or a value the page never printed | nothing |
 | `NOT_COVERED` | a value | the field is not in its vocabulary at all |
+
+The truth records a box for everything the generator drew, so a value with no box was
+never on the page: the vendor knew its payment terms and printed them nowhere. Nobody
+could read that, and agreeing it is not there is not a mistake — while a rate no page
+prints and the arithmetic works out is still the right answer, so a value produced is
+always judged against what the document carries.
 
 A hit rate is `HIT / (HIT + MISS)`: agreeing that an absent field is absent is right but
 is not extraction, and a field the extractor has never heard of is not its mistake.
@@ -151,30 +159,41 @@ def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> Do
 
 
 def _score(name: str, fields: Mapping[str, object], result: InvoiceResult) -> Scored:
+    """One field on one document, by the four outcomes this module's table states."""
     wanted = _wanted(fields, name)
     if name in NOT_COVERED:
         return Scored(name, Outcome.NOT_COVERED, 0.0, None)
     if name not in result.fields:
-        # No profile matched, so nothing was read: every value the document carries is a
-        # miss that found nothing, which is what stopping costs and what it should cost.
-        return Scored(name, Outcome.ABSENT if wanted is None else Outcome.MISS, 0.0, None, True)
+        # No profile matched, so nothing was read: every value the page printed is a miss
+        # that found nothing, which is what stopping costs and what it should cost.
+        printed = _printed(fields, name)
+        return Scored(name, Outcome.MISS if printed else Outcome.ABSENT, 0.0, None, True)
     found = result.fields[name]
-    empty = found.raw_text is None
-    if wanted is None:
-        outcome = Outcome.ABSENT if found.value is None else Outcome.MISS
-        return Scored(name, outcome, found.confidence, None, empty and outcome is Outcome.MISS)
-    hit = found.value is not None and _same(name, wanted, found.value)
+    if found.value is None:
+        # A value the page never printed is not one a reader could have read: the vendor
+        # knew its payment terms and drew them nowhere. Printed and unread is a miss.
+        outcome = Outcome.MISS if _printed(fields, name) else Outcome.ABSENT
+        return Scored(name, outcome, found.confidence, None, outcome is Outcome.MISS)
+    hit = wanted is not None and _same(name, wanted, found.value)
     outcome = Outcome.HIT if hit else Outcome.MISS
-    agreed = _evidence_agreed(found, fields, name, hit)
-    return Scored(name, outcome, found.confidence, agreed, empty and not hit)
+    return Scored(name, outcome, found.confidence, _evidence_agreed(found, fields, name, hit))
 
 
 def _wanted(fields: Mapping[str, object], name: str) -> str | None:
+    """What the document carries for this field, whether or not the page printed it."""
     entry = fields.get(name)
     if not isinstance(entry, dict):
         return None
     value = entry.get("value")
     return None if value is None else str(value)
+
+
+def _printed(fields: Mapping[str, object], name: str) -> bool:
+    """Whether the page drew it at all: the truth records a box for everything it drew."""
+    entry = fields.get(name)
+    if not isinstance(entry, dict) or entry.get("value") is None:
+        return False
+    return bool(entry.get("evidence"))
 
 
 def _same(name: str, wanted: str, found: object) -> bool:

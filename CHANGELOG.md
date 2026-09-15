@@ -3,10 +3,28 @@
 All notable changes to this project are recorded here. The format follows
 Keep a Changelog, and this project adheres to Semantic Versioning.
 
-## [Unreleased]
+## [0.3.0] — 2026-09-15
+
+The full-capability extractor: a vendor is a **profile** rather than a layout, one engine
+runs **six kinds of spec** over it, and what comes back is not a list of fields but a
+document — its rows, its party blocks, its totals block, the charges it carries and the
+currency it echoes. Everything it publishes carries the box it was read from; everything
+it checked comes back as a `Check`; and the confidence beside every value is **fitted on a
+corpus whose answers are written down** rather than assumed. Measured on that corpus: all
+eighteen fields of `docs/FIELD_CATALOG.md` scored and none excused, 99.8% of the values
+read (3,672 of 3,681), every line-item cell and every VAT line right, and confidences off
+by half a percent.
 
 ### Added
 
+- **Stage 8 writes two files.** `--json PATH` still writes everything; beside it goes
+  `PATH.findings.json`, carrying what the document said about itself and every rule it
+  was put through, with nothing to scroll past to reach them (ENGINE_SPEC §2). Both come
+  from the one result, so they cannot disagree.
+- **`payment_terms` is read.** The fifth custom field the catalog names is a sentence
+  rather than a reference — it has no shape worth declaring, so it is judged by reading
+  like one (`is_sentence`). Every field in `docs/FIELD_CATALOG.md` is now measured in
+  `benchmarks/latest.json`; nothing is listed as not covered.
 - **Ten invariants and seven cross-field checks, each recorded whether or not it had
   anything to say** (`validation/`, ENGINE_SPEC §6–§7). The arithmetic is asked ten
   questions — the block against itself, the rows against the block, the summary against
@@ -85,6 +103,15 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ### Changed
 
+- **`docs/ARCHITECTURE.md` describes v0.3**: the eight stages, the six boundaries, every
+  module of the eleven packages, and how a value is read from a page that never printed a
+  label for it. ADR-0004 (layouts are data) is marked superseded by ADR-0006 in both
+  directions, as the ADR format requires.
+- **A value the page never printed is absent, not missed.** The benchmark scored a field
+  the vendor knew and drew nowhere as a miss, while scoring an unprinted cell, party block
+  and VAT line as absent — one rule for four families now: a value *produced* is judged
+  against what the document carries (so a rate worked out of the rows is still right), and
+  a value *not produced* is a miss only where the page printed one.
 - **The confidence is fitted rather than assumed.** The five hand-weighted signals of
   v0.1 are gone; a field with no fitted weights is scored with the uniform mean and says
   so in `confidence_source`. The text report prints the seventeen checks in place of the

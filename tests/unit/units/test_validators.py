@@ -10,6 +10,7 @@ from conftest import make_field_profile
 from invoice_extractor.extraction.units.validators import (
     is_date,
     is_identifier,
+    is_sentence,
     is_vat_id,
     matches_pattern,
 )
@@ -47,3 +48,12 @@ def test_is_vat_id_accepts_a_registration_number(value: str) -> None:
 def test_is_vat_id_refuses_a_label_with_its_punctuation_taken_out() -> None:
     """`Kunden-USt-IdNr.` folds to the right length and the right alphabet, and is a label."""
     assert not is_vat_id("KUNDENUSTIDNR", ANY)
+
+
+def test_a_sentence_is_words_rather_than_a_reference() -> None:
+    """A vendor's terms of payment have no shape worth declaring; they read like words."""
+    assert is_sentence("Net 14 days from date of invoice.", ANY)
+    assert is_sentence("2% discount if paid within 10 days.", ANY)
+    assert not is_sentence("", ANY)
+    assert not is_sentence("30", ANY), "digits alone are a number, not terms"
+    assert not is_sentence("x" * 200, ANY), "a paragraph is not a line of a document"

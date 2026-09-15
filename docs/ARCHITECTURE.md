@@ -1,232 +1,305 @@
 # Architecture
 
-> This document describes the v0.1 design, which series E is evolving. Where it and
-> `docs/ENGINE_SPEC.md` disagree, `ENGINE_SPEC.md` wins; PR E6 rewrites this document for
-> v0.3. What has already changed under it: a vendor is described by a **profile**
-> (`profiles/*.json`, `profile/`) rather than a layout, and the line-item column `sku` is
-> called `part_number` — `docs/PROFILE_FORMAT.md` and `docs/FIELD_CATALOG.md` are the
-> current contracts for both.
+`invoice-extractor` turns a PDF invoice into a typed, evidence-backed, arithmetically
+checked, confidence-scored `InvoiceResult`. The design fits in one sentence: **read the
+page once, describe each vendor as data rather than as code, and never let a value travel
+without the evidence that produced it.** `docs/ENGINE_SPEC.md` is the contract this
+document describes; where the two disagree, the spec wins.
 
-`invoice-extractor` turns a PDF invoice into a typed, evidence-backed `InvoiceResult`. The design fits in one sentence: **read raw text, match it against a data-driven layout, and never let a computed value travel without the evidence that produced it.** The five boundaries in §3 keep that sentence true as the codebase grows.
+Three ideas carry the whole design:
 
-## 1. Data flow
+- **A vendor is a profile, not a branch** (ADR-0006). Everything that varies between
+  vendors — labels, zones, separators, calendars, column headings, the components of the
+  totals block — is `profiles/*.json` plus `lexicon/*.json`. No module names a vendor.
+- **One engine, six spec kinds** (ADR-0007). A field is a declaration naming registered
+  units; the engine runs every kind through the same steps. Adding a field is an entry in
+  `extraction/specs.py`, not a new code path.
+- **Nothing is published without evidence** (ADR-0002), and nothing raises for a document
+  that disagrees with itself (ADR-0005). A page, a box and the text it was read from ride
+  with every value; what is wrong with the document comes back as a `Finding`.
 
-Arrows show data moving, not who may import whom — that question is answered in §7.
+## 1. The eight stages
+
+`pipeline.py` is the only module that runs the stages. Each stage is a package with one
+public entry point; each hands the next one values, never control.
+
+| # | Stage | Module | In → out |
+|---|---|---|---|
+| 0 | read | `document/pymupdf_reader.py` | a PDF → `Document` of `Page`s, each line with its box, its zone and the page's anchors |
+| 1 | detect the profile | `profile/detect.py` | `Document` → the best-scoring `Profile`, or none at all (ADR-0008) |
+| 2 | select the variant | `profile/schema.py` (`variants[]`) | `Profile` → the same profile with the first matching fingerprint laid over it |
+| 3 | classify | `extraction/classify.py` | `Document` → invoice or credit note, in the vendor's own words |
+| 4 | extract | `extraction/engine.py`, `table.py`, `section.py`, `block.py` | specs → the fields, the rows, the party blocks, the totals block |
+| 5 | reconcile | `reconcile/stage.py` | what was read → what the document left out, said out loud |
+| 6 | validate | `validation/stage.py` | the whole document → seventeen `Check`s and the `Finding`s they produced |
+| 7 | score | `scoring/` | signals per field → one confidence per field, with what it was made of |
+| 8 | emit | `output/` | `InvoiceResult` → `result.json`, its findings mirror, and the text report |
 
 ```mermaid
 flowchart TD
-    PDF[("invoice.pdf")] --> READER["document/pymupdf_reader.py"]
-    READER --> ZONES["document/zones.py"]
-    ZONES -->|"Sequence~TextLine~"| EXTRACT["pipeline.py: extract()"]
-    LJSON[("layouts/*.json")] --> LOADER["layout/loader.py"]
-    SCHEMA["layout/schema.py"] -.->|"defines shape"| LOADER
-    LOADER -->|"Layout"| EXTRACT
-    CLI["cli.py"] -->|"pdf_path, layout"| EXTRACT
-    EXTRACT --> ENGINE["extraction/engine.py"]
-    SPECS["extraction/specs.py"] -->|"10 FieldSpec"| ENGINE
-    ENGINE --> STRAT["extraction/strategies.py<br/>extraction/normalizers.py<br/>extraction/validators.py<br/>extraction/rankers.py"]
-    ENGINE -->|"Extraction × 10"| EXTRACT
-    EXTRACT --> LITEMS["extraction/line_items.py"]
-    LITEMS -->|"list~LineItem~"| EXTRACT
-    EXTRACT --> INV["validation/invariants.py"]
-    INV -->|"list~Finding~"| EXTRACT
-    EXTRACT --> CONF["validation/confidence.py"]
-    CONF -->|"scored FieldResult"| EXTRACT
-    EXTRACT -->|"InvoiceResult"| JSONW["output/json_writer.py"]
-    EXTRACT -->|"InvoiceResult"| TXT["output/text_report.py"]
-    JSONW --> OUT1[("result.json")]
-    TXT --> OUT2[("text report")]
+    PDF[("invoice.pdf")] --> READ["0 · document/pymupdf_reader.py"]
+    READ -->|"Document"| DETECT["1 · profile/detect.py"]
+    PROFILES[("profiles/*.json<br/>lexicon/*.json")] --> LOADER["profile/loader.py"]
+    LOADER -->|"Profile"| DETECT
+    DETECT -->|"Profile | none"| PIPE["pipeline.py"]
+    PIPE --> CLASSIFY["3 · extraction/classify.py"]
+    PIPE --> ENGINE["4 · extraction/engine.py"]
+    SPECS["extraction/specs.py"] -->|"LabelSpec · AnchorSpec · DerivedSpec"| ENGINE
+    SPECS -->|"TableSpec · SectionSpec · BlockSpec"| READERS["extraction/table.py<br/>extraction/section.py<br/>extraction/block.py"]
+    PIPE --> READERS
+    ENGINE & READERS -->|"fields · rows · parties · charges"| RECONCILE["5 · reconcile/stage.py"]
+    RECONCILE -->|"filled in, with findings"| VALIDATE["6 · validation/stage.py"]
+    VALIDATE -->|"findings + checks"| SCORE["7 · scoring/"]
+    CAL[("calibration/*.json")] --> SCORE
+    SCORE -->|"InvoiceResult"| EMIT["8 · output/"]
+    EMIT --> OUT1[("result.json")]
+    EMIT --> OUT2[("findings.json")]
+    EMIT --> OUT3[("text report")]
 ```
 
 ## 2. Domain model
 
+`domain/` is the innermost ring: what a run produces, and the JSON it round-trips
+through. It knows about boxes and money, and about nothing else in the project.
+
 ```mermaid
 classDiagram
-    class BBox {
-        +float x0, y0, x1, y1
-    }
-    class Zone {
-        <<enumeration>>
-        TOP_LEFT, TOP_CENTER, TOP_RIGHT
-        MIDDLE_LEFT, MIDDLE_CENTER, MIDDLE_RIGHT
-        BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT
-    }
-    class TextLine {
-        +int page
-        +str text
-        +BBox bbox
-        +Zone zone
-    }
     class Evidence {
         +int page
         +BBox bbox
-        +Optional~str~ matched_label
+        +str matched_label
         +Strategy strategy
         +str raw_text
-    }
-    class Candidate {
-        +str raw_text
-        +Evidence evidence
-        +Zone zone
-        +float label_distance
-    }
-    class FieldSpec {
-        +str name
-        +Strategy[] strategies
-        +Normalizer normalizer
-        +Validator validator
-        +tuple~Ranker~ rankers
-        +OnAllInvalid on_all_invalid
     }
     class FieldResult {
         +str name
         +FieldValue value
         +str raw_text
         +Evidence evidence
-        +float confidence
-        +dict~str, float~ confidence_breakdown
         +bool valid
+        +float confidence
+        +Mapping~str,float~ confidence_breakdown
+        +str confidence_source
     }
     class LineItem {
-        +str sku
-        +str description
-        +Decimal quantity, unit_price, net_amount
+        +int pos
+        +str part_number, description, unit
+        +Decimal quantity, unit_price, discount_pct, vat_rate, net_amount
+        +tuple~SubItem~ sub_items
+        +Mapping~str,Evidence~ cells
+    }
+    class VatSummaryRow {
+        +str code
+        +Decimal rate, base, vat
+        +Mapping~str,Evidence~ cells
+    }
+    class Party {
+        +str name, vat_id
+        +tuple~str~ lines
+        +bool placeholder
+        +tuple~Evidence~ evidence
+    }
+    class Charge {
+        +str type
+        +Decimal amount, vat_rate
+        +bool declared
+        +Evidence evidence
+    }
+    class SecondaryAmounts {
+        +str currency
+        +Decimal total_amount, exchange_rate
+        +Evidence evidence
     }
     class Finding {
         +Severity severity
-        +str code
-        +str message
-        +Optional~str~ field
+        +str code, message
+        +str field
     }
-    class Layout {
-        +str id, language
-        +str decimal_separator, thousands_separator
-        +list~str~ date_formats
-        +dict~str, str~ currency_symbols
-        +dict~str, dict~ fields
-        +dict line_items
+    class Check {
+        +str code
+        +bool passed
+        +tuple~str~ fields
+        +str detail
     }
     class InvoiceResult {
-        +Mapping~str, FieldResult~ fields
+        +Mapping~str,FieldResult~ fields
+        +Mapping~str,Party~ parties
         +tuple~LineItem~ line_items
+        +tuple~VatSummaryRow~ vat_summary
+        +tuple~Charge~ charges
+        +SecondaryAmounts secondary_amounts
         +tuple~Finding~ findings
-        +str layout_id
-        +str source_path
-        +to_dict() dict
-        +from_dict(data) InvoiceResult
+        +tuple~Check~ checks
+        +str profile_id, document_type, source_path
+        +bool valid
     }
-    TextLine "1" --> "1" BBox
-    TextLine "1" --> "1" Zone
-    Evidence "1" --> "1" BBox
-    TextLine ..> Evidence : source of
-    Candidate "1" --> "1" Evidence
-    FieldSpec ..> Candidate : its strategies produce
-    Layout ..> FieldSpec : configures, matched by field name
-    FieldResult "1" --> "1" Evidence
     InvoiceResult "1" --> "*" FieldResult
     InvoiceResult "1" --> "*" LineItem
+    InvoiceResult "1" --> "*" VatSummaryRow
+    InvoiceResult "1" --> "*" Party
+    InvoiceResult "1" --> "*" Charge
+    InvoiceResult "1" --> "0..1" SecondaryAmounts
     InvoiceResult "1" --> "*" Finding
+    InvoiceResult "1" --> "*" Check
+    FieldResult "1" --> "0..1" Evidence
+    LineItem "1" --> "*" Evidence : one per cell
+    Charge "1" --> "0..1" Evidence
 ```
 
-`FieldValue` is `str | datetime.date | Decimal`, chosen per field. `LineItem` carries no `Evidence`: line items are located as a table (header row plus column x-ranges), not chosen among ranked candidates, so there is no ranking decision to audit — `docs/SAMPLES_SPEC.md` fixes the JSON shape accordingly. `InvoiceResult.fields` is keyed by field name and always holds all ten names, in `extraction/specs.py` order. `Strategy` (in `domain/models.py`, next to the `Evidence` that carries it), `Normalizer`, `Validator`, `Ranker`, `OnAllInvalid` (in `extraction/spec.py`) and `Severity` (in `domain/findings.py`) are the closed vocabularies, referenced above by type rather than drawn as their own boxes.
+Three things this diagram is saying:
 
-## 3. The five boundaries
+- **Evidence is at the grain of the value.** A field has one box; a row has one per cell;
+  a party block has one per line. A charge the block declared has one, and a charge only
+  the arithmetic found has none — which is how a reader tells them apart.
+- **`valid` is derived, never set.** It is "no finding of severity ERROR" (ADR-0010).
+- **A `Finding` says what is wrong; a `Check` says what was asked.** A rule that held and
+  a rule that could not apply to this document are different facts, and the findings
+  alone cannot tell them apart.
+
+## 3. The six boundaries
 
 | # | Boundary | Rule |
 |---|---|---|
-| 1 | PDF library | `pymupdf` is imported nowhere except `document/pymupdf_reader.py`. Every other module sees the `DocumentReader` protocol and plain `TextLine` / `BBox` values — swapping the PDF library touches one file. |
-| 2 | Layout format | Only `layout/loader.py` (guided by `layout/schema.py`) knows the JSON shape. Every other module receives a typed `Layout`, never a raw `dict`. |
-| 3 | Strategies & units | `extraction/strategies.py`, `normalizers.py`, `validators.py`, and `rankers.py` are pure functions: inputs to outputs, no I/O, no shared state — trivial to unit test and free to compose. |
-| 4 | Orchestration | `pipeline.py` is the only module that *runs* the stages across `document/`, `layout/`, `extraction/`, `validation/`, and `domain/`: nothing else opens a document, loops over the specs, or decides what happens next. Two modules import a name from a package they do not orchestrate — `validation/confidence.py` takes the `Extraction` the pipeline hands it, and `output/text_report.py` reads `INVARIANT_NAMES` to know which rows to print — and neither calls back into the package it names. |
-| 5 | Output | `output/json_writer.py` and `output/text_report.py` serialize an already-built `InvoiceResult`. They never compute a value, re-derive confidence, or re-run a strategy. |
+| 1 | PDF library | `pymupdf` is imported nowhere except `document/pymupdf_reader.py`. Everything above it sees `Document`, `Page`, `TextLine`, `BBox` — swapping the library touches one file. A hygiene test enforces it. |
+| 2 | Profile format | Only `profile/loader.py` and its helpers (`parts.py`, `blocks.py`, `reading.py`, `lexicon.py`, `merge.py`) know the JSON shape. Everything else receives a typed `Profile`. Every key the loader accepts becomes a field of a record, and every field comes from a key: `tests/test_profile_contract.py` holds both directions. |
+| 3 | Units | `extraction/units/` are pure functions registered by name. The vocabulary is closed in both directions — every registered unit is named by a spec, and every name a spec uses is registered (`tests/test_unit_registry.py`). |
+| 4 | Declarations | `extraction/specs.py` holds declarations, never values and never behaviour. A spec that names a unit, a profile path or a dependency that does not exist fails at import. |
+| 5 | Orchestration | `pipeline.py` is the only module that runs the stages. Nothing else opens a document, loops over the specs, or decides what happens next. |
+| 6 | Output | `output/` serializes an already-built result. It never computes a value, re-derives a confidence, or re-runs a check — the text report prints the `detail` each check already came to. |
 
 ## 4. Module responsibilities
 
 | Module | Responsibility | Depends on |
 |---|---|---|
-| `__init__.py` | Public API: `extract`, `load_layout`, `InvoiceResult`, `Layout`, `LayoutError`, `__version__`, `__all__`. | `pipeline`, `layout.loader`, `layout.schema`, `domain.models` |
-| `cli.py` (+ `__main__.py`) | Parses arguments, calls `extract`, writes JSON and/or a text report; `__main__.py` makes it runnable as `python -m invoice_extractor`. | `pipeline`, `layout.loader`, `layout.schema`, `output.json_writer`, `output.text_report` |
-| `pipeline.py` | The only orchestration: wires a reader, a layout, the extraction engine, invariants, and confidence into one `InvoiceResult`. | `document.pymupdf_reader`, `document.reader`, `layout.schema`, `extraction.engine`, `extraction.specs`, `extraction.line_items`, `validation.invariants`, `validation.confidence`, `domain.models` |
-| `domain/models.py` | Defines `Evidence`, `FieldResult`, `LineItem`, `InvoiceResult`, and their `to_dict` / `from_dict`. | `document.reader` (`BBox`), `domain.findings` (`Finding`) |
-| `domain/money.py` | `Decimal` rounding and tolerance helpers shared by normalizers and invariants. | — |
-| `domain/findings.py` | Defines `Finding` and its `Severity` (`INFO` / `WARNING` / `ERROR`). | — |
-| `document/reader.py` | Defines `BBox`, `TextLine`, `Zone`, and the `DocumentReader` protocol. | — |
-| `document/pymupdf_reader.py` | The only module that imports `pymupdf`; implements `DocumentReader` over a real PDF. | `document.reader`, `document.zones` |
-| `document/zones.py` | Maps a `BBox` centre, normalised to page size, onto the 3x3 `Zone` grid. | `document.reader` |
-| `layout/schema.py` | The typed shape of a layout: field labels, zones, regex, line-item headers. | `document.reader` (`Zone`) |
-| `layout/loader.py` | Parses and validates a layout JSON file into a `Layout`; the only module that reads the JSON shape. | `layout.schema`, `document.reader` (`Zone`) |
-| `extraction/spec.py` | Defines `FieldSpec`, `Candidate`, `Evaluated` and the `OnAllInvalid` vocabulary; re-exports `Strategy`. | `domain.models` (`Evidence`, `FieldValue`, `Strategy`), `document.reader` (`Zone`), `layout.schema` (`FieldLayout`, `Layout`) |
-| `extraction/strategies.py` | `label_right`, `label_below`, `regex_anchor` — pure functions from text lines to candidates. | `document.reader`, `extraction.spec`, `domain.models`, `layout.schema` |
-| `extraction/normalizers.py` | `parse_number` — the one implementation of the layout's separator rules — and the five normalizers built on it: `strip_label`, `parse_date`, `parse_money`, `parse_percent`, `upper_alnum`. Each returns `None` on failure and never raises. | `extraction.spec`, `layout.schema` |
-| `extraction/validators.py` | The matching predicates `matches_pattern`, `is_date`, `is_positive_money`, `is_currency_code`, `is_percent`. | `extraction.spec`, `layout.schema`, `domain.models` (`FieldValue`) |
-| `extraction/rankers.py` | `valid_first`, `zone_priority`, `closest_to_label`, `top_most` — order candidates. | `extraction.spec`, `layout.schema` |
-| `extraction/engine.py` | Runs one `FieldSpec` against a `Layout` and a page's text lines to produce one `FieldResult`. | `extraction.*`, `document.reader`, `layout.schema`, `domain.models` |
-| `extraction/specs.py` | The 10 scalar `FieldSpec` instances, in field order. | `extraction.spec`, `extraction.normalizers` / `.validators` / `.rankers`, `domain.models` (`Strategy`) |
-| `extraction/line_items.py` | Extracts the line-item table using the layout's header and stop labels. | `document.reader`, `layout.schema`, `domain.models`, `domain.findings`, `extraction.normalizers` |
-| `validation/invariants.py` | `totals_reconcile`, `line_items_sum`, `vat_rate_consistent` — each emits a `Finding`, never raises. | `domain.models`, `domain.findings`, `domain.money` |
-| `validation/confidence.py` | Combines named signals into a `FieldResult.confidence` and its breakdown. | `domain.models`, `domain.findings`, `extraction.engine` (`Extraction`), `layout.schema` (`FieldLayout`) |
-| `output/json_writer.py` | Serializes an already-built `InvoiceResult` as JSON (`Decimal` as string, `date` as ISO-8601). | `domain.models` |
-| `output/text_report.py` | Renders the same result as the human-readable report in `README.md`. | `domain.models`, `domain.findings`, `layout.schema`, `validation.invariants` (`INVARIANT_NAMES`) |
+| `__init__.py` | Public API: `extract`, `load_profile`, `ProfileRegistry`, `InvoiceResult`, `__version__`. | `pipeline`, `profile`, `domain.models` |
+| `cli.py` (+ `__main__.py`) | `extract`, `profile lint`, `calibrate`. Parses arguments, calls one function, writes what it returns. | `pipeline`, `profile.*`, `scoring.calibrate`, `output.*` |
+| `pipeline.py` | The eight stages, wired. Nothing else. | every package below |
+| `domain/models.py` | `FieldResult`, `InvoiceResult`, `to_dict`/`from_dict`, and the field → type map. | `domain.*`, `document.model` (`BBox`) |
+| `domain/evidence.py` | `Evidence` and the closed `Strategy` vocabulary that records how a value was found. | `document.model` (`BBox`) |
+| `domain/findings.py`, `domain/checks.py` | `Finding` (what is wrong) and `Check` (what was asked), with their severities and their JSON. | — |
+| `domain/rows.py`, `parties.py`, `totals.py` | `LineItem`, `SubItem`, `VatSummaryRow`, `Party`, `Charge`, `SecondaryAmounts` — the parts of a document that are not scalar fields. | `domain.evidence` |
+| `domain/money.py` | `Decimal` rounding and tolerance, shared by the readers and the invariants. | — |
+| `document/model.py` | `BBox`, `Zone`, `TextPart`, `TextLine`, `Page`, `Anchors`, `Document`. | — |
+| `document/pymupdf_reader.py` | The only module that imports `pymupdf`: builds a `Document` with zones and anchors, keeping the runs each line was drawn in. | `document.*` |
+| `document/zones.py`, `anchors.py`, `rows.py` | The page's grid, the four anchors every later stage measures from, and the grouping of lines and runs into printed rows. | `document.model` |
+| `profile/schema.py` | The typed shape of a vendor: fields, parties, tables, the totals block, variants, invariant exemptions. | `document.model` (`Zone`) |
+| `profile/loader.py` + `parts.py`, `blocks.py`, `reading.py`, `lexicon.py`, `merge.py` | One strict loader: JSON → `Profile`, with the language's lexicon expanded into every `@reference` and the defaults laid under every vendor. | `profile.schema`, `document.zones` |
+| `profile/registry.py` | Every profile under `profiles/`, re-read when its file changes, so one added at runtime is detected on the next document. | `profile.loader` |
+| `profile/detect.py` | Scores every profile against a document — supplier anchor, VAT id, currency, labels — and returns the best above the threshold, or none. | `profile.registry`, `document.model` |
+| `profile/lint.py` | How ready a profile is: labels and zones per field against the median of its peers, as a tier. | `profile.registry` |
+| `extraction/spec.py` | The six spec kinds and the validation that runs when the declarations are imported. | `extraction.units.registry`, `domain.*`, `profile.schema` |
+| `extraction/specs.py` | The declarations themselves: the scalar fields, the two tables, the four party blocks, the totals block. | `extraction.spec`, `extraction.units.derivations` |
+| `extraction/engine.py` | One runner for `LabelSpec`, `AnchorSpec` and `DerivedSpec`: guard → collect → filter → normalize → validate → rank → publish. | `extraction.*`, `document.model`, `profile.schema` |
+| `extraction/units/` | The closed vocabulary: strategies, filters, normalizers, validators, rankers, derivations — plus the geometry the tables and the totals block are read with (`columns.py`, `rowkind.py`, `totals_block.py`). | `document.*`, `profile.schema` |
+| `extraction/table.py`, `line_items.py`, `vat_summary.py` | A table as this document drew it: the header's own column edges, then a state machine over the printed rows. | `extraction.units.*`, `domain.rows` |
+| `extraction/section.py` | A party block: a heading, the column under it, and where it stops. | `extraction.units.*`, `domain.parties` |
+| `extraction/block.py` | The totals block: the column of rows a document adds up in, the charges it declares, and the total said again in another currency. | `extraction.units.totals_block`, `domain.totals` |
+| `reconcile/` | Stage 5: the tax and the rate the block left out, the charge nothing declared, the currency the amounts close in, and which VAT line taxes which row. | `domain.*`, `profile.schema` |
+| `validation/` | Stage 6: ten invariants (`invariants.py`), seven cross-field checks (`cross_field.py`), one loop and one record per rule (`stage.py`), over one bundle of facts (`facts.py`). | `domain.*`, `profile.schema` |
+| `scoring/` | Stage 7: sixteen signals (`signals.py`), their weighted mean (`compute.py`), the fit behind the weights (`fit.py`, `calibrate.py`) and the committed files it reads (`weights.py`). | `domain.*`, `extraction.engine`, `validation.*`, `pipeline` (in `calibrate` only) |
+| `output/json_writer.py` | Stage 8: the result as JSON, and the findings mirror beside it. | `domain.models` |
+| `output/text_report.py` | The same result as the report in `README.md`: fields, parties, rows, the VAT summary, the charges, and every check. | `domain.*` |
 
-## 5. How a field is extracted: `invoice_number` on the Acme sample
+## 5. How a value is read: `subtotal` on a French invoice
 
-1. `pipeline.extract("acme_invoice.pdf", layout="acme")` opens the PDF through `document/pymupdf_reader.py`, which yields one `TextLine` per line of text on page 1.
-2. `document/zones.py` stamps each `TextLine.zone` from its `BBox` centre, normalised against the page size — the line `"Invoice Number: INV-2024-0042"` lands in `Zone.TOP_RIGHT`.
-3. `layout/loader.py` has already parsed `layouts/acme.json` into a `Layout`; `layout.fields["invoice_number"]` holds `labels=["Invoice Number"]` and `zones=[Zone.TOP_RIGHT]` — no `regex`, a label match is enough.
-4. `extraction/specs.py` pairs the field name with behaviour: `FieldSpec(name="invoice_number", strategies=(LABEL_RIGHT, LABEL_BESIDE), normalizer=strip_label, validator=matches_pattern(r"[A-Z0-9][A-Z0-9/-]{2,}"), rankers=(valid_first, zone_priority, top_most), on_all_invalid=NOT_FOUND)`.
-5. `extraction/engine.py` restricts the search to `TextLine`s in `Zone.TOP_RIGHT` and calls `strategies.label_right()`, which finds the label and reads the text to its right, returning `Candidate(raw_text="Invoice Number: INV-2024-0042", evidence=...)`.
-6. `normalizers.strip_label()` reduces the raw text to `"INV-2024-0042"`; `validators.matches_pattern()` confirms it matches the invoice-number shape — the spec's default pattern, unless the layout's optional `regex` for this field overrides it.
-7. Only one candidate exists, so `valid_first`, `zone_priority` and `top_most` have nothing to break a tie on — it wins by default.
-8. `validation/confidence.py` scores the field: label matched exactly, zone matched, validator passed, single candidate, invariants agree — every signal lit, so confidence is exactly `1.00`, and the breakdown says which weight came from where.
-9. The engine emits:
+1. `pipeline.extract(pdf, registry)` reads the file once. Every line arrives with its box,
+   its zone and the runs it was drawn in; the page's anchors are computed there and then.
+2. `profile/detect.py` scores the document against every profile: the supplier's name at
+   the top, its VAT id, the currency token, how many of each vendor's labels appear.
+   `fr-FR` wins; nothing was handed over, and a document no profile matched would stop
+   here with `profile_not_detected` (ADR-0008).
+3. The totals block is not four labelled fields. `units/totals_block.py` finds the run of
+   rows that names the most of the profile's components, in one column, close together —
+   a table heading that says `TVA %` names one component and loses to a block that names
+   four.
+4. Inside that block, the longest label a row starts with is what names it: `Total HT` is
+   the net, and `Net à payer` is the total. The amount is read beside its label, or, where
+   the vendor stacks them, at the label's own x on the next row.
+5. `extraction/block.py` publishes it like any other field — a value, its raw text, and
+   `Evidence(page=1, bbox=…, matched_label="Total HT", strategy=BLOCK_ROW)`.
+6. Stage 5 has nothing to fill in here: the block states its tax and its rate. On a
+   document at several rates it would take the tax from the VAT summary and the rate from
+   the line the summary is mostly charged at, and say so in a `Finding`.
+7. Stage 6 asks the ten invariants. `subtotal_plus_vat_equals_total` holds to the cent,
+   and so do the rows, the summary and the per-rate arithmetic; seventeen `Check`s are
+   recorded, three of them "not applicable" because this document prints no charges and
+   is not a credit note.
+8. Stage 7 asks what the reading was like: a label matched word for word, in a zone the
+   profile expects, one candidate, every rule that names this field passed. The signals go
+   through the weights and the curve in `calibration/`, and the field comes back at
+   `confidence=1.00` with the sixteen numbers it was made of.
 
 ```python
 FieldResult(
-    name="invoice_number",
-    value="INV-2024-0042",
-    raw_text="Invoice Number: INV-2024-0042",
+    name="subtotal",
+    value=Decimal("11241.25"),
+    raw_text="11 241,25",
     evidence=Evidence(
         page=1,
-        bbox=BBox(x0=400.0, y0=65.25, x1=543.39, y1=78.99),
-        matched_label="Invoice Number",
-        strategies=(Strategy.LABEL_RIGHT, Strategy.LABEL_BESIDE),
-        raw_text="Invoice Number: INV-2024-0042",
+        bbox=BBox(x0=470.7, y0=572.9, x1=545.0, y1=582.9),
+        matched_label="Total HT",
+        strategy=Strategy.BLOCK_ROW,
+        raw_text="11 241,25",
     ),
-    confidence=1.0,
-    confidence_breakdown={
-        "label_exact_match": 0.25,
-        "in_expected_zone": 0.15,
-        "validator_passed": 0.30,
-        "single_candidate": 0.10,
-        "invariants_agree": 0.20,
-    },
     valid=True,
+    confidence=1.0,
+    confidence_breakdown={"label_found": 1.0, "label_similarity": 1.0, "...": 1.0},
+    confidence_source="uniform",
 )
 ```
 
-Every field after `value` traces back to a real line on a real page — that is the point of `Evidence`: a reviewer can always ask "where did this come from?" and get a page and a box, not a promise.
+Every part of that record traces back to a real line on a real page — that is the point of
+`Evidence`. A reviewer can always ask "where did this come from?" and get a page and a
+box, not a promise; and since v0.3, the same is true of the confidence beside it.
 
-## 6. Why not exceptions, why Decimal
+## 6. Why not exceptions, why Decimal, why a corpus
 
-**Why not exceptions.** A missing field or a misprinted line is normal input, not a programmer error — the extractor's job is to keep going and report what it found. A `Finding` is a value: it can be collected, filtered by `Severity`, and returned alongside every other result from a run of a thousand invoices, with no `try/except` around each field and no one bad invoice aborting the batch. Exceptions stay reserved for what truly cannot be worked around — a layout file that fails its schema, a PDF path that does not exist. See `docs/adr/0005-findings-not-exceptions-for-domain-errors.md`.
+**Why not exceptions.** A missing field or a misprinted line is normal input, not a
+programmer error. A `Finding` is a value: it can be collected, filtered by `Severity`, and
+returned alongside every other result from a run of a thousand invoices, with no
+`try/except` around each field and no one bad invoice aborting the batch. Exceptions stay
+for what cannot be worked around — a profile that fails its schema, a PDF that is not
+there. See ADR-0005.
 
-**Why Decimal.** This library checks that `subtotal + vat_amount == total_amount` to the cent, and `float` cannot make that promise — `0.1 + 0.2` is not `0.3` in binary floating point, so an invariant built on it would flag invoices that are actually correct. `decimal.Decimal`, fed only from strings through `parse_money`, keeps money exact from the page to the report. See `docs/adr/0003-money-is-decimal-never-float.md`.
+**Why Decimal.** This library checks that the net plus the charges plus the tax is the
+total, to the cent, and `float` cannot make that promise: `0.1 + 0.2` is not `0.3` in
+binary floating point, so an invariant built on it would report correct invoices as wrong.
+`Decimal`, fed only from strings, keeps money exact from the page to the report. See
+ADR-0003.
+
+**Why a synthetic corpus.** A confidence is a claim about how often the number beside it
+is right, and that claim can only be checked where the right answer is written down.
+`invoice_forge` generates 250 documents with exact ground truth and thirty-one difficulty
+knobs — including the ones this reader gets wrong, which is what a fit needs to learn
+anything at all. See ADR-0009.
 
 ## 7. The dependency rule
 
-Read outward to inward: **`output → pipeline → extraction / validation → domain`.** `document/` and `layout/` are leaves — the layers above use them, but they depend on nothing else in this project.
+Read outward to inward: **`cli → pipeline → scoring / validation / reconcile → extraction
+→ domain`**, with `document/` and `profile/` as the two leaves everything reads from.
 
 ```mermaid
 flowchart LR
-    CLI["cli.py (outer)"] --> PIPE["pipeline.py"] & OUT["output/*.py (outer)"] & LAY["layout/*.py (leaf)"]
-    PIPE --> EXT["extraction/*.py"] & VAL["validation/*.py"] & DOC["document/*.py (leaf)"] & LAY & DOM["domain/*.py (innermost)"]
-    EXT --> DOC & LAY & DOM
-    VAL --> DOM & LAY & EXT
-    OUT --> DOM & LAY & VAL
-    LAY --> DOC
+    CLI["cli.py (outer)"] --> PIPE["pipeline.py"] & OUT["output/ (outer)"] & PROF["profile/ (leaf)"]
+    PIPE --> SCORE["scoring/"] & VAL["validation/"] & REC["reconcile/"] & EXT["extraction/"] & DOC["document/ (leaf)"] & PROF & DOM["domain/ (innermost)"]
+    SCORE --> EXT & VAL & DOM & PROF
+    VAL --> DOM & PROF
+    REC --> DOM & PROF
+    EXT --> DOC & PROF & DOM
+    OUT --> DOM
+    PROF --> DOC
     DOM -.->|"BBox only"| DOC
 ```
 
-No arrow points the other way: `document/reader.py` never imports `domain/`, `layout/`, `extraction/`, `validation/`, `pipeline.py`, or `output/`. The one exception is deliberate and narrow — `domain/models.py` reuses `document.reader.BBox` inside `Evidence` instead of redefining geometry, an edge that carries no dependency on `pymupdf`, which stays confined to `pymupdf_reader.py`.
+No arrow points the other way. `domain/` reuses `document.model.BBox` inside `Evidence`
+rather than redefining geometry — an edge that carries no dependency on `pymupdf`, which
+stays in one file.
 
-Two arrows are worth naming because they cross rings rather than descend one. `validation/confidence.py` imports `Extraction` from `extraction/engine.py`, and `output/text_report.py` imports `INVARIANT_NAMES` from `validation/invariants.py`. Both are the *name of a value the caller is handed*, not a call back into that package — `score` is given an `Extraction` by `pipeline.py`, and the report prints one row per invariant in the order that tuple fixes. Boundary 4 in §3 is about who runs the stages, and `pipeline.py` is still the only module that does.
+Two edges cross rings rather than descend one, and both are the *name of a value the
+caller is handed* rather than a call back into a package. `scoring/signals.py` imports
+`Extraction` from `extraction/engine.py` and the rule names from `validation/`, because a
+signal is a question about what those stages already recorded. `scoring/calibrate.py`
+imports `pipeline.extract`, because fitting a confidence means running the pipeline over a
+corpus whose answers are known — it is a command, not a stage. Boundary 5 in §3 is about
+who runs the stages for one document, and `pipeline.py` is still the only module that
+does.

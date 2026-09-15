@@ -46,6 +46,7 @@ NORMALIZERS: Mapping[str, Normalizer] = {
 VALIDATORS: Mapping[str, Validator] = {
     "is_date": validators.is_date,
     "is_identifier": validators.is_identifier,
+    "is_sentence": validators.is_sentence,
     "is_vat_id": validators.is_vat_id,
 }
 

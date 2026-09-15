@@ -2,9 +2,9 @@
   "schema": "invoice-extractor-calibration/1",
   "corpus": {
     "documents": 250,
-    "values_scored": 3492
+    "values_scored": 3681
   },
-  "expected_calibration_error": 0.004798,
+  "expected_calibration_error": 0.004818,
   "fields": {
     "contract_number": {
       "count": 84,
@@ -143,6 +143,20 @@
           "predicted": 0.9677,
           "observed": 1.0,
           "count": 29
+        }
+      ]
+    },
+    "payment_terms": {
+      "count": 189,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9948,
+          "observed": 1.0,
+          "count": 189
         }
       ]
     },
