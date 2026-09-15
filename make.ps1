@@ -118,7 +118,10 @@ try {
     Assert-Python
     Invoke-Target $Target
     Write-Host ''
-    Write-Host "$Target: OK" -ForegroundColor Green
+    # ${Target}, not $Target: a colon straight after a variable name is how PowerShell
+    # writes a scope or drive qualifier ($env:PATH), so the braces are what keep this a
+    # variable followed by punctuation rather than a parse error.
+    Write-Host "${Target}: OK" -ForegroundColor Green
 }
 catch {
     Write-Host ''
