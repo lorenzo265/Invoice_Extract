@@ -29,6 +29,8 @@ def render_readme_block(report: Mapping[str, object]) -> str:
         f"- **Profile detection:** {_detected(matrix)}; a document no profile matches is",
         "  reported and not read (ADR-0008).",
         f"- **Scalar fields:** {_overall(fields)} of the values the documents carry.",
+        f"- **Document type:** {_rate(_mapping(matrix, 'document_type'))} of the documents"
+        " were told apart, invoice from credit note.",
         f"- **Line-item cells:** {_overall(_mapping(items, 'columns'))}, over",
         f"  {items.get('rows_agreed', 0)} of {documents} documents whose row count was read",
         "  exactly.",
@@ -104,6 +106,7 @@ def render_report(report: Mapping[str, object]) -> str:
         _misses_section(matrix),
         _columns_section(matrix),
         _vat_section(matrix),
+        _document_type_section(matrix),
         _parties_section(matrix),
         _totals_section(matrix),
         _by_section(matrix, "by_profile", "By profile", "Profile"),
@@ -201,6 +204,20 @@ def _vat_section(matrix: Mapping[str, object]) -> str:
         f"{carried} of {documents} documents print a VAT summary, and {agreed} of"
         f" {documents} read as many lines as were printed. The code beside a rate is read"
         " and not scored: the corpus records the numbers of a line, not its code."
+    )
+    return f"{table}\n\n{note}"
+
+
+def _document_type_section(matrix: Mapping[str, object]) -> str:
+    """Stage 3, measured: an invoice read as a credit note is wrong about every sign."""
+    cell = _mapping(matrix, "document_type")
+    rows = [("document_type", _cell(cell, "hit"), _cell(cell, "miss"), _rate(cell))]
+    table = _section("Document type", ("Field", "Hit", "Miss", "Hit rate"), rows, _RIGHT_FROM_ONE)
+    note = (
+        "Every document is of some kind, so there is no `absent` column here: a page that"
+        " says nothing about which kind it is, is an invoice. This is the one field of"
+        " `docs/FIELD_CATALOG.md` that no spec resolves — stage 3 does, before any spec"
+        " runs — so it is reported here rather than among the fields."
     )
     return f"{table}\n\n{note}"
 

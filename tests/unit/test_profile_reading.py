@@ -149,7 +149,7 @@ def test_a_profile_must_name_a_currency() -> None:
 
 def test_an_unknown_date_format_lists_the_known_ones() -> None:
     data = base()
-    data["date_formats"] = ["mm/dd/yyyy"]
+    data["date_formats"] = ["yyyy/dd/mm"]
     assert error(data).startswith("date_formats[0] must be one of: ")
 
 

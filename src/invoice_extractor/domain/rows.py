@@ -74,6 +74,10 @@ class LineItem:
     net_amount: Decimal | None = None
     sub_items: tuple[SubItem, ...] = ()
     cells: Cells = field(default_factory=dict)
+    # Which line of the VAT summary taxes this row, by position; `None` where the
+    # document prints no summary, or where more than one of its lines could be this
+    # row's (ENGINE_SPEC §5 — an ambiguous linkage is a finding, never a guess).
+    vat_line: int | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -88,6 +92,7 @@ class LineItem:
             "net_amount": _number(self.net_amount),
             "sub_items": [sub.to_dict() for sub in self.sub_items],
             "cells": {name: found.to_dict() for name, found in self.cells.items()},
+            "vat_line": self.vat_line,
         }
 
     @classmethod
@@ -104,6 +109,7 @@ class LineItem:
             net_amount=_decimal(data.get("net_amount")),
             sub_items=tuple(SubItem.from_dict(sub) for sub in _rows(data, "sub_items")),
             cells=_cells(data),
+            vat_line=_whole(data.get("vat_line")),
         )
 
 

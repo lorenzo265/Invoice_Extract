@@ -27,7 +27,7 @@ public entry point; each hands the next one values, never control.
 |---|---|---|---|
 | 0 | read | `document/pymupdf_reader.py` | a PDF → `Document` of `Page`s, each line with its box, its zone and the page's anchors |
 | 1 | detect the profile | `profile/detect.py` | `Document` → the best-scoring `Profile`, or none at all (ADR-0008) |
-| 2 | select the variant | `profile/schema.py` (`variants[]`) | `Profile` → the same profile with the first matching fingerprint laid over it |
+| 2 | select the variant | `profile/variants.py` | `Profile` → the same profile with the first matching fingerprint (`when`) laid over it, re-merged and re-validated through the one loader |
 | 3 | classify | `extraction/classify.py` | `Document` → invoice or credit note, in the vendor's own words |
 | 4 | extract | `extraction/engine.py`, `table.py`, `section.py`, `block.py` | specs → the fields, the rows, the party blocks, the totals block |
 | 5 | reconcile | `reconcile/stage.py` | what was read → what the document left out, said out loud |
@@ -41,7 +41,8 @@ flowchart TD
     READ -->|"Document"| DETECT["1 · profile/detect.py"]
     PROFILES[("profiles/*.json<br/>lexicon/*.json")] --> LOADER["profile/loader.py"]
     LOADER -->|"Profile"| DETECT
-    DETECT -->|"Profile | none"| PIPE["pipeline.py"]
+    DETECT -->|"Profile | none"| VARIANT["2 · profile/variants.py"]
+    VARIANT -->|"Profile, with any matching variant over it"| PIPE["pipeline.py"]
     PIPE --> CLASSIFY["3 · extraction/classify.py"]
     PIPE --> ENGINE["4 · extraction/engine.py"]
     SPECS["extraction/specs.py"] -->|"LabelSpec · AnchorSpec · DerivedSpec"| ENGINE
@@ -87,6 +88,7 @@ classDiagram
         +Decimal quantity, unit_price, discount_pct, vat_rate, net_amount
         +tuple~SubItem~ sub_items
         +Mapping~str,Evidence~ cells
+        +int vat_line
     }
     class VatSummaryRow {
         +str code
@@ -104,6 +106,7 @@ classDiagram
         +Decimal amount, vat_rate
         +bool declared
         +Evidence evidence
+        +int vat_line
     }
     class SecondaryAmounts {
         +str currency
@@ -155,6 +158,10 @@ Three things this diagram is saying:
 - **A `Finding` says what is wrong; a `Check` says what was asked.** A rule that held and
   a rule that could not apply to this document are different facts, and the findings
   alone cannot tell them apart.
+- **A row carries the VAT line that taxes it.** Stage 5 works out which line of the
+  summary each item and each charge is taxed by; `vat_line` is where that answer is
+  published, and it is `None` where the document prints no summary or where more than one
+  line could be the row's — an ambiguous linkage is a finding, never a guess.
 
 ## 3. The six boundaries
 
@@ -187,6 +194,7 @@ Three things this diagram is saying:
 | `profile/registry.py` | Every profile under `profiles/`, re-read when its file changes, so one added at runtime is detected on the next document. | `profile.loader` |
 | `profile/detect.py` | Scores every profile against a document — supplier anchor, VAT id, currency, labels — and returns the best above the threshold, or none. | `profile.registry`, `document.model` |
 | `profile/lint.py` | How ready a profile is: labels and zones per field against the median of its peers, as a tier. | `profile.registry` |
+| `profile/variants.py` | Stage 2: the variant this document matches, laid over the profile it belongs to. Classifies against the base profile to answer a `document_type` fingerprint, because that is the only vocabulary there is before a variant is chosen. | `profile.loader`, `profile.merge`, `extraction.classify` |
 | `extraction/spec.py` | The six spec kinds and the validation that runs when the declarations are imported. | `extraction.units.registry`, `domain.*`, `profile.schema` |
 | `extraction/specs.py` | The declarations themselves: the scalar fields, the two tables, the four party blocks, the totals block. | `extraction.spec`, `extraction.units.derivations` |
 | `extraction/engine.py` | One runner for `LabelSpec`, `AnchorSpec` and `DerivedSpec`: guard → collect → filter → normalize → validate → rank → publish. | `extraction.*`, `document.model`, `profile.schema` |
@@ -208,23 +216,27 @@ Three things this diagram is saying:
    the top, its VAT id, the currency token, how many of each vendor's labels appear.
    `fr-FR` wins; nothing was handed over, and a document no profile matched would stop
    here with `profile_not_detected` (ADR-0008).
-3. The totals block is not four labelled fields. `units/totals_block.py` finds the run of
+3. `profile/variants.py` asks whether this vendor describes a run of its invoices that
+   is different — `fr-FR` declares none, so the profile is read as it stands. A vendor
+   that did would have its overlay merged in here, through the same loader, before
+   anything reads a label.
+4. The totals block is not four labelled fields. `units/totals_block.py` finds the run of
    rows that names the most of the profile's components, in one column, close together —
    a table heading that says `TVA %` names one component and loses to a block that names
    four.
-4. Inside that block, the longest label a row starts with is what names it: `Total HT` is
+5. Inside that block, the longest label a row starts with is what names it: `Total HT` is
    the net, and `Net à payer` is the total. The amount is read beside its label, or, where
    the vendor stacks them, at the label's own x on the next row.
-5. `extraction/block.py` publishes it like any other field — a value, its raw text, and
+6. `extraction/block.py` publishes it like any other field — a value, its raw text, and
    `Evidence(page=1, bbox=…, matched_label="Total HT", strategy=BLOCK_ROW)`.
-6. Stage 5 has nothing to fill in here: the block states its tax and its rate. On a
+7. Stage 5 has nothing to fill in here: the block states its tax and its rate. On a
    document at several rates it would take the tax from the VAT summary and the rate from
    the line the summary is mostly charged at, and say so in a `Finding`.
-7. Stage 6 asks the ten invariants. `subtotal_plus_vat_equals_total` holds to the cent,
+8. Stage 6 asks the ten invariants. `subtotal_plus_vat_equals_total` holds to the cent,
    and so do the rows, the summary and the per-rate arithmetic; seventeen `Check`s are
    recorded, three of them "not applicable" because this document prints no charges and
    is not a credit note.
-8. Stage 7 asks what the reading was like: a label matched word for word, in a zone the
+9. Stage 7 asks what the reading was like: a label matched word for word, in a zone the
    profile expects, one candidate, every rule that names this field passed. The signals go
    through the weights and the curve in `calibration/`, and the field comes back at
    `confidence=1.00` with the sixteen numbers it was made of.

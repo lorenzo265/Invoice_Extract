@@ -221,8 +221,8 @@
       "Sipariş Günü"
     ],
     "delivery_date": [
-      "Teslim Tarihi",
-      "Sevk Tarihi"
+      "Sevk Tarihi",
+      "Sevk Edildi"
     ],
     "print_date": [
       "Baskı Tarihi",

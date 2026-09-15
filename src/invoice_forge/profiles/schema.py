@@ -15,10 +15,18 @@ from invoice_forge.model import ChargeType, CreditNoteStyle
 
 
 class DateFormat(Enum):
-    """The five ways the corpus prints a date. The words come from the lexicon."""
+    """The six ways the corpus prints a date. The words come from the lexicon.
+
+    `mm/dd/yyyy` is the one no vendor in this repository declares and the only one that
+    can be read wrong without looking wrong: `03/04/2024` is the fourth of March under it
+    and the third of April under `dd/mm/yyyy`, and nothing on the page says which. It is
+    here so that a profile can say which, and so that a test can prove the two are told
+    apart rather than guessed at.
+    """
 
     DAY_DOT_MONTH = "dd.mm.yyyy"
     DAY_SLASH_MONTH = "dd/mm/yyyy"
+    MONTH_SLASH_DAY = "mm/dd/yyyy"
     ISO = "yyyy-mm-dd"
     DAY_MONTH_NAME = "d Month yyyy"
     DAY_MONTH_ABBREVIATION = "dd-Mon-yyyy"

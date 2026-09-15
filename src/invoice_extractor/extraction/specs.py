@@ -86,6 +86,16 @@ HEADER: tuple[Spec, ...] = (
         validator="is_vat_id",
         rankers=BY_LABEL,
     ),
+    # The one field a page carries without a label of its own: a vendor prints its
+    # account number in the run of text its bank details are, and `IBAN` is the word it
+    # prints in front of it in every language the corpus speaks. So the profile declares
+    # the shape and `label_pattern` finds it, wherever in the footer the vendor set it.
+    LabelSpec(
+        name="iban",
+        normalizer="upper_alnum",
+        validator="is_iban",
+        rankers=BY_LABEL,
+    ),
     DerivedSpec(name="currency", derive="currency"),
 )
 # The extras a vendor declares for itself, read the same way and named by the profile.

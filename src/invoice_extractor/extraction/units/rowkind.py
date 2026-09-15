@@ -78,7 +78,7 @@ def classify(
     if _labelled(row, table.carry_forward_labels) is not None:
         return RowKind.CARRY
     stopped = _labelled(row, table.stop_labels)
-    if stopped is not None:
+    if stopped is not None and _beside_the_table(stopped, header):
         return RowKind.SUBTOTAL if _in_description(stopped, header) else RowKind.STOP
     if _indented(placed.get("description"), header, table.sub_item_indent):
         return RowKind.SUB_ITEM
@@ -97,6 +97,21 @@ def _labelled(row: CellRow, labels: Sequence[str]) -> TextPart | None:
         if any(text.startswith(label) for label in folded):
             return cell
     return None
+
+
+def _beside_the_table(cell: TextPart, header: Header) -> bool:
+    """Whether a stop label is this table's at all, or another block's printed alongside.
+
+    A vendor that prints its VAT summary on the left and its totals on the right puts
+    `Total:` at the same height as a summary line and three hundred points away from it.
+    That word closes the totals block, not the summary: the two share a band of the page
+    and share no column. So a label stops a table only where it is drawn across the
+    table's own width — geometry deciding, as everywhere else in this package, rather
+    than the order the two blocks happen to reach the reader in.
+    """
+    left = min(column.bbox.x0 for column in header.columns)
+    right = max(column.bbox.x1 for column in header.columns)
+    return cell.bbox.x0 <= right and cell.bbox.x1 >= left
 
 
 def _in_description(cell: TextPart, header: Header) -> bool:

@@ -81,22 +81,17 @@ def test_a_profile_measured_against_nothing_is_t2(tmp_path: Path) -> None:
     assert lint(registry.get("yy-YY"), registry).tier == "T2"
 
 
-def test_no_shipped_profile_is_unusable() -> None:
-    """Every required field of every vendor declares a label: nothing ships at T0.
+def test_every_shipped_profile_is_ready() -> None:
+    """The E7 gate: T2 for every vendor under `profiles/` (`docs/ENGINE_PLAN.md` §3).
 
-    Two vendors sit at T1 because their language offers one synonym fewer than the median
-    for one date field. PR E7 is where every shipped profile is brought to T2; until then
-    this test holds the floor rather than the target.
+    Two vendors used to sit at T1 — Finnish named two ways to say a due date and Swedish
+    two to say an invoice date, where every other language named three. Both now name a
+    third that their language really uses, so no vendor is read with a vocabulary
+    narrower than its peers'.
     """
     registry = ProfileRegistry()
-    for profile in registry.all():
-        assert lint(profile, registry).tier in ("T1", "T2"), profile.id
-
-
-def test_the_two_vendors_below_the_median_are_the_two_that_are_known_to_be() -> None:
-    registry = ProfileRegistry()
-    below = {profile.id for profile in registry.all() if lint(profile, registry).tier != "T2"}
-    assert below == {"fi-FI", "sv-SE"}
+    tiers = {profile.id: lint(profile, registry).tier for profile in registry.all()}
+    assert {tier for tier in tiers.values()} == {"T2"}, tiers
 
 
 def test_the_rendered_report_names_the_tier_and_says_when_nothing_is_short() -> None:

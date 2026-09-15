@@ -323,3 +323,47 @@ def test_dataclasses_are_frozen() -> None:
         if decorator_name(decorator) == "dataclass" and not declares_frozen(decorator)
     ]
     assert not offenders, f"dataclasses declared without frozen=True: {offenders}"
+
+
+def test_no_module_without_an_importer() -> None:
+    """Every module under `src/` is reached from somewhere (`docs/ENGINE_PLAN.md` §4).
+
+    The other two halves of that rule are held elsewhere — `tests/test_unit_registry.py`
+    for units nothing names, `tests/test_profile_contract.py` for profile keys nothing
+    reads. This is the third: a module nothing imports is code that cannot run, and the
+    only way to find out is to look for the import.
+
+    `from pkg import module` counts, which is how the loaders reach their helpers; and
+    `__init__.py` and `__main__.py` are not modules with importers but the package and
+    its entry point.
+    """
+    named = {_dotted(path): path for path in source_modules() if _is_a_module(path)}
+    reached = _imported_anywhere()
+    orphans = sorted(where(path) for name, path in named.items() if name not in reached)
+    assert not orphans, f"modules nothing imports: {orphans}"
+
+
+def _is_a_module(path: Path) -> bool:
+    return path.stem not in ("__init__", "__main__")
+
+
+def _dotted(path: Path) -> str:
+    return ".".join(path.relative_to(SRC).with_suffix("").parts)
+
+
+def _imported_anywhere() -> set[str]:
+    """Every module name any Python file in the repository imports, by either spelling."""
+    reached: set[str] = set()
+    for root in (SRC, REPO_ROOT / "tests", REPO_ROOT / "benchmarks", REPO_ROOT / "scripts"):
+        for path in python_modules(root):
+            for node in ast.walk(parse(path)):
+                reached.update(_named(node))
+    return reached
+
+
+def _named(node: ast.AST) -> set[str]:
+    if isinstance(node, ast.ImportFrom) and node.module:
+        return {node.module, *(f"{node.module}.{alias.name}" for alias in node.names)}
+    if isinstance(node, ast.Import):
+        return {alias.name for alias in node.names}
+    return set()

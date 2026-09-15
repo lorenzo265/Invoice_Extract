@@ -225,8 +225,8 @@
       "Auftragsdatum"
     ],
     "delivery_date": [
-      "Lieferdatum",
-      "Versanddatum"
+      "Versanddatum",
+      "Versandt am"
     ],
     "print_date": [
       "Druckdatum",

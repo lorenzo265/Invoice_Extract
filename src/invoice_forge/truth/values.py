@@ -63,6 +63,9 @@ def _references(document: Document) -> dict[str, str | None]:
         "customer_vat_id": _identifier(document.bill_to.vat_id),
         "currency": document.currency,
         "payment_terms": document.payment.terms,
+        # Printed in groups of four, normalised without them: `docs/FIELD_CATALOG.md`
+        # says an IBAN is read with its spaces removed and upper-cased.
+        "iban": _identifier(document.payment.iban),
     }
 
 

@@ -70,6 +70,10 @@ DATE_PATTERNS: Mapping[str, str] = {
     "yyyy-mm-dd": "%Y-%m-%d",
     "dd.mm.yyyy": "%d.%m.%Y",
     "dd/mm/yyyy": "%d/%m/%Y",
+    # The one format a document cannot be read out of: `03/04/2024` is a valid date under
+    # this and under `dd/mm/yyyy`, and they are different days. Which one a vendor means
+    # is the vendor's to declare, which is why it is a profile key and not a heuristic.
+    "mm/dd/yyyy": "%m/%d/%Y",
     "d Month yyyy": "%d %B %Y",
     "dd-Mon-yyyy": "%d-%b-%Y",
 }

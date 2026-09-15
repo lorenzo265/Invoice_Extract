@@ -94,7 +94,7 @@ def _payment_lines(context: RenderContext) -> tuple[tuple[str, Mark | None], ...
     payment = context.document.payment
     label = context.wording.labels["payment_terms"]
     lines: list[tuple[str, Mark | None]] = [
-        (f"{payment.bank_name} · IBAN {payment.iban} · BIC {payment.bic}", None),
+        (f"{payment.bank_name} · IBAN {payment.iban} · BIC {payment.bic}", field("iban", "IBAN")),
         (payment.account_holder, None),
     ]
     if context.family.terms_block is None:

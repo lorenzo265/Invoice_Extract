@@ -156,3 +156,24 @@ def test_a_lexicon_by_path_is_read_from_that_path(tmp_path: Path) -> None:
 def test_every_bundled_lexicon_offers_the_font_something_hard_to_print(language: str) -> None:
     """`diacritics` is the sample string the renderer proves its font against, not a set."""
     assert not load_lexicon(language).diacritics.isascii(), language
+
+
+@pytest.mark.parametrize("language", bundled_lexicon_ids())
+def test_no_trap_label_is_a_label_of_the_field_it_is_a_trap_for(language: str) -> None:
+    """A trap is a label the field does not own; one it owns is the field, not a trap.
+
+    A `delivery_date` trap printed as the language's own word for the supply date makes
+    the document carry a supply date the truth says it has not got, and the extractor is
+    right to read it: `not_a_trap` refuses to drop a candidate a field's own label
+    introduced, however many other things call that label a trap. So the two vocabularies
+    are disjoint, and the trap says dispatch where the field says delivery.
+    """
+    lexicon = load_lexicon(language)
+    owned = {label: name for name, labels in lexicon.header_labels.items() for label in labels}
+    collisions = {
+        f"trap_labels.{kind}": (label, f"header_labels.{owned[label]}")
+        for kind, labels in lexicon.trap_labels.items()
+        for label in labels
+        if label in owned
+    }
+    assert collisions == {}

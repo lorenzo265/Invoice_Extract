@@ -1,0 +1,3276 @@
+{
+  "schema": "forge-truth/1",
+  "generator": {
+    "version": "0.3.0",
+    "seed": 7,
+    "profile": "fi-FI",
+    "template": "classic",
+    "knobs": [
+      "multi_rate",
+      "thousands_variant"
+    ]
+  },
+  "document": {
+    "type": "invoice",
+    "pages": 2,
+    "language": "fi",
+    "currency": "EUR",
+    "secondary_currency": null,
+    "rounding": "total"
+  },
+  "fields": {
+    "invoice_number": {
+      "value": "LSK-2024-172975",
+      "printed": "LSK-2024-172975",
+      "label": "Laskunumero",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            471.94,
+            71.86,
+            544.97,
+            81.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            471.94,
+            71.86,
+            544.97,
+            81.9
+          ]
+        }
+      ]
+    },
+    "invoice_date": {
+      "value": "2024-06-14",
+      "printed": "2024-06-14",
+      "label": "Päiväys",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.96,
+            83.86,
+            544.99,
+            93.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            498.96,
+            83.86,
+            544.99,
+            93.9
+          ]
+        }
+      ]
+    },
+    "due_date": {
+      "value": "2024-06-28",
+      "printed": "2024-06-28",
+      "label": "Eräpäivä",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.96,
+            107.86,
+            544.99,
+            117.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            498.96,
+            107.86,
+            544.99,
+            117.9
+          ]
+        }
+      ]
+    },
+    "supplier_vat_id": {
+      "value": "FI77069556",
+      "printed": "Y-tunnus: FI77069556",
+      "label": "Y-tunnus",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            107.86,
+            139.0,
+            117.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            107.86,
+            139.0,
+            117.9
+          ]
+        }
+      ]
+    },
+    "customer_vat_id": {
+      "value": "FI91390996",
+      "printed": "Asiakkaan Y-tunnus: FI91390996",
+      "label": "Asiakkaan Y-tunnus",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            273.86,
+            183.0,
+            283.9
+          ]
+        }
+      ]
+    },
+    "currency": {
+      "value": "EUR",
+      "printed": "EUR",
+      "label": "Valuutta",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            526.0,
+            155.85,
+            544.99,
+            165.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            526.0,
+            155.85,
+            544.99,
+            165.9
+          ]
+        }
+      ]
+    },
+    "vat_rate": {
+      "value": "25.5",
+      "printed": "25,5 %",
+      "label": "ALV-kanta",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            508.86,
+            78.0,
+            518.9
+          ]
+        }
+      ]
+    },
+    "subtotal": {
+      "value": "237717.96",
+      "printed": "237717,96 EUR",
+      "label": "Veroton yhteensä",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            480.95,
+            464.86,
+            544.96,
+            474.9
+          ]
+        }
+      ]
+    },
+    "vat_amount": {
+      "value": "51699.60",
+      "printed": "51699,60 EUR",
+      "label": "Arvonlisävero",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            485.96,
+            477.86,
+            544.96,
+            487.9
+          ]
+        }
+      ]
+    },
+    "total_amount": {
+      "value": "289417.56",
+      "printed": "289417,56 EUR",
+      "label": "Yhteensä",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            480.95,
+            490.86,
+            544.96,
+            500.9
+          ]
+        }
+      ]
+    },
+    "supply_date": {
+      "value": "2024-06-08",
+      "printed": "2024-06-08",
+      "label": "Toimituspäivä",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.96,
+            95.86,
+            544.99,
+            105.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            498.96,
+            95.86,
+            544.99,
+            105.9
+          ]
+        }
+      ]
+    },
+    "order_number": {
+      "value": "PO-793919",
+      "printed": "PO-793919",
+      "label": "Ostotilausnro",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            498.97,
+            131.85,
+            544.98,
+            141.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            498.97,
+            131.85,
+            544.98,
+            141.9
+          ]
+        }
+      ]
+    },
+    "customer_number": {
+      "value": "C-44833",
+      "printed": "C-44833",
+      "label": "Asiakasnumero",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            510.48,
+            119.86,
+            544.99,
+            129.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            510.48,
+            119.86,
+            544.99,
+            129.9
+          ]
+        }
+      ]
+    },
+    "contract_number": {
+      "value": "CTR-159367",
+      "printed": "CTR-159367",
+      "label": "Sopimusnumero",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            493.47,
+            143.85,
+            544.98,
+            153.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            493.47,
+            143.85,
+            544.98,
+            153.9
+          ]
+        }
+      ]
+    },
+    "our_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "your_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "payment_terms": {
+      "value": "2 % käteisalennus 10 päivän kuluessa.",
+      "printed": "Maksuehto: 2 % käteisalennus 10 päivän kuluessa.",
+      "label": "Maksuehto",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            561.76,
+            231.34,
+            570.69
+          ]
+        }
+      ]
+    },
+    "credit_reference": {
+      "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "iban": {
+      "value": "FI8818263304348395",
+      "printed": "Hiekkaniemipankki · IBAN FI88 1826 3304 3483 95 · BIC IRNEFIDWXXX",
+      "label": "IBAN",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            539.76,
+            309.9,
+            548.69
+          ]
+        }
+      ]
+    }
+  },
+  "line_items": [
+    {
+      "pos": 1,
+      "part_number": "SW-SUP-GLD",
+      "description": "Gold-tukisopimus, 4 tunnin vasteaika",
+      "quantity": "10",
+      "unit": "vuosi",
+      "unit_price": "1290.00",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "12900.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              327.86,
+              145.46,
+              337.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              327.86,
+              298.99,
+              337.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              378.99,
+              327.86,
+              389.0,
+              337.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              413.47,
+              327.86,
+              445.98,
+              337.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              507.46,
+              327.86,
+              544.98,
+              337.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 2,
+      "part_number": "SRV-INST-H",
+      "description": "Asennus paikan päällä, tunnilta",
+      "quantity": "2.5",
+      "unit": "tunti",
+      "unit_price": "95.00",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "237.50",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              344.86,
+              139.45,
+              354.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              344.86,
+              276.51,
+              354.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              376.49,
+              344.86,
+              388.99,
+              354.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              423.48,
+              344.86,
+              445.99,
+              354.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              344.86,
+              544.99,
+              354.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 3,
+      "part_number": "BRK-ST-3",
+      "description": "Teräskannatin 3 mm, 60 x 60 x 40, käsittelemätön",
+      "quantity": "40",
+      "unit": "kpl",
+      "unit_price": "2.30",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "92.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              361.86,
+              128.97,
+              371.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              361.86,
+              350.95,
+              371.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              378.99,
+              361.86,
+              389.0,
+              371.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              428.48,
+              361.86,
+              445.99,
+              371.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              361.86,
+              544.99,
+              371.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 4,
+      "part_number": "SW-API-10K",
+      "description": "API-kiintiö, 10 000 kutsua kuukaudessa",
+      "quantity": "10",
+      "unit": "paketti",
+      "unit_price": "89.00",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "890.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              378.86,
+              138.96,
+              388.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              378.86,
+              309.49,
+              388.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              378.99,
+              378.86,
+              389.0,
+              388.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              423.48,
+              378.86,
+              445.99,
+              388.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              378.86,
+              544.99,
+              388.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 5,
+      "part_number": "SW-CLD-50",
+      "description": "Pilvitallennus 50 GB, laskutetaan kuukausittain",
+      "quantity": "2",
+      "unit": "kk",
+      "unit_price": "12.5000",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "25.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              395.86,
+              136.48,
+              405.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              395.86,
+              338.47,
+              405.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              395.86,
+              389.0,
+              405.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              413.47,
+              395.86,
+              445.98,
+              405.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              395.86,
+              544.99,
+              405.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 6,
+      "part_number": "REL-24V",
+      "description": "Liitäntärele 24 V DC, 1 vaihtokosketin",
+      "quantity": "100",
+      "unit": "kpl",
+      "unit_price": "7.95",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "795.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              412.86,
+              124.5,
+              422.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              412.86,
+              301.97,
+              422.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              373.98,
+              412.86,
+              389.0,
+              422.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              428.48,
+              412.86,
+              445.99,
+              422.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              412.86,
+              544.99,
+              422.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 7,
+      "part_number": "SRV-ANA-H",
+      "description": "Analyysi ja dokumentointi, tunnilta",
+      "quantity": "1.5",
+      "unit": "tunti",
+      "unit_price": "115.0000",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "172.50",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              429.86,
+              137.46,
+              439.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              429.86,
+              287.48,
+              439.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              376.49,
+              429.86,
+              388.99,
+              439.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              408.46,
+              429.86,
+              445.98,
+              439.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              429.86,
+              544.99,
+              439.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 8,
+      "part_number": "SW-CLD-50",
+      "description": "Pilvitallennus 50 GB, laskutetaan kuukausittain",
+      "quantity": "25",
+      "unit": "kk",
+      "unit_price": "12.5000",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "312.50",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              446.86,
+              136.48,
+              456.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              446.86,
+              338.47,
+              456.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              378.99,
+              446.86,
+              389.0,
+              456.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              413.47,
+              446.86,
+              445.98,
+              456.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              446.86,
+              544.99,
+              456.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 9,
+      "part_number": "SW-API-10K",
+      "description": "API-kiintiö, 10 000 kutsua kuukaudessa",
+      "quantity": "3",
+      "unit": "paketti",
+      "unit_price": "89.00",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "267.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              463.86,
+              138.96,
+              473.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              463.86,
+              309.49,
+              473.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              463.86,
+              389.0,
+              473.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              423.48,
+              463.86,
+              445.99,
+              473.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              463.86,
+              544.99,
+              473.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 10,
+      "part_number": "ENC-IP65",
+      "description": "Kotelo IP65, 300 x 200 x 120",
+      "quantity": "4",
+      "unit": "kpl",
+      "unit_price": "45.50",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "182.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              480.86,
+              128.48,
+              490.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              480.86,
+              267.48,
+              490.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              480.86,
+              389.0,
+              490.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              423.48,
+              480.86,
+              445.99,
+              490.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              480.86,
+              544.99,
+              490.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 11,
+      "part_number": "REL-24V",
+      "description": "Liitäntärele 24 V DC, 1 vaihtokosketin",
+      "quantity": "1",
+      "unit": "kpl",
+      "unit_price": "7.95",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "7.95",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              497.86,
+              124.5,
+              507.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              497.86,
+              301.97,
+              507.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              497.86,
+              389.0,
+              507.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              428.48,
+              497.86,
+              445.99,
+              507.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              527.48,
+              497.86,
+              544.99,
+              507.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 12,
+      "part_number": "SW-SUP-GLD",
+      "description": "Gold-tukisopimus, 4 tunnin vasteaika",
+      "quantity": "100",
+      "unit": "vuosi",
+      "unit_price": "1290.00",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "129000.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              514.85,
+              145.46,
+              524.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              514.85,
+              298.99,
+              524.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              373.98,
+              514.85,
+              389.0,
+              524.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              413.47,
+              514.85,
+              445.98,
+              524.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              502.46,
+              514.85,
+              544.98,
+              524.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 13,
+      "part_number": "SRV-ANA-H",
+      "description": "Analyysi ja dokumentointi, tunnilta",
+      "quantity": "12",
+      "unit": "tunti",
+      "unit_price": "115.0000",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "1380.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              531.85,
+              137.46,
+              541.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              531.85,
+              287.48,
+              541.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              378.99,
+              531.85,
+              389.0,
+              541.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              408.46,
+              531.85,
+              445.98,
+              541.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              512.47,
+              531.85,
+              544.98,
+              541.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 14,
+      "part_number": "SRV-ANA-H",
+      "description": "Analyysi ja dokumentointi, tunnilta",
+      "quantity": "1.5",
+      "unit": "tunti",
+      "unit_price": "115.0000",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "172.50",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              548.85,
+              137.46,
+              558.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              548.85,
+              287.48,
+              558.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              376.49,
+              548.85,
+              388.99,
+              558.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              408.46,
+              548.85,
+              445.98,
+              558.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              548.85,
+              544.99,
+              558.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 15,
+      "part_number": "SRV-TRN-D",
+      "description": "Peruskoulutus, 1 päivä, enintään 8 osallistujaa",
+      "quantity": "2.5",
+      "unit": "päivä",
+      "unit_price": "780.00",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "1950.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              565.85,
+              137.46,
+              575.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              565.85,
+              336.99,
+              575.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              376.49,
+              565.85,
+              388.99,
+              575.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              418.47,
+              565.85,
+              445.99,
+              575.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              512.47,
+              565.85,
+              544.98,
+              575.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 16,
+      "part_number": "HX-M8-040",
+      "description": "Kuusioruuvi M8 x 40, sinkitty, DIN 933",
+      "quantity": "3",
+      "unit": "kpl",
+      "unit_price": "0.12",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "0.36",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              582.85,
+              134.0,
+              592.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              582.85,
+              303.95,
+              592.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              582.85,
+              389.0,
+              592.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              428.48,
+              582.85,
+              445.99,
+              592.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              527.48,
+              582.85,
+              544.99,
+              592.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 17,
+      "part_number": "SW-LIC-PRO",
+      "description": "ProSuite-lisenssi, 1 työasema, 12 kuukautta",
+      "quantity": "1.5",
+      "unit": "lisenssi",
+      "unit_price": "349.00",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "523.50",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              599.85,
+              141.96,
+              609.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              599.85,
+              326.97,
+              609.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              376.49,
+              599.85,
+              388.99,
+              609.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              418.47,
+              599.85,
+              445.99,
+              609.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              599.85,
+              544.99,
+              609.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 18,
+      "part_number": "REL-24V",
+      "description": "Liitäntärele 24 V DC, 1 vaihtokosketin",
+      "quantity": "40",
+      "unit": "kpl",
+      "unit_price": "7.95",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "318.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              616.85,
+              124.5,
+              626.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              616.85,
+              301.97,
+              626.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              378.99,
+              616.85,
+              389.0,
+              626.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              428.48,
+              616.85,
+              445.99,
+              626.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              616.85,
+              544.99,
+              626.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 19,
+      "part_number": "HX-M8-040",
+      "description": "Kuusioruuvi M8 x 40, sinkitty, DIN 933",
+      "quantity": "20",
+      "unit": "kpl",
+      "unit_price": "0.12",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "2.40",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              633.85,
+              134.0,
+              643.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              633.85,
+              303.95,
+              643.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              378.99,
+              633.85,
+              389.0,
+              643.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              428.48,
+              633.85,
+              445.99,
+              643.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              527.48,
+              633.85,
+              544.99,
+              643.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 20,
+      "part_number": "SW-LIC-PRO",
+      "description": "ProSuite-lisenssi, 1 työasema, 12 kuukautta",
+      "quantity": "2",
+      "unit": "lisenssi",
+      "unit_price": "349.00",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "698.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              650.85,
+              141.96,
+              660.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              650.85,
+              326.97,
+              660.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              650.85,
+              389.0,
+              660.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              418.47,
+              650.85,
+              445.99,
+              660.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              650.85,
+              544.99,
+              660.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 21,
+      "part_number": "SW-API-10K",
+      "description": "API-kiintiö, 10 000 kutsua kuukaudessa",
+      "quantity": "3",
+      "unit": "paketti",
+      "unit_price": "89.00",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "267.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              667.85,
+              138.96,
+              677.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              667.85,
+              309.49,
+              677.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              667.85,
+              389.0,
+              677.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              423.48,
+              667.85,
+              445.99,
+              677.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              517.47,
+              667.85,
+              544.99,
+              677.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 22,
+      "part_number": "FLT-P-200",
+      "description": "Suodatinpatruuna P-200, selluloosa, 10 µm",
+      "quantity": "3",
+      "unit": "kpl",
+      "unit_price": "17.40",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "52.20",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              684.85,
+              130.98,
+              694.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              684.85,
+              324.68,
+              694.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              684.85,
+              389.0,
+              694.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              423.48,
+              684.85,
+              445.99,
+              694.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              522.48,
+              684.85,
+              544.99,
+              694.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 23,
+      "part_number": "SW-LIC-PRO",
+      "description": "ProSuite-lisenssi, 1 työasema, 12 kuukautta",
+      "quantity": "5",
+      "unit": "lisenssi",
+      "unit_price": "349.00",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "1745.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 1,
+            "bbox": [
+              88.0,
+              701.85,
+              141.96,
+              711.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 1,
+            "bbox": [
+              152.0,
+              701.85,
+              326.97,
+              711.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 1,
+            "bbox": [
+              383.99,
+              701.85,
+              389.0,
+              711.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 1,
+            "bbox": [
+              418.47,
+              701.85,
+              445.99,
+              711.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 1,
+            "bbox": [
+              512.47,
+              701.85,
+              544.98,
+              711.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 24,
+      "part_number": "REL-24V",
+      "description": "Liitäntärele 24 V DC, 1 vaihtokosketin",
+      "quantity": "25",
+      "unit": "kpl",
+      "unit_price": "7.95",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "198.75",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              237.85,
+              124.5,
+              247.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              237.85,
+              301.97,
+              247.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              378.99,
+              237.85,
+              389.0,
+              247.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              428.48,
+              237.85,
+              445.99,
+              247.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              237.85,
+              544.99,
+              247.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 25,
+      "part_number": "FLT-P-200",
+      "description": "Suodatinpatruuna P-200, selluloosa, 10 µm",
+      "quantity": "4",
+      "unit": "kpl",
+      "unit_price": "17.40",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "69.60",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              254.85,
+              130.98,
+              264.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              254.85,
+              324.68,
+              264.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              383.99,
+              254.85,
+              389.0,
+              264.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              423.48,
+              254.85,
+              445.99,
+              264.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              522.48,
+              254.85,
+              544.99,
+              264.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 26,
+      "part_number": "FLT-P-200",
+      "description": "Suodatinpatruuna P-200, selluloosa, 10 µm",
+      "quantity": "10",
+      "unit": "kpl",
+      "unit_price": "17.40",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "174.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              271.86,
+              130.98,
+              281.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              271.86,
+              324.68,
+              281.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              378.99,
+              271.86,
+              389.0,
+              281.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              423.48,
+              271.86,
+              445.99,
+              281.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              271.86,
+              544.99,
+              281.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 27,
+      "part_number": "BRK-ST-3",
+      "description": "Teräskannatin 3 mm, 60 x 60 x 40, käsittelemätön",
+      "quantity": "5",
+      "unit": "kpl",
+      "unit_price": "2.30",
+      "discount_pct": null,
+      "vat_rate": "0",
+      "net_amount": "11.50",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              288.86,
+              128.97,
+              298.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              288.86,
+              350.95,
+              298.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              383.99,
+              288.86,
+              389.0,
+              298.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              428.48,
+              288.86,
+              445.99,
+              298.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              522.48,
+              288.86,
+              544.99,
+              298.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 28,
+      "part_number": "SW-API-10K",
+      "description": "API-kiintiö, 10 000 kutsua kuukaudessa",
+      "quantity": "10",
+      "unit": "paketti",
+      "unit_price": "89.00",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "890.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              305.86,
+              138.96,
+              315.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              305.86,
+              309.49,
+              315.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              378.99,
+              305.86,
+              389.0,
+              315.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              423.48,
+              305.86,
+              445.99,
+              315.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              305.86,
+              544.99,
+              315.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 29,
+      "part_number": "CBL-H07-25",
+      "description": "Kaapeli H07V-K 2,5 mm², musta, 100 m kela",
+      "quantity": "20",
+      "unit": "kela",
+      "unit_price": "48.90",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "978.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              322.86,
+              138.0,
+              332.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              322.86,
+              329.94,
+              332.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              378.99,
+              322.86,
+              389.0,
+              332.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              423.48,
+              322.86,
+              445.99,
+              332.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              322.86,
+              544.99,
+              332.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 30,
+      "part_number": "SNS-T-PT1",
+      "description": "Lämpötila-anturi PT100, 3-johtiminen, -50…+200 °C",
+      "quantity": "40",
+      "unit": "kpl",
+      "unit_price": "22.75",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "910.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              339.86,
+              134.46,
+              349.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              339.86,
+              359.31,
+              349.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              378.99,
+              339.86,
+              389.0,
+              349.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              423.48,
+              339.86,
+              445.99,
+              349.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              339.86,
+              544.99,
+              349.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 31,
+      "part_number": "SW-LIC-PRO",
+      "description": "ProSuite-lisenssi, 1 työasema, 12 kuukautta",
+      "quantity": "2",
+      "unit": "lisenssi",
+      "unit_price": "349.00",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "698.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              356.86,
+              141.96,
+              366.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              356.86,
+              326.97,
+              366.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              383.99,
+              356.86,
+              389.0,
+              366.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              418.47,
+              356.86,
+              445.99,
+              366.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              517.47,
+              356.86,
+              544.99,
+              366.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 32,
+      "part_number": "SRV-TRN-D",
+      "description": "Peruskoulutus, 1 päivä, enintään 8 osallistujaa",
+      "quantity": "50",
+      "unit": "päivä",
+      "unit_price": "780.00",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "39000.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              373.86,
+              137.46,
+              383.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              373.86,
+              336.99,
+              383.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              378.99,
+              373.86,
+              389.0,
+              383.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              418.47,
+              373.86,
+              445.99,
+              383.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              507.46,
+              373.86,
+              544.98,
+              383.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 33,
+      "part_number": "SRV-ANA-H",
+      "description": "Analyysi ja dokumentointi, tunnilta",
+      "quantity": "100",
+      "unit": "tunti",
+      "unit_price": "115.0000",
+      "discount_pct": null,
+      "vat_rate": "0",
+      "net_amount": "11500.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              390.86,
+              137.46,
+              400.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              390.86,
+              287.48,
+              400.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              373.98,
+              390.86,
+              389.0,
+              400.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              408.46,
+              390.86,
+              445.98,
+              400.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              507.46,
+              390.86,
+              544.98,
+              400.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 34,
+      "part_number": "ENC-IP65",
+      "description": "Kotelo IP65, 300 x 200 x 120",
+      "quantity": "1",
+      "unit": "kpl",
+      "unit_price": "45.50",
+      "discount_pct": null,
+      "vat_rate": "0",
+      "net_amount": "45.50",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              407.86,
+              128.48,
+              417.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              407.86,
+              267.48,
+              417.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              383.99,
+              407.86,
+              389.0,
+              417.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              423.48,
+              407.86,
+              445.99,
+              417.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              522.48,
+              407.86,
+              544.99,
+              417.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 35,
+      "part_number": "SRV-TRN-D",
+      "description": "Peruskoulutus, 1 päivä, enintään 8 osallistujaa",
+      "quantity": "40",
+      "unit": "päivä",
+      "unit_price": "780.00",
+      "discount_pct": null,
+      "vat_rate": "14",
+      "net_amount": "31200.00",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              424.86,
+              137.46,
+              434.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              424.86,
+              336.99,
+              434.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              378.99,
+              424.86,
+              389.0,
+              434.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              418.47,
+              424.86,
+              445.99,
+              434.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              507.46,
+              424.86,
+              544.98,
+              434.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    },
+    {
+      "pos": 36,
+      "part_number": "FLT-P-200",
+      "description": "Suodatinpatruuna P-200, selluloosa, 10 µm",
+      "quantity": "3",
+      "unit": "kpl",
+      "unit_price": "17.40",
+      "discount_pct": null,
+      "vat_rate": "25.5",
+      "net_amount": "52.20",
+      "section": null,
+      "cells": {
+        "part_number": [
+          {
+            "page": 2,
+            "bbox": [
+              88.0,
+              441.86,
+              130.98,
+              451.9
+            ]
+          }
+        ],
+        "description": [
+          {
+            "page": 2,
+            "bbox": [
+              152.0,
+              441.86,
+              324.68,
+              451.9
+            ]
+          }
+        ],
+        "quantity": [
+          {
+            "page": 2,
+            "bbox": [
+              383.99,
+              441.86,
+              389.0,
+              451.9
+            ]
+          }
+        ],
+        "unit_price": [
+          {
+            "page": 2,
+            "bbox": [
+              423.48,
+              441.86,
+              445.99,
+              451.9
+            ]
+          }
+        ],
+        "net_amount": [
+          {
+            "page": 2,
+            "bbox": [
+              522.48,
+              441.86,
+              544.99,
+              451.9
+            ]
+          }
+        ]
+      },
+      "sub_items": []
+    }
+  ],
+  "charges": [],
+  "vat_summary": [
+    {
+      "rate": "0",
+      "base": "11557.00",
+      "vat": "0.00",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            484.86,
+            65.5,
+            494.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            162.46,
+            484.86,
+            199.98,
+            494.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            262.48,
+            484.86,
+            279.99,
+            494.9
+          ]
+        }
+      ]
+    },
+    {
+      "rate": "14",
+      "base": "51925.60",
+      "vat": "7269.58",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            496.86,
+            70.5,
+            506.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            162.46,
+            496.86,
+            199.98,
+            506.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            247.47,
+            496.86,
+            279.98,
+            506.9
+          ]
+        }
+      ]
+    },
+    {
+      "rate": "25.5",
+      "base": "174235.36",
+      "vat": "44430.02",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            508.86,
+            78.0,
+            518.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            157.46,
+            508.86,
+            199.98,
+            518.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            242.46,
+            508.86,
+            279.98,
+            518.9
+          ]
+        }
+      ]
+    }
+  ],
+  "secondary_amounts": null,
+  "parties": {
+    "supplier": {
+      "name": "Tuulimäki Kauppa Oyj",
+      "lines": [
+        "Verstaskatu 47",
+        "05672 Lahti",
+        "Suomi"
+      ],
+      "vat_id": "FI77069556",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            50.24,
+            186.37,
+            64.74
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            69.86,
+            109.99,
+            79.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            81.86,
+            97.02,
+            91.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            93.86,
+            75.5,
+            103.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            50.24,
+            186.37,
+            64.74
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            69.86,
+            109.99,
+            79.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            81.86,
+            97.02,
+            91.9
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            93.86,
+            75.5,
+            103.9
+          ]
+        }
+      ]
+    },
+    "bill_to": {
+      "name": "Koivuranta Teollisuustarvike Oy",
+      "lines": [
+        "Verstaskatu 35",
+        "46281 Kuopio",
+        "Suomi"
+      ],
+      "vat_id": "FI91390996",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            225.85,
+            187.41,
+            235.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            237.85,
+            109.99,
+            247.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            249.85,
+            105.52,
+            259.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            261.86,
+            75.5,
+            271.9
+          ]
+        }
+      ]
+    },
+    "ship_to": {
+      "name": "Koivuranta Kauppa Ky",
+      "lines": [
+        "Satamatie 145",
+        "09378 Lahti",
+        "Suomi"
+      ],
+      "vat_id": "FI48219935",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            225.85,
+            416.43,
+            235.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            237.85,
+            378.0,
+            247.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            249.85,
+            367.02,
+            259.9
+          ]
+        },
+        {
+          "page": 1,
+          "bbox": [
+            320.0,
+            261.86,
+            345.5,
+            271.9
+          ]
+        }
+      ]
+    },
+    "mail_to": null
+  },
+  "noise": [
+    {
+      "kind": "carry_forward",
+      "label": "Siirtyy",
+      "page": 1,
+      "bbox": [
+        502.46,
+        718.85,
+        544.98,
+        728.9
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        751.66,
+        204.36,
+        759.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        761.66,
+        201.65,
+        769.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 1,
+      "bbox": [
+        50.0,
+        771.66,
+        280.62,
+        779.48
+      ]
+    },
+    {
+      "kind": "carry_forward",
+      "label": "Siirto edelliseltä sivulta",
+      "page": 2,
+      "bbox": [
+        502.46,
+        219.85,
+        544.98,
+        229.9
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        751.66,
+        204.36,
+        759.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        761.66,
+        201.65,
+        769.48
+      ]
+    },
+    {
+      "kind": "footer_legal",
+      "label": null,
+      "page": 2,
+      "bbox": [
+        50.0,
+        771.66,
+        280.62,
+        779.48
+      ]
+    }
+  ]
+}

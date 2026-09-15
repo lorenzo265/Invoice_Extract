@@ -20,7 +20,10 @@ from invoice_forge.fields import (
     METADATA_FIELDS,
     SCALAR_FIELDS,
     TABLE_COLUMNS,
+    TRUTH_FIELDS,
+    UNLABELLED_FIELDS,
 )
+from invoice_forge.lexicon.loader import bundled_lexicon_ids, load_lexicon
 from invoice_forge.lexicon.schema import HEADER_FIELDS, TOTALS_FIELDS
 from invoice_forge.model import Identifiers
 from invoice_forge.model.items import LineItem as ForgedItem
@@ -34,7 +37,7 @@ DECLARED_AS_CUSTOM = tuple(
 
 def test_the_extractor_reads_only_names_the_generator_writes() -> None:
     """A spec that read a name no truth file can hold would be scored against nothing."""
-    assert set(FIELD_ORDER) <= set(LABELLED_FIELDS)
+    assert set(FIELD_ORDER) <= set(TRUTH_FIELDS)
 
 
 def test_the_generator_writes_every_field_at_the_core_of_an_invoice() -> None:
@@ -97,3 +100,19 @@ def test_the_article_number_column_is_called_part_number_in_both_packages() -> N
 
 def test_no_name_is_declared_twice() -> None:
     assert len(set(LABELLED_FIELDS)) == len(LABELLED_FIELDS)
+
+
+def test_an_unlabelled_field_is_not_one_a_lexicon_gives_labels_for() -> None:
+    """The set that keeps the corpus still while a field is added to the truth.
+
+    `header_labels` has one entry per name of `LABELLED_FIELDS`, and the renderer draws
+    one synonym per entry per document — so a name added there changes how often the
+    generator's own random source is drawn from, and every document after the change
+    comes out different. A field the truth records but no vendor labels goes in
+    `UNLABELLED_FIELDS` instead, where it costs no draw.
+    """
+    assert not set(UNLABELLED_FIELDS) & set(LABELLED_FIELDS)
+    assert TRUTH_FIELDS == LABELLED_FIELDS + UNLABELLED_FIELDS
+    for language in bundled_lexicon_ids():
+        declared = load_lexicon(language).header_labels
+        assert not set(UNLABELLED_FIELDS) & set(declared), language

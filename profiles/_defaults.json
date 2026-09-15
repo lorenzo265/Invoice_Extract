@@ -80,6 +80,19 @@
         "r1c2"
       ]
     },
+    "iban": {
+      "labels": [
+        "IBAN"
+      ],
+      "zones": [
+        "r3c1",
+        "r3c2",
+        "r2c1"
+      ],
+      "placement": "pattern",
+      "pattern": "[A-Z]{2}[0-9]{2}(?:[ ]?[A-Z0-9]{1,4})+",
+      "required": false
+    },
     "currency": {
       "labels": [
         "@header_labels.currency"

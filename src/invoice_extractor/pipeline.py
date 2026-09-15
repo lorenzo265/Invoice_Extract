@@ -36,6 +36,7 @@ from invoice_extractor.extraction.vat_summary import extract_vat_summary
 from invoice_extractor.profile.detect import ProfileScore, detect_profile
 from invoice_extractor.profile.registry import ProfileRegistry
 from invoice_extractor.profile.schema import Profile
+from invoice_extractor.profile.variants import select_variant
 from invoice_extractor.reconcile.stage import Reconciliation, reconcile
 from invoice_extractor.scoring.compute import compute
 from invoice_extractor.scoring.signals import ScoringContext, extract_signals
@@ -52,7 +53,8 @@ def extract(pdf_path: Path, registry: ProfileRegistry) -> InvoiceResult:
     profile, scores = detect_profile(document, registry, pdf_path.name)
     if profile is None:
         return _undetected(document, scores)
-    return _extracted(document, profile, scores[0].score if scores else 0.0)
+    selected = select_variant(document, profile, registry.root)
+    return _extracted(document, selected, scores[0].score if scores else 0.0)
 
 
 def _extracted(document: Document, profile: Profile, matched: float) -> InvoiceResult:
@@ -68,8 +70,8 @@ def _extracted(document: Document, profile: Profile, matched: float) -> InvoiceR
     findings, checks = validate(facts)
     return InvoiceResult(
         fields=_scored(extractions, reconciled, _context(facts, checks, matched)),
-        line_items=table.items,
-        findings=(*table.findings, *reconciled.findings, *findings),
+        line_items=reconciled.items,
+        findings=(*_missing(extractions), *table.findings, *reconciled.findings, *findings),
         checks=checks,
         profile_id=profile.id,
         document_type=kind.value,
@@ -94,7 +96,7 @@ def _facts(
     return Facts(
         profile=profile,
         fields=reconciled.fields,
-        items=table.items,
+        items=reconciled.items,
         summary=summary,
         charges=reconciled.charges,
         parties=parties,
@@ -149,6 +151,11 @@ def _confidence(
         confidence_breakdown=scored.breakdown,
         confidence_source=scored.source,
     )
+
+
+def _missing(extractions: Mapping[str, Extraction]) -> tuple[Finding, ...]:
+    """What stage 4 had to report: a required field this document did not carry."""
+    return tuple(finding for name in FIELD_ORDER for finding in extractions[name].findings)
 
 
 def _parties(document: Document, profile: Profile) -> dict[str, Party]:

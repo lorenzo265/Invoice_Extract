@@ -39,6 +39,7 @@ VALUE_TYPES: Mapping[str, type] = {
     "due_date": date,
     "supplier_vat_id": str,
     "customer_vat_id": str,
+    "iban": str,
     "currency": str,
     "vat_rate": Decimal,
     "subtotal": Decimal,

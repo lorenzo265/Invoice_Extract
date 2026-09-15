@@ -222,8 +222,8 @@
       "Bestillingsdato"
     ],
     "delivery_date": [
-      "Leveringsdato",
-      "Sendt dato"
+      "Forsendelsesdato",
+      "Sendt den"
     ],
     "print_date": [
       "Utskriftsdato",

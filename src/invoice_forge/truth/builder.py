@@ -15,7 +15,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from invoice_forge import __version__
-from invoice_forge.fields import LABELLED_FIELDS
+from invoice_forge.fields import TRUTH_FIELDS
 from invoice_forge.model import Document, DocumentType, Party
 from invoice_forge.render.placement import Placement, Slot
 from invoice_forge.render.renderer import RenderRequest, RenderResult
@@ -77,7 +77,7 @@ def _fields(document: Document, wording: Wording, located: Located) -> dict[str,
     """Every canonical name, with `null`s where the document does not carry the value."""
     values = field_values(document, headline_rate(document.totals))
     printed = _by_slot(located, Slot.FIELD)
-    return {name: _field_entry(values.get(name), printed.get(name, ())) for name in LABELLED_FIELDS}
+    return {name: _field_entry(values.get(name), printed.get(name, ())) for name in TRUTH_FIELDS}
 
 
 def _field_entry(value: str | None, printed: Sequence[tuple[Placement, Evidence]]) -> object:

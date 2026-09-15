@@ -150,7 +150,7 @@ def test_at_least_one_currency_is_required(tmp_path: Path) -> None:
 
 def test_an_unknown_date_format_lists_the_known_ones(tmp_path: Path) -> None:
     data = base()
-    data["date_formats"] = ["dd.mm.yyyy", "mm/dd/yyyy"]
+    data["date_formats"] = ["dd.mm.yyyy", "yyyy/dd/mm"]
     assert error(tmp_path, data).startswith("date_formats[1] must be one of: ")
 
 

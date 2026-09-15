@@ -29,7 +29,7 @@ def test_a_document_that_says_everything_is_left_as_it_says_it() -> None:
     assert found.fields == fields
     assert found.charges == ()
     assert found.currency == "GBP"
-    assert found.links.items == (0,)
+    assert tuple(item.vat_line for item in found.items) == (0,)
     assert found.findings == ()
     assert found.caps == {}
 

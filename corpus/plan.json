@@ -2218,6 +2218,197 @@
         "sub_items",
         "wrapped_description"
       ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "classic",
+      "seed": 3001,
+      "knobs": [
+        "noise_footer",
+        "amount_in_words",
+        "stamp_copy",
+        "bank_footer"
+      ]
+    },
+    {
+      "profile": "fr-FR",
+      "family": "tabular",
+      "seed": 3002,
+      "knobs": [
+        "noise_footer",
+        "amount_in_words",
+        "section_subtotals"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "stacked",
+      "seed": 3003,
+      "knobs": [
+        "party_blocks",
+        "placeholder_addresses"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "stacked",
+      "seed": 3004,
+      "knobs": [
+        "trap_labels",
+        "extra_references"
+      ]
+    },
+    {
+      "profile": "de-AT",
+      "family": "tabular",
+      "seed": 3005,
+      "knobs": [
+        "trap_labels",
+        "extra_references",
+        "customer_vat_position"
+      ]
+    },
+    {
+      "profile": "nl-NL",
+      "family": "classic",
+      "seed": 3006,
+      "knobs": [
+        "trap_labels",
+        "extra_references",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "sv-SE",
+      "family": "minimal",
+      "seed": 3007,
+      "knobs": [
+        "trap_labels",
+        "supply_date"
+      ]
+    },
+    {
+      "profile": "el-GR",
+      "family": "tabular",
+      "seed": 3008,
+      "knobs": [
+        "trap_labels",
+        "supply_date",
+        "extra_references"
+      ]
+    },
+    {
+      "profile": "de-CH",
+      "family": "classic",
+      "seed": 3009,
+      "knobs": [
+        "thousands_variant",
+        "multi_rate",
+        "vat_summary_table"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "tabular",
+      "seed": 3010,
+      "knobs": [
+        "thousands_variant",
+        "charges",
+        "declared_charge"
+      ]
+    },
+    {
+      "profile": "de-DE",
+      "family": "tabular",
+      "seed": 3011,
+      "knobs": [
+        "thousands_variant",
+        "dual_currency_echo"
+      ]
+    },
+    {
+      "profile": "fi-FI",
+      "family": "classic",
+      "seed": 3012,
+      "knobs": [
+        "thousands_variant",
+        "multi_rate"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "classic",
+      "seed": 3013,
+      "knobs": [
+        "credit_note",
+        "extra_references",
+        "bank_footer"
+      ]
+    },
+    {
+      "profile": "en-GB",
+      "family": "minimal",
+      "seed": 3014,
+      "knobs": [
+        "credit_note"
+      ]
+    },
+    {
+      "profile": "it-IT",
+      "family": "classic",
+      "seed": 3015,
+      "knobs": [
+        "charges",
+        "declared_charge",
+        "undeclared_charge"
+      ]
+    },
+    {
+      "profile": "pl-PL",
+      "family": "tabular",
+      "seed": 3016,
+      "knobs": [
+        "undeclared_charge",
+        "multi_rate",
+        "vat_summary_table"
+      ]
+    },
+    {
+      "profile": "es-ES",
+      "family": "classic",
+      "seed": 3017,
+      "knobs": [
+        "trap_labels",
+        "undeclared_charge",
+        "multi_rate",
+        "carry_forward"
+      ]
+    },
+    {
+      "profile": "pt-PT",
+      "family": "classic",
+      "seed": 3018,
+      "knobs": [
+        "bank_footer",
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "cs-CZ",
+      "family": "minimal",
+      "seed": 3019,
+      "knobs": [
+        "payment_terms_block"
+      ]
+    },
+    {
+      "profile": "tr-TR",
+      "family": "tabular",
+      "seed": 3020,
+      "knobs": [
+        "bank_footer",
+        "noise_footer"
+      ]
     }
   ]
 }

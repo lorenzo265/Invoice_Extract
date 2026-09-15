@@ -529,6 +529,22 @@
       "printed": null,
       "label": null,
       "evidence": []
+    },
+    "iban": {
+      "value": "DE60427316723268656355",
+      "printed": "Schwarzbachbank · IBAN DE60 4273 1672 3268 6563 55 · BIC CXLADEV9XXX",
+      "label": "IBAN",
+      "evidence": [
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            672.76,
+            334.83,
+            681.69
+          ]
+        }
+      ]
     }
   },
   "line_items": [
@@ -3683,7 +3699,7 @@
     },
     {
       "kind": "trap_label",
-      "label": "Lieferdatum",
+      "label": "Versanddatum",
       "page": 1,
       "bbox": [
         493.46,
@@ -3749,7 +3765,7 @@
     },
     {
       "kind": "trap_label",
-      "label": "Lieferdatum",
+      "label": "Versanddatum",
       "page": 2,
       "bbox": [
         493.46,
@@ -3826,7 +3842,7 @@
     },
     {
       "kind": "trap_label",
-      "label": "Lieferdatum",
+      "label": "Versanddatum",
       "page": 3,
       "bbox": [
         493.46,
@@ -3892,7 +3908,7 @@
     },
     {
       "kind": "trap_label",
-      "label": "Lieferdatum",
+      "label": "Versanddatum",
       "page": 4,
       "bbox": [
         493.46,

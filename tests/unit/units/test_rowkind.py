@@ -96,6 +96,15 @@ def test_a_stop_label_outside_the_description_column_ends_the_table() -> None:
     assert kind(totals, stop=("Subtotal",)) is RowKind.STOP
 
 
+def test_a_stop_label_printed_clear_of_the_table_belongs_to_another_block() -> None:
+    """A vendor that sets its VAT summary on the left and its totals on the right prints
+    `Subtotal` beside a summary line and no part of the way across it. That word ends the
+    totals block; the summary runs on, because the two share a band and share no column.
+    """
+    alongside = row(200.0, cell("Subtotal", 600, 680, 200.0), cell("7.00", 700, 745, 200.0))
+    assert kind(alongside, stop=("Subtotal",)) is RowKind.OTHER
+
+
 def test_a_stop_label_inside_the_description_column_is_a_section_subtotal() -> None:
     """A table runs past its own sections' totals; only the totals block ends it."""
     section = row(200.0, cell("Subtotal Licences", 150, 250, 200.0), cell("7.00", 500, 545, 200.0))

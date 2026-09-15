@@ -365,6 +365,22 @@
       "printed": null,
       "label": null,
       "evidence": []
+    },
+    "iban": {
+      "value": "DE25004743957551313735",
+      "printed": "Sturmfelsbank · IBAN DE25 0047 4395 7551 3137 35 · BIC GPTTDEA4XXX",
+      "label": "IBAN",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            388.76,
+            321.01,
+            397.69
+          ]
+        }
+      ]
     }
   },
   "line_items": [

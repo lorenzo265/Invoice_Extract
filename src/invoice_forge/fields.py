@@ -49,6 +49,18 @@ METADATA_FIELDS: tuple[str, ...] = (
 # Every name a lexicon gives label synonyms for.
 LABELLED_FIELDS: tuple[str, ...] = (*SCALAR_FIELDS, *METADATA_FIELDS)
 
+# The names the truth records that no lexicon declares a label for. A vendor prints its
+# account number inside the run of text its bank details are, introduced by a word that
+# is `IBAN` in every language the corpus speaks — so there are no synonyms to draw, and
+# the extractor finds it by its shape instead (`docs/FIELD_CATALOG.md`). Keeping it out
+# of `LABELLED_FIELDS` is what keeps it out of `header_labels`, whose keys are what the
+# renderer draws a synonym for, one per document.
+UNLABELLED_FIELDS: tuple[str, ...] = ("iban",)
+
+# Every canonical name the truth carries an entry for, present with `null`s where the
+# document does not carry the value (`docs/GROUND_TRUTH_SCHEMA.md`).
+TRUTH_FIELDS: tuple[str, ...] = (*LABELLED_FIELDS, *UNLABELLED_FIELDS)
+
 # Every column a template family may print, beyond the five the extractor reads.
 EXTRA_COLUMNS: tuple[str, ...] = (
     "pos",

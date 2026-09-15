@@ -72,13 +72,15 @@ def plain(value: Decimal) -> str:
 
 
 def date_text(value: date, date_format: DateFormat, lexicon: Lexicon) -> str:
-    """One date in one of the five formats a profile may declare."""
+    """One date in one of the six formats a profile may declare."""
     if date_format is DateFormat.ISO:
         return value.isoformat()
     if date_format is DateFormat.DAY_DOT_MONTH:
         return f"{value.day:02d}.{value.month:02d}.{value.year}"
     if date_format is DateFormat.DAY_SLASH_MONTH:
         return f"{value.day:02d}/{value.month:02d}/{value.year}"
+    if date_format is DateFormat.MONTH_SLASH_DAY:
+        return f"{value.month:02d}/{value.day:02d}/{value.year}"
     if date_format is DateFormat.DAY_MONTH_NAME:
         return f"{value.day} {lexicon.months[value.month - 1]} {value.year}"
     return f"{value.day:02d}-{lexicon.month_abbreviations[value.month - 1]}-{value.year}"

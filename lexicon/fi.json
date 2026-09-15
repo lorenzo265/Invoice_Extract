@@ -24,7 +24,8 @@
     ],
     "due_date": [
       "Eräpäivä",
-      "Maksettava viimeistään"
+      "Maksettava viimeistään",
+      "Viimeinen maksupäivä"
     ],
     "supplier_vat_id": [
       "Y-tunnus",
@@ -221,8 +222,8 @@
       "Tilattu"
     ],
     "delivery_date": [
-      "Toimituspäivä",
-      "Lähetyspäivä"
+      "Lähetyspäivä",
+      "Lähetetty"
     ],
     "print_date": [
       "Tulostuspäivä",

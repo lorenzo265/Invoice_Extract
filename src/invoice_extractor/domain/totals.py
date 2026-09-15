@@ -40,6 +40,9 @@ class Charge:
     vat_rate: Decimal | None = None
     declared: bool = True
     evidence: Evidence | None = None
+    # Which line of the VAT summary taxes this charge, by position; `None` where the
+    # document prints no summary or more than one of its lines could be this one's.
+    vat_line: int | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -48,6 +51,7 @@ class Charge:
             "vat_rate": None if self.vat_rate is None else str(self.vat_rate),
             "declared": self.declared,
             "evidence": None if self.evidence is None else self.evidence.to_dict(),
+            "vat_line": self.vat_line,
         }
 
     @classmethod
@@ -62,6 +66,7 @@ class Charge:
             evidence=None
             if found is None
             else Evidence.from_dict(cast(Mapping[str, object], found)),
+            vat_line=_position(data.get("vat_line")),
         )
 
 
@@ -101,3 +106,7 @@ def _number(value: Decimal | None) -> str | None:
 
 def _decimal(raw: object) -> Decimal | None:
     return None if raw is None else Decimal(str(raw))
+
+
+def _position(raw: object) -> int | None:
+    return None if raw is None else int(str(raw))

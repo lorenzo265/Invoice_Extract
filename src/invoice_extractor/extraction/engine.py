@@ -16,6 +16,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
 from invoice_extractor.document.model import Document, TextLine, Zone
+from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import Evidence, FieldResult, Strategy
 from invoice_extractor.extraction.candidate import Candidate, Evaluated
 from invoice_extractor.extraction.spec import (
@@ -39,6 +40,8 @@ from invoice_extractor.profile.schema import FieldProfile, Profile
 # How many points of distance from its label make one candidate a clear winner over the
 # next: half an inch, which is wider than the gap between a label and its own value.
 GAP_SCALE = 36.0
+# What a required field that resolved nothing is reported as (ENGINE_SPEC §3).
+FIELD_MISSING = "field_missing"
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,12 +51,16 @@ class Extraction:
     `runner_up_gap` is how clearly the winner won, in points of distance from its label:
     `None` where nothing else was in the running, or where what came second said the same
     thing, because neither of those is a contest that was close.
+
+    `findings` is what the spec's `on_failure` had to say — a required field the vendor
+    prints and this document did not yield is a fact about the document, not a silence.
     """
 
     field: FieldResult
     candidate_count: int
     zone: Zone | None
     runner_up_gap: float | None = None
+    findings: tuple[Finding, ...] = ()
 
 
 def order(specs: Sequence[Spec]) -> tuple[Spec, ...]:
@@ -86,7 +93,9 @@ def run(
     ordered = _ranked(evaluated, spec, described)
     winner = _winner(ordered, spec)
     if winner is None:
-        return Extraction(_not_found(spec.name), len(candidates), None)
+        return Extraction(
+            _not_found(spec.name), len(candidates), None, findings=_missing(spec, described)
+        )
     return Extraction(
         field=_result(spec.name, winner),
         candidate_count=len(candidates),
@@ -198,13 +207,38 @@ def _winner(ordered: Sequence[Evaluated], spec: Collected) -> Evaluated | None:
     return None
 
 
+def _missing(spec: Spec, described: FieldProfile) -> tuple[Finding, ...]:
+    """`on_failure = not_found` on a field the vendor says it prints (ENGINE_SPEC §3).
+
+    A field the profile marks optional is one this vendor prints only sometimes, and a
+    document that leaves it out is not disagreeing with anything. A required one is the
+    vendor's own claim that every invoice carries it, so a document without it is a fact
+    worth reporting even though nothing about the arithmetic is wrong.
+    """
+    if spec.on_failure is not OnFailure.NOT_FOUND or not described.required:
+        return ()
+    return (
+        Finding(
+            severity=Severity.WARNING,
+            code=FIELD_MISSING,
+            message=f"{spec.name} is required by this profile and no value was read",
+            field=spec.name,
+        ),
+    )
+
+
 def _derived(
     spec: DerivedSpec, document: Document, profile: Profile, resolved: Mapping[str, FieldResult]
 ) -> Extraction:
     """A value computed rather than read, pointing at the line it was computed from."""
     derived = DERIVATIONS[spec.derive](document, profile, resolved)
     if derived is None:
-        return Extraction(_not_found(spec.name), 0, None)
+        # A derivation that came to nothing is as much a missing required field as a
+        # label nothing matched: a document priced in a currency its vendor's profile
+        # does not list leaves `currency` unresolved, and saying so is the point.
+        described = profile.fields.get(spec.name)
+        missing = () if described is None else _missing(spec, described)
+        return Extraction(_not_found(spec.name), 0, None, findings=missing)
     field = FieldResult(
         name=spec.name,
         value=derived.value,

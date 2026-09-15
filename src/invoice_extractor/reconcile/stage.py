@@ -12,7 +12,8 @@ and returns the fields it made, and the pipeline keeps the last of them.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from typing import TypeVar
 
 from invoice_extractor.domain.findings import Finding
 from invoice_extractor.domain.models import FieldResult
@@ -25,10 +26,12 @@ from invoice_extractor.reconcile.amounts import (
     resolve_charges,
 )
 from invoice_extractor.reconcile.summary import (
-    Linked,
     cross_check_totals_vs_summary,
     link_items_to_vat_lines,
 )
+
+# The two kinds of row a VAT line taxes: something sold, and something charged for.
+Row = TypeVar("Row", LineItem, Charge)
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,8 +40,8 @@ class Reconciliation:
 
     fields: Mapping[str, FieldResult]
     charges: tuple[Charge, ...]
+    items: tuple[LineItem, ...]
     currency: str | None
-    links: Linked
     caps: Mapping[str, float]
     findings: tuple[Finding, ...]
 
@@ -57,9 +60,19 @@ def reconcile(
     links = link_items_to_vat_lines(items, resolved.charges, summary)
     return Reconciliation(
         fields=resolved.fields,
-        charges=resolved.charges,
+        charges=_linked(resolved.charges, links.charges),
+        items=_linked(items, links.items),
         currency=choose_currency_basis(resolved.fields, resolved.charges, profile),
-        links=links,
         caps=crossed.caps,
         findings=(*filled.findings, *resolved.findings, *crossed.findings, *links.findings),
     )
+
+
+def _linked(rows: Sequence[Row], lines: Sequence[int | None]) -> tuple[Row, ...]:
+    """Each row carrying the summary line that taxes it, which is what linking is for.
+
+    `link_items_to_vat_lines` answers the question once; a result that did not carry the
+    answer would make every later reader ask it again, and ADR-0002's rule that a value
+    travels with where it came from is the same rule for a row and its tax.
+    """
+    return tuple(replace(row, vat_line=line) for row, line in zip(rows, lines, strict=True))

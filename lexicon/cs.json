@@ -222,8 +222,8 @@
       "Objednáno dne"
     ],
     "delivery_date": [
-      "Datum dodání",
-      "Datum odeslání"
+      "Datum odeslání",
+      "Odesláno dne"
     ],
     "print_date": [
       "Datum tisku",

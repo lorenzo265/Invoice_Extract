@@ -107,6 +107,7 @@ class Matrix:
     vat_rows_agreed: int = 0
     vat_documents: int = 0
     detected: int = 0
+    document_type: Tally = field(default_factory=Tally)
     calibration: list[Tally] = field(default_factory=lambda: [Tally() for _ in BANDS])
 
     def add(self, score: DocumentScore) -> None:
@@ -115,6 +116,7 @@ class Matrix:
         self.rows_agreed += score.rows_expected == score.rows_found
         self.vat_rows_agreed += score.vat_rows_expected == score.vat_rows_found
         self.vat_documents += bool(score.vat_rows_expected)
+        self.document_type.count(_one(score.document_type))
         for scored in score.fields:
             self._add_field(score, scored)
         for column, counts in score.columns.items():
@@ -156,6 +158,7 @@ class Matrix:
                 "rows_agreed": self.vat_rows_agreed,
                 "columns": _tallies(self.vat_columns, SCORED_VAT_COLUMNS),
             },
+            "document_type": self.document_type.to_dict(),
             "parties": _tallies(self.parties),
             "charges": _tallies(self.charges, SCORED_CHARGE_KEYS),
             "secondary_amounts": _tallies(self.secondary, SECONDARY_KEYS),
@@ -169,6 +172,13 @@ def build(scores: Iterable[DocumentScore]) -> Matrix:
     for score in scores:
         matrix.add(score)
     return matrix
+
+
+def _one(outcome: Outcome) -> Counts:
+    """One document's document type, as the counts a tally adds up."""
+    counts = Counts()
+    counts.count(outcome)
+    return counts
 
 
 def _band(confidence: float) -> int:

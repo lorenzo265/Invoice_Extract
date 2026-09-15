@@ -6,168 +6,177 @@
     "generator_version": "0.3.0"
   },
   "matrix": {
-    "documents": 250,
-    "detected": 250,
+    "documents": 270,
+    "detected": 270,
     "fields": {
       "contract_number": {
-        "hit": 84,
+        "hit": 95,
         "miss": 0,
-        "absent": 166,
+        "absent": 175,
         "not_covered": 0,
-        "evidence_agreed": 84,
+        "evidence_agreed": 95,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "credit_reference": {
-        "hit": 40,
+        "hit": 42,
         "miss": 0,
-        "absent": 210,
+        "absent": 228,
         "not_covered": 0,
-        "evidence_agreed": 40,
+        "evidence_agreed": 42,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "currency": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 241,
+        "evidence_agreed": 260,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "customer_number": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 250,
+        "evidence_agreed": 270,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "customer_vat_id": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 250,
+        "evidence_agreed": 270,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "due_date": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 250,
+        "evidence_agreed": 270,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
-      "invoice_date": {
-        "hit": 250,
-        "miss": 0,
-        "absent": 0,
-        "not_covered": 0,
-        "evidence_agreed": 250,
-        "found_nothing": 0,
-        "hit_rate": 1.0
-      },
-      "invoice_number": {
-        "hit": 250,
-        "miss": 0,
-        "absent": 0,
-        "not_covered": 0,
-        "evidence_agreed": 250,
-        "found_nothing": 0,
-        "hit_rate": 1.0
-      },
-      "order_number": {
-        "hit": 250,
-        "miss": 0,
-        "absent": 0,
-        "not_covered": 0,
-        "evidence_agreed": 250,
-        "found_nothing": 0,
-        "hit_rate": 1.0
-      },
-      "our_reference": {
-        "hit": 29,
-        "miss": 0,
-        "absent": 221,
-        "not_covered": 0,
-        "evidence_agreed": 29,
-        "found_nothing": 0,
-        "hit_rate": 1.0
-      },
-      "payment_terms": {
+      "iban": {
         "hit": 189,
         "miss": 0,
-        "absent": 61,
+        "absent": 81,
         "not_covered": 0,
         "evidence_agreed": 189,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
-      "subtotal": {
-        "hit": 250,
+      "invoice_date": {
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 250,
+        "evidence_agreed": 270,
+        "found_nothing": 0,
+        "hit_rate": 1.0
+      },
+      "invoice_number": {
+        "hit": 270,
+        "miss": 0,
+        "absent": 0,
+        "not_covered": 0,
+        "evidence_agreed": 270,
+        "found_nothing": 0,
+        "hit_rate": 1.0
+      },
+      "order_number": {
+        "hit": 270,
+        "miss": 0,
+        "absent": 0,
+        "not_covered": 0,
+        "evidence_agreed": 270,
+        "found_nothing": 0,
+        "hit_rate": 1.0
+      },
+      "our_reference": {
+        "hit": 36,
+        "miss": 0,
+        "absent": 234,
+        "not_covered": 0,
+        "evidence_agreed": 36,
+        "found_nothing": 0,
+        "hit_rate": 1.0
+      },
+      "payment_terms": {
+        "hit": 204,
+        "miss": 0,
+        "absent": 66,
+        "not_covered": 0,
+        "evidence_agreed": 204,
+        "found_nothing": 0,
+        "hit_rate": 1.0
+      },
+      "subtotal": {
+        "hit": 270,
+        "miss": 0,
+        "absent": 0,
+        "not_covered": 0,
+        "evidence_agreed": 270,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "supplier_vat_id": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 250,
+        "evidence_agreed": 270,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "supply_date": {
-        "hit": 190,
-        "miss": 9,
-        "absent": 51,
+        "hit": 204,
+        "miss": 0,
+        "absent": 66,
         "not_covered": 0,
-        "evidence_agreed": 190,
+        "evidence_agreed": 204,
         "found_nothing": 0,
-        "hit_rate": 0.9547738693467337
+        "hit_rate": 1.0
       },
       "total_amount": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 250,
+        "evidence_agreed": 270,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "vat_amount": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 250,
+        "evidence_agreed": 270,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "vat_rate": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 248,
+        "evidence_agreed": 268,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "your_reference": {
-        "hit": 140,
+        "hit": 150,
         "miss": 0,
-        "absent": 110,
+        "absent": 120,
         "not_covered": 0,
-        "evidence_agreed": 140,
+        "evidence_agreed": 150,
         "found_nothing": 0,
         "hit_rate": 1.0
       }
@@ -177,7 +186,7 @@
         "contract_number": {
           "hit": 1,
           "miss": 0,
-          "absent": 9,
+          "absent": 10,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -186,151 +195,160 @@
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 8,
+          "absent": 9,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 6,
+          "miss": 0,
+          "absent": 5,
+          "not_covered": 0,
+          "evidence_agreed": 6,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 9,
+          "absent": 10,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 6,
+          "hit": 7,
           "miss": 0,
           "absent": 4,
           "not_covered": 0,
-          "evidence_agreed": 6,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 9,
+          "hit": 10,
           "miss": 0,
           "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 9,
+          "evidence_agreed": 10,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 9,
+          "absent": 10,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -389,6 +407,15 @@
           "absent": 0,
           "not_covered": 0,
           "evidence_agreed": 9,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 7,
+          "miss": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
@@ -503,142 +530,160 @@
       },
       "de-AT": {
         "contract_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 12,
+          "absent": 13,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 12,
+          "miss": 0,
+          "absent": 3,
+          "not_covered": 0,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
-          "hit": 1,
+          "hit": 2,
           "miss": 0,
           "absent": 13,
           "not_covered": 0,
-          "evidence_agreed": 1,
+          "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 3,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 13,
-          "miss": 1,
-          "absent": 0,
+          "hit": 14,
+          "miss": 0,
+          "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
-          "hit_rate": 0.9285714285714286
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 14,
+          "hit": 15,
+          "miss": 0,
+          "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 15,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "vat_rate": {
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -646,21 +691,12 @@
           "found_nothing": 0,
           "hit_rate": 1.0
         },
-        "vat_rate": {
-          "hit": 14,
-          "miss": 0,
-          "absent": 0,
-          "not_covered": 0,
-          "evidence_agreed": 13,
-          "found_nothing": 0,
-          "hit_rate": 1.0
-        },
         "your_reference": {
-          "hit": 1,
+          "hit": 2,
           "miss": 0,
           "absent": 13,
           "not_covered": 0,
-          "evidence_agreed": 1,
+          "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
@@ -669,7 +705,7 @@
         "contract_number": {
           "hit": 0,
           "miss": 0,
-          "absent": 11,
+          "absent": 12,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
@@ -678,151 +714,160 @@
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 9,
+          "absent": 10,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 6,
+          "miss": 0,
+          "absent": 6,
+          "not_covered": 0,
+          "evidence_agreed": 6,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 0,
           "miss": 0,
-          "absent": 11,
+          "absent": 12,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 6,
+          "hit": 7,
           "miss": 0,
           "absent": 5,
           "not_covered": 0,
-          "evidence_agreed": 6,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
           "hit": 0,
           "miss": 0,
-          "absent": 11,
+          "absent": 12,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
@@ -831,162 +876,171 @@
       },
       "de-DE": {
         "contract_number": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 13,
+          "absent": 16,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 18,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 15,
+          "miss": 0,
+          "absent": 3,
           "not_covered": 0,
           "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 14,
+          "absent": 17,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 14,
+          "hit": 16,
           "miss": 0,
-          "absent": 1,
+          "absent": 2,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 14,
+          "hit": 17,
           "miss": 0,
           "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 17,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 15,
+          "hit": 18,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 18,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 14,
+          "absent": 17,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -995,328 +1049,346 @@
       },
       "el-GR": {
         "contract_number": {
-          "hit": 1,
+          "hit": 2,
           "miss": 0,
           "absent": 9,
           "not_covered": 0,
-          "evidence_agreed": 1,
+          "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 8,
+          "absent": 9,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 7,
+          "miss": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
-          "hit": 1,
+          "hit": 2,
           "miss": 0,
           "absent": 9,
           "not_covered": 0,
-          "evidence_agreed": 1,
+          "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 6,
+          "hit": 7,
           "miss": 0,
           "absent": 4,
           "not_covered": 0,
-          "evidence_agreed": 6,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
           "hit": 9,
-          "miss": 1,
-          "absent": 0,
+          "miss": 0,
+          "absent": 2,
           "not_covered": 0,
           "evidence_agreed": 9,
           "found_nothing": 0,
-          "hit_rate": 0.9
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "en-GB": {
         "contract_number": {
-          "hit": 1,
+          "hit": 3,
           "miss": 0,
-          "absent": 15,
+          "absent": 17,
           "not_covered": 0,
-          "evidence_agreed": 1,
+          "evidence_agreed": 3,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
-          "hit": 2,
+          "hit": 4,
           "miss": 0,
-          "absent": 14,
+          "absent": 16,
           "not_covered": 0,
-          "evidence_agreed": 2,
+          "evidence_agreed": 4,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 15,
+          "miss": 0,
+          "absent": 5,
+          "not_covered": 0,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 14,
+          "hit": 16,
           "miss": 0,
-          "absent": 2,
+          "absent": 4,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
           "hit": 1,
           "miss": 0,
-          "absent": 15,
+          "absent": 19,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 16,
+          "hit": 20,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 16,
+          "evidence_agreed": 20,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
@@ -1373,6 +1445,15 @@
           "absent": 0,
           "not_covered": 0,
           "evidence_agreed": 18,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 12,
+          "miss": 0,
+          "absent": 6,
+          "not_covered": 0,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
@@ -1489,7 +1570,7 @@
         "contract_number": {
           "hit": 1,
           "miss": 0,
-          "absent": 13,
+          "absent": 14,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -1498,315 +1579,333 @@
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 12,
+          "absent": 13,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 13,
+          "miss": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 13,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 13,
+          "absent": 14,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 13,
-          "miss": 1,
-          "absent": 0,
+          "hit": 14,
+          "miss": 0,
+          "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
-          "hit_rate": 0.9285714285714286
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "fi-FI": {
         "contract_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 8,
+          "absent": 9,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 7,
+          "miss": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 9,
+          "absent": 10,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 6,
+          "hit": 7,
           "miss": 0,
           "absent": 4,
           "not_covered": 0,
-          "evidence_agreed": 6,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 9,
+          "hit": 10,
           "miss": 0,
           "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 9,
+          "evidence_agreed": 10,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 10,
+          "hit": 11,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 9,
+          "absent": 10,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -1865,6 +1964,15 @@
           "absent": 0,
           "not_covered": 0,
           "evidence_agreed": 13,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 8,
+          "miss": 0,
+          "absent": 5,
+          "not_covered": 0,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
@@ -1981,7 +2089,7 @@
         "contract_number": {
           "hit": 1,
           "miss": 0,
-          "absent": 12,
+          "absent": 13,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -1990,153 +2098,162 @@
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 11,
+          "absent": 12,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 10,
+          "miss": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 10,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 12,
+          "absent": 13,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 9,
+          "hit": 10,
           "miss": 0,
           "absent": 4,
           "not_covered": 0,
-          "evidence_agreed": 9,
+          "evidence_agreed": 10,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 12,
+          "hit": 13,
           "miss": 0,
           "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 12,
+          "evidence_agreed": 13,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
@@ -2193,6 +2310,15 @@
           "absent": 0,
           "not_covered": 0,
           "evidence_agreed": 7,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 2,
+          "miss": 0,
+          "absent": 5,
+          "not_covered": 0,
+          "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
@@ -2307,164 +2433,173 @@
       },
       "it-IT": {
         "contract_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 12,
+          "absent": 13,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 13,
+          "miss": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 13,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 13,
+          "absent": 14,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 13,
+          "hit": 14,
           "miss": 0,
           "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 13,
-          "miss": 1,
-          "absent": 0,
+          "hit": 14,
+          "miss": 0,
+          "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 13,
+          "evidence_agreed": 14,
           "found_nothing": 0,
-          "hit_rate": 0.9285714285714286
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 14,
+          "hit": 15,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 14,
+          "evidence_agreed": 15,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
@@ -2521,6 +2656,15 @@
           "absent": 0,
           "not_covered": 0,
           "evidence_agreed": 11,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 7,
+          "miss": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
@@ -2589,12 +2733,12 @@
         },
         "supply_date": {
           "hit": 10,
-          "miss": 1,
-          "absent": 0,
+          "miss": 0,
+          "absent": 1,
           "not_covered": 0,
           "evidence_agreed": 10,
           "found_nothing": 0,
-          "hit_rate": 0.9090909090909091
+          "hit_rate": 1.0
         },
         "total_amount": {
           "hit": 11,
@@ -2635,25 +2779,25 @@
       },
       "nl-NL": {
         "contract_number": {
-          "hit": 1,
+          "hit": 2,
           "miss": 0,
           "absent": 14,
           "not_covered": 0,
-          "evidence_agreed": 1,
+          "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 13,
+          "absent": 14,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -2662,137 +2806,146 @@
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
-        "invoice_date": {
-          "hit": 15,
-          "miss": 0,
-          "absent": 0,
-          "not_covered": 0,
-          "evidence_agreed": 15,
-          "found_nothing": 0,
-          "hit_rate": 1.0
-        },
-        "invoice_number": {
-          "hit": 15,
-          "miss": 0,
-          "absent": 0,
-          "not_covered": 0,
-          "evidence_agreed": 15,
-          "found_nothing": 0,
-          "hit_rate": 1.0
-        },
-        "order_number": {
-          "hit": 15,
-          "miss": 0,
-          "absent": 0,
-          "not_covered": 0,
-          "evidence_agreed": 15,
-          "found_nothing": 0,
-          "hit_rate": 1.0
-        },
-        "our_reference": {
-          "hit": 1,
-          "miss": 0,
-          "absent": 14,
-          "not_covered": 0,
-          "evidence_agreed": 1,
-          "found_nothing": 0,
-          "hit_rate": 1.0
-        },
-        "payment_terms": {
+        "iban": {
           "hit": 13,
           "miss": 0,
-          "absent": 2,
+          "absent": 3,
           "not_covered": 0,
           "evidence_agreed": 13,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
-        "subtotal": {
-          "hit": 15,
+        "invoice_date": {
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "invoice_number": {
+          "hit": 16,
+          "miss": 0,
+          "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 16,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "order_number": {
+          "hit": 16,
+          "miss": 0,
+          "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 16,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "our_reference": {
+          "hit": 2,
+          "miss": 0,
+          "absent": 14,
+          "not_covered": 0,
+          "evidence_agreed": 2,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "payment_terms": {
+          "hit": 14,
+          "miss": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 14,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "subtotal": {
+          "hit": 16,
+          "miss": 0,
+          "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
           "hit": 14,
-          "miss": 1,
-          "absent": 0,
+          "miss": 0,
+          "absent": 2,
           "not_covered": 0,
           "evidence_agreed": 14,
           "found_nothing": 0,
-          "hit_rate": 0.9333333333333333
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 15,
+          "hit": 16,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 15,
+          "evidence_agreed": 16,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
@@ -2849,6 +3002,15 @@
           "absent": 0,
           "not_covered": 0,
           "evidence_agreed": 12,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 10,
+          "miss": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 10,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
@@ -2963,162 +3125,171 @@
       },
       "pl-PL": {
         "contract_number": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 9,
+          "absent": 10,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 10,
+          "miss": 0,
+          "absent": 2,
+          "not_covered": 0,
+          "evidence_agreed": 10,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 10,
+          "absent": 11,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 9,
+          "hit": 10,
           "miss": 0,
           "absent": 2,
           "not_covered": 0,
-          "evidence_agreed": 9,
+          "evidence_agreed": 10,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 10,
-          "miss": 1,
-          "absent": 0,
+          "hit": 11,
+          "miss": 0,
+          "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
-          "hit_rate": 0.9090909090909091
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 10,
+          "evidence_agreed": 11,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 10,
+          "absent": 11,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -3129,7 +3300,7 @@
         "contract_number": {
           "hit": 0,
           "miss": 0,
-          "absent": 8,
+          "absent": 9,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
@@ -3138,151 +3309,160 @@
         "credit_reference": {
           "hit": 2,
           "miss": 0,
-          "absent": 6,
+          "absent": 7,
           "not_covered": 0,
           "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 4,
+          "miss": 0,
+          "absent": 5,
+          "not_covered": 0,
+          "evidence_agreed": 4,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 0,
           "miss": 0,
-          "absent": 8,
+          "absent": 9,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
           "hit_rate": null
         },
         "payment_terms": {
-          "hit": 5,
+          "hit": 6,
           "miss": 0,
           "absent": 3,
           "not_covered": 0,
-          "evidence_agreed": 5,
+          "evidence_agreed": 6,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 8,
+          "hit": 9,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
           "hit": 0,
           "miss": 0,
-          "absent": 8,
+          "absent": 9,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
@@ -3341,6 +3521,15 @@
           "absent": 0,
           "not_covered": 0,
           "evidence_agreed": 5,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 2,
+          "miss": 0,
+          "absent": 3,
+          "not_covered": 0,
+          "evidence_agreed": 2,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
@@ -3409,12 +3598,12 @@
         },
         "supply_date": {
           "hit": 4,
-          "miss": 1,
-          "absent": 0,
+          "miss": 0,
+          "absent": 1,
           "not_covered": 0,
           "evidence_agreed": 4,
           "found_nothing": 0,
-          "hit_rate": 0.8
+          "hit_rate": 1.0
         },
         "total_amount": {
           "hit": 5,
@@ -3457,7 +3646,7 @@
         "contract_number": {
           "hit": 0,
           "miss": 0,
-          "absent": 7,
+          "absent": 8,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
@@ -3466,79 +3655,88 @@
         "credit_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 6,
+          "absent": 7,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 5,
+          "miss": 0,
+          "absent": 3,
+          "not_covered": 0,
+          "evidence_agreed": 5,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 0,
           "miss": 0,
-          "absent": 7,
+          "absent": 8,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
@@ -3547,70 +3745,70 @@
         "payment_terms": {
           "hit": 6,
           "miss": 0,
-          "absent": 1,
+          "absent": 2,
           "not_covered": 0,
           "evidence_agreed": 6,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 0,
+          "hit": 1,
           "miss": 0,
           "absent": 7,
           "not_covered": 0,
-          "evidence_agreed": 0,
+          "evidence_agreed": 1,
           "found_nothing": 0,
-          "hit_rate": null
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
           "hit": 0,
           "miss": 0,
-          "absent": 7,
+          "absent": 8,
           "not_covered": 0,
           "evidence_agreed": 0,
           "found_nothing": 0,
@@ -3621,7 +3819,7 @@
         "contract_number": {
           "hit": 1,
           "miss": 0,
-          "absent": 6,
+          "absent": 7,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -3630,79 +3828,88 @@
         "credit_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 6,
+          "absent": 7,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 5,
+          "miss": 0,
+          "absent": 3,
+          "not_covered": 0,
+          "evidence_agreed": 5,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 6,
+          "absent": 7,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -3711,70 +3918,70 @@
         "payment_terms": {
           "hit": 5,
           "miss": 0,
-          "absent": 2,
+          "absent": 3,
           "not_covered": 0,
           "evidence_agreed": 5,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 6,
-          "miss": 1,
-          "absent": 0,
+          "hit": 7,
+          "miss": 0,
+          "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 6,
+          "evidence_agreed": 7,
           "found_nothing": 0,
-          "hit_rate": 0.8571428571428571
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 7,
+          "hit": 8,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 7,
+          "evidence_agreed": 8,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
           "hit": 1,
           "miss": 0,
-          "absent": 6,
+          "absent": 7,
           "not_covered": 0,
           "evidence_agreed": 1,
           "found_nothing": 0,
@@ -3785,164 +3992,173 @@
     "by_family": {
       "classic": {
         "contract_number": {
-          "hit": 24,
+          "hit": 29,
           "miss": 0,
-          "absent": 44,
+          "absent": 47,
           "not_covered": 0,
-          "evidence_agreed": 24,
+          "evidence_agreed": 29,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
-          "absent": 57,
+          "absent": 64,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 66,
+          "evidence_agreed": 73,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 72,
+          "miss": 0,
+          "absent": 4,
+          "not_covered": 0,
+          "evidence_agreed": 72,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
-          "hit": 8,
+          "hit": 10,
           "miss": 0,
-          "absent": 60,
+          "absent": 66,
           "not_covered": 0,
-          "evidence_agreed": 8,
+          "evidence_agreed": 10,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 68,
+          "hit": 74,
           "miss": 0,
-          "absent": 0,
+          "absent": 2,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 74,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 51,
-          "miss": 3,
-          "absent": 14,
+          "hit": 57,
+          "miss": 0,
+          "absent": 19,
           "not_covered": 0,
-          "evidence_agreed": 51,
+          "evidence_agreed": 57,
           "found_nothing": 0,
-          "hit_rate": 0.9444444444444444
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 68,
+          "hit": 76,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 68,
+          "evidence_agreed": 76,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 30,
+          "hit": 34,
           "miss": 0,
-          "absent": 38,
+          "absent": 42,
           "not_covered": 0,
-          "evidence_agreed": 30,
+          "evidence_agreed": 34,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
@@ -3951,162 +4167,171 @@
         "contract_number": {
           "hit": 22,
           "miss": 0,
-          "absent": 45,
+          "absent": 48,
           "not_covered": 0,
           "evidence_agreed": 22,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
-          "hit": 11,
+          "hit": 12,
           "miss": 0,
-          "absent": 56,
+          "absent": 58,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 12,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 65,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
+        "iban": {
+          "hit": 0,
+          "miss": 0,
+          "absent": 70,
+          "not_covered": 0,
+          "evidence_agreed": 0,
+          "found_nothing": 0,
+          "hit_rate": null
+        },
         "invoice_date": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
-          "hit": 3,
+          "hit": 4,
           "miss": 0,
-          "absent": 64,
+          "absent": 66,
           "not_covered": 0,
-          "evidence_agreed": 3,
+          "evidence_agreed": 4,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 6,
+          "hit": 7,
           "miss": 0,
-          "absent": 61,
+          "absent": 63,
           "not_covered": 0,
-          "evidence_agreed": 6,
+          "evidence_agreed": 7,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 54,
-          "miss": 1,
-          "absent": 12,
+          "hit": 56,
+          "miss": 0,
+          "absent": 14,
           "not_covered": 0,
-          "evidence_agreed": 54,
+          "evidence_agreed": 56,
           "found_nothing": 0,
-          "hit_rate": 0.9818181818181818
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 67,
+          "evidence_agreed": 70,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 67,
+          "hit": 70,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 65,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 31,
+          "hit": 32,
           "miss": 0,
-          "absent": 36,
+          "absent": 38,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 32,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
@@ -4163,6 +4388,15 @@
           "absent": 0,
           "not_covered": 0,
           "evidence_agreed": 23,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 22,
+          "miss": 0,
+          "absent": 1,
+          "not_covered": 0,
+          "evidence_agreed": 22,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
@@ -4277,328 +4511,346 @@
       },
       "stacked": {
         "contract_number": {
-          "hit": 12,
+          "hit": 14,
           "miss": 0,
           "absent": 19,
           "not_covered": 0,
-          "evidence_agreed": 12,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 4,
           "miss": 0,
-          "absent": 27,
+          "absent": 29,
           "not_covered": 0,
           "evidence_agreed": 4,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 32,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "customer_number": {
+          "hit": 33,
+          "miss": 0,
+          "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 33,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "customer_vat_id": {
+          "hit": 33,
+          "miss": 0,
+          "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 33,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "due_date": {
+          "hit": 33,
+          "miss": 0,
+          "absent": 0,
+          "not_covered": 0,
+          "evidence_agreed": 33,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 30,
+          "miss": 0,
+          "absent": 3,
           "not_covered": 0,
           "evidence_agreed": 30,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
-        "customer_number": {
-          "hit": 31,
-          "miss": 0,
-          "absent": 0,
-          "not_covered": 0,
-          "evidence_agreed": 31,
-          "found_nothing": 0,
-          "hit_rate": 1.0
-        },
-        "customer_vat_id": {
-          "hit": 31,
-          "miss": 0,
-          "absent": 0,
-          "not_covered": 0,
-          "evidence_agreed": 31,
-          "found_nothing": 0,
-          "hit_rate": 1.0
-        },
-        "due_date": {
-          "hit": 31,
-          "miss": 0,
-          "absent": 0,
-          "not_covered": 0,
-          "evidence_agreed": 31,
-          "found_nothing": 0,
-          "hit_rate": 1.0
-        },
         "invoice_date": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
-          "hit": 2,
+          "hit": 3,
           "miss": 0,
-          "absent": 29,
+          "absent": 30,
           "not_covered": 0,
-          "evidence_agreed": 2,
+          "evidence_agreed": 3,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 25,
+          "hit": 26,
           "miss": 0,
-          "absent": 6,
+          "absent": 7,
           "not_covered": 0,
-          "evidence_agreed": 25,
+          "evidence_agreed": 26,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 31,
+          "hit": 33,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 31,
+          "evidence_agreed": 33,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 21,
+          "hit": 22,
           "miss": 0,
-          "absent": 10,
+          "absent": 11,
           "not_covered": 0,
-          "evidence_agreed": 21,
+          "evidence_agreed": 22,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "tabular": {
         "contract_number": {
-          "hit": 18,
+          "hit": 22,
           "miss": 0,
-          "absent": 43,
+          "absent": 46,
           "not_covered": 0,
-          "evidence_agreed": 18,
+          "evidence_agreed": 22,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "credit_reference": {
           "hit": 9,
           "miss": 0,
-          "absent": 52,
+          "absent": 59,
           "not_covered": 0,
           "evidence_agreed": 9,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "currency": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 58,
+          "evidence_agreed": 65,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_number": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "customer_vat_id": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "due_date": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
+          "found_nothing": 0,
+          "hit_rate": 1.0
+        },
+        "iban": {
+          "hit": 65,
+          "miss": 0,
+          "absent": 3,
+          "not_covered": 0,
+          "evidence_agreed": 65,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_date": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "invoice_number": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "order_number": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "our_reference": {
-          "hit": 11,
+          "hit": 14,
           "miss": 0,
-          "absent": 50,
+          "absent": 54,
           "not_covered": 0,
-          "evidence_agreed": 11,
+          "evidence_agreed": 14,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "payment_terms": {
-          "hit": 61,
+          "hit": 67,
           "miss": 0,
-          "absent": 0,
+          "absent": 1,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 67,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "subtotal": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supplier_vat_id": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "supply_date": {
-          "hit": 44,
-          "miss": 5,
-          "absent": 12,
+          "hit": 49,
+          "miss": 0,
+          "absent": 19,
           "not_covered": 0,
-          "evidence_agreed": 44,
+          "evidence_agreed": 49,
           "found_nothing": 0,
-          "hit_rate": 0.8979591836734694
+          "hit_rate": 1.0
         },
         "total_amount": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_amount": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "vat_rate": {
-          "hit": 61,
+          "hit": 68,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
-          "evidence_agreed": 61,
+          "evidence_agreed": 68,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "your_reference": {
-          "hit": 39,
+          "hit": 43,
           "miss": 0,
-          "absent": 22,
+          "absent": 25,
           "not_covered": 0,
-          "evidence_agreed": 39,
+          "evidence_agreed": 43,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
@@ -4607,630 +4859,630 @@
     "by_knob": {
       "thousands_variant": {
         "on": {
-          "hit": 189,
+          "hit": 264,
           "miss": 0,
-          "absent": 45,
+          "absent": 59,
           "not_covered": 0,
-          "evidence_agreed": 188,
+          "evidence_agreed": 263,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3483,
-          "miss": 9,
-          "absent": 774,
+          "hit": 3896,
+          "miss": 0,
+          "absent": 911,
           "not_covered": 0,
-          "evidence_agreed": 3473,
+          "evidence_agreed": 3885,
           "found_nothing": 0,
-          "hit_rate": 0.9974226804123711
+          "hit_rate": 1.0
         }
       },
       "dual_currency_echo": {
         "on": {
-          "hit": 189,
+          "hit": 217,
           "miss": 0,
-          "absent": 45,
+          "absent": 49,
           "not_covered": 0,
-          "evidence_agreed": 188,
+          "evidence_agreed": 216,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3483,
-          "miss": 9,
-          "absent": 774,
+          "hit": 3943,
+          "miss": 0,
+          "absent": 921,
           "not_covered": 0,
-          "evidence_agreed": 3473,
+          "evidence_agreed": 3932,
           "found_nothing": 0,
-          "hit_rate": 0.9974226804123711
+          "hit_rate": 1.0
         }
       },
       "credit_note": {
         "on": {
-          "hit": 616,
+          "hit": 676,
           "miss": 0,
-          "absent": 104,
+          "absent": 122,
           "not_covered": 0,
-          "evidence_agreed": 616,
+          "evidence_agreed": 676,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3056,
-          "miss": 9,
-          "absent": 715,
+          "hit": 3484,
+          "miss": 0,
+          "absent": 848,
           "not_covered": 0,
-          "evidence_agreed": 3045,
+          "evidence_agreed": 3472,
           "found_nothing": 0,
-          "hit_rate": 0.9970636215334421
+          "hit_rate": 1.0
         }
       },
       "multi_page": {
         "on": {
-          "hit": 692,
+          "hit": 726,
           "miss": 0,
-          "absent": 172,
+          "absent": 186,
           "not_covered": 0,
-          "evidence_agreed": 691,
+          "evidence_agreed": 725,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 2980,
-          "miss": 9,
-          "absent": 647,
+          "hit": 3434,
+          "miss": 0,
+          "absent": 784,
           "not_covered": 0,
-          "evidence_agreed": 2970,
+          "evidence_agreed": 3423,
           "found_nothing": 0,
-          "hit_rate": 0.9969889595182335
+          "hit_rate": 1.0
         }
       },
       "carry_forward": {
         "on": {
-          "hit": 199,
+          "hit": 224,
           "miss": 0,
-          "absent": 53,
+          "absent": 61,
           "not_covered": 0,
-          "evidence_agreed": 199,
+          "evidence_agreed": 224,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3473,
-          "miss": 9,
-          "absent": 766,
+          "hit": 3936,
+          "miss": 0,
+          "absent": 909,
           "not_covered": 0,
-          "evidence_agreed": 3462,
+          "evidence_agreed": 3924,
           "found_nothing": 0,
-          "hit_rate": 0.9974152785755313
+          "hit_rate": 1.0
         }
       },
       "page_numbering": {
         "on": {
-          "hit": 199,
+          "hit": 208,
           "miss": 0,
-          "absent": 53,
+          "absent": 58,
           "not_covered": 0,
-          "evidence_agreed": 199,
+          "evidence_agreed": 208,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3473,
-          "miss": 9,
-          "absent": 766,
+          "hit": 3952,
+          "miss": 0,
+          "absent": 912,
           "not_covered": 0,
-          "evidence_agreed": 3462,
+          "evidence_agreed": 3940,
           "found_nothing": 0,
-          "hit_rate": 0.9974152785755313
+          "hit_rate": 1.0
         }
       },
       "stamp_copy": {
         "on": {
-          "hit": 199,
+          "hit": 222,
           "miss": 0,
-          "absent": 53,
+          "absent": 63,
           "not_covered": 0,
-          "evidence_agreed": 199,
+          "evidence_agreed": 222,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3473,
-          "miss": 9,
-          "absent": 766,
+          "hit": 3938,
+          "miss": 0,
+          "absent": 907,
           "not_covered": 0,
-          "evidence_agreed": 3462,
+          "evidence_agreed": 3926,
           "found_nothing": 0,
-          "hit_rate": 0.9974152785755313
+          "hit_rate": 1.0
         }
       },
       "supply_date": {
         "on": {
-          "hit": 223,
-          "miss": 9,
-          "absent": 20,
+          "hit": 282,
+          "miss": 0,
+          "absent": 41,
           "not_covered": 0,
-          "evidence_agreed": 222,
+          "evidence_agreed": 280,
           "found_nothing": 0,
-          "hit_rate": 0.9612068965517241
+          "hit_rate": 1.0
         },
         "off": {
-          "hit": 3449,
+          "hit": 3878,
           "miss": 0,
-          "absent": 799,
+          "absent": 929,
           "not_covered": 0,
-          "evidence_agreed": 3439,
+          "evidence_agreed": 3868,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "extra_references": {
         "on": {
-          "hit": 223,
-          "miss": 9,
-          "absent": 20,
+          "hit": 320,
+          "miss": 0,
+          "absent": 41,
           "not_covered": 0,
-          "evidence_agreed": 222,
+          "evidence_agreed": 318,
           "found_nothing": 0,
-          "hit_rate": 0.9612068965517241
+          "hit_rate": 1.0
         },
         "off": {
-          "hit": 3449,
+          "hit": 3840,
           "miss": 0,
-          "absent": 799,
+          "absent": 929,
           "not_covered": 0,
-          "evidence_agreed": 3439,
+          "evidence_agreed": 3830,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "trap_labels": {
         "on": {
-          "hit": 223,
-          "miss": 9,
-          "absent": 20,
+          "hit": 333,
+          "miss": 0,
+          "absent": 47,
           "not_covered": 0,
-          "evidence_agreed": 222,
+          "evidence_agreed": 331,
           "found_nothing": 0,
-          "hit_rate": 0.9612068965517241
+          "hit_rate": 1.0
         },
         "off": {
-          "hit": 3449,
+          "hit": 3827,
           "miss": 0,
-          "absent": 799,
+          "absent": 923,
           "not_covered": 0,
-          "evidence_agreed": 3439,
+          "evidence_agreed": 3817,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "party_blocks": {
         "on": {
-          "hit": 223,
-          "miss": 9,
-          "absent": 20,
+          "hit": 251,
+          "miss": 0,
+          "absent": 34,
           "not_covered": 0,
-          "evidence_agreed": 222,
+          "evidence_agreed": 250,
           "found_nothing": 0,
-          "hit_rate": 0.9612068965517241
+          "hit_rate": 1.0
         },
         "off": {
-          "hit": 3449,
+          "hit": 3909,
           "miss": 0,
-          "absent": 799,
+          "absent": 936,
           "not_covered": 0,
-          "evidence_agreed": 3439,
+          "evidence_agreed": 3898,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "placeholder_addresses": {
         "on": {
-          "hit": 223,
-          "miss": 9,
-          "absent": 20,
+          "hit": 251,
+          "miss": 0,
+          "absent": 34,
           "not_covered": 0,
-          "evidence_agreed": 222,
+          "evidence_agreed": 250,
           "found_nothing": 0,
-          "hit_rate": 0.9612068965517241
+          "hit_rate": 1.0
         },
         "off": {
-          "hit": 3449,
+          "hit": 3909,
           "miss": 0,
-          "absent": 799,
+          "absent": 936,
           "not_covered": 0,
-          "evidence_agreed": 3439,
+          "evidence_agreed": 3898,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "customer_vat_position": {
         "on": {
-          "hit": 223,
-          "miss": 9,
-          "absent": 20,
+          "hit": 253,
+          "miss": 0,
+          "absent": 32,
           "not_covered": 0,
-          "evidence_agreed": 222,
+          "evidence_agreed": 252,
           "found_nothing": 0,
-          "hit_rate": 0.9612068965517241
+          "hit_rate": 1.0
         },
         "off": {
-          "hit": 3449,
+          "hit": 3907,
           "miss": 0,
-          "absent": 799,
+          "absent": 938,
           "not_covered": 0,
-          "evidence_agreed": 3439,
+          "evidence_agreed": 3896,
           "found_nothing": 0,
           "hit_rate": 1.0
         }
       },
       "column_set": {
         "on": {
-          "hit": 201,
+          "hit": 209,
           "miss": 0,
-          "absent": 51,
+          "absent": 57,
           "not_covered": 0,
-          "evidence_agreed": 201,
+          "evidence_agreed": 209,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3471,
-          "miss": 9,
-          "absent": 768,
+          "hit": 3951,
+          "miss": 0,
+          "absent": 913,
           "not_covered": 0,
-          "evidence_agreed": 3460,
+          "evidence_agreed": 3939,
           "found_nothing": 0,
-          "hit_rate": 0.9974137931034482
+          "hit_rate": 1.0
         }
       },
       "wrapped_description": {
         "on": {
-          "hit": 694,
+          "hit": 727,
           "miss": 0,
-          "absent": 170,
+          "absent": 185,
           "not_covered": 0,
-          "evidence_agreed": 693,
+          "evidence_agreed": 726,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 2978,
-          "miss": 9,
-          "absent": 649,
+          "hit": 3433,
+          "miss": 0,
+          "absent": 785,
           "not_covered": 0,
-          "evidence_agreed": 2968,
+          "evidence_agreed": 3422,
           "found_nothing": 0,
-          "hit_rate": 0.9969869434214932
+          "hit_rate": 1.0
         }
       },
       "sub_items": {
         "on": {
-          "hit": 694,
+          "hit": 727,
           "miss": 0,
-          "absent": 170,
+          "absent": 185,
           "not_covered": 0,
-          "evidence_agreed": 693,
+          "evidence_agreed": 726,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 2978,
-          "miss": 9,
-          "absent": 649,
+          "hit": 3433,
+          "miss": 0,
+          "absent": 785,
           "not_covered": 0,
-          "evidence_agreed": 2968,
+          "evidence_agreed": 3422,
           "found_nothing": 0,
-          "hit_rate": 0.9969869434214932
+          "hit_rate": 1.0
         }
       },
       "section_subtotals": {
         "on": {
-          "hit": 201,
+          "hit": 225,
           "miss": 0,
-          "absent": 51,
+          "absent": 60,
           "not_covered": 0,
-          "evidence_agreed": 201,
+          "evidence_agreed": 225,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3471,
-          "miss": 9,
-          "absent": 768,
+          "hit": 3935,
+          "miss": 0,
+          "absent": 910,
           "not_covered": 0,
-          "evidence_agreed": 3460,
+          "evidence_agreed": 3923,
           "found_nothing": 0,
-          "hit_rate": 0.9974137931034482
+          "hit_rate": 1.0
         }
       },
       "discount": {
         "on": {
-          "hit": 201,
+          "hit": 209,
           "miss": 0,
-          "absent": 51,
+          "absent": 57,
           "not_covered": 0,
-          "evidence_agreed": 201,
+          "evidence_agreed": 209,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3471,
-          "miss": 9,
-          "absent": 768,
+          "hit": 3951,
+          "miss": 0,
+          "absent": 913,
           "not_covered": 0,
-          "evidence_agreed": 3460,
+          "evidence_agreed": 3939,
           "found_nothing": 0,
-          "hit_rate": 0.9974137931034482
+          "hit_rate": 1.0
         }
       },
       "charges": {
         "on": {
-          "hit": 189,
+          "hit": 234,
           "miss": 0,
-          "absent": 45,
+          "absent": 51,
           "not_covered": 0,
-          "evidence_agreed": 188,
+          "evidence_agreed": 233,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3483,
-          "miss": 9,
-          "absent": 774,
+          "hit": 3926,
+          "miss": 0,
+          "absent": 919,
           "not_covered": 0,
-          "evidence_agreed": 3473,
+          "evidence_agreed": 3915,
           "found_nothing": 0,
-          "hit_rate": 0.9974226804123711
+          "hit_rate": 1.0
         }
       },
       "declared_charge": {
         "on": {
-          "hit": 189,
+          "hit": 234,
           "miss": 0,
-          "absent": 45,
+          "absent": 51,
           "not_covered": 0,
-          "evidence_agreed": 188,
+          "evidence_agreed": 233,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3483,
-          "miss": 9,
-          "absent": 774,
+          "hit": 3926,
+          "miss": 0,
+          "absent": 919,
           "not_covered": 0,
-          "evidence_agreed": 3473,
+          "evidence_agreed": 3915,
           "found_nothing": 0,
-          "hit_rate": 0.9974226804123711
+          "hit_rate": 1.0
         }
       },
       "undeclared_charge": {
         "on": {
-          "hit": 189,
+          "hit": 250,
           "miss": 0,
-          "absent": 45,
+          "absent": 54,
           "not_covered": 0,
-          "evidence_agreed": 188,
+          "evidence_agreed": 249,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3483,
-          "miss": 9,
-          "absent": 774,
+          "hit": 3910,
+          "miss": 0,
+          "absent": 916,
           "not_covered": 0,
-          "evidence_agreed": 3473,
+          "evidence_agreed": 3899,
           "found_nothing": 0,
-          "hit_rate": 0.9974226804123711
+          "hit_rate": 1.0
         }
       },
       "multi_rate": {
         "on": {
-          "hit": 190,
+          "hit": 264,
           "miss": 0,
-          "absent": 44,
+          "absent": 59,
           "not_covered": 0,
-          "evidence_agreed": 187,
+          "evidence_agreed": 261,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3482,
-          "miss": 9,
-          "absent": 775,
+          "hit": 3896,
+          "miss": 0,
+          "absent": 911,
           "not_covered": 0,
-          "evidence_agreed": 3474,
+          "evidence_agreed": 3887,
           "found_nothing": 0,
-          "hit_rate": 0.9974219421369235
+          "hit_rate": 1.0
         }
       },
       "vat_summary_table": {
         "on": {
-          "hit": 190,
+          "hit": 232,
           "miss": 0,
-          "absent": 44,
+          "absent": 53,
           "not_covered": 0,
-          "evidence_agreed": 187,
+          "evidence_agreed": 229,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3482,
-          "miss": 9,
-          "absent": 775,
+          "hit": 3928,
+          "miss": 0,
+          "absent": 917,
           "not_covered": 0,
-          "evidence_agreed": 3474,
+          "evidence_agreed": 3919,
           "found_nothing": 0,
-          "hit_rate": 0.9974219421369235
+          "hit_rate": 1.0
         }
       },
       "exemption_verbiage": {
         "on": {
-          "hit": 190,
+          "hit": 201,
           "miss": 0,
-          "absent": 44,
+          "absent": 46,
           "not_covered": 0,
-          "evidence_agreed": 187,
+          "evidence_agreed": 198,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3482,
-          "miss": 9,
-          "absent": 775,
+          "hit": 3959,
+          "miss": 0,
+          "absent": 924,
           "not_covered": 0,
-          "evidence_agreed": 3474,
+          "evidence_agreed": 3950,
           "found_nothing": 0,
-          "hit_rate": 0.9974219421369235
+          "hit_rate": 1.0
         }
       },
       "rounding_per_line": {
         "on": {
-          "hit": 190,
+          "hit": 201,
           "miss": 0,
-          "absent": 44,
+          "absent": 46,
           "not_covered": 0,
-          "evidence_agreed": 187,
+          "evidence_agreed": 198,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3482,
-          "miss": 9,
-          "absent": 775,
+          "hit": 3959,
+          "miss": 0,
+          "absent": 924,
           "not_covered": 0,
-          "evidence_agreed": 3474,
+          "evidence_agreed": 3950,
           "found_nothing": 0,
-          "hit_rate": 0.9974219421369235
+          "hit_rate": 1.0
         }
       },
       "rounding_total": {
         "on": {
-          "hit": 189,
+          "hit": 201,
           "miss": 0,
-          "absent": 45,
+          "absent": 46,
           "not_covered": 0,
-          "evidence_agreed": 188,
+          "evidence_agreed": 200,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3483,
-          "miss": 9,
-          "absent": 774,
+          "hit": 3959,
+          "miss": 0,
+          "absent": 924,
           "not_covered": 0,
-          "evidence_agreed": 3473,
+          "evidence_agreed": 3948,
           "found_nothing": 0,
-          "hit_rate": 0.9974226804123711
+          "hit_rate": 1.0
         }
       },
       "amount_in_words": {
         "on": {
-          "hit": 202,
+          "hit": 243,
           "miss": 0,
-          "absent": 50,
+          "absent": 61,
           "not_covered": 0,
-          "evidence_agreed": 201,
+          "evidence_agreed": 242,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3470,
-          "miss": 9,
-          "absent": 769,
+          "hit": 3917,
+          "miss": 0,
+          "absent": 909,
           "not_covered": 0,
-          "evidence_agreed": 3460,
+          "evidence_agreed": 3906,
           "found_nothing": 0,
-          "hit_rate": 0.997413049726933
+          "hit_rate": 1.0
         }
       },
       "bank_footer": {
         "on": {
-          "hit": 190,
+          "hit": 247,
           "miss": 0,
-          "absent": 44,
+          "absent": 76,
           "not_covered": 0,
-          "evidence_agreed": 189,
+          "evidence_agreed": 246,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3482,
-          "miss": 9,
-          "absent": 775,
+          "hit": 3913,
+          "miss": 0,
+          "absent": 894,
           "not_covered": 0,
-          "evidence_agreed": 3472,
+          "evidence_agreed": 3902,
           "found_nothing": 0,
-          "hit_rate": 0.9974219421369235
+          "hit_rate": 1.0
         }
       },
       "noise_footer": {
         "on": {
-          "hit": 190,
+          "hit": 233,
           "miss": 0,
-          "absent": 44,
+          "absent": 71,
           "not_covered": 0,
-          "evidence_agreed": 189,
+          "evidence_agreed": 232,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3482,
-          "miss": 9,
-          "absent": 775,
+          "hit": 3927,
+          "miss": 0,
+          "absent": 899,
           "not_covered": 0,
-          "evidence_agreed": 3472,
+          "evidence_agreed": 3916,
           "found_nothing": 0,
-          "hit_rate": 0.9974219421369235
+          "hit_rate": 1.0
         }
       },
       "payment_terms_block": {
         "on": {
-          "hit": 190,
+          "hit": 218,
           "miss": 0,
-          "absent": 44,
+          "absent": 67,
           "not_covered": 0,
-          "evidence_agreed": 189,
+          "evidence_agreed": 217,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3482,
-          "miss": 9,
-          "absent": 775,
+          "hit": 3942,
+          "miss": 0,
+          "absent": 903,
           "not_covered": 0,
-          "evidence_agreed": 3472,
+          "evidence_agreed": 3931,
           "found_nothing": 0,
-          "hit_rate": 0.9974219421369235
+          "hit_rate": 1.0
         }
       },
       "repeat_letterhead": {
         "on": {
-          "hit": 199,
+          "hit": 208,
           "miss": 0,
-          "absent": 53,
+          "absent": 58,
           "not_covered": 0,
-          "evidence_agreed": 199,
+          "evidence_agreed": 208,
           "found_nothing": 0,
           "hit_rate": 1.0
         },
         "off": {
-          "hit": 3473,
-          "miss": 9,
-          "absent": 766,
+          "hit": 3952,
+          "miss": 0,
+          "absent": 912,
           "not_covered": 0,
-          "evidence_agreed": 3462,
+          "evidence_agreed": 3940,
           "found_nothing": 0,
-          "hit_rate": 0.9974152785755313
+          "hit_rate": 1.0
         }
       }
     },
     "line_items": {
-      "rows_agreed": 250,
+      "rows_agreed": 270,
       "columns": {
         "part_number": {
-          "hit": 5369,
+          "hit": 5750,
           "miss": 0,
           "absent": 558,
           "not_covered": 0,
@@ -5239,7 +5491,7 @@
           "hit_rate": 1.0
         },
         "description": {
-          "hit": 5927,
+          "hit": 6308,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -5248,7 +5500,7 @@
           "hit_rate": 1.0
         },
         "quantity": {
-          "hit": 5927,
+          "hit": 6308,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -5257,7 +5509,7 @@
           "hit_rate": 1.0
         },
         "unit_price": {
-          "hit": 5927,
+          "hit": 6308,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -5266,7 +5518,7 @@
           "hit_rate": 1.0
         },
         "net_amount": {
-          "hit": 5927,
+          "hit": 6308,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -5277,11 +5529,11 @@
       }
     },
     "vat_summary": {
-      "documents": 183,
-      "rows_agreed": 250,
+      "documents": 200,
+      "rows_agreed": 270,
       "columns": {
         "rate": {
-          "hit": 203,
+          "hit": 227,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -5290,7 +5542,7 @@
           "hit_rate": 1.0
         },
         "base": {
-          "hit": 203,
+          "hit": 227,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -5299,7 +5551,7 @@
           "hit_rate": 1.0
         },
         "vat": {
-          "hit": 203,
+          "hit": 227,
           "miss": 0,
           "absent": 0,
           "not_covered": 0,
@@ -5309,9 +5561,18 @@
         }
       }
     },
+    "document_type": {
+      "hit": 270,
+      "miss": 0,
+      "absent": 0,
+      "not_covered": 0,
+      "evidence_agreed": 0,
+      "found_nothing": 0,
+      "hit_rate": 1.0
+    },
     "parties": {
       "bill_to.lines": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
@@ -5320,7 +5581,7 @@
         "hit_rate": 1.0
       },
       "bill_to.name": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
@@ -5329,43 +5590,43 @@
         "hit_rate": 1.0
       },
       "mail_to.lines": {
-        "hit": 12,
+        "hit": 13,
         "miss": 0,
-        "absent": 238,
+        "absent": 257,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "mail_to.name": {
-        "hit": 12,
+        "hit": 13,
         "miss": 0,
-        "absent": 238,
+        "absent": 257,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "ship_to.lines": {
-        "hit": 183,
+        "hit": 200,
         "miss": 0,
-        "absent": 67,
+        "absent": 70,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "ship_to.name": {
-        "hit": 183,
+        "hit": 200,
         "miss": 0,
-        "absent": 67,
+        "absent": 70,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "supplier.lines": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
@@ -5374,7 +5635,7 @@
         "hit_rate": 1.0
       },
       "supplier.name": {
-        "hit": 250,
+        "hit": 270,
         "miss": 0,
         "absent": 0,
         "not_covered": 0,
@@ -5385,18 +5646,18 @@
     },
     "charges": {
       "declared": {
-        "hit": 19,
+        "hit": 22,
         "miss": 0,
-        "absent": 237,
+        "absent": 255,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "undeclared": {
-        "hit": 13,
+        "hit": 17,
         "miss": 0,
-        "absent": 237,
+        "absent": 253,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
@@ -5405,27 +5666,27 @@
     },
     "secondary_amounts": {
       "currency": {
-        "hit": 5,
+        "hit": 6,
         "miss": 0,
-        "absent": 245,
+        "absent": 264,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "total_amount": {
-        "hit": 5,
+        "hit": 6,
         "miss": 0,
-        "absent": 245,
+        "absent": 264,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
         "hit_rate": 1.0
       },
       "exchange_rate": {
-        "hit": 5,
+        "hit": 6,
         "miss": 0,
-        "absent": 245,
+        "absent": 264,
         "not_covered": 0,
         "evidence_agreed": 0,
         "found_nothing": 0,
@@ -5479,17 +5740,17 @@
       },
       {
         "band": "0.8-1.0",
-        "predicted": 0.9927367291497438,
-        "hit": 3672,
-        "miss": 9,
+        "predicted": 0.995471466346083,
+        "hit": 4160,
+        "miss": 0,
         "absent": 0,
         "not_covered": 0,
-        "evidence_agreed": 3661,
+        "evidence_agreed": 4148,
         "found_nothing": 0,
-        "hit_rate": 0.9975550122249389
+        "hit_rate": 1.0
       }
     ],
-    "expected_calibration_error": 0.0048
+    "expected_calibration_error": 0.0045
   },
   "not_covered": []
 }

@@ -227,8 +227,8 @@
       "Date Ordered"
     ],
     "delivery_date": [
-      "Delivery Date",
-      "Despatch Date"
+      "Despatch Date",
+      "Despatched On"
     ],
     "print_date": [
       "Printed",

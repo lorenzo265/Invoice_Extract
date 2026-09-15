@@ -223,8 +223,8 @@
       "Besteldatum"
     ],
     "delivery_date": [
-      "Leverdatum",
-      "Verzenddatum"
+      "Verzenddatum",
+      "Verzonden op"
     ],
     "print_date": [
       "Afdrukdatum",

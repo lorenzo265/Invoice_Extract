@@ -10,10 +10,70 @@ runs **six kinds of spec** over it, and what comes back is not a list of fields 
 document — its rows, its party blocks, its totals block, the charges it carries and the
 currency it echoes. Everything it publishes carries the box it was read from; everything
 it checked comes back as a `Check`; and the confidence beside every value is **fitted on a
-corpus whose answers are written down** rather than assumed. Measured on that corpus: all
-eighteen fields of `docs/FIELD_CATALOG.md` scored and none excused, 99.8% of the values
-read (3,672 of 3,681), every line-item cell and every VAT line right, and confidences off
-by half a percent.
+corpus whose answers are written down** rather than assumed. Measured on that corpus:
+every field of `docs/FIELD_CATALOG.md` scored and none excused, **every value the 270
+documents carry read correctly** (4,160 of 4,160), every line-item cell, every VAT line
+and every party block right, and confidences off by under half a percent.
+
+### Added — hardening (E7)
+
+- **Stage 2, `select_variant`, exists.** A profile's `variants[]` were loaded and
+  validated and nothing applied them. The stage now runs between detection and
+  classification: the first variant whose `when` matches is merged over the profile,
+  through the same merge function and the same strict loader every other layer goes
+  through. `profiles/en-GB.json` declares one — on a credit note, and only on a credit
+  note, the reference to the invoice being reversed is a required field.
+- **`Finding(WARNING, "field_missing")` is emitted.** `docs/ENGINE_SPEC.md` §3 and
+  `docs/PROFILE_FORMAT.md` both said a required field that resolves nothing reports
+  itself; nothing did. A label spec, an anchor spec and a derivation all report it now —
+  so a document priced in a currency its vendor's profile does not list comes back
+  saying so instead of coming back empty.
+- **`iban` is read and measured.** The generator drew a valid one and printed it in the
+  bank footer; no spec read it and the truth never recorded it. It is found by its shape
+  rather than by a label — `IBAN` is the word in every language here — and judged by ISO
+  13616's checksum, which is what tells it from a VAT id.
+- **`document_type` is measured.** The truth carried it, the result carried it, and the
+  benchmark compared neither. 270 of 270.
+- **Each line item and each charge carries the VAT line that taxes it.**
+  `link_items_to_vat_lines` ran, produced findings and threw its answer away;
+  `LineItem.vat_line` and `Charge.vat_line` publish it, serialized like everything else.
+- **Twenty hardening cells** at the end of `corpus/plan.json`, one per known failure mode
+  of label-based extractors, with `tests/integration/test_hardening.py` proving each.
+- **`mm/dd/yyyy` is a date format a profile may declare.** No vendor here does — they are
+  all European — but `03/04/2024` is a different day under it, and which day a vendor
+  means has to be declarable rather than guessed.
+
+### Fixed — hardening (E7)
+
+- **A table is no longer closed by a stop label printed beside it.** A vendor that sets
+  its VAT summary on the left and its totals on the right puts `Total:` at the same
+  height as a summary line and three hundred points away from it. That word closed the
+  summary after one row of three, and the headline VAT rate then came from the wrong
+  line. A stop label now closes a table only where it is drawn across the table's own
+  width — geometry deciding, as everywhere else.
+- **A trap label is no longer the label of the field it traps.** Fifteen of the sixteen
+  lexicons made `trap_labels.delivery_date` one of the same language's own
+  `supply_date` labels — `Lieferdatum`, `Leverdatum`, `Data di consegna`. A document
+  with traps on and no supply date therefore printed one, and the extractor read it and
+  was right to. All fifteen now follow French: a dispatch noun and a dispatch
+  participle, neither of them a label any field owns. `supply_date` went 0.955 → 1.000,
+  which was the last field under 1.
+- **`is_iban` enforces the standard's shape rather than the profile's.** Everywhere else
+  a vendor knows its own shapes better; an IBAN is ISO 13616's to define, and a profile
+  pattern looser than it only widens what is accepted.
+
+### Changed — hardening (E7)
+
+- **Every shipped profile is T2.** `fi-FI` named two ways to say a due date and `sv-SE`
+  two to say an invoice date, where every other language named three. Each now names a
+  third its language really uses.
+- **`OnFailure` has two members and the spec says two.** `shaped` was named by
+  `ENGINE_SPEC.md` and by no code; it is what `best_invalid` already does, and a
+  vocabulary entry no spec names is what the closed-vocabulary rule forbids. The spec was
+  corrected rather than the enum widened.
+- **`docs/CONFORMANCE.md`**: every requirement of every specification in `docs/`, against
+  what the code does, with a decision recorded for each difference — including the ones
+  deliberately left open, and why.
 
 ### Added
 

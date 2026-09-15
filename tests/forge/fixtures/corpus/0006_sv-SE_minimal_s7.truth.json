@@ -35,7 +35,7 @@
     "invoice_date": {
       "value": "2024-06-14",
       "printed": "2024-06-14",
-      "label": "Fakturadatum",
+      "label": "Utfärdandedatum",
       "evidence": [
         {
           "page": 1,
@@ -66,15 +66,15 @@
     },
     "supplier_vat_id": {
       "value": "SE752130495396",
-      "printed": "Momsregistreringsnummer: SE752130495396",
-      "label": "Momsregistreringsnummer",
+      "printed": "Momsreg.nr: SE752130495396",
+      "label": "Momsreg.nr",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
             107.86,
-            234.02,
+            175.02,
             117.9
           ]
         }
@@ -240,6 +240,12 @@
     },
     "credit_reference": {
       "value": null,
+      "printed": null,
+      "label": null,
+      "evidence": []
+    },
+    "iban": {
+      "value": "SE5923667127684268465632",
       "printed": null,
       "label": null,
       "evidence": []

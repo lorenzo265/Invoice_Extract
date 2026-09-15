@@ -14,7 +14,7 @@ from make_forge_goldens import GOLDEN_SEED
 from rendering import for_each_profile, render_document, rendered
 
 from invoice_forge.families import Family
-from invoice_forge.fields import LABELLED_FIELDS, LINE_ITEM_COLUMNS
+from invoice_forge.fields import LINE_ITEM_COLUMNS, TRUTH_FIELDS
 from invoice_forge.knobs import Knob
 from invoice_forge.produce import DocumentSpec, produce
 from invoice_forge.profiles.loader import load_profile
@@ -62,7 +62,7 @@ def test_the_document_block_agrees_with_the_pdf(profile_id: str) -> None:
 @for_each_profile
 def test_every_canonical_field_name_is_present(profile_id: str) -> None:
     document = rendered(profile_id)
-    assert tuple(document.truth["fields"]) == LABELLED_FIELDS
+    assert tuple(document.truth["fields"]) == TRUTH_FIELDS
 
 
 @for_each_profile

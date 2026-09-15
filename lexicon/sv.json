@@ -18,7 +18,8 @@
     ],
     "invoice_date": [
       "Fakturadatum",
-      "Datum"
+      "Datum",
+      "Utfärdandedatum"
     ],
     "due_date": [
       "Förfallodatum",
@@ -222,8 +223,8 @@
       "Beställningsdatum"
     ],
     "delivery_date": [
-      "Leveransdatum",
-      "Utleveransdatum"
+      "Avsändningsdatum",
+      "Skickad den"
     ],
     "print_date": [
       "Utskriftsdatum",

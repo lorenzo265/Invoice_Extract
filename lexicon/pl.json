@@ -222,8 +222,8 @@
       "Data złożenia zamówienia"
     ],
     "delivery_date": [
-      "Data dostawy",
-      "Data wysyłki"
+      "Data wysyłki",
+      "Wysłano dnia"
     ],
     "print_date": [
       "Data wydruku",

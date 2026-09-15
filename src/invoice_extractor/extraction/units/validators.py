@@ -18,6 +18,12 @@ VAT_ID = re.compile(r"[A-Z]{0,2}[A-Z0-9]{5,14}")
 # How long a line of a document runs before it is a paragraph of one. The longest terms
 # the corpus prints are 54 characters; twice that is a line and not a page.
 SENTENCE_LIMIT = 120
+# An IBAN is a country, two check digits and a national account number: never shorter
+# than Norway's fifteen characters, never longer than the standard's thirty-four.
+IBAN = re.compile(r"[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}")
+IBAN_COUNTRY = 4
+IBAN_REMAINDER = 1
+ALPHABET_OFFSET = 55
 
 
 def matches_pattern(default: str) -> Validator:
@@ -48,6 +54,35 @@ def is_sentence(value: FieldValue, field_profile: FieldProfile) -> bool:
 
 def is_identifier(value: FieldValue, field_profile: FieldProfile) -> bool:
     return matches_pattern(IDENTIFIER.pattern)(value, field_profile)
+
+
+def is_iban(value: FieldValue, field_profile: FieldProfile) -> bool:
+    """The shape, and then the checksum the standard defines (`docs/FIELD_CATALOG.md`).
+
+    The one validator a profile's own `pattern` does not override. Everywhere else the
+    vendor knows the shape better than this package does — each country writes its VAT
+    id differently — but an IBAN is ISO 13616's to define, and a vendor that wrote a
+    looser shape would only be widening what it accepts. The profile's pattern is what
+    `label_pattern` looks *for*; this is what an IBAN *is*.
+
+    The shape alone would accept a VAT id, which is also two letters and then digits, and
+    an Irish one carries letters after them too. The length is the first thing that tells
+    them apart and the checksum is the second: moving the country and the check digits to
+    the end and reading the whole as one number base 36 leaves a remainder of 1 when, and
+    only when, it is right.
+    """
+    text = str(value)
+    if IBAN.fullmatch(text) is None:
+        return False
+    return _mod97(text[IBAN_COUNTRY:] + text[:IBAN_COUNTRY]) == IBAN_REMAINDER
+
+
+def _mod97(rearranged: str) -> int:
+    """Each letter as its two-digit number, the whole read as one integer, modulo 97."""
+    digits = "".join(
+        one if one.isdigit() else str(ord(one) - ALPHABET_OFFSET) for one in rearranged
+    )
+    return int(digits) % 97
 
 
 def is_vat_id(value: FieldValue, field_profile: FieldProfile) -> bool:

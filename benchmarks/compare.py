@@ -132,6 +132,7 @@ class DocumentScore:
     vat_rows_found: int = 0
     charges: Mapping[str, Counts] = field(default_factory=dict)
     secondary: Mapping[str, Counts] = field(default_factory=dict)
+    document_type: Outcome = Outcome.ABSENT
 
 
 def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> DocumentScore:
@@ -155,7 +156,19 @@ def compare(name: str, truth: Mapping[str, object], result: InvoiceResult) -> Do
         vat_rows_found=len(result.vat_summary),
         charges=_charges(truth, result.charges),
         secondary=_secondary(truth, result.secondary_amounts),
+        document_type=_document_type(truth, result),
     )
+
+
+def _document_type(truth: Mapping[str, object], result: InvoiceResult) -> Outcome:
+    """Stage 3's answer against the kind of document the generator actually made.
+
+    There is no absent case: every invoice is of some kind, and a page that says nothing
+    about which is an invoice, because that is what a vendor sends unless it says
+    otherwise. A result with no kind at all is a profile that did not match.
+    """
+    wanted = str(_mapping(truth, "document").get("type", ""))
+    return Outcome.HIT if result.document_type == wanted else Outcome.MISS
 
 
 def _score(name: str, fields: Mapping[str, object], result: InvoiceResult) -> Scored:

@@ -273,6 +273,22 @@
       "printed": null,
       "label": null,
       "evidence": []
+    },
+    "iban": {
+      "value": "FR392366712768H8RZHQMOE9522",
+      "printed": "Banque Clairbois · IBAN FR39 2366 7127 68H8 RZHQ MOE9 522 · BIC HVHAFR5LXXX",
+      "label": "IBAN",
+      "evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            50.0,
+            472.87,
+            350.07,
+            481.73
+          ]
+        }
+      ]
     }
   },
   "line_items": [

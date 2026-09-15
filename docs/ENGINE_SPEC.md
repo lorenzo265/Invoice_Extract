@@ -59,8 +59,11 @@ Engine rules:
 - One identity per spec (`name`), equal to the field catalog name.
 - Geometry over stream order: no unit indexes `lines[i+1]`.
 - Every published value carries `Evidence`; publishing without it is a type error.
-- `on_failure` ∈ `{not_found, best_invalid, shaped}`; `not_found` yields `Finding(WARNING,
-  "field_missing")` for required fields.
+- `on_failure` ∈ `{not_found, best_invalid}`; `not_found` yields `Finding(WARNING,
+  "field_missing")` for a field the profile marks `required`. A third name, `shaped`, was
+  planned and is not here: publishing a candidate whose shape matched but whose content
+  did not is exactly what `best_invalid` does, and a vocabulary entry no spec names is
+  the thing the closed-vocabulary rule above forbids.
 - Spec docstrings ≤ 10 lines; rationale lives in ADRs and the benchmark README.
 
 ## 4. Profiles

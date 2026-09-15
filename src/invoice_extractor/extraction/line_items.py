@@ -62,7 +62,11 @@ def _item(
         part_number=_text(row.cells, "part_number"),
         description=_text(row.cells, "description"),
         unit=_text(row.cells, "unit"),
-        **numbers,
+        quantity=numbers["quantity"],
+        unit_price=numbers["unit_price"],
+        discount_pct=numbers["discount_pct"],
+        vat_rate=numbers["vat_rate"],
+        net_amount=numbers["net_amount"],
         sub_items=tuple(_sub_item(sub, profile) for sub in row.sub_items),
         cells=_evidence(row.cells, columns),
     )

@@ -49,10 +49,11 @@ invoice_number    FAC-2024-608064                    1.00  p1  LABEL_BESIDE  "Fa
 order_number      PO-835601                          1.00  p1  LABEL_BESIDE  "Commande n°"
 customer_number   C-59795                            1.00  p1  LABEL_BESIDE  "Numéro client"
 invoice_date      2024-06-14                         1.00  p1  LABEL_BESIDE  "Date"
-supply_date       2024-06-08                         0.95  p1  LABEL_BESIDE  "Date de livraison"
+supply_date       2024-06-08                         1.00  p1  LABEL_BESIDE  "Date de livraison"
 due_date          2024-06-28                         1.00  p1  LABEL_BESIDE  "Échéance"
 supplier_vat_id   FR7P585117668                      1.00  p1  ANCHOR  "FR7P585117668"
 customer_vat_id   FR3P030824628                      1.00  p1  LABEL_RIGHT  "N° TVA du client"
+iban              FR392366712768H8RZHQMOE9522        0.99  p1  LABEL_PATTERN  -
 currency          EUR                                1.00  p1  DERIVED  -
 vat_rate          20                                 1.00  p1  BLOCK_ROW  "Taux de TVA"
 subtotal          11241.25                           1.00  p1  BLOCK_ROW  "Total HT"
@@ -62,7 +63,7 @@ contract_number   -                                  0.00  -
 our_reference     -                                  0.00  -
 your_reference    REF-1064                           0.99  p1  LABEL_BESIDE  "Votre réf."
 credit_reference  -                                  0.00  -
-payment_terms     Règlement à 45 jours fin de mois.  0.99  p1  LABEL_RIGHT  "Modalités de règlement"
+payment_terms     Règlement à 45 jours fin de mois.  1.00  p1  LABEL_RIGHT  "Modalités de règlement"
 
 Parties
 supplier   Valmont Systèmes SAS · 124 rue Lavoisier · 85337 Nantes · France · FR7P585117668
@@ -249,30 +250,28 @@ beside it. Each document is read back with the very profile it was printed from,
 is measured is the extraction engine and not label guessing.
 
 <!-- benchmark:begin -->
-Over the 250-document base corpus (`make corpus`), `make bench`
+Over the 270-document base corpus (`make corpus`), `make bench`
 measures this release at:
 
-- **Profile detection:** 100.0% (250 of 250); a document no profile matches is
+- **Profile detection:** 100.0% (270 of 270); a document no profile matches is
   reported and not read (ADR-0008).
-- **Scalar fields:** 99.8% (3672 of 3681) of the values the documents carry.
-- **Line-item cells:** 100.0% (29077 of 29077), over
-  250 of 250 documents whose row count was read
+- **Scalar fields:** 100.0% (4160 of 4160) of the values the documents carry.
+- **Document type:** 100.0% of the documents were told apart, invoice from credit note.
+- **Line-item cells:** 100.0% (30982 of 30982), over
+  270 of 270 documents whose row count was read
   exactly.
-- **Party blocks:** 100.0% (1390 of 1390) of the names and
+- **Party blocks:** 100.0% (1506 of 1506) of the names and
   addresses the documents print.
-- **Totals block:** 100.0% (32 of 32) of the charges the
+- **Totals block:** 100.0% (39 of 39) of the charges the
   documents carry, declared on the page or inferred from the arithmetic.
-- **Confidence:** 0.8-1.0 at 99.8%.
-- **Calibration:** the confidences are off by 0.5% on average, over the
+- **Confidence:** 0.8-1.0 at 100.0%.
+- **Calibration:** the confidences are off by 0.4% on average, over the
   weights and the curve `calibration/` was fitted with.
 - **Not covered:** the generator prints these and the extractor has no spec for
   them, so they are never scored as wrong:
   nothing.
 
-0 of those 9 misses found no candidate at all, rather than reading
-the wrong one (9). A field that found nothing was printed a way none
-of its strategies looks; `benchmarks/README.md` says which fields, on which
-profiles and in which families.
+Nothing was missed.
 
 `benchmarks/README.md` is the field-by-field matrix, by profile, by family and by
 knob.
@@ -287,10 +286,13 @@ writes [calibration/weights.json](calibration/weights.json),
 against observed, in ten bands, per field. The run is deterministic and the files are
 committed like code: promoting a fit is a reviewed change, not a side effect.
 
-On this corpus no signal yet separates the nine values the extractor gets wrong from the
-3,483 it gets right, so `weights.json` is empty and every field is scored with the
-uniform mean of the signals it emitted; the curve is what the fit has to say so far, and
-`reliability_report.json` marks each field `fitted: false` to say exactly that.
+On this corpus the extractor gets nothing wrong, so there is nothing for a weight to
+separate a wrong value from a right one by: a fit needs negatives and there are none
+(ADR-0009). `weights.json` is therefore empty, every field is scored with the uniform
+mean of the signals it emitted, and `reliability_report.json` marks each field
+`fitted: false` to say exactly that rather than reporting a fit it did not make. The
+curve is what the corpus has to say so far; harder documents are what would give a
+weight something to learn from.
 
 ## Quality gates
 
@@ -302,7 +304,7 @@ pass — see [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 | `make lint` | `ruff check` + `ruff format --check` (E, F, I, N, UP, B, SIM, RUF; line length 100) |
 | `make typecheck` | `mypy --strict` on `src/` and `benchmarks/` (`pymupdf` is the one ignored import) |
 | `make test` | `pytest --cov=invoice_extractor --cov=invoice_forge --cov-fail-under=90` |
-| `make corpus` | regenerates the 250-document base corpus from `corpus/plan.json`, byte for byte |
+| `make corpus` | regenerates the 270-document corpus from `corpus/plan.json`, byte for byte |
 | `make bench` | scores the extractor over that corpus and rewrites every published figure |
 | hygiene test | `src/` <= 2200 non-blank/non-comment lines; no module > 250 lines; no function > 40 lines; `pymupdf` in the two PDF modules only; no `print`, no work markers, no unjustified suppressions, no absolute paths or e-mail addresses, every relative markdown link resolves |
 
@@ -327,7 +329,11 @@ extractor on that: a vendor is a **profile** rather than a layout, one engine ru
 kinds of spec over it, the result carries the rows, the party blocks, the totals block,
 the charges and the second currency, every rule the document was put through comes back
 as a `Check`, and the confidence beside every value is fitted on the corpus rather than
-assumed. [docs/ENGINE_SPEC.md](docs/ENGINE_SPEC.md) is the design and
+assumed. Its last pull request added twenty corpus cells, one per known failure mode of
+a label-based extractor, and [docs/CONFORMANCE.md](docs/CONFORMANCE.md) — every
+requirement of every specification in `docs/` against what the code does, with a
+recorded decision for each difference, including the ones deliberately left open.
+[docs/ENGINE_SPEC.md](docs/ENGINE_SPEC.md) is the design and
 [docs/ENGINE_PLAN.md](docs/ENGINE_PLAN.md) the plan it was built to, one gated pull
 request at a time. All of it is green under `make check` on Python 3.11 and 3.12. This
 repository started from a

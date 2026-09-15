@@ -63,6 +63,29 @@
       "required": false
     }
   ],
+  "variants": [
+    {
+      "id": "credit-note",
+      "when": {
+        "document_type": "credit_note"
+      },
+      "overlay": {
+        "custom_fields": [
+          {
+            "name": "credit_reference",
+            "labels": [
+              "@header_labels.credit_reference"
+            ],
+            "zones": [
+              "r1c3",
+              "r1c2"
+            ],
+            "required": true
+          }
+        ]
+      }
+    }
+  ],
   "render": {
     "address_format": {
       "postal_code_position": "after_city",

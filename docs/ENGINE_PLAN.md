@@ -44,7 +44,7 @@ def lint(profile: Profile, registry: ProfileRegistry) -> LintReport   # tier T0/
 
 # extraction/spec/*.py
 class SpecKind(Enum): LABEL, ANCHOR, SECTION, TABLE, BLOCK, DERIVED
-class OnFailure(Enum): NOT_FOUND, BEST_INVALID, SHAPED
+class OnFailure(Enum): NOT_FOUND, BEST_INVALID           # SHAPED dropped, see ENGINE_SPEC §3
 @dataclass(frozen=True, slots=True) class LabelSpec / AnchorSpec / SectionSpec / TableSpec / BlockSpec / DerivedSpec   # all with name, depends_on, on_failure
 Spec = LabelSpec | AnchorSpec | SectionSpec | TableSpec | BlockSpec | DerivedSpec
 # extraction/engine.py
@@ -160,9 +160,17 @@ reports T2 for every shipped profile.
 
 ## 4. Definition of done for v0.3.0
 
-- [ ] E0–E7 merged in order, both gates green each.
-- [ ] Every field in `docs/FIELD_CATALOG.md` is measured in `benchmarks/latest.json`.
-- [ ] `calibration/reliability_report.json` committed and referenced from the README.
-- [ ] `profile lint` T2 for every profile under `profiles/`.
-- [ ] No module without an importer; no unit unreferenced; no profile key unread.
-- [ ] `docs/ARCHITECTURE.md` describes v0.3, not v0.1.
+- [x] E0–E7 merged in order, both gates green each.
+- [x] Every field in `docs/FIELD_CATALOG.md` is measured in `benchmarks/latest.json` —
+      the eighteen of E6, plus `iban` and `document_type` in E7. `secondary_currency` and
+      `exchange_rate` are measured under `secondary_amounts`, which is where they are
+      published; `customer_country` is named and not read, and `docs/FIELD_CATALOG.md`
+      carries the evidence for why (`docs/CONFORMANCE.md` §3).
+- [x] `calibration/reliability_report.json` committed and referenced from the README.
+- [x] `profile lint` T2 for every profile under `profiles/` — all twenty-two.
+- [x] No module without an importer (`tests/test_repo_hygiene.py`); no unit unreferenced
+      (`tests/test_unit_registry.py`); no profile key unread
+      (`tests/test_profile_contract.py`).
+- [x] `docs/ARCHITECTURE.md` describes v0.3, not v0.1.
+- [x] `docs/CONFORMANCE.md` records every requirement against what the code does, with a
+      decision for each difference.

@@ -51,12 +51,28 @@ def test_a_page_with_no_summary_on_it_reads_none() -> None:
     assert read(bare) == ()
 
 
-def test_a_summary_stops_where_the_totals_block_begins() -> None:
+def test_a_summary_stops_where_the_totals_block_begins_across_it() -> None:
+    """A totals block set under the summary, across the columns it uses, closes it."""
     profile = vendor(stop_labels=("Total Due",))
     first = entries(120.0, ("S", 50.0), ("20 %", 90.0), ("19.25", 200.0), ("3.85", 280.0))
-    total = entries(140.0, ("Total Due", 340.0), ("23.10", 500.0))
+    total = entries(140.0, ("Total Due", 50.0), ("23.10", 280.0))
     after = entries(160.0, ("R", 50.0), ("5 %", 90.0), ("10.00", 200.0), ("0.50", 280.0))
     assert len(read(summary_document(first, total, after), profile)) == 1
+
+
+def test_a_summary_runs_past_a_totals_block_printed_beside_it() -> None:
+    """A vendor that sets its summary on the left and its totals on the right prints
+    `Total Due` at the height of a summary line and clear across the page from it. That
+    word closes the totals block; the summary has three rates left to state and states
+    them. Both layouts are in the corpus, and the second is what `multi_rate` without
+    `vat_summary_table` draws — every rate of it must be read.
+    """
+    profile = vendor(stop_labels=("Total Due",))
+    first = entries(120.0, ("S", 50.0), ("20 %", 90.0), ("19.25", 200.0), ("3.85", 280.0))
+    beside = entries(140.0, ("Total Due", 340.0), ("23.10", 500.0))
+    after = entries(160.0, ("R", 50.0), ("5 %", 90.0), ("10.00", 200.0), ("0.50", 280.0))
+    rows = read(summary_document(first, beside, after), profile)
+    assert [(row.code, row.rate) for row in rows] == [("S", Decimal(20)), ("R", Decimal(5))]
 
 
 def test_a_summary_printed_as_a_line_per_rate_is_read_by_its_own_labels() -> None:

@@ -17,11 +17,47 @@ truth files and reports use it verbatim. Changing a name is a schema change with
 | `supplier_vat_id` | str | country prefix + alphanumerics, upper-case | Anchor |
 | `customer_vat_id` | str | idem | Label |
 | `currency` | str | ISO 4217 code | Derived (vote over printed codes/symbols) |
-| `secondary_currency` | str | ISO 4217 code | Derived |
-| `exchange_rate` | Decimal | plain decimal | Label, else Derived (inferred from totals) |
 | `iban` | str | spaces removed, upper-case, mod-97 valid | Label (pattern) |
-| `customer_country` | str | ISO 3166-1 alpha-2 | Derived (VAT prefix > bill_to > ship_to > postal pattern) |
 | `document_type` | enum | `invoice` \| `credit_note`, `null` where no profile matched | stage 3 (`classify_document`) |
+
+`document_type` is the one name here that no spec resolves: stage 3 settles it before any
+spec runs, so it is published as `InvoiceResult.document_type` rather than in `fields`,
+and the benchmark reports it in a section of its own beside them.
+
+`iban` is the one that no label introduces in a way a lexicon could list. A vendor prints
+its account number inside the run of text its bank details are, after the word `IBAN`,
+which is the word in every language this repository speaks; so the profile declares the
+shape rather than synonyms, `label_pattern` finds it, and the checksum — not the shape —
+is what tells it from a VAT id, which is also two letters and then digits.
+
+### Named here, read under another name
+
+| Name | Where it is | Why |
+|---|---|---|
+| `secondary_currency` | `InvoiceResult.secondary_amounts.currency` | the echo is one record — an amount, the rate it was converted at and the currency it is in — and splitting the currency out of it would publish a code with nothing to spend it on. Measured under `secondary_amounts` in `benchmarks/latest.json` |
+| `exchange_rate` | `InvoiceResult.secondary_amounts.exchange_rate` | idem: a rate is the rate *of* that echo. Measured under `secondary_amounts` |
+
+### Named here and not read yet
+
+`customer_country` waits, and so does the `country` of every party block, because the
+derivation this catalog specifies for it — VAT prefix > bill_to > ship_to > postal
+pattern — cannot be built from anything the repository holds, and cannot be measured by
+the corpus if it were:
+
+- The first rung is wrong without a table this repository has not got: Greece's VAT
+  prefix is `EL` and its country code is `GR`, so a prefix read as a code is wrong on 10
+  of the 250 documents; and `tr-TR` prints VAT ids with no prefix at all, so the rung
+  yields nothing on 7 more.
+- The other three rungs need country names per language and postal shapes per country.
+  No profile key, lexicon entry or ADR says where that data lives, and deciding is a
+  schema change rather than a field.
+- The corpus cannot falsify it either way: every customer in it is in its supplier's own
+  country, so a derivation that returned the supplier's country and nothing else would
+  score 100 % and mean nothing. Measuring something that cannot fail is what ADR-0009
+  says calibration may not do, and a field is no different.
+
+The honest report is therefore that the field is named and not read, as `vat_code` and
+`subscription` are below — not a hit rate that agrees with itself.
 
 ## Parties (`SectionSpec`, plus `AnchorSpec` for the supplier)
 
@@ -86,7 +122,15 @@ about one field names it. The codes a run can produce are the seventeen rule nam
 reconciliation's `backfilled_from_summary`, `backfilled_from_line_items`,
 `vat_implied_from_total`, `undeclared_charge_inferred`, `totals_summary_disagree` and
 `vat_line_ambiguous`, the table's `line_item_cell_unreadable` and
-`line_items_header_not_found`, and `profile_not_detected`.
+`line_items_header_not_found`, the engine's `field_missing`, and `profile_not_detected`.
+
+`field_missing` is what a `LabelSpec` or an `AnchorSpec` reports when it resolved nothing
+and the profile marks the field `required` — the vendor's own claim that every invoice it
+sends carries the field, against a document that does not. A field the profile marks
+optional is one the vendor prints only sometimes, and a document without it contradicts
+nothing. The totals block has no such code: `subtotal`, `vat_amount`, `total_amount` and
+`vat_rate` are components of a block rather than labelled fields, and a document missing
+one is caught by the arithmetic instead (§6), which says more than its absence would.
 
 Beside the findings, a result carries a `Check` per rule — its code, whether it passed,
 the fields it is about and the arithmetic it came to — because a rule that held and one
