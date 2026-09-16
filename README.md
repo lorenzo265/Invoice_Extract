@@ -18,6 +18,7 @@ hidden: a reviewer can trace any number in the output back to the pixels it came
 make install   # both distributions, editable
 make demo      # extract one corpus document and print the report
 invoice-extractor inspect <pdf>   # what the engine SEES, before any profile matches
+invoice-extractor profile draft <pdf> --out vendors/profiles   # the profile a page suggests
 ```
 
 `tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf` is one of the documents
@@ -183,6 +184,7 @@ src/invoice_extractor/          the engine — the distribution a caller install
     domain/        Evidence, FieldResult, LineItem, VatSummaryRow, Party, Finding, Money
     document/      PDF -> Document: pages of zoned TextLines and the runs they were drawn in
     profile/       Profile schema, strict loader, merge rules, registry, detection, lint
+    drafting/      `profile draft`: the profile one document suggests, with its evidence
     extraction/    One engine, six spec kinds; units/: the vocabulary they name
     reconcile/     What the document left out, filled in from what it did print
     validation/    Invariants and cross-field checks, as Findings and Checks
@@ -219,6 +221,21 @@ rules, the supplier as it prints itself, and whatever it calls each field (see
 raises `ProfileError` naming the exact bad key; `_defaults.json` and the
 language's lexicon supply everything the file does not say. No Python change, and the
 generator can render the same file to prove the profile describes a real invoice.
+
+**Start a vendor from one of its documents.** `invoice-extractor profile draft <pdf>
+--out <dir>` writes the profile the page suggests — the supplier block as the letterhead
+prints it, the VAT id and the country its prefix names, the decimal and thousands
+separators the amounts were printed with, the date formats the dates fit, the currency,
+the rates, and for every field whose label a lexicon spells, the zone the value actually
+sat in — with a `drafts/<id>.json` beside it giving the reason for every key and a
+worksheet of every labelled value no lexicon could name. It reads every shipped lexicon
+at once, so the page's language is elected rather than declared; a page in a language
+no lexicon speaks gets a skeleton lexicon to fill in, and the labels it did print as the
+profile's own. It is the inverse of `inspect`, and a drafting tool only: the engine
+never runs it, and a document no profile matches still comes back `profile_not_detected`
+(ADR-0008). Where the page gave nothing, the draft writes `?` and the loader refuses the
+profile by that key until a person fills it in. `profile lint` and `extract` on the
+same document are the next two commands.
 
 **Add a field.** Four small edits and a test — `engine.py`, `pipeline.py` and every unit
 stay untouched. Adding `purchase_order`, in full:

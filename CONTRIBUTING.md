@@ -60,6 +60,7 @@ nothing the dev extra does not already name: nothing in the tree is 3.11-only.
 make install                  # both distributions, editable
 make demo                     # extract one invoice and print the report
 invoice-extractor inspect <pdf>   # what the engine SEES: every line, its zone, its box
+invoice-extractor profile draft <pdf> --out vendors/profiles   # the profile the page suggests
 ```
 
 On Windows, where `make` is usually absent, `make.ps1` runs the same tools under the same

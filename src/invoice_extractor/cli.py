@@ -13,6 +13,11 @@ prints the page as the engine reads it — every line with its zone and its box 
 how each known vendor scored against it. Writing a profile means naming labels and
 zones, and this is where both are read off rather than guessed at.
 
+`profile draft` is the inverse of `inspect`: it writes the profile a page suggests, with
+the evidence for every key beside it, for a person to correct. A drafting tool only — the
+engine never runs it, and a document no profile matches still comes back
+`profile_not_detected` (ADR-0008).
+
 `calibrate` is the one command that writes something other than a result: it fits the
 confidence on a corpus whose answers are known and writes the three files of
 `calibration/`. Promoting what it wrote is a reviewed commit, not a side effect of
@@ -27,6 +32,8 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from invoice_extractor.document.pymupdf_reader import read
+from invoice_extractor.drafting import summary, writer
+from invoice_extractor.drafting.draft import draft
 from invoice_extractor.output import inspection
 from invoice_extractor.output.json_writer import emit
 from invoice_extractor.output.text_report import render
@@ -54,8 +61,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _inspect(arguments, registry)
         if arguments.command == "calibrate":
             return _calibrate(arguments, registry)
+        if arguments.action == "draft":
+            return _draft(arguments, registry)
         return _lint(arguments, registry)
-    except (FileNotFoundError, ProfileError) as error:
+    except (FileNotFoundError, FileExistsError, ProfileError) as error:
         sys.stderr.write(f"{error}\n")
         return 1
 
@@ -88,6 +97,16 @@ def _calibrate(arguments: argparse.Namespace, registry: ProfileRegistry) -> int:
     return 0
 
 
+def _draft(arguments: argparse.Namespace, registry: ProfileRegistry) -> int:
+    """Read the page, write the profile it suggests and the evidence beside it, report both."""
+    drafted = draft(read(Path(arguments.pdf)), registry, arguments.id, arguments.language)
+    written = writer.write(
+        drafted.profile, drafted.evidence, Path(arguments.out), registry.root, drafted.vocabulary
+    )
+    sys.stdout.write(f"{summary.render(drafted.evidence, written)}\n")
+    return 0
+
+
 def _lint(arguments: argparse.Namespace, registry: ProfileRegistry) -> int:
     report = linting.lint(registry.get(arguments.profile_id), registry)
     sys.stdout.write(f"{linting.render(report)}\n")
@@ -99,7 +118,7 @@ def _parse(argv: Sequence[str] | None) -> argparse.Namespace:
     commands = parser.add_subparsers(dest="command", required=True)
     _extract_parser(commands.add_parser("extract", help="extract one invoice"))
     _inspect_parser(commands.add_parser("inspect", help="show what the engine sees"))
-    _lint_parser(commands.add_parser("profile", help="work with vendor profiles"))
+    _profile_parser(commands.add_parser("profile", help="work with vendor profiles"))
     _calibrate_parser(commands.add_parser("calibrate", help="fit the confidence on a corpus"))
     return parser.parse_args(argv)
 
@@ -126,8 +145,16 @@ def _calibrate_parser(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--profiles", default=str(PROFILES_ROOT), help=ROOT_HELP)
 
 
-def _lint_parser(parser: argparse.ArgumentParser) -> None:
+def _profile_parser(parser: argparse.ArgumentParser) -> None:
     actions = parser.add_subparsers(dest="action", required=True)
     lint = actions.add_parser("lint", help="report how ready a profile is")
     lint.add_argument("profile_id", help="the profile to measure against the others")
     lint.add_argument("--profiles", default=str(PROFILES_ROOT), help=ROOT_HELP)
+    drafting = actions.add_parser("draft", help="write the profile one document suggests")
+    drafting.add_argument("pdf", help="path to the invoice PDF to draft from")
+    drafting.add_argument(
+        "--out", required=True, metavar="DIR", help="profile directory to write into"
+    )
+    drafting.add_argument("--id", help="profile id (default: <language>-<COUNTRY>, else draft)")
+    drafting.add_argument("--language", help="ISO 639-1 code, where the page's language is known")
+    drafting.add_argument("--profiles", default=str(PROFILES_ROOT), help=ROOT_HELP)

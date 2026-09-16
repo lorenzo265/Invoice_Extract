@@ -1,4 +1,4 @@
-"""The CLI's two commands, and the inputs they refuse to start on.
+"""The CLI commands, and the inputs they refuse to start on.
 
 The paths that need a real PDF live in `tests/integration/test_cli_end_to_end.py`: a unit
 test that opens a PDF is testing PyMuPDF, not this codebase.
@@ -67,3 +67,21 @@ def test_profile_needs_an_action(capsys: pytest.CaptureFixture[str]) -> None:
         main(["profile"])
     assert exit_code.value.code == 2
     assert "lint" in capsys.readouterr().err
+
+
+def test_profile_draft_returns_one_for_a_missing_pdf(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    missing = tmp_path / "absent.pdf"
+    assert main(["profile", "draft", str(missing), "--out", str(tmp_path / "profiles")]) == 1
+    assert "absent.pdf" in capsys.readouterr().err
+    assert not (tmp_path / "profiles").exists(), "nothing is written for a document never read"
+
+
+def test_profile_draft_requires_a_directory_to_write_into(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit) as exit_code:
+        main(["profile", "draft", "any.pdf"])
+    assert exit_code.value.code == 2
+    assert "--out" in capsys.readouterr().err

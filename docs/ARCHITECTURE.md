@@ -180,7 +180,7 @@ Three things this diagram is saying:
 | Module | Responsibility | Depends on |
 |---|---|---|
 | `__init__.py` | Public API: `extract`, `load_profile`, `ProfileRegistry`, `InvoiceResult`, `__version__`. | `pipeline`, `profile`, `domain.models` |
-| `cli.py` (+ `__main__.py`) | `extract`, `profile lint`, `calibrate`. Parses arguments, calls one function, writes what it returns. | `pipeline`, `profile.*`, `scoring.calibrate`, `output.*` |
+| `cli.py` (+ `__main__.py`) | `extract`, `inspect`, `profile lint`, `profile draft`, `calibrate`. Parses arguments, calls one function, writes what it returns. | `pipeline`, `profile.*`, `drafting.*`, `scoring.calibrate`, `output.*` |
 | `pipeline.py` | The eight stages, wired. Nothing else. | every package below |
 | `domain/models.py` | `FieldResult`, `InvoiceResult`, `to_dict`/`from_dict`, and the field → type map. | `domain.*`, `document.model` (`BBox`) |
 | `domain/evidence.py` | `Evidence` and the closed `Strategy` vocabulary that records how a value was found. | `document.model` (`BBox`) |
@@ -196,6 +196,9 @@ Three things this diagram is saying:
 | `profile/detect.py` | Scores every profile against a document — supplier anchor, VAT id, currency, labels — and returns the best above the threshold, or none. | `profile.registry`, `document.model` |
 | `profile/lint.py` | How ready a profile is: labels and zones per field against the median of its peers, as a tier. | `profile.registry` |
 | `profile/variants.py` | Stage 2: the variant this document matches, laid over the profile it belongs to. Classifies against the base profile to answer a `document_type` fingerprint, because that is the only vocabulary there is before a variant is chosen. | `profile.loader`, `profile.merge`, `extraction.classify` |
+| `drafting/pairs.py`, `shapes.py`, `vocabulary.py`, `seen.py` | `profile draft`, the half that needs no language: every `label: value` a page prints, from punctuation and geometry; the shape of each value (a date and which format, an amount and its separators, a VAT id and its country); every lexicon at once, looked up exactly, and the language they elect. | `document.model`, `document.zones` |
+| `drafting/conventions.py`, `identity.py`, `assemble.py`, `evidence.py` | The profile the page suggests: number format, date formats, currencies and rates counted off it; the supplier from the letterhead and the id; the overlay with the zone each label's value sat in; and the trace of every key, with the worksheet of what no lexicon named. | `drafting.*`, `profile.loader` |
+| `drafting/writer.py`, `summary.py`, `draft.py` | Where a draft lands (`profiles/`, `drafts/`, `lexicon/` as siblings), what it brings with it, what it refuses to overwrite; the summary printed; the one function the CLI calls. | `drafting.*`, `profile.registry` |
 | `extraction/spec.py` | The six spec kinds and the validation that runs when the declarations are imported. | `extraction.units.registry`, `domain.*`, `profile.schema` |
 | `extraction/specs.py` | The declarations themselves: the scalar fields, the two tables, the four party blocks, the totals block. | `extraction.spec`, `extraction.units.derivations` |
 | `extraction/engine.py` | One runner for `LabelSpec`, `AnchorSpec` and `DerivedSpec`: guard → collect → filter → normalize → validate → rank → publish. | `extraction.*`, `document.model`, `profile.schema` |

@@ -193,6 +193,39 @@ And the excerpt of `_defaults.json` those keys are laid over:
 |---|---|
 | `exempt` | `[{code, reason}]` — the arithmetic rules this vendor's invoices are not held to, each with the reason it does not apply (e.g. a reverse-charge invoice states no tax). `code` must name one of the rules in `docs/ENGINE_SPEC.md` §6 and §7; the exemption is reported as an INFO finding, so it is visible in the result rather than silent |
 
+## `profile draft`
+
+`invoice-extractor profile draft <pdf> --out <dir> [--id <id>] [--language <code>]`
+writes `<dir>/<id>.json` — the overlay a person would otherwise start from a blank file —
+and `<dir>/../drafts/<id>.json` beside it, with the reason for every key. The layout is
+the one the loader already imposes: `profiles/`, `lexicon/` and `drafts/` are siblings,
+so `--out vendors/profiles` is the same directory `--profiles vendors/profiles` reads.
+Where `<dir>` has no `_defaults.json` the draft copies the one it was made against, and
+where `lexicon/` beside it lacks the page's language it copies that too — or writes a
+skeleton with `?` in every entry where no shipped lexicon speaks the language.
+
+What the draft writes, and from what:
+
+| Key | Read from |
+|---|---|
+| `language`, `lexicon` | the lexicon whose entries the page prints most (three or more), or `--language`; else `und`, ISO 639-2 for *undetermined* |
+| `supplier.name`, `address_lines` | the letterhead: the left-margin lines above the first gap, labelled lines left out |
+| `supplier.vat_id`, `country`, `vat.id_prefix`, `vat.id_pattern` | the value labelled as the supplier's id, else the first value shaped like a known country's id and not labelled as the customer's; the pattern is the known country's, or read off the id itself |
+| `number_format` | the decimal separator most amounts with decimals used, and every thousands separator seen beside it |
+| `date_formats` | every named format a printed date fits, most often first; both slashed formats where no date settles the order, and the evidence says to choose |
+| `currencies` | the codes labelled as the currency, then any known code printed anywhere |
+| `vat.rates` | the percentages printed, most frequent as `standard`, next as `reduced`, `0` as `zero` |
+| `fields.<name>.zones` | the zone the *value* sat in, for every field the defaults declare whose label a lexicon spells; a label only another language spells is added to the field's `labels` |
+| `parties.<name>.zones` | the zone each party heading sat in |
+
+Everything else stays with `_defaults.json`. A key the page gave nothing for is written
+as `?` — a placeholder the loader refuses by name, so a profile with a hole in it cannot
+read a document — and the summary lists every one. The evidence file also carries the
+column headings, party headings, charges, titles and traps the page printed, and the
+`unmapped` worksheet: every labelled value no lexicon names, with its shape (a date, an
+amount, a percentage, a VAT id of which country) and its zone. On a page in a new
+language that worksheet is the lexicon, waiting to be written.
+
 ## `profile lint`
 
 `invoice-extractor profile lint <id>` reports, per field, how many labels and zones the

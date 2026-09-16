@@ -3,6 +3,30 @@
 All notable changes to this project are recorded here. The format follows
 Keep a Changelog, and this project adheres to Semantic Versioning.
 
+## [Unreleased]
+
+### Added
+
+- **`invoice-extractor profile draft <pdf> --out <dir>`** — the profile one document
+  suggests, written for a person to correct. The inverse of `inspect`: where `inspect`
+  shows the page so a profile can be written, `profile draft` writes the profile the
+  page suggests and the evidence for every key beside it, under `drafts/<id>.json`.
+  Read without a language: every `label: value` the page prints, from punctuation and
+  geometry; the shape of every value — a date and which of the loader's formats it fits,
+  an amount and the separators it was printed with, a VAT id and the country its prefix
+  names; the supplier from the letterhead. Read with every shipped lexicon at once: which
+  field each label names, and which language the page is in, by vote. The overlay
+  written is what a hand-written profile has needed every time so far: the supplier
+  block, the number and date conventions, the currency, the rates, and the zone each
+  field's value actually sat in. Drafted from one corpus fixture into an empty
+  directory, the profile lints at T2 and reads the document back with every header
+  field at 1.00 — `tests/integration/test_profile_draft.py` holds that proof. A page in
+  a language no lexicon speaks gets a skeleton lexicon, the labels it did print as the
+  profile's own, and a worksheet of every labelled value with its shape and zone. A key
+  the page gave nothing for is `?`, which the loader refuses by name. Nothing is
+  overwritten: a draft over an existing profile is refused, and `--id` names it
+  differently. A drafting tool only — the engine never runs it (ADR-0008).
+
 ## [0.4.0] — 2026-09-15
 
 The engine, packaged as one. v0.3.0 was a repository you cloned; this is a library you
