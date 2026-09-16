@@ -23,9 +23,12 @@ from collections.abc import Sequence
 from invoice_extractor.document.model import Document, TextLine
 from invoice_extractor.profile.detect import PROFILE_THRESHOLD, ProfileScore
 
-# The widest a line of a page is printed before it is cut: enough for a wrapped
-# description, short enough that the zone and the box stay on one terminal row.
-TEXT_WIDTH = 62
+# The width the text column is padded to, so the boxes line up under each other. It is a
+# minimum, never a maximum: a line longer than this pushes its own box to the right and
+# nothing is cut. A value you cannot read is worse than a row that does not line up —
+# an IBAN printed after a bank's name and address is exactly the kind of long line a
+# profile is written to reach, and truncating it hid the one thing worth seeing.
+TEXT_COLUMN = 62
 RULE = "=" * 80
 
 
@@ -53,8 +56,8 @@ def _pages(document: Document) -> list[str]:
                 f"{len(page.lines)} lines",
                 *_anchors(page.anchors),
                 "",
-                f"  {'ZONE':<6} {'TEXT':<{TEXT_WIDTH}}  BOX (x0, y0, x1, y1)",
-                "  " + "-" * (TEXT_WIDTH + 34),
+                f"  {'ZONE':<6} {'TEXT':<{TEXT_COLUMN}}  BOX (x0, y0, x1, y1)",
+                "  " + "-" * (TEXT_COLUMN + 34),
                 *(_line(line) for line in page.lines),
                 "",
             ]
@@ -82,10 +85,8 @@ def _anchors(anchors: object) -> list[str]:
 
 def _line(line: TextLine) -> str:
     box = line.bbox
-    text = line.text.strip()
-    shown = text if len(text) <= TEXT_WIDTH else f"{text[: TEXT_WIDTH - 1]}…"
     return (
-        f"  {line.zone.name:<6} {shown:<{TEXT_WIDTH}}  "
+        f"  {line.zone.name:<6} {line.text.strip():<{TEXT_COLUMN}}  "
         f"({box.x0:6.1f},{box.y0:6.1f},{box.x1:6.1f},{box.y1:6.1f})"
     )
 

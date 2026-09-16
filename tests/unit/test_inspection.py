@@ -71,3 +71,17 @@ def test_a_page_the_reader_found_no_anchors_on_says_so() -> None:
         source_path="bare.pdf",
     )
     assert "anchor   none found" in render(bare, ())
+
+
+def test_a_long_line_is_printed_whole_rather_than_cut() -> None:
+    """The bank line carries the IBAN after a name and an address, and it is the point.
+
+    `inspect` exists so a profile can be written against what the page says. A value cut
+    to fit a column is a value the person cannot read, and the longest lines on an
+    invoice — bank details, legal sentences, wrapped descriptions — are where the
+    interesting ones hide.
+    """
+    bank = "Bankverbindung: Citibank, Wien Konto:1851-055, BLZ: 18140 - IBAN AT121234567890123456"
+    printed = render(make_document([(1, bank, 128.0, 772.0, 466.0, 789.0)]), ())
+    assert bank in printed, "the whole line, not a prefix of it"
+    assert "…" not in printed, "and nothing marked as cut"
