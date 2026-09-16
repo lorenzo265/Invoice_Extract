@@ -41,6 +41,15 @@ against a document built line by line in the shape the page had.
   `vat_amount` was backfilled from the summary. A column is now set against an `Edge`,
   its labels' left edges where those agree and their right edges otherwise, and a cell is
   in the column where its matching edge is on that line (`extraction/units/totals_block.py`).
+- **A party block may stand a few lines under its heading, and may be set wholly in
+  bold.** The vendor leaves two lines of room under `Bill To:` before the customer's name,
+  and the rule that ends a block at a gap of one and a half line heights ended it before it
+  began: both parties came back with no name and no address. The first line under a
+  heading now has room of its own (`HEADING_GAP`, three heights of the heading) and the
+  gap between the block's own lines is still what ends it. The same vendor sets the whole
+  bill-to block in bold, and the reader that takes the bold run as the name took the
+  address with it; weight now names the lines only where the block has two weights in it,
+  and a block set in one leaves the first line as the name (`extraction/section.py`).
 
 ## [0.4.0] — 2026-09-15
 
