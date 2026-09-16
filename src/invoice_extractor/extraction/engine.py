@@ -141,7 +141,7 @@ def _collect(
     """Every way the field may be printed, pooled — the rankers decide which one won."""
     return [
         candidate
-        for name in strategies_for(spec, described.pattern is not None)
+        for name in strategies_for(spec, described)
         for candidate in STRATEGIES[name](document.lines, _terms(name, spec, described, profile))
     ]
 

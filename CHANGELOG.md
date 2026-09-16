@@ -50,6 +50,17 @@ against a document built line by line in the shape the page had.
   bill-to block in bold, and the reader that takes the bold run as the name took the
   address with it; weight now names the lines only where the block has two weights in it,
   and a block set in one leaves the first line as the name (`extraction/section.py`).
+- **A label is never a value, and `placement` leads.** The vendor sets every value at a
+  tab stop to the right of its label, so the line under `Payment Terms:` is `Payment
+  Date:`, the next label. `label_below` offered it, it reads like a sentence, and it sat
+  ten points from its label where the real value sat a hundred and ten: `payment_terms`
+  came back as the words `Payment Date:`. A new filter, `not_a_label`, drops a candidate
+  that is nothing but a label the profile declares for another field, a vendor's extra
+  or a party block — or such a label with its own value after it — and every `LabelSpec`
+  runs it after `not_a_trap`. And the profile's `placement`, which `docs/PROFILE_FORMAT.md`
+  said names the strategy that leads and which nothing read, now does: `strategies_for`
+  pools the leading strategy's candidates first, and since the rankers sort stably, it is
+  the one that wins a tie (`extraction/units/filters.py`, `extraction/spec.py`).
 
 ## [0.4.0] — 2026-09-15
 

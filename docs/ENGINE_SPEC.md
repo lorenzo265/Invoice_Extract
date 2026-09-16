@@ -43,7 +43,7 @@ and in what they publish.
 
 | Kind | Collect | Publishes | Fields |
 |---|---|---|---|
-| `LabelSpec` | label strategies in fixed order: `label_right`, `label_below` (by geometry: nearest line with horizontal overlap), `label_pattern`; zones as preference | one value | invoice_number, order_number, customer_number, customer_vat_id, invoice_date, supply_date, due_date, iban, exchange_rate (when printed), custom fields |
+| `LabelSpec` | label strategies, the one the field's `placement` names first and the rest in fixed order: `label_right`, `label_beside`, `label_below` (by geometry: nearest line with horizontal overlap), `label_pattern` where a pattern is declared; a candidate that is nothing but another field's label is filtered out (`not_a_label`); zones as preference | one value | invoice_number, order_number, customer_number, customer_vat_id, invoice_date, supply_date, due_date, iban, exchange_rate (when printed), custom fields |
 | `AnchorSpec` | occurrences of an expected value from the profile: exact > digits-only > fuzzy, with prefix promotion | one value + match ratio | supplier (name), supplier_vat_id, supplier address |
 | `SectionSpec` | lines from a label to a stop label / blank gap / next section, bounded by `max_lines`; placeholder detection | a party block | bill_to, ship_to, mail_to |
 | `TableSpec` | header row by column labels (≥ `min_header_matches`), split headers re-joined by vertical gap, column x-ranges from header words, rows by a state machine (row / continuation / sub-item / carry-forward / stop), bounded per page by `page_bounds` | rows with per-cell evidence | line_items, vat_summary |

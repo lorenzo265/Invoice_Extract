@@ -46,3 +46,37 @@ def _introduced_by(candidate: Candidate, traps: frozenset[str]) -> bool:
         return True
     text = candidate.evidence.raw_text.strip().casefold()
     return any(text.startswith(trap) for trap in traps)
+
+
+def not_a_label(
+    found: Sequence[Candidate], field: FieldProfile, profile: Profile
+) -> list[Candidate]:
+    """Drop a candidate that is nothing but a label the vendor introduces something else with.
+
+    `label_below` reads the line under a label, and a vendor that sets its values at a tab
+    stop to the right leaves the next label there instead: under `Payment Terms:` it
+    prints `Payment Date:`, which introduces the next value and is not this one. Every
+    label the profile declares — for a field, for an extra the vendor prints, for a party
+    block — is such a word, and so is that word with its own value after it. A label the
+    field itself declares is not, for the reason `not_a_trap` gives.
+    """
+    labels = _declared(profile) - {_bare(label) for label in field.labels}
+    return [candidate for candidate in found if not _is_a_label(candidate, labels)]
+
+
+def _declared(profile: Profile) -> frozenset[str]:
+    """Every label this vendor introduces a value with, as the page prints it."""
+    described = (*profile.fields.values(), *(custom.field for custom in profile.custom_fields))
+    headings = [label for section in profile.parties.values() for label in section.labels]
+    groups = (*(one.labels for one in described), headings)
+    return frozenset(_bare(label) for group in groups for label in group if label.strip())
+
+
+def _is_a_label(candidate: Candidate, labels: frozenset[str]) -> bool:
+    text = _bare(candidate.raw_text)
+    return any(text == label or text.startswith(f"{label}:") for label in labels)
+
+
+def _bare(text: str) -> str:
+    """A label as the page prints it, without the colon after it or the space around it."""
+    return text.strip().rstrip(":").strip().casefold()

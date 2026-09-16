@@ -32,10 +32,18 @@ from invoice_extractor.extraction.units.registry import (
     RANKERS,
     VALIDATORS,
 )
-from invoice_extractor.profile.schema import REQUIRED_COMPONENTS
+from invoice_extractor.profile.schema import REQUIRED_COMPONENTS, FieldProfile, Placement
 
 # What a profile may be asked for by name: the values it already knows about its vendor.
 EXPECTED_VALUES: tuple[str, ...] = ("supplier.name", "supplier.vat_id")
+# The strategy a field's `placement` puts first; the others follow in the registry's
+# fixed order. Candidates are pooled in that order and the rankers sort stably, so the
+# leading strategy is the one that wins a tie.
+LEADS: Mapping[Placement, str] = {
+    Placement.RIGHT: "label_right",
+    Placement.BELOW: "label_below",
+    Placement.PATTERN: "label_pattern",
+}
 # Where a `LabelSpec` finds the field profile it reads: the catalog's fields, or the
 # vendor's own declared extras.
 SOURCES: tuple[str, ...] = ("fields", "custom_fields")
@@ -78,7 +86,7 @@ class LabelSpec:
     normalizer: str
     validator: str
     rankers: tuple[str, ...]
-    filters: tuple[str, ...] = ("not_a_trap",)
+    filters: tuple[str, ...] = ("not_a_trap", "not_a_label")
     on_failure: OnFailure = OnFailure.NOT_FOUND
     source: str = "fields"
     depends_on: tuple[str, ...] = ()
@@ -188,15 +196,22 @@ def _table(structure: TableSpec) -> None:
         _known(structure.name, "column", column, known)
 
 
-def strategies_for(spec: Collected, declares_a_pattern: bool) -> tuple[str, ...]:
+def strategies_for(spec: Collected, described: FieldProfile) -> tuple[str, ...]:
     """The collect units this spec's kind runs, in the order their candidates are pooled.
 
-    `label_pattern` runs only for a field whose profile declares one: a label is not a
-    regular expression, and compiling one as if it were finds the label itself.
+    The strategy the field's `placement` names leads, and the others follow in the
+    registry's fixed order. `label_pattern` runs only for a field whose profile declares
+    one: a label is not a regular expression, and compiling one as if it were finds the
+    label itself.
     """
     if isinstance(spec, AnchorSpec):
         return ("anchor_value",)
-    return (*LABEL_STRATEGIES, *(("label_pattern",) if declares_a_pattern else ()))
+    pattern = ("label_pattern",) if described.pattern is not None else ()
+    available: tuple[str, ...] = (*LABEL_STRATEGIES, *pattern)
+    lead = LEADS[described.placement]
+    if lead not in available:
+        return available
+    return (lead, *(name for name in available if name != lead))
 
 
 def _validate_one(spec: Spec, derivations: Mapping[str, object]) -> None:
