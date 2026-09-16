@@ -27,6 +27,21 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
   overwritten: a draft over an existing profile is refused, and `--id` names it
   differently. A drafting tool only — the engine never runs it (ADR-0008).
 
+### Fixed
+
+The first real invoices this engine was run on — one vendor's ERP output, in twelve
+countries — read every header field and lost the totals block, the party blocks and one
+custom field, each to a rule the synthetic corpus had never exercised. Each is fixed
+against a document built line by line in the shape the page had.
+
+- **A totals block whose labels are set flush right is read whole.** `Subtotal`, `VAT`
+  and `Total` end at the same x and start apart, `VAT` being the narrower word. The block
+  finder grouped rows by their labels' left edges within two points, so the block fell
+  apart into single rows and only `Total` survived — `subtotal` came back empty and
+  `vat_amount` was backfilled from the summary. A column is now set against an `Edge`,
+  its labels' left edges where those agree and their right edges otherwise, and a cell is
+  in the column where its matching edge is on that line (`extraction/units/totals_block.py`).
+
 ## [0.4.0] — 2026-09-15
 
 The engine, packaged as one. v0.3.0 was a repository you cloned; this is a library you

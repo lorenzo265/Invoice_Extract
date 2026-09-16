@@ -13,15 +13,41 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from enum import Enum, auto
 
 from invoice_extractor.document.model import Document, TextPart
 from invoice_extractor.document.rows import CellRow, cell_rows_of
 from invoice_extractor.profile.schema import ComponentProfile, Profile
 
-# How far from the block's own left edge a row still belongs to it, in points.
+# How far from the block's own edge a row still belongs to it, in points.
 COLUMN_TOLERANCE = 2.0
 # A4 at 72 dpi, which is what a profile's `cluster_gap` is a fraction of.
 PAGE_HEIGHT = 842.0
+
+
+class Side(Enum):
+    """Which edge of its labels a column is set against."""
+
+    LEFT = auto()
+    RIGHT = auto()
+
+
+@dataclass(frozen=True, slots=True)
+class Edge:
+    """The line a block's column is set against: its labels' left edges, or their right.
+
+    A vendor that sets its totals labels flush left starts every one at the same x. One
+    that sets them flush right, so that `Subtotal` and `Total` end together, starts them
+    apart — `VAT` is the narrower word — and ends them at the same x instead. Either way
+    the column is one line, and a cell is in it where its matching edge is on that line.
+    """
+
+    x: float
+    side: Side = Side.LEFT
+
+    def holds(self, cell: TextPart) -> bool:
+        own = cell.bbox.x0 if self.side is Side.LEFT else cell.bbox.x1
+        return abs(own - self.x) <= COLUMN_TOLERANCE
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,10 +62,10 @@ class Named:
 
 @dataclass(frozen=True, slots=True)
 class Block:
-    """The rows of the totals block, and the left edge of the column they are set in."""
+    """The rows of the totals block, and the edge of the column they are set against."""
 
     rows: tuple[CellRow, ...]
-    edge: float
+    edge: Edge
 
 
 def find_block(document: Document, profile: Profile) -> Block:
@@ -55,13 +81,14 @@ def find_block(document: Document, profile: Profile) -> Block:
     found = [(row, component_of(row, profile.totals.components)) for row in rows]
     clusters = _clusters([(row, named) for row, named in found if named is not None], profile)
     if not clusters:
-        return Block((), 0.0)
+        return Block((), Edge(0.0))
     best = max(clusters, key=_names_most)
-    return Block(tuple(_column_from(rows, best, profile)), best[0][1].label.bbox.x0)
+    edge = _edge_of(best)
+    return Block(tuple(_column_from(rows, best, edge, profile)), edge)
 
 
 def component_of(
-    row: CellRow, components: Mapping[str, ComponentProfile], edge: float | None = None
+    row: CellRow, components: Mapping[str, ComponentProfile], edge: Edge | None = None
 ) -> Named | None:
     """Which component this row names, by the longest of its labels the row begins with.
 
@@ -71,7 +98,7 @@ def component_of(
     """
     best: Named | None = None
     for cell in row.cells:
-        if edge is not None and not at(cell, edge):
+        if edge is not None and not edge.holds(cell):
             continue
         text = cell.text.strip().casefold()
         for name, component in components.items():
@@ -122,12 +149,31 @@ def _clusters(
 
 
 def _joins(last: tuple[CellRow, Named], current: tuple[CellRow, Named], gap: float) -> bool:
-    same_column = abs(current[1].label.bbox.x0 - last[1].label.bbox.x0) <= COLUMN_TOLERANCE
-    return same_column and current[0].top - last[0].bottom <= gap
+    return _aligned(last[1].label, current[1].label) and current[0].top - last[0].bottom <= gap
+
+
+def _aligned(one: TextPart, other: TextPart) -> bool:
+    """Set against one edge: the two labels start at the same x, or they end at it."""
+    left = abs(one.bbox.x0 - other.bbox.x0) <= COLUMN_TOLERANCE
+    right = abs(one.bbox.x1 - other.bbox.x1) <= COLUMN_TOLERANCE
+    return left or right
+
+
+def _edge_of(cluster: Sequence[tuple[CellRow, Named]]) -> Edge:
+    """The edge a block's labels agree on: their left edges where those agree, else their right.
+
+    A block of one row agrees with itself on both, and is read from the left as any
+    column is until a second row says otherwise.
+    """
+    labels = [named.label for _, named in cluster]
+    first = labels[0]
+    if all(abs(label.bbox.x0 - first.bbox.x0) <= COLUMN_TOLERANCE for label in labels):
+        return Edge(first.bbox.x0, Side.LEFT)
+    return Edge(first.bbox.x1, Side.RIGHT)
 
 
 def _column_from(
-    rows: Sequence[CellRow], cluster: Sequence[tuple[CellRow, Named]], profile: Profile
+    rows: Sequence[CellRow], cluster: Sequence[tuple[CellRow, Named]], edge: Edge, profile: Profile
 ) -> list[CellRow]:
     """Every row of the block's own column, from its first component row downward.
 
@@ -135,7 +181,6 @@ def _column_from(
     its label prints a row of its own for the amount, and the currency it echoes the
     total in is a row under all of them.
     """
-    edge = cluster[0][1].label.bbox.x0
     gap = profile.totals.cluster_gap * PAGE_HEIGHT
     kept: list[CellRow] = []
     for row in rows:
@@ -147,8 +192,8 @@ def _column_from(
     return kept
 
 
-def _starts_at(row: CellRow, edge: float) -> bool:
-    return any(at(cell, edge) for cell in row.cells)
+def _starts_at(row: CellRow, edge: Edge) -> bool:
+    return any(edge.holds(cell) for cell in row.cells)
 
 
 def _longer(best: Named | None, label: str) -> bool:
