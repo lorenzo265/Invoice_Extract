@@ -50,6 +50,20 @@ def test_a_block_publishes_its_components_as_fields() -> None:
     }
 
 
+def test_a_block_on_a_page_before_the_last_is_published_from_that_page() -> None:
+    document = make_document(
+        [
+            *block([("Subtotal", "100.00"), ("Total", "120.00")]),
+            (2, "Terms and conditions of sale", 50.0, 100.0, 200.0, 110.0),
+        ]
+    )
+    found = read_totals(TOTALS, document, profile_with_block()).extractions["subtotal"]
+    assert found.field.value == Decimal("100.00")
+    assert found.field.evidence is not None
+    assert found.field.evidence.page == 1
+    assert found.zone is not None
+
+
 def test_a_published_amount_points_at_the_row_it_was_read_from() -> None:
     document = make_document(block([("Subtotal", "100.00")]))
     found = read_totals(TOTALS, document, profile_with_block()).extractions["subtotal"]

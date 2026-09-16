@@ -61,6 +61,14 @@ against a document built line by line in the shape the page had.
   said names the strategy that leads and which nothing read, now does: `strategies_for`
   pools the leading strategy's candidates first, and since the rankers sort stably, it is
   the one that wins a tie (`extraction/units/filters.py`, `extraction/spec.py`).
+- **The totals block is read from whichever page carries it.** The vendor prints a page
+  of terms after the one it adds up on, so the block finder, which read the last page
+  only, found nothing there and `subtotal` and `total_amount` came back empty on every
+  such document. Every page is now searched, and the block is the run of rows naming
+  the most components on any of them; where two pages name as much, the later one is
+  the block, because a subtotal carried forward says the same words on the page before.
+  An amount's zone is classified against the page it was drawn on rather than the last
+  (`extraction/units/totals_block.py`, `extraction/block.py`).
 
 ## [0.4.0] — 2026-09-15
 

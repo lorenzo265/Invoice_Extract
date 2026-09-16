@@ -20,7 +20,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from decimal import Decimal
 
-from invoice_extractor.document.model import Document, Page, TextPart
+from invoice_extractor.document.model import Document, TextPart
 from invoice_extractor.document.rows import CellRow
 from invoice_extractor.document.zones import classify
 from invoice_extractor.domain.evidence import Evidence, Strategy
@@ -82,20 +82,24 @@ def read_totals(spec: BlockSpec, document: Document, profile: Profile) -> Totals
     was drawn in — so the totals are scored by the same signals as every other field.
     """
     reading = read_block(document, profile)
-    page = document.page(document.page_count)
     return Totals(
         extractions={
-            name: _published(name, reading.components.get(name), page) for name in spec.fields
+            name: _published(name, reading.components.get(name), document) for name in spec.fields
         },
         charges=reading.charges,
         secondary=reading.secondary,
     )
 
 
-def _published(name: str, amount: Amount | None, page: Page) -> Extraction:
-    """A component the block printed, or the same absence the engine publishes (ADR-0005)."""
+def _published(name: str, amount: Amount | None, document: Document) -> Extraction:
+    """A component the block printed, or the same absence the engine publishes (ADR-0005).
+
+    The zone is the zone of the page the amount was read from: the block is not always
+    on the last page, and a page of terms after it is not what the amount was drawn on.
+    """
     if amount is None:
         return Extraction(FieldResult(name, None, None, None, valid=False), 0, None)
+    page = document.page(amount.evidence.page)
     field = FieldResult(
         name=name,
         value=amount.value,

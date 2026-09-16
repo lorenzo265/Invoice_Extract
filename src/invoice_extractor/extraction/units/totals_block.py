@@ -68,23 +68,40 @@ class Block:
     edge: Edge
 
 
+# A run of component rows that could be the block, in the order they are drawn.
+Cluster = list[tuple[CellRow, Named]]
+
+
 def find_block(document: Document, profile: Profile) -> Block:
-    """The totals block: the column of component rows the last page adds up in.
+    """The totals block: the column of component rows the document adds up in.
 
     A component's word turns up elsewhere — a table heading that says `VAT %` begins with
     the vendor's word for VAT — so the block is not the first row that names one. It is
-    the run of rows naming the most of them, in one column, close together; a stray match
-    in a table names one component and loses to a block that names four.
+    the run of rows naming the most of them, in one column, close together, on whichever
+    page carries it: a vendor may print its terms on a page after the one it adds up on,
+    and a sentence there that begins with `Total` names one component where the block
+    names four. Where two pages name as much, the later one is the block, because a
+    subtotal carried forward says the same words on the page before.
     """
-    page = document.page(document.page_count)
-    rows = cell_rows_of(page.lines)
-    found = [(row, component_of(row, profile.totals.components)) for row in rows]
-    clusters = _clusters([(row, named) for row, named in found if named is not None], profile)
+    clusters = _on_every_page(document, profile)
     if not clusters:
         return Block((), Edge(0.0))
-    best = max(clusters, key=_names_most)
+    best, rows = max(clusters, key=lambda found: _names_most(found[0]))
     edge = _edge_of(best)
     return Block(tuple(_column_from(rows, best, edge, profile)), edge)
+
+
+def _on_every_page(
+    document: Document, profile: Profile
+) -> list[tuple[Cluster, tuple[CellRow, ...]]]:
+    """Every run of component rows on every page, each with the rows of its own page."""
+    found: list[tuple[Cluster, tuple[CellRow, ...]]] = []
+    for page in document.pages:
+        rows = cell_rows_of(page.lines)
+        named = [(row, component_of(row, profile.totals.components)) for row in rows]
+        clusters = _clusters([(row, one) for row, one in named if one is not None], profile)
+        found.extend((cluster, rows) for cluster in clusters)
+    return found
 
 
 def component_of(
@@ -121,14 +138,14 @@ def amounts(row: CellRow, found: Named) -> list[TextPart]:
     ]
 
 
-def _names_most(cluster: Sequence[tuple[CellRow, Named]]) -> tuple[int, float]:
-    """How good a candidate block is: the components it names, then how low it sits."""
-    return len({named.name for _, named in cluster}), cluster[0][0].top
+def _names_most(cluster: Sequence[tuple[CellRow, Named]]) -> tuple[int, int, float]:
+    """How good a candidate block is: the components it names, then how late in the
+    document and how low on its page it sits."""
+    first = cluster[0][0]
+    return len({named.name for _, named in cluster}), first.page, first.top
 
 
-def _clusters(
-    named: Sequence[tuple[CellRow, Named]], profile: Profile
-) -> list[list[tuple[CellRow, Named]]]:
+def _clusters(named: Sequence[tuple[CellRow, Named]], profile: Profile) -> list[Cluster]:
     """Component rows grouped into blocks: one column, one run, nothing far between.
 
     A page draws more than one column at a time — the VAT summary's own heading sits
@@ -136,7 +153,7 @@ def _clusters(
     column, not whichever block was open last.
     """
     gap = profile.totals.cluster_gap * PAGE_HEIGHT
-    grouped: list[list[tuple[CellRow, Named]]] = []
+    grouped: list[Cluster] = []
     for row, found in named:
         open_block = next(
             (block for block in reversed(grouped) if _joins(block[-1], (row, found), gap)), None

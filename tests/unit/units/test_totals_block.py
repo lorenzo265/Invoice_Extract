@@ -121,6 +121,29 @@ def test_a_row_far_below_the_block_is_not_part_of_it() -> None:
     assert [row.cells[0].text for row in found.rows] == ["Subtotal", "VAT"]
 
 
+def test_the_block_may_be_on_a_page_before_the_last() -> None:
+    """A vendor prints its terms on a page after the one it adds up on, and a sentence
+    there that begins with `Total` names one component where the block names three."""
+    document = make_document(
+        [
+            *block([("Subtotal", "100.00", 600.0), ("VAT", "20.00", 612.0)]),
+            *block([("Total", "120.00", 624.0)]),
+            (2, "Total liability is limited to the price paid", 50.0, 100.0, 300.0, 110.0),
+        ]
+    )
+    found = find_block(document, profile_with_block())
+    assert [row.cells[0].text for row in found.rows] == ["Subtotal", "VAT", "Total"]
+    assert found.rows[0].page == 1
+
+
+def test_of_two_pages_naming_as_much_the_later_one_is_the_block() -> None:
+    """A subtotal carried forward says the same words on the page before."""
+    earlier = block([("Subtotal", "100.00", 600.0), ("Total", "100.00", 612.0)])
+    later = block([("Subtotal", "100.00", 600.0), ("Total", "120.00", 612.0)], page=2)
+    found = find_block(make_document([*earlier, *later]), profile_with_block())
+    assert found.rows[0].page == 2
+
+
 def test_the_lower_of_two_blocks_naming_as_much_wins() -> None:
     """A page that says the same words twice is adding up in the one further down."""
     rows = [("Subtotal", "100.00", 300.0), ("Total", "120.00", 312.0)]
