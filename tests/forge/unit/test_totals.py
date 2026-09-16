@@ -24,13 +24,13 @@ def item(
 ) -> LineItem:
     return LineItem(
         pos=1,
-        sku="SKU-1",
+        part_number="SKU-1",
         description="A thing",
         quantity=Decimal(quantity),
         unit="ea",
         unit_price=Decimal(price),
         vat_rate=rate,
-        discount_percent=None if discount is None else Decimal(discount),
+        discount_pct=None if discount is None else Decimal(discount),
     )
 
 

@@ -1,0 +1,72 @@
+{
+  "id": "fr-BE",
+  "language": "fr",
+  "country": "BE",
+  "lexicon": "fr",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      ".",
+      " "
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "21",
+      "reduced": "6",
+      "zero": "0"
+    },
+    "id_prefix": "BE",
+    "id_pattern": "0\\d{9}"
+  },
+  "supplier": {
+    "name": "Bellerive Systèmes NV",
+    "aliases": [
+      "Bellerive"
+    ],
+    "address_lines": [
+      "22 rue des Ateliers",
+      "5544 Gent",
+      "Belgique"
+    ],
+    "vat_id": "BE0180405143"
+  },
+  "custom_fields": [
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "RECYCLING_FEE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "minimal"
+    ],
+    "fonts": "serif"
+  }
+}

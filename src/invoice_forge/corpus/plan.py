@@ -20,7 +20,7 @@ from invoice_forge.families import FAMILY_NAMES, Family
 from invoice_forge.jsonspec import SpecError, read_object, reject_unknown, require_choices
 from invoice_forge.knobs import KNOB_NAMES, Knob, parse_knobs
 from invoice_forge.produce import DocumentSpec
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.loader import load_profile, profile_ids
 
 PLAN_SCHEMA = "forge-plan/1"
 TOP_LEVEL_KEYS = ("schema", "cells")
@@ -81,7 +81,7 @@ def every_pair() -> tuple[tuple[str, Family], ...]:
     """
     return tuple(
         (profile_id, family)
-        for profile_id in bundled_profile_ids()
+        for profile_id in profile_ids()
         for family in load_profile(profile_id).families
     )
 

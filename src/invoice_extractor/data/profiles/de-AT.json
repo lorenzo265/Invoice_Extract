@@ -1,0 +1,73 @@
+{
+  "id": "de-AT",
+  "language": "de",
+  "country": "AT",
+  "lexicon": "de",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      ".",
+      " "
+    ]
+  },
+  "date_formats": [
+    "dd.mm.yyyy",
+    "dd-Mon-yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "20",
+      "reduced": "10",
+      "zero": "0"
+    },
+    "id_prefix": "ATU",
+    "id_pattern": "\\d{8}"
+  },
+  "supplier": {
+    "name": "Hafenkante Elektronik AG",
+    "aliases": [
+      "Hafenkante"
+    ],
+    "address_lines": [
+      "Talweg 47",
+      "0567 Graz",
+      "Österreich"
+    ],
+    "vat_id": "ATU67706955"
+  },
+  "custom_fields": [
+    {
+      "name": "contract_number",
+      "labels": [
+        "@header_labels.contract_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "ENVIRONMENTAL_FEE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "minimal"
+    ],
+    "fonts": "serif"
+  }
+}

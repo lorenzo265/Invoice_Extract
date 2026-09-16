@@ -6,7 +6,7 @@ from datetime import date
 from decimal import Decimal
 
 from invoice_forge.families import Family
-from invoice_forge.fields import LABELLED_FIELDS
+from invoice_forge.fields import TRUTH_FIELDS
 from invoice_forge.lexicon.loader import load_lexicon
 from invoice_forge.model import (
     Dates,
@@ -55,7 +55,7 @@ def bare(**changes: object) -> Document:
 def test_every_value_is_a_string_and_every_name_is_canonical() -> None:
     document = sampled()
     values = field_values(document, headline_rate(document.totals))
-    assert set(values) <= set(LABELLED_FIELDS)
+    assert set(values) <= set(TRUTH_FIELDS)
     assert all(isinstance(value, str) for value in values.values())
 
 
@@ -109,7 +109,7 @@ def test_a_row_records_every_column_the_extractor_reads() -> None:
 
     item = LineItem(1, "SKU-1", "A thing", Decimal("2"), "ea", Decimal("10.00"), RATE)
     row = item_row(item, {})
-    assert row["sku"] == "SKU-1"
+    assert row["part_number"] == "SKU-1"
     assert row["quantity"] == "2"
     assert row["unit_price"] == "10.00"
     assert row["net_amount"] == "20.00"

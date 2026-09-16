@@ -90,7 +90,7 @@ def described(product: Product, catalogue: Catalogue, knobs: Sequence[Knob], rng
     return written
 
 
-def discount_percent(knobs: Sequence[Knob], rng: Random) -> Decimal | None:
+def discount_pct(knobs: Sequence[Knob], rng: Random) -> Decimal | None:
     if Knob.DISCOUNT not in knobs or rng.randrange(ONE_ROW_IN):
         return None
     return Decimal(rng.choice(DISCOUNTS))

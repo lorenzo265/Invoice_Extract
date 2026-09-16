@@ -1,0 +1,74 @@
+{
+  "id": "es-ES",
+  "language": "es",
+  "country": "ES",
+  "lexicon": "es",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      ".",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy",
+    "d Month yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "21",
+      "reduced": "10",
+      "zero": "0"
+    },
+    "id_prefix": "ES",
+    "id_pattern": "[A-Z]\\d{7}[A-Z]"
+  },
+  "supplier": {
+    "name": "Valdearena Sistemas S.A.",
+    "aliases": [
+      "Valdearena"
+    ],
+    "address_lines": [
+      "camino de la Fábrica 124",
+      "85337 Zaragoza",
+      "España"
+    ],
+    "vat_id": "ESD6585117Z"
+  },
+  "custom_fields": [
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "SURCHARGE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "saas",
+      "minimal"
+    ],
+    "fonts": "serif"
+  }
+}

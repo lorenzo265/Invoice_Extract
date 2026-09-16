@@ -1,7 +1,7 @@
 {
   "schema": "forge-truth/1",
   "generator": {
-    "version": "0.2.0",
+    "version": "0.4.0",
     "seed": 7,
     "profile": "de-DE",
     "template": "classic",
@@ -159,8 +159,8 @@
       ]
     },
     "supplier_vat_id": {
-      "value": "DE018159083",
-      "printed": "USt-IdNr.: DE018159083",
+      "value": "DE879668745",
+      "printed": "USt-IdNr.: DE879668745",
       "label": "USt-IdNr.",
       "evidence": [
         {
@@ -529,22 +529,38 @@
       "printed": null,
       "label": null,
       "evidence": []
+    },
+    "iban": {
+      "value": "DE60427316723268656355",
+      "printed": "Schwarzbachbank · IBAN DE60 4273 1672 3268 6563 55 · BIC CXLADEV9XXX",
+      "label": "IBAN",
+      "evidence": [
+        {
+          "page": 4,
+          "bbox": [
+            50.0,
+            672.76,
+            334.83,
+            681.69
+          ]
+        }
+      ]
     }
   },
   "line_items": [
     {
       "pos": 1,
-      "sku": "SRV-ANA-H",
+      "part_number": "SRV-ANA-H",
       "description": "Analyse und Dokumentation, pro Stunde, inkl. Montagematerial",
       "quantity": "2.5",
       "unit": "Std",
       "unit_price": "115.0000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "287.50",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -613,17 +629,17 @@
     },
     {
       "pos": 2,
-      "sku": "HX-M8-040",
+      "part_number": "HX-M8-040",
       "description": "Sechskantschraube M8 x 40, verzinkt, DIN 933, Werkstoff 1.4301",
       "quantity": "5",
       "unit": "Stk",
       "unit_price": "0.12",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "0.60",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -692,17 +708,17 @@
     },
     {
       "pos": 3,
-      "sku": "SRV-WRT-Q",
+      "part_number": "SRV-WRT-Q",
       "description": "Wartung, Quartalspauschale, Anlage Typ B, Werkstoff 1.4301",
       "quantity": "50",
       "unit": "Pauschale",
       "unit_price": "245.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "12275.00",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -782,17 +798,17 @@
     },
     {
       "pos": 4,
-      "sku": "SRV-INST-H",
+      "part_number": "SRV-INST-H",
       "description": "Installationsservice vor Ort, pro Stunde, Lieferung frei Haus",
       "quantity": "3",
       "unit": "Std",
       "unit_price": "95.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "285.00",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -872,17 +888,17 @@
     },
     {
       "pos": 5,
-      "sku": "SNS-T-PT1",
+      "part_number": "SNS-T-PT1",
       "description": "Temperatursensor PT100, 3-Leiter, -50 bis +200 °C",
       "quantity": "25",
       "unit": "Stk",
       "unit_price": "22.75",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "568.75",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -962,17 +978,17 @@
     },
     {
       "pos": 6,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API-Kontingent 10.000 Aufrufe je Monat, Lieferung frei Haus",
       "quantity": "2",
       "unit": "Paket",
       "unit_price": "89.00",
-      "discount_percent": "5",
+      "discount_pct": "5",
       "vat_rate": "19",
       "net_amount": "169.10",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1057,17 +1073,17 @@
     },
     {
       "pos": 7,
-      "sku": "SW-SUP-GLD",
+      "part_number": "SW-SUP-GLD",
       "description": "Supportvertrag Gold, Reaktionszeit 4 Stunden, inkl. Montagematerial",
       "quantity": "12",
       "unit": "Jahr",
       "unit_price": "1290.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "15480.00",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1136,17 +1152,17 @@
     },
     {
       "pos": 8,
-      "sku": "SW-CLD-50",
+      "part_number": "SW-CLD-50",
       "description": "Cloud-Speicher 50 GB, Abrechnung monatlich, Werkstoff 1.4301",
       "quantity": "40",
       "unit": "Monat",
       "unit_price": "12.5000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "500.00",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1215,17 +1231,17 @@
     },
     {
       "pos": 9,
-      "sku": "PLT-AL-2",
+      "part_number": "PLT-AL-2",
       "description": "Aluminiumblech 2 mm, 1000 x 500, EN AW-5754, Werkstoff 1.4301",
       "quantity": "12",
       "unit": "Stk",
       "unit_price": "31.20",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "374.40",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1294,17 +1310,17 @@
     },
     {
       "pos": 10,
-      "sku": "SRV-INST-H",
+      "part_number": "SRV-INST-H",
       "description": "Installationsservice vor Ort, pro Stunde, RoHS-konform",
       "quantity": "12",
       "unit": "Std",
       "unit_price": "95.00",
-      "discount_percent": "5",
+      "discount_pct": "5",
       "vat_rate": "19",
       "net_amount": "1083.00",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1379,17 +1395,17 @@
     },
     {
       "pos": 11,
-      "sku": "BRK-ST-3",
+      "part_number": "BRK-ST-3",
       "description": "Stahlwinkel 3 mm, 60 x 60 x 40, roh, Mindestabnahme 10 Stück",
       "quantity": "0.5",
       "unit": "Stk",
       "unit_price": "2.30",
-      "discount_percent": "15",
+      "discount_pct": "15",
       "vat_rate": "19",
       "net_amount": "0.98",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1474,17 +1490,17 @@
     },
     {
       "pos": 12,
-      "sku": "BRG-6204",
+      "part_number": "BRG-6204",
       "description": "Rillenkugellager 6204-2RS, beidseitig gedichtet",
       "quantity": "12",
       "unit": "Stk",
       "unit_price": "3.85",
-      "discount_percent": "7.5",
+      "discount_pct": "7.5",
       "vat_rate": "19",
       "net_amount": "42.74",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1553,17 +1569,17 @@
     },
     {
       "pos": 13,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API-Kontingent 10.000 Aufrufe je Monat, inkl. Montagematerial",
       "quantity": "7.5",
       "unit": "Paket",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "667.50",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1632,17 +1648,17 @@
     },
     {
       "pos": 14,
-      "sku": "SRV-WRT-Q",
+      "part_number": "SRV-WRT-Q",
       "description": "Wartung, Quartalspauschale, Anlage Typ B, inkl. Montagematerial",
       "quantity": "2",
       "unit": "Pauschale",
       "unit_price": "245.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "491.00",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1711,17 +1727,17 @@
     },
     {
       "pos": 15,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API-Kontingent 10.000 Aufrufe je Monat, Werkstoff 1.4301",
       "quantity": "25",
       "unit": "Paket",
       "unit_price": "89.00",
-      "discount_percent": "5",
+      "discount_pct": "5",
       "vat_rate": "19",
       "net_amount": "2113.75",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1790,17 +1806,17 @@
     },
     {
       "pos": 16,
-      "sku": "SW-CLD-50",
+      "part_number": "SW-CLD-50",
       "description": "Cloud-Speicher 50 GB, Abrechnung monatlich, Werkstoff 1.4301",
       "quantity": "1",
       "unit": "Monat",
       "unit_price": "12.5000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "12.50",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1869,17 +1885,17 @@
     },
     {
       "pos": 17,
-      "sku": "BRK-ST-3",
+      "part_number": "BRK-ST-3",
       "description": "Stahlwinkel 3 mm, 60 x 60 x 40, roh, Mindestabnahme 10 Stück",
       "quantity": "3",
       "unit": "Stk",
       "unit_price": "2.30",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "6.90",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -1964,17 +1980,17 @@
     },
     {
       "pos": 18,
-      "sku": "ENC-IP65",
+      "part_number": "ENC-IP65",
       "description": "Verteilerkasten IP65, 300 x 200 x 120, RoHS-konform",
       "quantity": "4",
       "unit": "Stk",
       "unit_price": "45.50",
-      "discount_percent": "15",
+      "discount_pct": "15",
       "vat_rate": "19",
       "net_amount": "154.70",
       "section": "Softwarelizenzen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -2043,17 +2059,17 @@
     },
     {
       "pos": 19,
-      "sku": "SW-LIC-PRO",
+      "part_number": "SW-LIC-PRO",
       "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
       "quantity": "2.5",
       "unit": "Lizenz",
       "unit_price": "349.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "872.50",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2122,17 +2138,17 @@
     },
     {
       "pos": 20,
-      "sku": "FLT-P-200",
+      "part_number": "FLT-P-200",
       "description": "Filterpatrone P-200, Zellulose, 10 µm, nach Zeichnung",
       "quantity": "100",
       "unit": "Stk",
       "unit_price": "17.40",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "1740.00",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2201,17 +2217,17 @@
     },
     {
       "pos": 21,
-      "sku": "BRG-6204",
+      "part_number": "BRG-6204",
       "description": "Rillenkugellager 6204-2RS, beidseitig gedichtet",
       "quantity": "1.5",
       "unit": "Stk",
       "unit_price": "3.85",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "5.78",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2291,17 +2307,17 @@
     },
     {
       "pos": 22,
-      "sku": "SRV-WRT-Q",
+      "part_number": "SRV-WRT-Q",
       "description": "Wartung, Quartalspauschale, Anlage Typ B, Werkstoff 1.4301",
       "quantity": "0.5",
       "unit": "Pauschale",
       "unit_price": "245.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "122.75",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2370,17 +2386,17 @@
     },
     {
       "pos": 23,
-      "sku": "SNS-T-PT1",
+      "part_number": "SNS-T-PT1",
       "description": "Temperatursensor PT100, 3-Leiter, -50 bis +200 °C",
       "quantity": "12",
       "unit": "Stk",
       "unit_price": "22.75",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "273.00",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2449,17 +2465,17 @@
     },
     {
       "pos": 24,
-      "sku": "PLT-AL-2",
+      "part_number": "PLT-AL-2",
       "description": "Aluminiumblech 2 mm, 1000 x 500, EN AW-5754, RoHS-konform",
       "quantity": "100",
       "unit": "Stk",
       "unit_price": "31.20",
-      "discount_percent": "5",
+      "discount_pct": "5",
       "vat_rate": "19",
       "net_amount": "2964.00",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2534,17 +2550,17 @@
     },
     {
       "pos": 25,
-      "sku": "SRV-TRN-D",
+      "part_number": "SRV-TRN-D",
       "description": "Schulung Grundlagen, 1 Tag, bis 8 Teilnehmer, Mindestabnahme 10 Stück",
       "quantity": "20",
       "unit": "Tag",
       "unit_price": "780.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "15600.00",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2613,17 +2629,17 @@
     },
     {
       "pos": 26,
-      "sku": "FLT-P-200",
+      "part_number": "FLT-P-200",
       "description": "Filterpatrone P-200, Zellulose, 10 µm, Mindestabnahme 10 Stück",
       "quantity": "1",
       "unit": "Stk",
       "unit_price": "17.40",
-      "discount_percent": "2.5",
+      "discount_pct": "2.5",
       "vat_rate": "19",
       "net_amount": "16.97",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2692,17 +2708,17 @@
     },
     {
       "pos": 27,
-      "sku": "SNS-T-PT1",
+      "part_number": "SNS-T-PT1",
       "description": "Temperatursensor PT100, 3-Leiter, -50 bis +200 °C",
       "quantity": "4",
       "unit": "Stk",
       "unit_price": "22.75",
-      "discount_percent": "7.5",
+      "discount_pct": "7.5",
       "vat_rate": "19",
       "net_amount": "84.18",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2782,17 +2798,17 @@
     },
     {
       "pos": 28,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API-Kontingent 10.000 Aufrufe je Monat, Lieferung frei Haus",
       "quantity": "2.5",
       "unit": "Paket",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "222.50",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2861,17 +2877,17 @@
     },
     {
       "pos": 29,
-      "sku": "SRV-TRN-D",
+      "part_number": "SRV-TRN-D",
       "description": "Schulung Grundlagen, 1 Tag, bis 8 Teilnehmer, Mindestabnahme 10 Stück",
       "quantity": "25",
       "unit": "Tag",
       "unit_price": "780.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "19500.00",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 3,
             "bbox": [
@@ -2951,17 +2967,17 @@
     },
     {
       "pos": 30,
-      "sku": "ENC-IP65",
+      "part_number": "ENC-IP65",
       "description": "Verteilerkasten IP65, 300 x 200 x 120, Lieferung frei Haus",
       "quantity": "40",
       "unit": "Stk",
       "unit_price": "45.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "1820.00",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 4,
             "bbox": [
@@ -3046,17 +3062,17 @@
     },
     {
       "pos": 31,
-      "sku": "HSE-12-2",
+      "part_number": "HSE-12-2",
       "description": "Hydraulikschlauch 12 mm, 2 m, mit Pressarmatur",
       "quantity": "1.5",
       "unit": "Stk",
       "unit_price": "38.0450",
-      "discount_percent": "7.5",
+      "discount_pct": "7.5",
       "vat_rate": "19",
       "net_amount": "52.79",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 4,
             "bbox": [
@@ -3131,17 +3147,17 @@
     },
     {
       "pos": 32,
-      "sku": "HX-M8-040",
+      "part_number": "HX-M8-040",
       "description": "Sechskantschraube M8 x 40, verzinkt, DIN 933, RoHS-konform",
       "quantity": "40",
       "unit": "Stk",
       "unit_price": "0.12",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "4.80",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 4,
             "bbox": [
@@ -3210,17 +3226,17 @@
     },
     {
       "pos": 33,
-      "sku": "REL-24V",
+      "part_number": "REL-24V",
       "description": "Koppelrelais 24 V DC, 1 Wechsler, RoHS-konform",
       "quantity": "25",
       "unit": "Stk",
       "unit_price": "7.95",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "198.75",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 4,
             "bbox": [
@@ -3289,17 +3305,17 @@
     },
     {
       "pos": 34,
-      "sku": "FLT-P-200",
+      "part_number": "FLT-P-200",
       "description": "Filterpatrone P-200, Zellulose, 10 µm, nach Zeichnung",
       "quantity": "4",
       "unit": "Stk",
       "unit_price": "17.40",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "69.60",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 4,
             "bbox": [
@@ -3379,17 +3395,17 @@
     },
     {
       "pos": 35,
-      "sku": "SW-LIC-PRO",
+      "part_number": "SW-LIC-PRO",
       "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
       "quantity": "4",
       "unit": "Lizenz",
       "unit_price": "349.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "1396.00",
       "section": "Dienstleistungen",
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 4,
             "bbox": [
@@ -3503,20 +3519,20 @@
   "secondary_amounts": null,
   "parties": {
     "supplier": {
-      "name": "Rheinwerk Industriebedarf GmbH & Co. KG",
+      "name": "Nordlicht Industriebedarf GmbH & Co. KG",
       "lines": [
-        "Gutenbergstraße 18",
-        "31860 Kassel",
+        "Am Hafen 60",
+        "91195 Leipzig",
         "Deutschland"
       ],
-      "vat_id": "DE018159083",
+      "vat_id": "DE879668745",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
             50.24,
-            316.99,
+            308.3,
             64.74
           ]
         },
@@ -3525,7 +3541,7 @@
           "bbox": [
             50.0,
             69.86,
-            130.5,
+            102.49,
             79.9
           ]
         },
@@ -3534,7 +3550,7 @@
           "bbox": [
             50.0,
             81.86,
-            104.51,
+            106.02,
             91.9
           ]
         },
@@ -3683,7 +3699,7 @@
     },
     {
       "kind": "trap_label",
-      "label": "Lieferdatum",
+      "label": "Versanddatum",
       "page": 1,
       "bbox": [
         493.46,
@@ -3749,7 +3765,7 @@
     },
     {
       "kind": "trap_label",
-      "label": "Lieferdatum",
+      "label": "Versanddatum",
       "page": 2,
       "bbox": [
         493.46,
@@ -3826,7 +3842,7 @@
     },
     {
       "kind": "trap_label",
-      "label": "Lieferdatum",
+      "label": "Versanddatum",
       "page": 3,
       "bbox": [
         493.46,
@@ -3892,7 +3908,7 @@
     },
     {
       "kind": "trap_label",
-      "label": "Lieferdatum",
+      "label": "Versanddatum",
       "page": 4,
       "bbox": [
         493.46,

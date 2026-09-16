@@ -90,9 +90,9 @@ def _check_rows(items: Sequence[dict[str, object]]) -> list[str]:
 def _exact_net(row: dict[str, object], where: str) -> Decimal:
     """Quantity times price, less the discount the row declares, before anyone rounds."""
     gross = amount(row, "quantity", where) * amount(row, "unit_price", where)
-    if row.get("discount_percent") is None:
+    if row.get("discount_pct") is None:
         return gross
-    return gross - gross * amount(row, "discount_percent", where) / PERCENT
+    return gross - gross * amount(row, "discount_pct", where) / PERCENT
 
 
 def _check_subtotal(

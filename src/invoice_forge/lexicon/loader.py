@@ -1,7 +1,8 @@
 """Read a language lexicon and validate it, top down, into a `Lexicon`.
 
-Like profiles, lexicons are package data: `load_lexicon("de")` resolves inside the
-package, and only an argument that looks like a path is read as one.
+Like profiles, lexicons are shared with the extractor and ship with it, beside the
+profiles that reference them: `load_lexicon("de")` resolves there, and only an argument
+that looks like a path is read as one.
 """
 
 from __future__ import annotations
@@ -9,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from pathlib import Path
 
+from invoice_extractor import bundled
 from invoice_forge.jsonspec import (
     SpecError,
     read_object,
@@ -28,7 +30,7 @@ from invoice_forge.lexicon.schema import (
     Lexicon,
 )
 
-LEXICON_DIR = Path(__file__).parent
+LEXICON_DIR = bundled.LEXICONS
 PLAIN_LISTS = (
     "page_numbering",
     "payment_terms",

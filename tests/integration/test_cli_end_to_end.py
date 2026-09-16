@@ -1,4 +1,9 @@
-"""The CLI against a real sample: what it writes, what it prints, what `make demo` shows."""
+"""The CLI against a real document: what it writes, what it prints, what `make demo` shows.
+
+The document is one of the corpus fixtures committed under `tests/forge/fixtures/corpus/`
+— the only invoices in the repository that are not regenerated, which is what lets the
+report in `README.md` be compared against a run rather than trusted.
+"""
 
 from __future__ import annotations
 
@@ -9,10 +14,14 @@ from pathlib import Path
 
 import pytest
 
+from invoice_extractor import bundled
 from invoice_extractor.cli import main
+from invoice_extractor.validation.stage import RULE_NAMES
 
 README = Path("README.md")
-ACME = "samples/acme_invoice.pdf"
+DEMO_PDF = "tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf"
+CORPUS = Path("tests/forge/fixtures/corpus")
+DEMO_PROFILE = "fr-FR"
 
 
 def readme_report() -> str:
@@ -24,38 +33,113 @@ def readme_report() -> str:
 
 
 def test_cli_prints_report_by_default(capsys: pytest.CaptureFixture[str]) -> None:
-    assert main([ACME, "--layout", "acme"]) == 0
+    assert main(["extract", DEMO_PDF]) == 0
     assert capsys.readouterr().out.startswith("Invoice Extraction Report")
 
 
 def test_cli_writes_json_file(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     target = tmp_path / "result.json"
-    assert main([ACME, "--layout", "acme", "--json", str(target)]) == 0
+    assert main(["extract", DEMO_PDF, "--json", str(target)]) == 0
     written = json.loads(target.read_text(encoding="utf-8"))
-    assert written["fields"]["total_amount"]["value"] == "588.00"
-    assert written["fields"]["total_amount"]["confidence"] == 1.0
-    assert capsys.readouterr().out == ""
+    assert written["profile_id"] == DEMO_PROFILE
+    assert written["valid"] is True
+    assert written["fields"]["total_amount"]["value"] is not None
+    assert capsys.readouterr().out == "", "nothing is printed where a file was asked for"
+
+
+def test_cli_writes_the_findings_beside_the_result(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Stage 8 writes two files: everything, and what a reviewer queues on."""
+    target = tmp_path / "result.json"
+    assert main(["extract", DEMO_PDF, "--json", str(target)]) == 0
+    mirror = json.loads((tmp_path / "result.findings.json").read_text(encoding="utf-8"))
+    assert mirror["profile_id"] == DEMO_PROFILE
+    assert mirror["findings"] == []
+    assert [check["code"] for check in mirror["checks"]] == list(RULE_NAMES)
+    assert "result.findings.json" in capsys.readouterr().err
 
 
 def test_cli_prints_the_report_alongside_json_when_asked(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     target = tmp_path / "result.json"
-    assert main([ACME, "--layout", "acme", "--json", str(target), "--report"]) == 0
+    assert main(["extract", DEMO_PDF, "--json", str(target), "--report"]) == 0
     assert capsys.readouterr().out.startswith("Invoice Extraction Report")
     assert target.exists()
 
 
 def test_demo_command_output_matches_readme(capsys: pytest.CaptureFixture[str]) -> None:
-    assert main([ACME, "--layout", "acme", "--report"]) == 0
+    assert main(["extract", DEMO_PDF, "--report"]) == 0
     assert capsys.readouterr().out == readme_report()
 
 
 def test_module_entry_point_runs(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr(sys, "argv", ["invoice_extractor", ACME, "--layout", "acme"])
+    monkeypatch.setattr(sys, "argv", ["invoice_extractor", "extract", DEMO_PDF])
     with pytest.raises(SystemExit) as exit_code:
         runpy.run_module("invoice_extractor", run_name="__main__")
     assert exit_code.value.code == 0
     assert capsys.readouterr().out.startswith("Invoice Extraction Report")
+
+
+def test_calibrate_fits_a_corpus_and_says_how_far_off_it_is(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """The one command that writes something other than a result (ENGINE_SPEC §9)."""
+    assert main(["calibrate", "--corpus", str(CORPUS), "--out", str(tmp_path)]) == 0
+    printed = capsys.readouterr().out
+    assert "documents fitted into" in printed
+    assert "expected calibration error" in printed
+    assert {path.name for path in tmp_path.glob("*.json")} == {
+        "weights.json",
+        "calibration_maps.json",
+        "reliability_report.json",
+    }
+
+
+def test_inspect_prints_the_page_as_the_engine_reads_it(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """What `inspect` is for: the zones and the boxes a profile has to be written against."""
+    assert main(["inspect", DEMO_PDF]) == 0
+    printed = capsys.readouterr().out
+    assert printed.startswith("Document Inspection")
+    assert "PAGE 1" in printed
+    assert "ZONE" in printed and "BOX" in printed
+    assert "Facture n°:" in printed, "every line of the page is listed, label lines included"
+    assert "r1c2" in printed, "and each carries the zone a profile would name"
+
+
+def test_inspect_reports_how_each_vendor_scored_and_against_what(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert main(["inspect", DEMO_PDF]) == 0
+    printed = capsys.readouterr().out
+    assert "Profile detection" in printed
+    assert "supplier" in printed and "vat_id" in printed, "the parts that carried the score"
+    assert f"{DEMO_PROFILE} matches" in printed
+
+
+def test_inspect_says_so_when_no_vendor_would_match(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """The case the command exists for: a document whose vendor nobody has described."""
+    root = tmp_path / "profiles"
+    root.mkdir()
+    (tmp_path / "lexicon").mkdir()
+    (root / "_defaults.json").write_text(
+        (bundled.PROFILES / "_defaults.json").read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    assert main(["inspect", DEMO_PDF, "--profiles", str(root)]) == 0
+    printed = capsys.readouterr().out
+    assert "No profile was scored" in printed
+
+
+def test_a_command_pointed_at_no_profile_directory_says_so(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Refused rather than run against nothing, which would report every document unread."""
+    assert main(["extract", DEMO_PDF, "--profiles", str(tmp_path / "nowhere")]) == 1
+    assert "no profile directory at" in capsys.readouterr().err

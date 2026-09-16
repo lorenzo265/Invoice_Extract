@@ -52,7 +52,7 @@ NO_SUMMARY = dataclasses.replace(
 def item(pos: int = 1, rate: Decimal = RATE, subs: tuple[SubItem, ...] = ()) -> LineItem:
     return LineItem(
         pos=pos,
-        sku=f"SKU-{pos}",
+        part_number=f"SKU-{pos}",
         description="A thing that is sold",
         quantity=Decimal("2"),
         unit="ea",

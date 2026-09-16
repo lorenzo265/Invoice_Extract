@@ -1,0 +1,370 @@
+{
+  "language": "nl",
+  "document_titles": {
+    "invoice": [
+      "FACTUUR",
+      "Factuur",
+      "VERKOOPFACTUUR"
+    ],
+    "credit_note": [
+      "CREDITNOTA",
+      "Creditnota"
+    ]
+  },
+  "header_labels": {
+    "invoice_number": [
+      "Factuurnummer",
+      "Factuurnr.",
+      "Factuurreferentie"
+    ],
+    "invoice_date": [
+      "Factuurdatum",
+      "Datum",
+      "Datum factuur"
+    ],
+    "due_date": [
+      "Vervaldatum",
+      "Betalen vóór",
+      "Vervaldag"
+    ],
+    "supplier_vat_id": [
+      "BTW-nummer",
+      "BTW-nr.",
+      "OB-nummer"
+    ],
+    "customer_vat_id": [
+      "BTW-nummer klant",
+      "BTW-nr. afnemer"
+    ],
+    "currency": [
+      "Valuta"
+    ],
+    "supply_date": [
+      "Leverdatum",
+      "Prestatiedatum",
+      "Datum levering"
+    ],
+    "order_number": [
+      "Ordernummer",
+      "Bestelnummer",
+      "Inkoopordernr."
+    ],
+    "customer_number": [
+      "Klantnummer",
+      "Debiteurennummer"
+    ],
+    "contract_number": [
+      "Contractnummer",
+      "Overeenkomstnr."
+    ],
+    "our_reference": [
+      "Onze referentie",
+      "Contactpersoon"
+    ],
+    "your_reference": [
+      "Uw referentie",
+      "Uw ref."
+    ],
+    "payment_terms": [
+      "Betalingsvoorwaarden",
+      "Betalingstermijn"
+    ],
+    "credit_reference": [
+      "Oorspronkelijke factuur",
+      "Betreft factuur"
+    ]
+  },
+  "totals_labels": {
+    "vat_rate": [
+      "BTW-tarief",
+      "Tarief",
+      "BTW %"
+    ],
+    "subtotal": [
+      "Subtotaal",
+      "Netto totaal",
+      "Totaal excl. BTW"
+    ],
+    "vat_amount": [
+      "BTW-bedrag",
+      "Totaal BTW",
+      "BTW"
+    ],
+    "total_amount": [
+      "Totaal te betalen",
+      "Totaalbedrag",
+      "Te betalen"
+    ]
+  },
+  "charge_labels": {
+    "SHIPPING": [
+      "Verzendkosten",
+      "Vrachtkosten"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Milieuheffing",
+      "Verwijderingsbijdrage"
+    ],
+    "SURCHARGE": [
+      "Toeslag",
+      "Ordertoeslag"
+    ],
+    "CONSOLIDATION_FEE": [
+      "Behandelingskosten",
+      "Handlingkosten"
+    ],
+    "RECYCLING_FEE": [
+      "Recyclingbijdrage",
+      "WEEE-bijdrage"
+    ],
+    "ROUNDING": [
+      "Afronding",
+      "Afrondingsverschil"
+    ]
+  },
+  "column_headers": {
+    "part_number": [
+      "Artikelnr.",
+      "Art.nr.",
+      "Artikelnummer"
+    ],
+    "description": [
+      "Omschrijving",
+      "Artikelomschrijving",
+      "Specificatie"
+    ],
+    "quantity": [
+      "Aantal",
+      "Hoeveelheid"
+    ],
+    "unit_price": [
+      "Stuksprijs",
+      "Prijs",
+      "Eenheidsprijs"
+    ],
+    "net_amount": [
+      "Bedrag",
+      "Regelbedrag",
+      "Totaal"
+    ],
+    "pos": [
+      "Pos.",
+      "Regel",
+      "Nr."
+    ],
+    "unit": [
+      "Eenheid",
+      "Eenh."
+    ],
+    "discount_pct": [
+      "Korting",
+      "Korting %"
+    ],
+    "vat_rate": [
+      "BTW %",
+      "BTW-code"
+    ],
+    "subscription_id": [
+      "Abonnementsnr.",
+      "Service-ID"
+    ],
+    "billing_cycle": [
+      "Facturatiecyclus",
+      "Frequentie"
+    ],
+    "period": [
+      "Periode",
+      "Dienstperiode"
+    ],
+    "share": [
+      "Aandeel %",
+      "Verdeling"
+    ],
+    "remaining_term": [
+      "Resterende looptijd",
+      "Resttermijn"
+    ]
+  },
+  "vat_summary_headers": {
+    "code": [
+      "Code",
+      "BTW-code"
+    ],
+    "rate": [
+      "Tarief",
+      "BTW-tarief"
+    ],
+    "base": [
+      "Netto",
+      "Grondslag"
+    ],
+    "vat": [
+      "BTW",
+      "BTW-bedrag"
+    ]
+  },
+  "party_headings": {
+    "bill_to": [
+      "Factuuradres",
+      "Factureren aan"
+    ],
+    "ship_to": [
+      "Afleveradres",
+      "Bezorgadres"
+    ],
+    "mail_to": [
+      "Postadres",
+      "Correspondentieadres"
+    ]
+  },
+  "trap_labels": {
+    "order_date": [
+      "Orderdatum",
+      "Besteldatum"
+    ],
+    "delivery_date": [
+      "Verzenddatum",
+      "Verzonden op"
+    ],
+    "print_date": [
+      "Afdrukdatum",
+      "Gedrukt op"
+    ]
+  },
+  "carry_forward": {
+    "incoming": [
+      "Overgenomen",
+      "Overgenomen van vorige pagina"
+    ],
+    "outgoing": [
+      "Transport",
+      "Over te dragen"
+    ]
+  },
+  "exemption_sentences": {
+    "reverse_charge": [
+      "BTW verlegd naar de afnemer."
+    ],
+    "intra_community": [
+      "Intracommunautaire levering, vrijgesteld van BTW."
+    ],
+    "export": [
+      "Uitvoer buiten de EU, vrijgesteld van BTW."
+    ]
+  },
+  "page_numbering": [
+    "Pagina {page} van {pages}",
+    "Pagina {page}/{pages}"
+  ],
+  "payment_terms": [
+    "Betaling binnen 30 dagen na factuurdatum.",
+    "Netto 14 dagen.",
+    "2% korting bij betaling binnen 10 dagen."
+  ],
+  "legal_lines": [
+    "Op al onze leveringen zijn onze algemene voorwaarden van toepassing.",
+    "Geleverde goederen blijven ons eigendom tot volledige betaling.",
+    "Bij te late betaling wordt de wettelijke rente in rekening gebracht."
+  ],
+  "copy_stamps": [
+    "KOPIE",
+    "DUPLICAAT"
+  ],
+  "section_headings": [
+    "Hardware",
+    "Diensten",
+    "Softwarelicenties",
+    "Onderdelen",
+    "Verbruiksartikelen"
+  ],
+  "address_placeholders": [
+    "gelijk aan factuuradres",
+    "zelfde als factuuradres"
+  ],
+  "months": [
+    "januari",
+    "februari",
+    "maart",
+    "april",
+    "mei",
+    "juni",
+    "juli",
+    "augustus",
+    "september",
+    "oktober",
+    "november",
+    "december"
+  ],
+  "month_abbreviations": [
+    "jan",
+    "feb",
+    "mrt",
+    "apr",
+    "mei",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "okt",
+    "nov",
+    "dec"
+  ],
+  "diacritics": "ë ï é ü ij Ĳ — € ² °",
+  "amount_in_words": {
+    "style": "germanic_compound",
+    "units": [
+      "nul",
+      "een",
+      "twee",
+      "drie",
+      "vier",
+      "vijf",
+      "zes",
+      "zeven",
+      "acht",
+      "negen",
+      "tien",
+      "elf",
+      "twaalf",
+      "dertien",
+      "veertien",
+      "vijftien",
+      "zestien",
+      "zeventien",
+      "achttien",
+      "negentien"
+    ],
+    "tens": [
+      "twintig",
+      "dertig",
+      "veertig",
+      "vijftig",
+      "zestig",
+      "zeventig",
+      "tachtig",
+      "negentig"
+    ],
+    "scales": [
+      "honderd",
+      "duizend"
+    ],
+    "scale_many": [
+      "honderd",
+      "duizend"
+    ],
+    "million": [
+      "een miljoen",
+      "miljoen"
+    ],
+    "scale_one": "een",
+    "joiner": "en",
+    "currency_unit": [
+      "euro",
+      "euro"
+    ],
+    "currency_fraction": [
+      "cent",
+      "cent"
+    ]
+  }
+}

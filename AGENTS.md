@@ -15,10 +15,16 @@ step in between.
 
 Alongside it, `invoice_forge` generates the corpus the extractor is measured against:
 realistic, multilingual, arithmetically consistent invoice PDFs with exact ground
-truth, from a seed. You are building this repository one pull request at a time, first
-against `docs/IMPLEMENTATION_PLAN.md` (the extractor, PR0–PR9) and then against
-`docs/FORGE_PLAN.md` (the generator, F0–F7). This file is the rulebook you follow while
-you do it.
+truth, from a seed. You are building this repository one pull request at a time: first
+`docs/IMPLEMENTATION_PLAN.md` (the compact extractor, PR0–PR9), then
+`docs/FORGE_PLAN.md` (the generator, F0–F7), then `docs/ENGINE_PLAN.md` (the
+full-capability engine, E0–E7). This file is the rulebook you follow while you do it.
+
+From series E on, the extractor's design is `docs/ENGINE_SPEC.md`: one engine with six
+spec kinds, vendor profiles instead of layouts, a reconciliation stage, invariants and
+cross-field checks as findings, and confidence calibrated on a corpus that contains
+negatives. Where `docs/ENGINE_SPEC.md` contradicts `docs/ARCHITECTURE.md`,
+`docs/ENGINE_SPEC.md` wins until `docs/ARCHITECTURE.md` is rewritten in E6.
 
 ## Quality premise
 
@@ -42,14 +48,18 @@ area a document covers:
 | Order | Document | Why |
 |---|---|---|
 | 1 | `AGENTS.md` (this file) | The rules you operate under before writing a line of code. |
-| 2 | `docs/IMPLEMENTATION_PLAN.md` | The ten PRs, in order, each with its exact scope and gate. |
-| 3 | `docs/ARCHITECTURE.md` | The module boundaries and data flow the plan assumes. |
-| 4 | `docs/SAMPLES_SPEC.md` | The fixture data (`acme`, `nordic`) every golden test asserts against. |
-| 5 | `docs/LAYOUT_FORMAT.md` | The JSON schema that drives extraction — read before touching `layout/` or `extraction/`. |
-| 6 | `docs/FORGE_PLAN.md` | The generator's PRs, F0–F7, each with its exact scope and gate. |
-| 7 | `docs/FORGE_SPEC.md` | The generator's design — read before touching `invoice_forge/`. |
-| 8 | `docs/VARIATION_CATALOG.md` | What the corpus must vary, and the knob for each axis. |
-| 9 | `docs/GROUND_TRUTH_SCHEMA.md` | The ground-truth contract the benchmark compares against. |
+| 2 | `docs/ENGINE_PLAN.md` | The PRs in flight, E0–E7, each with its exact scope and gate. |
+| 3 | `docs/ENGINE_SPEC.md` | The extractor's design from v0.3 on — read before touching `src/invoice_extractor/`. |
+| 4 | `docs/PROFILE_FORMAT.md` | The JSON contract that drives extraction — read before touching `profile/` or `extraction/`. |
+| 5 | `docs/FIELD_CATALOG.md` | The canonical field names the extractor, the truth files and the benchmark share. |
+| 6 | `docs/FORGE_SPEC.md` | The generator's design — read before touching `invoice_forge/`. |
+| 7 | `docs/VARIATION_CATALOG.md` | What the corpus must vary, and the knob for each axis. |
+| 8 | `docs/GROUND_TRUTH_SCHEMA.md` | The ground-truth contract the benchmark compares against. |
+| 9 | `docs/ARCHITECTURE.md` | The v0.1 module boundaries, being evolved; `docs/ENGINE_SPEC.md` wins where they disagree. |
+
+`docs/IMPLEMENTATION_PLAN.md` §1 still defines the gate protocol every series runs
+under. `docs/LAYOUT_FORMAT.md` and `docs/SAMPLES_SPEC.md` describe the mechanisms E0
+retires; read them only to understand code you are deleting.
 
 If a document and the code disagree, the document is out of date, not wrong: fix the
 document in the same PR that changes the behavior it describes.
@@ -61,13 +71,14 @@ For each PR `N` in the plan, in order:
 1. **Branch.** Update `main` to the latest merged state, then create
    `pr/N-<slug>`, where `<slug>` is a short kebab-case name for the PR's scope
    (e.g. `pr/2-document-reader`).
-2. **Implement only that PR's scope.** Re-read the PR's entry in
-   `docs/IMPLEMENTATION_PLAN.md` before writing code. Do not implement anything that
+2. **Implement only that PR's scope.** Re-read the PR's entry in the plan in flight
+   before writing code. Do not implement anything that
    belongs to a later PR, even if it would be convenient now — a later PR's own gate
    must be the first thing that exercises it.
-3. **Run `make check` locally** (lint + typecheck + test + hygiene). Fix everything
-   until it is green. This is the same command CI runs; there is no such thing as
-   "passes in CI but not locally" for this repo.
+3. **Run `make check` locally** (lint + typecheck + test + hygiene), and from series E
+   on `make bench` as well. Fix everything until both are green. These are the same
+   commands CI runs; there is no such thing as "passes in CI but not locally" for this
+   repo.
 4. **Open a PR** using `.github/pull_request_template.md`. Fill every section — an
    empty Decisions section means you made no judgment calls, not that you skipped it.
 5. **Wait for CI to go green** on the opened PR. If it fails, fix and push — see the
@@ -86,14 +97,35 @@ exact command you ran, its full output, and the three things you tried. Leave th
 branch as it is and stop working on this repository until a human has read
 `docs/BLOCKED.md`.
 
+## The benchmark gate
+
+From E0 on, every PR has two gates: `make check` (lint, types, tests, hygiene) and
+`make bench` (the extractor over the synthetic corpus, compared with the ground truth).
+A PR merges only when both are green **and** `benchmarks/latest.json` shows no field
+whose hit rate is lower than the value committed on `main`. A field that a PR does not
+yet extract is "not covered", never "wrong"; a field a PR removes must be listed under
+"Decisions" with the reason.
+
+## Migration rules
+
+- v0.1's `layouts/*.json` and `samples/*` are retired in E0. Profiles replace layouts;
+  the synthetic corpus replaces the samples. Delete them; do not keep both.
+- v0.1 code is kept only where `docs/ENGINE_SPEC.md` keeps its behaviour. Where the
+  spec changes the mechanism, rewrite the module rather than patching it, and delete
+  the old one in the same PR.
+- The public API stays `extract(...)`, `load_profile(...)`, `InvoiceResult`; every other
+  public name is fixed by `docs/ENGINE_PLAN.md` §2.
+
 ## Non-negotiables
 
 - **Never weaken a threshold** to make a gate pass — not `--cov-fail-under`, not the
   size budget, not a hygiene limit. If the real fix is bigger than the PR's scope
   allows, the scope was wrong; shrink the scope, don't loosen the ruler.
-- **Never edit `samples/*.expected.json` to make a test pass.** Those files are the
-  ground truth the extractor is judged against. If a golden test fails, the extractor
-  is wrong; fix `src/`.
+- **Never edit a truth file to make a test or a benchmark pass** — not
+  `samples/*.expected.json` while they exist, not a `*.truth.json` the generator wrote,
+  not a committed `benchmarks/latest.json` figure. Those files are the ground truth the
+  extractor is judged against. If one of them disagrees with a result, the extractor is
+  wrong; fix `src/invoice_extractor/`.
 - **Never add `# noqa` or `# type: ignore` without a same-line comment explaining why
   the suppression is correct, not convenient** — for example
   `# type: ignore[no-any-return]  # pymupdf is unannotated; scoped in pyproject.toml`.
@@ -105,6 +137,13 @@ branch as it is and stop working on this repository until a human has read
   tools already in hand — that need is not a reason to touch the dependency lists. If
   it is genuinely unsolvable that way, that is what the three-strikes rule above is
   for, not a workaround.
+- **Never exceed the hygiene rules `tests/test_repo_hygiene.py` enforces.** From series
+  E on it also asserts that every profile key in the schema has at least one reader in
+  `src/invoice_extractor/`; that every registered unit (strategy, filter, normalizer,
+  validator, ranker) is referenced by at least one spec; that no module under `src/` is
+  without an importer other than tests; that no spec docstring exceeds ten lines
+  (rationale goes to an ADR or the benchmark README); and that no `Any` appears in a
+  public signature, no `float` in money, no bare `except`.
 - **Never exceed the size budget**: no module over 250 lines, no function over 40
   lines, in every package under `src/`. `tests/test_repo_hygiene.py` checks this by
   parsing the AST, not by a rough count — don't try to game it with dense single-line
@@ -232,10 +271,11 @@ Run this against the real diff before opening every PR. The same list lives in
 `.github/pull_request_template.md` for you to check off there:
 
 - [ ] `make check` passes locally (lint + typecheck + test + hygiene), with no step skipped or weakened.
+- [ ] `make bench` passes and no field's hit rate in `benchmarks/latest.json` is lower than on `main`.
 - [ ] This PR implements exactly one plan item — no scope from an earlier or later PR leaked in.
 - [ ] No `# noqa`, `# type: ignore`, or lowered coverage/size threshold was added without a same-line comment justifying it.
 - [ ] No new dependency — runtime or development — was added; `pyproject.toml`'s dependency lists are unchanged.
-- [ ] No file under `samples/*.expected.json` was edited.
+- [ ] No truth file was edited to make a gate pass.
 - [ ] Every new or changed function is ≤ 40 lines and every module is ≤ 250 lines, in every package under `src/`.
 - [ ] Every new public function and class is fully typed; no `Any` leaked in.
 - [ ] No `TODO`, `FIXME`, or commented-out code in the diff.

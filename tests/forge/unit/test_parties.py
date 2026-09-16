@@ -7,14 +7,14 @@ from random import Random
 
 import pytest
 
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
+from invoice_forge.profiles.loader import load_profile, profile_ids
 from invoice_forge.profiles.schema import PostalCodePosition, VendorProfile
 from invoice_forge.sample.parties import address_lines, bank_name, company_name, party
 from invoice_forge.sample.places import CITIES, LEGAL_FORMS, NUMBER_FIRST_LANGUAGES
 
 LOCALITY_LINE = 1
 ADDRESS_LINES_WITHOUT_A_COUNTRY = 2
-LANGUAGES = tuple(sorted({load_profile(name).language for name in bundled_profile_ids()}))
+LANGUAGES = tuple(sorted({load_profile(name).language for name in profile_ids()}))
 
 
 def profile_for(profile_id: str) -> VendorProfile:
@@ -26,7 +26,7 @@ def without_a_country_line(profile: VendorProfile) -> VendorProfile:
     return dataclasses.replace(profile, address_format=address)
 
 
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+@pytest.mark.parametrize("profile_id", profile_ids())
 def test_a_name_ends_in_the_legal_form_its_country_uses(profile_id: str) -> None:
     profile = profile_for(profile_id)
     forms = LEGAL_FORMS[profile.country]
@@ -46,7 +46,7 @@ def test_a_language_nobody_has_words_for_is_refused_by_name() -> None:
         company_name("xx", "GB", Random(0))
 
 
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+@pytest.mark.parametrize("profile_id", profile_ids())
 def test_an_address_prints_a_country_line_when_the_profile_asks_for_one(profile_id: str) -> None:
     profile = profile_for(profile_id)
     lines = address_lines(profile, profile.country, Random(1))
@@ -54,7 +54,7 @@ def test_an_address_prints_a_country_line_when_the_profile_asks_for_one(profile_
     assert lines[-1] != ""
 
 
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+@pytest.mark.parametrize("profile_id", profile_ids())
 def test_an_address_stops_at_the_locality_when_it_does_not(profile_id: str) -> None:
     lines = address_lines(without_a_country_line(profile_for(profile_id)), "DE", Random(1))
     assert len(lines) == ADDRESS_LINES_WITHOUT_A_COUNTRY
@@ -66,7 +66,7 @@ def test_a_country_the_language_has_no_word_for_is_refused_by_name() -> None:
         address_lines(profile_for("de-DE"), "TR", Random(2))
 
 
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+@pytest.mark.parametrize("profile_id", profile_ids())
 def test_the_house_number_goes_where_the_language_puts_it(profile_id: str) -> None:
     profile = profile_for(profile_id)
     street = address_lines(profile, profile.country, Random(3))[0]
@@ -75,7 +75,7 @@ def test_the_house_number_goes_where_the_language_puts_it(profile_id: str) -> No
     assert numbered.isdigit(), street
 
 
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+@pytest.mark.parametrize("profile_id", profile_ids())
 def test_the_postal_code_goes_where_the_profile_puts_it(profile_id: str) -> None:
     profile = profile_for(profile_id)
     locality = address_lines(profile, profile.country, Random(4))[LOCALITY_LINE]
@@ -101,7 +101,7 @@ def test_a_country_with_no_postal_code_pattern_is_refused_by_name() -> None:
         address_lines(profile_for("de-DE"), "ZZ", Random(6))
 
 
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
+@pytest.mark.parametrize("profile_id", profile_ids())
 def test_a_party_carries_the_vat_id_it_was_handed(profile_id: str) -> None:
     profile = profile_for(profile_id)
     drawn = party(profile, profile.country, "XX999", Random(7))

@@ -81,12 +81,22 @@ def test_a_fractional_rate_reads_the_way_the_profile_writes_numbers() -> None:
         (DateFormat.ISO, "2024-03-05"),
         (DateFormat.DAY_DOT_MONTH, "05.03.2024"),
         (DateFormat.DAY_SLASH_MONTH, "05/03/2024"),
+        (DateFormat.MONTH_SLASH_DAY, "03/05/2024"),
         (DateFormat.DAY_MONTH_NAME, "5 March 2024"),
         (DateFormat.DAY_MONTH_ABBREVIATION, "05-Mar-2024"),
     ],
 )
 def test_every_date_format_a_profile_may_declare(date_format: DateFormat, expected: str) -> None:
     assert date_text(date(2024, 3, 5), date_format, load_lexicon("en")) == expected
+
+
+def test_the_two_slashed_formats_write_the_same_day_two_ways() -> None:
+    """Which of the two a document is in cannot be read off it, only declared: this is
+    the fifth of March under one and the third of May under the other."""
+    written = date(2024, 3, 5)
+    english = load_lexicon("en")
+    assert date_text(written, DateFormat.DAY_SLASH_MONTH, english) == "05/03/2024"
+    assert date_text(written, DateFormat.MONTH_SLASH_DAY, english) == "03/05/2024"
 
 
 def test_a_date_takes_its_month_names_from_the_language() -> None:

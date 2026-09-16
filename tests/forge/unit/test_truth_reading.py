@@ -130,5 +130,5 @@ def test_an_entry_that_carries_its_own_box_reads_directly() -> None:
 
 
 def test_a_different_key_can_hold_the_boxes() -> None:
-    cells = {"sku": [{"page": 1, "bbox": [1, 2, 3, 4]}]}
-    assert boxes(cells, "line_items[0].cells.sku", key="sku")[0].page == 1
+    cells = {"part_number": [{"page": 1, "bbox": [1, 2, 3, 4]}]}
+    assert boxes(cells, "line_items[0].cells.part_number", key="part_number")[0].page == 1

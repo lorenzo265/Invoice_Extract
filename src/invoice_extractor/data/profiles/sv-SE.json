@@ -1,0 +1,58 @@
+{
+  "id": "sv-SE",
+  "language": "sv",
+  "country": "SE",
+  "lexicon": "sv",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      " "
+    ]
+  },
+  "date_formats": [
+    "yyyy-mm-dd"
+  ],
+  "currencies": [
+    "SEK",
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "25",
+      "reduced": "12",
+      "zero": "0"
+    },
+    "id_prefix": "SE",
+    "id_pattern": "\\d{12}"
+  },
+  "supplier": {
+    "name": "Norrsken Industri AB",
+    "aliases": [
+      "Norrsken"
+    ],
+    "address_lines": [
+      "Hamngatan 65",
+      "447 66 Norrköping",
+      "Sverige"
+    ],
+    "vat_id": "SE752130495396"
+  },
+  "custom_fields": [],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING"
+    ],
+    "prints_supply_date": false,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

@@ -122,7 +122,7 @@ def test_sub_items_are_printed_under_their_parent_and_recorded_in_the_truth() ->
     parents = [row for row in rows if row["sub_items"]]
     assert parents
     first = parents[0]
-    page = first["cells"]["sku"][0]["page"]
+    page = first["cells"]["part_number"][0]["page"]
     assert page_text(turned(Knob.SUB_ITEMS), page, first["sub_items"][0]["description"][:20])
     assert all(not row["sub_items"] for row in rows_of(turned()))
 
@@ -144,12 +144,12 @@ def test_a_section_subtotal_adds_only_its_own_section() -> None:
 
 def test_discount_prints_a_column_and_takes_the_discount_off_the_row() -> None:
     discounted = turned(Knob.DISCOUNT)
-    rows = [row for row in rows_of(discounted) if row["discount_percent"] is not None]
+    rows = [row for row in rows_of(discounted) if row["discount_pct"] is not None]
     assert rows
     row = rows[0]
     gross = Decimal(row["quantity"]) * Decimal(row["unit_price"])
     assert Decimal(row["net_amount"]) < gross
-    assert all(row["discount_percent"] is None for row in rows_of(turned()))
+    assert all(row["discount_pct"] is None for row in rows_of(turned()))
 
 
 def test_party_blocks_prints_a_third_party_and_puts_it_in_the_truth() -> None:
@@ -238,9 +238,11 @@ def test_a_page_that_holds_only_the_totals_prints_no_column_headings() -> None:
     together = turned(*STRUCTURAL, seed=TOTALS_ONLY_SEED)
     last = together.pages
     rows_on_the_last_page = [
-        row for row in rows_of(together) if any(box["page"] == last for box in row["cells"]["sku"])
+        row
+        for row in rows_of(together)
+        if any(box["page"] == last for box in row["cells"]["part_number"])
     ]
     assert not rows_on_the_last_page, "this seed is chosen for its empty last page"
     columns = together.truth["line_items"][0]
-    assert not page_text(together, last, columns["sku"])
+    assert not page_text(together, last, columns["part_number"])
     assert page_text(together, last, str(together.truth["fields"]["total_amount"]["printed"]))

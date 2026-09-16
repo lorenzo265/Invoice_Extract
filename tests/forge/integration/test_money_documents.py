@@ -260,8 +260,8 @@ def test_extra_references_prints_every_optional_reference_at_once() -> None:
 
 def test_column_set_takes_the_part_number_out_of_the_table() -> None:
     plain, compact = turned(), turned(Knob.COLUMN_SET)
-    assert all(row["cells"].get("sku") for row in plain.truth["line_items"])
-    assert all(not row["cells"].get("sku") for row in compact.truth["line_items"])
+    assert all(row["cells"].get("part_number") for row in plain.truth["line_items"])
+    assert all(not row["cells"].get("part_number") for row in compact.truth["line_items"])
     assert all(row["cells"]["description"] for row in compact.truth["line_items"])
 
 

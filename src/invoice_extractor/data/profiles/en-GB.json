@@ -1,0 +1,109 @@
+{
+  "id": "en-GB",
+  "language": "en",
+  "country": "GB",
+  "lexicon": "en",
+  "number_format": {
+    "decimal_separator": ".",
+    "thousands_separators": [
+      ",",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy",
+    "d Month yyyy",
+    "dd-Mon-yyyy"
+  ],
+  "currencies": [
+    "GBP"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "20",
+      "reduced": "5",
+      "zero": "0"
+    },
+    "id_prefix": "GB",
+    "id_pattern": "\\d{9}"
+  },
+  "supplier": {
+    "name": "Brackenhill Trading Limited",
+    "aliases": [
+      "Brackenhill"
+    ],
+    "address_lines": [
+      "38 Elm Close",
+      "Coventry SN7 1BZ",
+      "United Kingdom"
+    ],
+    "vat_id": "GB312141377"
+  },
+  "custom_fields": [
+    {
+      "name": "our_reference",
+      "labels": [
+        "@header_labels.our_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    },
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "variants": [
+    {
+      "id": "credit-note",
+      "when": {
+        "document_type": "credit_note"
+      },
+      "overlay": {
+        "custom_fields": [
+          {
+            "name": "credit_reference",
+            "labels": [
+              "@header_labels.credit_reference"
+            ],
+            "zones": [
+              "r1c3",
+              "r1c2"
+            ],
+            "required": true
+          }
+        ]
+      }
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "after_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "SURCHARGE"
+    ],
+    "prints_supply_date": false,
+    "credit_note_style": "credit_wording",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "saas",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

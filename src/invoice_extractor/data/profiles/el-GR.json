@@ -1,0 +1,71 @@
+{
+  "id": "el-GR",
+  "language": "el",
+  "country": "GR",
+  "lexicon": "el",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      ".",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "24",
+      "reduced": "13",
+      "zero": "0"
+    },
+    "id_prefix": "EL",
+    "id_pattern": "\\d{9}"
+  },
+  "supplier": {
+    "name": "Θαλασσιά Εμπορική Α.Ε.",
+    "aliases": [
+      "Θαλασσιά"
+    ],
+    "address_lines": [
+      "λεωφόρος Βιομηχανίας 145",
+      "019 53 Θεσσαλονίκη",
+      "Ελλάδα"
+    ],
+    "vat_id": "EL568192892"
+  },
+  "custom_fields": [
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "SURCHARGE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

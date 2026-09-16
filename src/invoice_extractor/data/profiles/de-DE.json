@@ -1,0 +1,76 @@
+{
+  "id": "de-DE",
+  "language": "de",
+  "country": "DE",
+  "lexicon": "de",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      ".",
+      " "
+    ]
+  },
+  "date_formats": [
+    "dd.mm.yyyy",
+    "d Month yyyy"
+  ],
+  "currencies": [
+    "EUR",
+    "USD"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "19",
+      "reduced": "7",
+      "zero": "0"
+    },
+    "id_prefix": "DE",
+    "id_pattern": "\\d{9}"
+  },
+  "supplier": {
+    "name": "Nordlicht Industriebedarf GmbH & Co. KG",
+    "aliases": [
+      "Nordlicht"
+    ],
+    "address_lines": [
+      "Am Hafen 60",
+      "91195 Leipzig",
+      "Deutschland"
+    ],
+    "vat_id": "DE879668745"
+  },
+  "custom_fields": [
+    {
+      "name": "contract_number",
+      "labels": [
+        "@header_labels.contract_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "ENVIRONMENTAL_FEE",
+      "SURCHARGE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "saas",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

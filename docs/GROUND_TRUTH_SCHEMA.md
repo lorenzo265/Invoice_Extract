@@ -44,9 +44,9 @@ as wrong.
     "supply_date":     { "value": null, "printed": null, "label": null, "evidence": [] }   // absent on this document
   },
   "line_items": [
-    { "pos": 1, "sku": "SW-LIC-PRO", "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
+    { "pos": 1, "part_number": "SW-LIC-PRO", "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
       "quantity": "25", "unit_price": "349.00", "vat_rate": "7", "net_amount": "8725.00",
-      "cells": { "sku": { "page": 1, "bbox": [...] }, "description": [{ "page": 1, "bbox": [...] }, { "page": 1, "bbox": [...] }],
+      "cells": { "part_number": { "page": 1, "bbox": [...] }, "description": [{ "page": 1, "bbox": [...] }, { "page": 1, "bbox": [...] }],
                  "quantity": { "page": 1, "bbox": [...] }, "unit_price": { "page": 1, "bbox": [...] }, "net_amount": { "page": 1, "bbox": [...] } },
       "sub_items": [] }
   ],

@@ -26,11 +26,21 @@ def render_readme_block(report: Mapping[str, object]) -> str:
         f"Over the {documents}-document base corpus (`make corpus`), `make bench`",
         "measures this release at:",
         "",
+        f"- **Profile detection:** {_detected(matrix)}; a document no profile matches is",
+        "  reported and not read (ADR-0008).",
         f"- **Scalar fields:** {_overall(fields)} of the values the documents carry.",
+        f"- **Document type:** {_rate(_mapping(matrix, 'document_type'))} of the documents"
+        " were told apart, invoice from credit note.",
         f"- **Line-item cells:** {_overall(_mapping(items, 'columns'))}, over",
         f"  {items.get('rows_agreed', 0)} of {documents} documents whose row count was read",
         "  exactly.",
+        f"- **Party blocks:** {_overall(_mapping(matrix, 'parties'))} of the names and",
+        "  addresses the documents print.",
+        f"- **Totals block:** {_overall(_mapping(matrix, 'charges'))} of the charges the",
+        "  documents carry, declared on the page or inferred from the arithmetic.",
         f"- **Confidence:** {_calibrated(matrix)}",
+        f"- **Calibration:** the confidences are off by {_error(matrix)} on average, over the",
+        "  weights and the curve `calibration/` was fitted with.",
         "- **Not covered:** the generator prints these and the extractor has no spec for",
         "  them, so they are never scored as wrong:",
         f"  {_not_covered(fields)}.",
@@ -42,6 +52,19 @@ def render_readme_block(report: Mapping[str, object]) -> str:
         END,
     ]
     return "\n".join(lines)
+
+
+def _detected(matrix: Mapping[str, object]) -> str:
+    """How many documents were matched to the very profile that printed them."""
+    documents = _count(matrix, "documents")
+    detected = _count(matrix, "detected")
+    share = _percent(detected / documents) if documents else "-"
+    return f"{share} ({detected} of {documents})"
+
+
+def _count(matrix: Mapping[str, object], key: str) -> int:
+    value = matrix.get(key, 0)
+    return value if isinstance(value, int) else 0
 
 
 def _diagnosis(fields: Mapping[str, object]) -> list[str]:
@@ -69,6 +92,11 @@ def _calibrated(matrix: Mapping[str, object]) -> str:
     return ", ".join(parts) + "."
 
 
+def _error(matrix: Mapping[str, object]) -> str:
+    found = matrix.get("expected_calibration_error")
+    return DASH if not isinstance(found, float) else _percent(found)
+
+
 def render_report(report: Mapping[str, object]) -> str:
     """The whole of `benchmarks/README.md`."""
     matrix = _mapping(report, "matrix")
@@ -77,6 +105,10 @@ def render_report(report: Mapping[str, object]) -> str:
         _fields_section(matrix),
         _misses_section(matrix),
         _columns_section(matrix),
+        _vat_section(matrix),
+        _document_type_section(matrix),
+        _parties_section(matrix),
+        _totals_section(matrix),
         _by_section(matrix, "by_profile", "By profile", "Profile"),
         _by_section(matrix, "by_family", "By family", "Family"),
         _knob_section(matrix),
@@ -95,6 +127,7 @@ def _heading(report: Mapping[str, object], matrix: Mapping[str, object]) -> str:
             "this file from `benchmarks/latest.json`.",
             "",
             f"- Corpus: {matrix.get('documents', 0)} documents from `{run.get('corpus', '')}`",
+            f"- Profile detected: {_detected(matrix)}",
             f"- Extractor: {run.get('extractor_version', '')}",
             f"- Generator: {run.get('generator_version', '')}",
             "",
@@ -141,13 +174,101 @@ def _number(cell: Mapping[str, object], key: str) -> int:
 def _columns_section(matrix: Mapping[str, object]) -> str:
     items = _mapping(matrix, "line_items")
     rows = [
-        (name, _cell(cell, "hit"), _cell(cell, "miss"), _rate(cell))
+        (name, _cell(cell, "hit"), _cell(cell, "miss"), _cell(cell, "absent"), _rate(cell))
         for name, cell in _cells(_mapping(items, "columns"))
     ]
-    header = ("Column", "Hit", "Miss", "Hit rate")
+    header = ("Column", "Hit", "Miss", "Absent", "Hit rate")
     table = _section("Line-item columns", header, rows, _RIGHT_FROM_ONE)
     agreed, documents = items.get("rows_agreed", 0), matrix.get("documents", 0)
-    return f"{table}\n\n{agreed} of {documents} documents read the row count exactly."
+    note = (
+        f"{agreed} of {documents} documents read the row count exactly. A cell is scored"
+        " only where the truth records a box for it: a column a vendor does not print is"
+        " `absent`, and the columns the corpus prints without recording — `pos`, `unit`,"
+        " `discount_pct` and `vat_rate` — are read and published without being measured"
+        " here."
+    )
+    return f"{table}\n\n{note}"
+
+
+def _vat_section(matrix: Mapping[str, object]) -> str:
+    summary = _mapping(matrix, "vat_summary")
+    rows = [
+        (name, _cell(cell, "hit"), _cell(cell, "miss"), _cell(cell, "absent"), _rate(cell))
+        for name, cell in _cells(_mapping(summary, "columns"))
+    ]
+    header = ("Column", "Hit", "Miss", "Absent", "Hit rate")
+    table = _section("VAT summary", header, rows, _RIGHT_FROM_ONE)
+    agreed, documents = summary.get("rows_agreed", 0), matrix.get("documents", 0)
+    carried = summary.get("documents", 0)
+    note = (
+        f"{carried} of {documents} documents print a VAT summary, and {agreed} of"
+        f" {documents} read as many lines as were printed. The code beside a rate is read"
+        " and not scored: the corpus records the numbers of a line, not its code."
+    )
+    return f"{table}\n\n{note}"
+
+
+def _document_type_section(matrix: Mapping[str, object]) -> str:
+    """Stage 3, measured: an invoice read as a credit note is wrong about every sign."""
+    cell = _mapping(matrix, "document_type")
+    rows = [("document_type", _cell(cell, "hit"), _cell(cell, "miss"), _rate(cell))]
+    table = _section("Document type", ("Field", "Hit", "Miss", "Hit rate"), rows, _RIGHT_FROM_ONE)
+    note = (
+        "Every document is of some kind, so there is no `absent` column here: a page that"
+        " says nothing about which kind it is, is an invoice. This is the one field of"
+        " `docs/FIELD_CATALOG.md` that no spec resolves — stage 3 does, before any spec"
+        " runs — so it is reported here rather than among the fields."
+    )
+    return f"{table}\n\n{note}"
+
+
+def _parties_section(matrix: Mapping[str, object]) -> str:
+    rows = [
+        (name, _cell(cell, "hit"), _cell(cell, "miss"), _cell(cell, "absent"), _rate(cell))
+        for name, cell in _cells(_mapping(matrix, "parties"))
+    ]
+    header = ("Block", "Hit", "Miss", "Absent", "Hit rate")
+    table = _section("Party blocks", header, rows, _RIGHT_FROM_ONE)
+    note = (
+        "A party a document knows but does not print is `absent`: the truth records a box"
+        " per line it drew, and a block with none was never on the page. A block's VAT id"
+        " is not scored here — a document need not print one inside the block, and the"
+        " customer's is a field of its own."
+    )
+    return f"{table}\n\n{note}"
+
+
+def _totals_section(matrix: Mapping[str, object]) -> str:
+    """What the totals block carries beside its amounts: its charges and its echo."""
+    rows = [
+        (
+            f"charge, {name}",
+            _cell(cell, "hit"),
+            _cell(cell, "miss"),
+            _cell(cell, "absent"),
+            _rate(cell),
+        )
+        for name, cell in _cells(_mapping(matrix, "charges"))
+    ]
+    rows += [
+        (
+            f"echo, {name}",
+            _cell(cell, "hit"),
+            _cell(cell, "miss"),
+            _cell(cell, "absent"),
+            _rate(cell),
+        )
+        for name, cell in _cells(_mapping(matrix, "secondary_amounts"))
+    ]
+    header = ("Reading", "Hit", "Miss", "Absent", "Hit rate")
+    table = _section("Charges and second currency", header, rows, _RIGHT_FROM_ONE)
+    note = (
+        "A charge the block declares is scored on its type and its amount together. One"
+        " no line declares is only a difference in the arithmetic — the page says neither"
+        " what it is for nor how many of them there are — so what is scored is how much of"
+        " the total nothing declared."
+    )
+    return f"{table}\n\n{note}"
 
 
 def _by_section(matrix: Mapping[str, object], key: str, title: str, first: str) -> str:
@@ -189,17 +310,33 @@ def _knob_section(matrix: Mapping[str, object]) -> str:
 
 def _calibration_section(matrix: Mapping[str, object]) -> str:
     rows = [
-        (str(band.get("band", "")), _cell(band, "hit"), _cell(band, "miss"), _rate(band))
+        (
+            str(band.get("band", "")),
+            _predicted(band),
+            _cell(band, "hit"),
+            _cell(band, "miss"),
+            _rate(band),
+        )
         for band in _sequence(matrix, "calibration")
         if isinstance(band, dict)
     ]
-    header = ("Confidence", "Hit", "Miss", "Hit rate")
+    header = ("Confidence", "Said", "Hit", "Miss", "Hit rate")
     table = _section("Calibration", header, rows, _RIGHT_FROM_ONE)
+    error = matrix.get("expected_calibration_error")
     note = (
         "The confidence the extractor prints beside a value, against how often a value in"
-        " that band turned out to be right."
+        " that band turned out to be right. `Said` is what it claimed on average, and the"
+        f" expected calibration error — the two, weighted by how many values each band"
+        f" speaks for — is {_percent(float(error)) if isinstance(error, float) else DASH}."
+        " The weights and the curve behind those numbers are in `calibration/`, fitted by"
+        " `invoice-extractor calibrate` on this corpus."
     )
     return f"{table}\n\n{note}"
+
+
+def _predicted(band: Mapping[str, object]) -> str:
+    said = band.get("predicted")
+    return DASH if not isinstance(said, float) else _percent(said)
 
 
 _RIGHT_FROM_ONE = 1

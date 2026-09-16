@@ -96,8 +96,8 @@ def test_trap_labels_adds_the_dates_that_are_not_the_invoice_date() -> None:
 def test_discount_swaps_in_the_column_set_that_has_room_for_one() -> None:
     changed = with_knobs(CLASSIC, (Knob.DISCOUNT,))
     assert changed.items.columns == columns.CLASSIC_DISCOUNT.columns
-    assert "discount" in {column.name for column in changed.items.columns}
-    assert "discount" not in {column.name for column in CLASSIC.items.columns}
+    assert "discount_pct" in {column.name for column in changed.items.columns}
+    assert "discount_pct" not in {column.name for column in CLASSIC.items.columns}
 
 
 def test_the_discount_column_set_gives_the_description_the_width_it_takes() -> None:
@@ -109,7 +109,7 @@ def test_column_set_takes_the_position_and_part_number_away_and_gives_a_unit() -
     changed = with_knobs(CLASSIC, (Knob.COLUMN_SET,))
     named = {column.name for column in changed.items.columns}
     assert "unit" in named
-    assert not {"pos", "sku"} & named
+    assert not {"pos", "part_number"} & named
 
 
 def test_the_two_column_knobs_compose_into_the_set_that_has_both() -> None:

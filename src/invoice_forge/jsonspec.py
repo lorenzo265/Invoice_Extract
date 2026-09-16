@@ -84,6 +84,16 @@ def require_filled_strings(data: Mapping[str, object], key: str, path: str) -> t
     return values
 
 
+def require_object_list(
+    data: Mapping[str, object], key: str, path: str
+) -> tuple[Mapping[str, object], ...]:
+    """A list of JSON objects, possibly empty."""
+    value = required(data, key, path)
+    if not isinstance(value, list) or not all(isinstance(item, dict) for item in value):
+        raise SpecError(f"{path} must be a list of objects")
+    return tuple(cast(Sequence[Mapping[str, object]], value))
+
+
 def require_decimal(data: Mapping[str, object], key: str, path: str) -> Decimal:
     """A number written as a string, so no value ever passes through a float."""
     text = require_text(data, key, path)

@@ -107,7 +107,7 @@ def test_a_party_without_address_lines_still_claims_its_name() -> None:
 def test_a_row_without_cells_makes_no_cell_claims() -> None:
     truth = {
         "fields": {},
-        "line_items": [{"pos": 1, "sku": "SKU-1", "cells": None}],
+        "line_items": [{"pos": 1, "part_number": "SKU-1", "cells": None}],
         "charges": [],
         "vat_summary": [],
         "parties": {},
@@ -120,12 +120,12 @@ def test_a_row_without_cells_makes_no_cell_claims() -> None:
 def test_the_cell_of_a_column_a_family_does_not_print_is_skipped() -> None:
     row = {
         "pos": 1,
-        "sku": "SKU-1",
+        "part_number": "SKU-1",
         "description": "A thing",
         "quantity": "1",
         "unit_price": "1.00",
         "net_amount": "1.00",
-        "cells": {"sku": [{"page": 1, "bbox": [1, 2, 3, 4]}]},
+        "cells": {"part_number": [{"page": 1, "bbox": [1, 2, 3, 4]}]},
     }
     truth = {
         "fields": {},

@@ -126,17 +126,17 @@ def test_the_sections_are_contiguous_so_a_group_is_drawn_once() -> None:
 
 def test_discount_puts_a_percentage_on_some_rows_and_leaves_others_alone() -> None:
     items = drawn(Knob.DISCOUNT).items
-    discounted = [item for item in items if item.discount_percent is not None]
+    discounted = [item for item in items if item.discount_pct is not None]
     assert discounted
     assert len(discounted) < len(items)
-    assert all(str(item.discount_percent) in variations.DISCOUNTS for item in discounted)
-    assert all(item.discount_percent is None for item in drawn().items)
+    assert all(str(item.discount_pct) in variations.DISCOUNTS for item in discounted)
+    assert all(item.discount_pct is None for item in drawn().items)
 
 
 def test_a_discount_comes_off_the_line_it_is_on() -> None:
     for item in drawn(Knob.DISCOUNT).items:
         gross = item.quantity * item.unit_price
-        if item.discount_percent is None:
+        if item.discount_pct is None:
             assert item.exact_net == gross
         else:
             assert item.exact_net < gross
@@ -264,7 +264,7 @@ def test_a_subscription_carries_every_column_the_saas_table_prints() -> None:
 
 def test_two_knobs_compose_without_either_undoing_the_other() -> None:
     both = drawn(Knob.DISCOUNT, Knob.SUB_ITEMS)
-    assert any(item.discount_percent is not None for item in both.items)
+    assert any(item.discount_pct is not None for item in both.items)
     assert any(item.sub_items for item in both.items)
 
 

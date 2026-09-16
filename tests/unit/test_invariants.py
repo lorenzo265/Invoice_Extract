@@ -1,21 +1,29 @@
-"""Each invariant: when it holds, when it is skipped, and what it says when it fails."""
+"""Each invariant: when it holds, when it does not, and when it does not apply."""
 
 from __future__ import annotations
 
 from decimal import Decimal
 
-import pytest
-
+from conftest import make_profile
 from invoice_extractor.domain.findings import Severity
-from invoice_extractor.domain.models import FieldResult, LineItem
+from invoice_extractor.domain.models import FieldResult, LineItem, VatSummaryRow
+from invoice_extractor.domain.totals import Charge
+from invoice_extractor.validation.facts import Facts
 from invoice_extractor.validation.invariants import (
     INVARIANT_NAMES,
-    check_all,
-    line_items_sum,
-    totals_reconcile,
-    vat_rate_consistent,
+    document_type_matches_total_sign,
+    line_items_sum_equals_subtotal,
+    line_items_sum_equals_total_when_no_vat,
+    line_items_vat_sum_equals_vat_total,
+    line_totals_plus_charges_equal_grand_total,
+    per_rate_vat_consistency,
+    subtotal_plus_vat_equals_total,
+    summary_base_sums_equal_subtotal,
+    summary_vat_sums_equal_vat_total,
+    vat_equals_subtotal_times_rate,
 )
 
+# One consistent document, in the vendor's own numbers: four rows at 20%, no charges.
 CLEAN = {
     "subtotal": "490.00",
     "vat_rate": "20.00",
@@ -23,10 +31,11 @@ CLEAN = {
     "total_amount": "588.00",
 }
 ITEMS = (
-    LineItem("ACM-1001", "Hex bolt", Decimal("500"), Decimal("0.12"), Decimal("60.00")),
-    LineItem("ACM-2210", "Bearing", Decimal("40"), Decimal("3.85"), Decimal("154.00")),
-    LineItem("ACM-3300", "Bracket", Decimal("120"), Decimal("2.30"), Decimal("276.00")),
+    LineItem(description="Hex bolt", net_amount=Decimal("60.00"), vat_rate=Decimal("20")),
+    LineItem(description="Bearing", net_amount=Decimal("154.00"), vat_rate=Decimal("20")),
+    LineItem(description="Bracket", net_amount=Decimal("276.00"), vat_rate=Decimal("20")),
 )
+SUMMARY = (VatSummaryRow(rate=Decimal("20"), base=Decimal("490.00"), vat=Decimal("98.00")),)
 
 
 def fields(**overrides: str | None) -> dict[str, FieldResult]:
@@ -43,97 +52,175 @@ def fields(**overrides: str | None) -> dict[str, FieldResult]:
     }
 
 
-def test_totals_reconcile_holds_within_a_cent() -> None:
-    assert totals_reconcile(fields()) is None
-    assert totals_reconcile(fields(total_amount="588.01")) is None
+def facts(**changes: object) -> Facts:
+    """One document the arithmetic of which adds up, with whatever a test changes."""
+    made: dict[str, object] = {
+        "profile": make_profile(),
+        "fields": fields(),
+        "items": ITEMS,
+        "summary": SUMMARY,
+        "document_type": "invoice",
+    }
+    return Facts(**{**made, **changes})  # type: ignore[arg-type]  # a test names its own
 
 
-def test_totals_reconcile_reports_error_with_both_sides() -> None:
-    finding = totals_reconcile(fields(total_amount="589.00"))
-    assert finding is not None
-    assert finding.severity is Severity.ERROR
-    assert finding.code == "totals_reconcile"
-    assert finding.field == "total_amount"
-    assert finding.message == "490.00 + 98.00 = 588.00 but total_amount is 589.00"
+def test_the_ten_invariants_are_the_ten_the_specification_names() -> None:
+    assert INVARIANT_NAMES == (
+        "subtotal_plus_vat_equals_total",
+        "line_items_sum_equals_subtotal",
+        "line_items_sum_equals_total_when_no_vat",
+        "vat_equals_subtotal_times_rate",
+        "per_rate_vat_consistency",
+        "summary_base_sums_equal_subtotal",
+        "summary_vat_sums_equal_vat_total",
+        "line_totals_plus_charges_equal_grand_total",
+        "line_items_vat_sum_equals_vat_total",
+        "document_type_matches_total_sign",
+    )
 
 
-def test_line_items_sum_holds_for_rows_that_add_up() -> None:
-    assert line_items_sum(fields(), ITEMS) is None
+def test_a_document_that_adds_up_passes_every_one_of_them() -> None:
+    every = (
+        subtotal_plus_vat_equals_total,
+        line_items_sum_equals_subtotal,
+        vat_equals_subtotal_times_rate,
+        per_rate_vat_consistency,
+        summary_base_sums_equal_subtotal,
+        summary_vat_sums_equal_vat_total,
+        line_totals_plus_charges_equal_grand_total,
+        line_items_vat_sum_equals_vat_total,
+        document_type_matches_total_sign,
+    )
+    assert all(rule(facts()).passed for rule in every)
 
 
-def test_line_items_sum_reports_error_with_every_row() -> None:
-    finding = line_items_sum(fields(subtotal="500.00"), ITEMS)
-    assert finding is not None
-    assert finding.severity is Severity.ERROR
-    assert finding.field == "subtotal"
-    assert finding.message == "60.00 + 154.00 + 276.00 = 490.00 but subtotal is 500.00"
+def test_the_total_is_the_net_and_the_tax_and_what_was_added() -> None:
+    charged = facts(fields=fields(total_amount="600.50"), charges=(_shipping(),))
+    assert subtotal_plus_vat_equals_total(charged).passed
+    assert subtotal_plus_vat_equals_total(facts(charges=(_shipping(),))).passed is False
 
 
-def test_line_items_sum_warns_when_no_items() -> None:
-    finding = line_items_sum(fields(), ())
-    assert finding is not None
-    assert finding.severity is Severity.WARNING
-    assert finding.message == "line_items_sum skipped: line_items not found"
-    assert finding.field is None
+def test_a_sum_that_disagrees_names_both_sides_of_itself() -> None:
+    verdict = subtotal_plus_vat_equals_total(facts(fields=fields(total_amount="600.00")))
+    assert verdict.detail == "490.00 + 98.00 = 588.00 but total_amount is 600.00"
+    assert verdict.severity is Severity.ERROR
 
 
-def test_vat_rate_consistent_quantizes_before_compare() -> None:
-    # 333.33 x 19% is 63.3327 exactly; the invoice prints the rounded cent, 63.33.
-    rounded = fields(subtotal="333.33", vat_rate="19.00", vat_amount="63.33")
-    assert vat_rate_consistent(rounded) is None
-    # The reported expectation is the quantized product, not its full precision.
-    finding = vat_rate_consistent(fields(subtotal="333.33", vat_rate="19.00", vat_amount="99.00"))
-    assert finding is not None
-    assert finding.message == "19.00% x 333.33 = 63.33 but vat_amount is 99.00"
+def test_an_amount_the_document_does_not_carry_is_not_a_failure() -> None:
+    verdict = subtotal_plus_vat_equals_total(facts(fields=fields(vat_amount=None)))
+    assert verdict.passed is None
+    assert verdict.detail == "vat_amount was not read"
 
 
-def test_vat_rate_consistent_reports_error_with_the_rate_applied() -> None:
-    finding = vat_rate_consistent(fields(vat_amount="99.00", total_amount="589.00"))
-    assert finding is not None
-    assert finding.field == "vat_amount"
-    assert finding.message == "20.00% x 490.00 = 98.00 but vat_amount is 99.00"
+def test_a_row_nobody_could_read_an_amount_off_is_a_sum_that_cannot_be_made() -> None:
+    unreadable = (*ITEMS[:2], LineItem(description="Bracket"))
+    assert line_items_sum_equals_subtotal(facts(items=unreadable)).passed is None
 
 
-def test_missing_operand_yields_warning_not_error() -> None:
-    finding = totals_reconcile(fields(total_amount=None))
-    assert finding is not None
-    assert finding.severity is Severity.WARNING
-    assert finding.message == "totals_reconcile skipped: total_amount not found"
-    assert finding.field == "total_amount"
+def test_the_rows_add_up_to_the_net_under_them() -> None:
+    assert line_items_sum_equals_subtotal(facts()).passed
+    assert line_items_sum_equals_subtotal(facts(fields=fields(subtotal=None))).passed is None
+    assert line_items_sum_equals_subtotal(facts(fields=fields(subtotal="1.00"))).passed is False
 
 
-@pytest.mark.parametrize("missing", ["subtotal", "vat_amount", "total_amount"])
-def test_totals_reconcile_names_whichever_operand_is_missing(missing: str) -> None:
-    finding = totals_reconcile(fields(**{missing: None}))
-    assert finding is not None
-    assert finding.message == f"totals_reconcile skipped: {missing} not found"
+def test_where_nothing_is_taxed_the_rows_are_what_is_owed() -> None:
+    untaxed = facts(fields=fields(vat_amount="0.00", total_amount="490.00"))
+    assert line_items_sum_equals_total_when_no_vat(untaxed).passed
+    assert line_items_sum_equals_total_when_no_vat(facts()).passed is None
+    nothing = facts(fields=fields(vat_amount=None))
+    assert line_items_sum_equals_total_when_no_vat(nothing).detail == "vat_amount was not read"
 
 
-def test_line_items_sum_warns_when_the_subtotal_is_missing() -> None:
-    finding = line_items_sum(fields(subtotal=None), ITEMS)
-    assert finding is not None
-    assert finding.message == "line_items_sum skipped: subtotal not found"
+def test_an_untaxed_document_missing_its_rows_is_not_asked() -> None:
+    untaxed = facts(fields=fields(vat_amount="0.00", total_amount=None))
+    assert line_items_sum_equals_total_when_no_vat(untaxed).passed is None
 
 
-@pytest.mark.parametrize("missing", ["subtotal", "vat_rate", "vat_amount"])
-def test_vat_rate_consistent_names_whichever_operand_is_missing(missing: str) -> None:
-    finding = vat_rate_consistent(fields(**{missing: None}))
-    assert finding is not None
-    assert finding.message == f"vat_rate_consistent skipped: {missing} not found"
+def test_what_is_taxed_is_the_net_and_the_charges_the_block_declared() -> None:
+    charged = facts(fields=fields(vat_amount="100.00"), charges=(_shipping(Decimal("10.00")),))
+    assert vat_equals_subtotal_times_rate(charged).passed
 
 
-def test_a_field_that_is_not_a_decimal_counts_as_missing() -> None:
-    not_a_number = fields()
-    not_a_number["subtotal"] = FieldResult("subtotal", "many", "many", None, valid=False)
-    finding = totals_reconcile(not_a_number)
-    assert finding is not None
-    assert finding.message == "totals_reconcile skipped: subtotal not found"
+def test_a_document_at_more_than_one_rate_has_no_one_rate_to_multiply_by() -> None:
+    several = (
+        VatSummaryRow(rate=Decimal("7"), base=Decimal("100.00"), vat=Decimal("7.00")),
+        VatSummaryRow(rate=Decimal("20"), base=Decimal("390.00"), vat=Decimal("78.00")),
+    )
+    verdict = vat_equals_subtotal_times_rate(facts(summary=several))
+    assert verdict.passed is None
+    assert "more than one rate" in verdict.detail
 
 
-def test_check_all_preserves_name_order() -> None:
-    broken = fields(subtotal="1.00", vat_rate="20.00", vat_amount="2.00", total_amount="99.00")
-    assert tuple(finding.code for finding in check_all(broken, ITEMS)) == INVARIANT_NAMES
+def test_a_rate_the_document_does_not_state_is_not_multiplied_by() -> None:
+    assert vat_equals_subtotal_times_rate(facts(fields=fields(vat_rate=None))).passed is None
 
 
-def test_check_all_drops_the_invariants_that_held() -> None:
-    assert check_all(fields(), ITEMS) == ()
+def test_every_line_of_the_summary_taxes_its_own_base() -> None:
+    wrong = (VatSummaryRow(rate=Decimal("20"), base=Decimal("490.00"), vat=Decimal("1.00")),)
+    assert per_rate_vat_consistency(facts()).passed
+    assert per_rate_vat_consistency(facts(summary=wrong)).detail == "20% x 490.00 is not 1.00"
+
+
+def test_a_summary_that_states_no_full_line_is_not_asked() -> None:
+    partial = (VatSummaryRow(rate=Decimal("20")),)
+    assert per_rate_vat_consistency(facts(summary=partial)).passed is None
+    assert per_rate_vat_consistency(facts(summary=())).passed is None
+
+
+def test_the_summary_is_charged_on_the_net_and_the_declared_charges() -> None:
+    charged = facts(
+        summary=(VatSummaryRow(rate=Decimal("20"), base=Decimal("500.00"), vat=Decimal("100.00")),),
+        charges=(_shipping(Decimal("10.00")),),
+    )
+    assert summary_base_sums_equal_subtotal(charged).passed
+    assert summary_base_sums_equal_subtotal(facts(summary=charged.summary)).passed is False
+
+
+def test_a_document_with_no_summary_is_not_asked_what_it_adds_up_to() -> None:
+    assert summary_base_sums_equal_subtotal(facts(summary=())).passed is None
+    assert summary_vat_sums_equal_vat_total(facts(summary=())).passed is None
+    assert summary_vat_sums_equal_vat_total(facts(fields=fields(vat_amount=None))).passed is None
+
+
+def test_the_summary_comes_to_the_tax_the_block_states() -> None:
+    assert summary_vat_sums_equal_vat_total(facts()).passed
+    wrong = (VatSummaryRow(rate=Decimal("20"), base=Decimal("490.00"), vat=Decimal("1.00")),)
+    assert summary_vat_sums_equal_vat_total(facts(summary=wrong)).passed is False
+
+
+def test_the_rows_the_charges_and_the_tax_are_what_is_owed() -> None:
+    charged = facts(fields=fields(total_amount="600.50"), charges=(_shipping(),))
+    assert line_totals_plus_charges_equal_grand_total(charged).passed
+    assert line_totals_plus_charges_equal_grand_total(facts(items=())).passed is None
+    nothing = facts(fields=fields(total_amount=None))
+    assert line_totals_plus_charges_equal_grand_total(nothing).passed is None
+
+
+def test_each_row_taxed_at_its_own_rate_comes_to_the_tax() -> None:
+    assert line_items_vat_sum_equals_vat_total(facts()).passed
+    untaxed = (*ITEMS[:2], LineItem(description="Bracket", net_amount=Decimal("276.00")))
+    assert line_items_vat_sum_equals_vat_total(facts(items=untaxed)).passed is None
+    nothing = facts(fields=fields(vat_amount=None))
+    assert line_items_vat_sum_equals_vat_total(nothing).passed is None
+
+
+def test_the_tax_on_a_declared_charge_is_counted_with_the_rows() -> None:
+    charged = facts(fields=fields(vat_amount="100.00"), charges=(_shipping(Decimal("10.00")),))
+    assert line_items_vat_sum_equals_vat_total(charged).passed
+
+
+def test_a_credit_note_gives_money_back_and_an_invoice_asks_for_it() -> None:
+    credit = facts(fields=fields(total_amount="-588.00"), document_type="credit_note")
+    assert document_type_matches_total_sign(credit).passed
+    wrong = document_type_matches_total_sign(facts(document_type="credit_note"))
+    assert wrong.passed is False
+    assert wrong.severity is Severity.WARNING, "advisory: the sign is not what makes it one"
+
+
+def test_a_document_that_asks_for_nothing_says_nothing_about_its_kind() -> None:
+    nothing = facts(fields=fields(total_amount="0.00"))
+    assert document_type_matches_total_sign(nothing).passed is None
+
+
+def _shipping(amount: Decimal = Decimal("12.50")) -> Charge:
+    return Charge(type="SHIPPING", amount=amount)

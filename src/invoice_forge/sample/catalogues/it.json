@@ -11,31 +11,31 @@
   "domains": {
     "industrial": [
       {
-        "sku": "HX-M8-040",
+        "part_number": "HX-M8-040",
         "description": "Vite a testa esagonale M8 x 40, zincata, DIN 933",
         "unit": "pz",
         "price": "0.12"
       },
       {
-        "sku": "BRG-6204",
+        "part_number": "BRG-6204",
         "description": "Cuscinetto a sfere 6204-2RS, schermato su entrambi i lati",
         "unit": "pz",
         "price": "3.85"
       },
       {
-        "sku": "BRK-ST-3",
+        "part_number": "BRK-ST-3",
         "description": "Staffa in acciaio 3 mm, 60 x 60 x 40, grezza",
         "unit": "pz",
         "price": "2.30"
       },
       {
-        "sku": "PLT-AL-2",
+        "part_number": "PLT-AL-2",
         "description": "Lamiera di alluminio 2 mm, 1000 x 500, EN AW-5754",
         "unit": "pz",
         "price": "31.20"
       },
       {
-        "sku": "HSE-12-2",
+        "part_number": "HSE-12-2",
         "description": "Tubo idraulico 12 mm, 2 m, raccordi pressati",
         "unit": "pz",
         "price": "38.0450"
@@ -43,31 +43,31 @@
     ],
     "electronics": [
       {
-        "sku": "CBL-H07-25",
+        "part_number": "CBL-H07-25",
         "description": "Cavo H07V-K 2,5 mm², nero, bobina da 100 m",
         "unit": "bobina",
         "price": "48.90"
       },
       {
-        "sku": "ENC-IP65",
+        "part_number": "ENC-IP65",
         "description": "Custodia IP65, 300 x 200 x 120",
         "unit": "pz",
         "price": "45.50"
       },
       {
-        "sku": "REL-24V",
+        "part_number": "REL-24V",
         "description": "Relè di interfaccia 24 V CC, 1 scambio",
         "unit": "pz",
         "price": "7.95"
       },
       {
-        "sku": "SNS-T-PT1",
+        "part_number": "SNS-T-PT1",
         "description": "Sonda di temperatura PT100, 3 fili, -50 a +200 °C",
         "unit": "pz",
         "price": "22.75"
       },
       {
-        "sku": "FLT-P-200",
+        "part_number": "FLT-P-200",
         "description": "Cartuccia filtrante P-200, cellulosa, 10 µm",
         "unit": "pz",
         "price": "17.40"
@@ -75,25 +75,25 @@
     ],
     "software": [
       {
-        "sku": "SW-LIC-PRO",
+        "part_number": "SW-LIC-PRO",
         "description": "Licenza ProSuite, 1 postazione, 12 mesi",
         "unit": "licenza",
         "price": "349.00"
       },
       {
-        "sku": "SW-CLD-50",
+        "part_number": "SW-CLD-50",
         "description": "Archiviazione cloud 50 GB, fatturazione mensile",
         "unit": "mese",
         "price": "12.5000"
       },
       {
-        "sku": "SW-SUP-GLD",
+        "part_number": "SW-SUP-GLD",
         "description": "Contratto di assistenza Gold, risposta in 4 ore",
         "unit": "anno",
         "price": "1290.00"
       },
       {
-        "sku": "SW-API-10K",
+        "part_number": "SW-API-10K",
         "description": "Pacchetto API, 10.000 chiamate al mese",
         "unit": "pacchetto",
         "price": "89.00"
@@ -101,25 +101,25 @@
     ],
     "services": [
       {
-        "sku": "SRV-INST-H",
+        "part_number": "SRV-INST-H",
         "description": "Installazione in loco, all'ora",
         "unit": "ora",
         "price": "95.00"
       },
       {
-        "sku": "SRV-TRN-D",
+        "part_number": "SRV-TRN-D",
         "description": "Formazione base, 1 giorno, fino a 8 partecipanti",
         "unit": "giorno",
         "price": "780.00"
       },
       {
-        "sku": "SRV-WRT-Q",
+        "part_number": "SRV-WRT-Q",
         "description": "Manutenzione, canone trimestrale, impianto tipo B",
         "unit": "canone",
         "price": "245.50"
       },
       {
-        "sku": "SRV-ANA-H",
+        "part_number": "SRV-ANA-H",
         "description": "Analisi e documentazione, all'ora",
         "unit": "ora",
         "price": "115.0000"

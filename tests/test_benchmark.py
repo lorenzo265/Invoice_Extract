@@ -8,21 +8,37 @@ markdown files is regenerated from the committed `benchmarks/latest.json` and co
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from decimal import Decimal
 
 import pytest
+from benchmarks import compare as comparisons
 from benchmarks import matrix as matrices
 from benchmarks import report as reports
-from benchmarks.compare import DocumentScore, Outcome, compare
-from benchmarks.layouts import PATTERNS, layout_for
+from benchmarks.compare import (
+    NOT_COVERED,
+    SCORED_COLUMNS,
+    Counts,
+    DocumentScore,
+    Outcome,
+    compare,
+)
 from benchmarks.run import LATEST, README, REPORT
 
-from invoice_extractor.document.reader import BBox, Zone
-from invoice_extractor.domain.models import Evidence, FieldResult, InvoiceResult, LineItem, Strategy
-from invoice_extractor.layout.schema import FIELD_NAMES, LINE_ITEM_COLUMNS
-from invoice_forge.profiles.loader import bundled_profile_ids, load_profile
-from invoice_forge.profiles.schema import DateFormat
+from invoice_extractor.document.model import BBox
+from invoice_extractor.domain.models import (
+    Charge,
+    Evidence,
+    FieldResult,
+    InvoiceResult,
+    LineItem,
+    Party,
+    SecondaryAmounts,
+    Strategy,
+    VatSummaryRow,
+)
+from invoice_extractor.extraction.specs import FIELD_ORDER
 
 BOX = {"page": 1, "bbox": [10.0, 10.0, 60.0, 20.0]}
 ELSEWHERE = {"page": 1, "bbox": [300.0, 300.0, 360.0, 310.0]}
@@ -32,32 +48,50 @@ def truth(**fields: object) -> dict[str, object]:
     """A truth file with one line item and whichever scalar fields a test names."""
     entries = {
         name: {"value": fields.get(name), "printed": None, "label": None, "evidence": [BOX]}
-        for name in FIELD_NAMES
+        for name in FIELD_ORDER
     }
     return {
         "generator": {"profile": "de-DE", "template": "classic", "knobs": ["multi_page"]},
         "fields": entries,
         "line_items": [
             {
-                "sku": "A-1",
+                "part_number": "A-1",
                 "description": "A thing",
                 "quantity": "2",
                 "unit_price": "3.50",
                 "net_amount": "7.00",
+                "cells": {column: [BOX] for column in SCORED_COLUMNS},
             }
         ],
+        "vat_summary": [],
+        "parties": {},
     }
 
 
 def result(**values: object) -> InvoiceResult:
     """An extractor result carrying one matching row and whichever fields a test names."""
     return InvoiceResult(
-        fields={name: _field(name, values.get(name)) for name in FIELD_NAMES},
-        line_items=(LineItem("A-1", "A thing", Decimal(2), Decimal("3.50"), Decimal("7.00")),),
+        fields={name: _field(name, values.get(name)) for name in FIELD_ORDER},
+        line_items=(
+            LineItem(
+                part_number="A-1",
+                description="A thing",
+                quantity=Decimal(2),
+                unit_price=Decimal("3.50"),
+                net_amount=Decimal("7.00"),
+                cells={column: _cell_evidence() for column in SCORED_COLUMNS},
+            ),
+        ),
         findings=(),
-        layout_id="de-DE",
+        profile_id="de-DE",
+        document_type="invoice",
         source_path="x.pdf",
     )
+
+
+def _cell_evidence() -> Evidence:
+    """One cell's evidence: a table cell is published with the box it was read from."""
+    return Evidence(1, BBox(10.0, 10.0, 60.0, 20.0), None, Strategy.TABLE_CELL, "A thing")
 
 
 def _field(name: str, value: object, box: BBox | None = None) -> FieldResult:
@@ -106,9 +140,38 @@ def test_a_value_read_where_the_document_has_none_is_a_miss() -> None:
     assert outcomes(score)["currency"] is Outcome.MISS
 
 
-def test_a_field_the_extractor_has_no_spec_for_is_not_covered() -> None:
+def test_a_field_the_extractor_has_no_spec_for_is_not_covered(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The generator may print a name before a spec learns it. That is not a wrong answer."""
+    monkeypatch.setattr(comparisons, "NOT_COVERED", ("iban",))
     score = compare("x", truth(), result())
-    assert outcomes(score)["supply_date"] is Outcome.NOT_COVERED
+    assert outcomes(score)["iban"] is Outcome.NOT_COVERED
+
+
+def test_every_name_the_generator_prints_is_one_this_release_reads() -> None:
+    """`docs/ENGINE_PLAN.md` §4: every field of the catalog is measured, none excused."""
+    assert NOT_COVERED == ()
+
+
+def test_a_value_the_page_never_printed_is_absent_rather_than_missed() -> None:
+    """A vendor knows its payment terms and may print them nowhere; that is not a miss."""
+    known = truth()
+    known["fields"]["order_number"] = {"value": "PO-1", "printed": None, "evidence": []}
+    assert outcomes(compare("x", known, result()))["order_number"] is Outcome.ABSENT
+
+
+def test_a_value_worked_out_where_the_page_printed_none_is_still_the_right_answer() -> None:
+    """A rate no page prints and the arithmetic works out is a value, not an invention."""
+    known = truth()
+    known["fields"]["order_number"] = {"value": "PO-1", "printed": None, "evidence": []}
+    assert outcomes(compare("x", known, result(order_number="PO-1")))["order_number"] is Outcome.HIT
+    wrong = result(order_number="PO-2")
+    assert outcomes(compare("x", known, wrong))["order_number"] is Outcome.MISS
+
+
+def test_a_value_the_page_printed_and_nobody_read_is_a_miss() -> None:
+    assert outcomes(compare("x", truth(currency="EUR"), result()))["currency"] is Outcome.MISS
 
 
 def test_a_miss_that_found_no_candidate_is_counted_apart_from_a_wrong_one() -> None:
@@ -145,11 +208,60 @@ def test_a_row_the_extractor_did_not_find_is_one_error_per_column() -> None:
     two_rows = truth()
     rows = two_rows["line_items"]
     assert isinstance(rows, list)
-    rows.append({**rows[0], "sku": "A-2"})
+    rows.append({**rows[0], "part_number": "A-2"})
     score = compare("x", two_rows, result())
     assert score.rows_expected == 2
     assert score.rows_found == 1
-    assert all(score.columns[column] == (1, 1) for column in LINE_ITEM_COLUMNS)
+    assert all(score.columns[column] == Counts(hit=1, miss=1) for column in SCORED_COLUMNS)
+
+
+def test_a_cell_the_page_never_printed_is_absent_rather_than_a_miss() -> None:
+    """The truth records a box per cell it drew; a column with none was not on the page."""
+    unprinted = truth()
+    rows = unprinted["line_items"]
+    assert isinstance(rows, list)
+    rows[0]["cells"] = {column: [BOX] for column in SCORED_COLUMNS if column != "part_number"}
+    without = dataclasses.replace(result().line_items[0], part_number=None)
+    score = compare("x", unprinted, dataclasses.replace(result(), line_items=(without,)))
+    assert score.columns["part_number"] == Counts(absent=1)
+
+
+def test_a_party_the_page_does_not_print_is_absent_however_much_the_truth_knows() -> None:
+    blocks = truth()
+    blocks["parties"] = {
+        "bill_to": {"name": "Acme", "lines": ["1 Street"], "vat_id": None, "evidence": []}
+    }
+    score = compare("x", blocks, result())
+    assert score.parties["bill_to.name"] == Counts(absent=1)
+
+
+def test_a_party_the_page_prints_is_scored_on_its_name_and_its_address() -> None:
+    blocks = truth()
+    blocks["parties"] = {
+        "bill_to": {"name": "Acme", "lines": ["1 Street"], "vat_id": None, "evidence": [BOX]}
+    }
+    read = dataclasses.replace(
+        result(), parties={"bill_to": Party(name="Acme", lines=("1 Street",))}
+    )
+    score = compare("x", blocks, read)
+    assert score.parties["bill_to.name"] == Counts(hit=1)
+    assert score.parties["bill_to.lines"] == Counts(hit=1)
+
+
+def test_a_vat_line_the_document_prints_is_scored_cell_by_cell() -> None:
+    printed = truth()
+    printed["vat_summary"] = [
+        {"rate": "19", "base": "7.00", "vat": "1.33", "evidence": [BOX]},
+        {"rate": "7", "base": "1.00", "vat": "0.07", "evidence": []},
+    ]
+    read = dataclasses.replace(
+        result(),
+        vat_summary=(VatSummaryRow(rate=Decimal(19), base=Decimal("7.00"), vat=Decimal("1.33")),),
+    )
+    score = compare("x", printed, read)
+    assert score.vat_rows_expected == 1
+    assert score.vat_rows_found == 1
+    assert score.vat_columns["vat"] == Counts(hit=1)
 
 
 def test_a_knob_is_tallied_on_the_side_the_document_turned_it() -> None:
@@ -164,40 +276,6 @@ def test_a_knob_is_tallied_on_the_side_the_document_turned_it() -> None:
 def test_confidence_lands_in_its_band() -> None:
     built = matrices.build([compare("x", truth(currency="EUR"), result(currency="EUR"))])
     assert built.calibration[-1].hit == 1
-
-
-@pytest.mark.parametrize("profile_id", bundled_profile_ids())
-def test_every_profile_gets_a_layout_from_its_own_words(profile_id: str) -> None:
-    profile = load_profile(profile_id)
-    layout = layout_for(profile_id)
-    assert layout.id == profile_id
-    assert layout.decimal_separator == profile.decimal_separator
-    assert set(layout.fields) == set(FIELD_NAMES)
-    assert all(layout.fields[name].labels for name in FIELD_NAMES)
-    assert all(layout.line_items.header_labels[column] for column in LINE_ITEM_COLUMNS)
-    assert len(layout.date_formats) == len(profile.date_formats)
-
-
-def test_a_layout_tries_the_formats_that_read_numbers_first() -> None:
-    """`%B` reads month names in the C locale only, so it must never be tried first."""
-    for profile_id in bundled_profile_ids():
-        spelled = [
-            index
-            for index, pattern in enumerate(layout_for(profile_id).date_formats)
-            if "%B" in pattern or "%b" in pattern
-        ]
-        numeric = len(layout_for(profile_id).date_formats) - len(spelled)
-        assert all(index >= numeric for index in spelled), profile_id
-
-
-def test_every_date_format_a_profile_may_declare_has_a_pattern() -> None:
-    assert set(PATTERNS) == set(DateFormat)
-
-
-def test_every_field_in_a_layout_is_given_a_zone_on_the_page() -> None:
-    layout = layout_for("de-DE")
-    assert all(set(layout.fields[name].zones) <= set(Zone) for name in FIELD_NAMES)
-    assert all(layout.fields[name].zones for name in FIELD_NAMES)
 
 
 def committed() -> dict[str, object]:
@@ -226,3 +304,112 @@ def test_the_committed_numbers_were_produced_by_this_benchmark() -> None:
     matrix = report["matrix"]
     assert isinstance(matrix, dict)
     assert matrix["documents"]
+
+
+def charged(**amounts: object) -> dict[str, object]:
+    """A truth file that also carries charges and a total said again in another currency."""
+    printed = truth()
+    printed["charges"] = [
+        {"type": "SHIPPING", "amount": "12.50", "declared": True, "evidence": [BOX]},
+        {"type": "SURCHARGE", "amount": "5.00", "declared": False, "evidence": []},
+    ]
+    printed["secondary_amounts"] = {
+        "currency": "USD",
+        "total_amount": "84.00",
+        "exchange_rate": "1.1200",
+        "evidence": [BOX],
+    }
+    return {**printed, **amounts}
+
+
+def test_a_charge_the_block_declared_is_scored_on_its_type_and_its_amount() -> None:
+    read = dataclasses.replace(
+        result(), charges=(Charge(type="SHIPPING", amount=Decimal("12.50")),)
+    )
+    score = compare("x", charged(), read)
+    assert score.charges["declared"] == Counts(hit=1)
+
+
+def test_a_charge_read_as_the_wrong_kind_is_a_miss_on_both_sides() -> None:
+    """One charge printed and another read: the one the page names, and the one it does not."""
+    wrong = (Charge(type="ROUNDING", amount=Decimal("12.50")),)
+    score = compare("x", charged(), dataclasses.replace(result(), charges=wrong))
+    assert score.charges["declared"] == Counts(miss=2)
+
+
+def test_what_no_line_declares_is_scored_as_the_amount_the_arithmetic_found() -> None:
+    inferred = Charge(type="OTHER", amount=Decimal("5.00"), declared=False)
+    score = compare("x", charged(), dataclasses.replace(result(), charges=(inferred,)))
+    assert score.charges["undeclared"] == Counts(hit=1)
+
+
+def test_an_undeclared_charge_read_for_another_amount_is_a_miss() -> None:
+    inferred = Charge(type="OTHER", amount=Decimal("9.99"), declared=False)
+    score = compare("x", charged(), dataclasses.replace(result(), charges=(inferred,)))
+    assert score.charges["undeclared"] == Counts(miss=1)
+
+
+def test_a_document_that_carries_no_charge_is_scored_on_neither() -> None:
+    score = compare("x", truth(), result())
+    assert score.charges == {"declared": Counts(absent=1), "undeclared": Counts(absent=1)}
+
+
+def test_the_total_said_again_is_scored_part_by_part() -> None:
+    echo = SecondaryAmounts(
+        currency="USD", total_amount=Decimal("84.00"), exchange_rate=Decimal("1.1200")
+    )
+    score = compare("x", charged(), dataclasses.replace(result(), secondary_amounts=echo))
+    assert score.secondary == {
+        "currency": Counts(hit=1),
+        "total_amount": Counts(hit=1),
+        "exchange_rate": Counts(hit=1),
+    }
+
+
+def test_an_echo_read_in_the_wrong_currency_misses_on_every_part_of_it() -> None:
+    echo = SecondaryAmounts(currency="CHF", total_amount=Decimal("1.00"))
+    score = compare("x", charged(), dataclasses.replace(result(), secondary_amounts=echo))
+    assert score.secondary["currency"] == Counts(miss=1)
+    assert score.secondary["total_amount"] == Counts(miss=1)
+    assert score.secondary["exchange_rate"] == Counts(miss=1)
+
+
+def test_an_echo_the_document_does_not_print_is_absent_unless_one_was_read() -> None:
+    assert compare("x", truth(), result()).secondary["currency"] == Counts(absent=1)
+    read = dataclasses.replace(result(), secondary_amounts=SecondaryAmounts(currency="USD"))
+    assert compare("x", truth(), read).secondary["currency"] == Counts(miss=1)
+
+
+def test_an_echo_the_document_prints_and_the_reader_missed_is_a_miss() -> None:
+    assert compare("x", charged(), result()).secondary["total_amount"] == Counts(miss=1)
+
+
+def test_charges_and_echoes_are_added_up_over_the_corpus() -> None:
+    read = dataclasses.replace(
+        result(), charges=(Charge(type="SHIPPING", amount=Decimal("12.50")),)
+    )
+    built = matrices.build([compare("x", charged(), read)])
+    assert built.charges["declared"].hit == 1
+    assert built.secondary["currency"].miss == 1
+    assert "charges" in built.to_dict()
+
+
+def test_how_far_off_the_confidences_were_is_measured_over_the_whole_run() -> None:
+    """The gate `docs/ENGINE_PLAN.md` E5 sets: expected calibration error on the corpus."""
+    sure = dataclasses.replace(result(currency="EUR"), fields=_at(0.9))
+    built = matrices.build([compare("x", truth(currency="EUR"), sure)])
+    entry = built.to_dict()
+    assert entry["expected_calibration_error"] == pytest.approx(0.1, abs=0.01)
+    band = next(band for band in built.calibration if band.scored)
+    assert band.predicted == pytest.approx(0.9)
+
+
+def test_a_run_that_scored_nothing_is_not_off_by_anything() -> None:
+    assert matrices.build([]).to_dict()["expected_calibration_error"] == 0.0
+    assert matrices.Tally().predicted is None
+
+
+def _at(confidence: float) -> dict[str, FieldResult]:
+    """The same result, with one confidence on every field it read."""
+    read = result(currency="EUR").fields
+    return {name: dataclasses.replace(found, confidence=confidence) for name, found in read.items()}

@@ -34,13 +34,13 @@ class LineItem:
     """One billed row. `net_amount` is derived, so a row can never disagree with itself."""
 
     pos: int
-    sku: str
+    part_number: str
     description: str
     quantity: Decimal
     unit: str
     unit_price: Decimal
     vat_rate: Decimal
-    discount_percent: Decimal | None = None
+    discount_pct: Decimal | None = None
     section: str | None = None
     sub_items: tuple[SubItem, ...] = ()
     subscription: Subscription | None = None
@@ -49,9 +49,9 @@ class LineItem:
     def exact_net(self) -> Decimal:
         """Quantity times price, less any discount, before anyone decides on cents."""
         gross = self.quantity * self.unit_price
-        if self.discount_percent is None:
+        if self.discount_pct is None:
             return gross
-        return gross - gross * self.discount_percent / PERCENT
+        return gross - gross * self.discount_pct / PERCENT
 
     @property
     def net_amount(self) -> Decimal:

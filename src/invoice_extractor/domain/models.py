@@ -1,8 +1,9 @@
 """What a run of the pipeline produces, and the JSON shape it round-trips through.
 
-Every scalar value here arrives with the `Evidence` that produced it — a page, a box, a
-matched label and a strategy — so any number in the output can be traced back to the
-line it was read from. `docs/SAMPLES_SPEC.md` fixes the JSON shape `to_dict` writes.
+Every value here arrives with the `Evidence` that produced it — a page, a box, a matched
+label and a strategy — so any number in the output can be traced back to the line it was
+read from. `docs/FIELD_CATALOG.md` names every field this shape carries; the rows and the
+parties have records of their own in `domain/rows.py` and `domain/parties.py`.
 """
 
 from __future__ import annotations
@@ -11,55 +12,62 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
-from enum import Enum, auto
 from typing import cast
 
-from invoice_extractor.document.reader import BBox
-from invoice_extractor.domain.findings import Finding
+from invoice_extractor.domain.checks import Check
+from invoice_extractor.domain.evidence import Evidence, Strategy, optional
+from invoice_extractor.domain.findings import Finding, Severity
+from invoice_extractor.domain.parties import Party
+from invoice_extractor.domain.rows import LineItem, VatSummaryRow
+from invoice_extractor.domain.totals import Charge, SecondaryAmounts
 
 FieldValue = str | date | Decimal
+
+# Where a confidence's weights came from: a fit on a corpus whose answers were known, or
+# the uniform mean of whatever signals the field emitted (ENGINE_SPEC §8).
+FITTED = "fitted"
+UNIFORM = "uniform"
 
 # How a field's value is typed, by name. `extraction/specs.py` picks the normalizer that
 # produces each of these, and `from_dict` reads them back the same way.
 VALUE_TYPES: Mapping[str, type] = {
     "invoice_number": str,
+    "order_number": str,
+    "customer_number": str,
     "invoice_date": date,
+    "supply_date": date,
     "due_date": date,
     "supplier_vat_id": str,
     "customer_vat_id": str,
+    "iban": str,
     "currency": str,
     "vat_rate": Decimal,
     "subtotal": Decimal,
     "vat_amount": Decimal,
     "total_amount": Decimal,
+    "contract_number": str,
+    "our_reference": str,
+    "your_reference": str,
+    "credit_reference": str,
+    "payment_terms": str,
 }
 
-
-class Strategy(Enum):
-    """How a candidate was found. It lives here, beside the `Evidence` that records it.
-
-    `LABEL_RIGHT` and `LABEL_BESIDE` are the same reading of a page — the value follows
-    its label along the line — found two ways, because a PDF has no idea what a line is.
-    A vendor that writes `Invoice Number: INV-42` in one run gives the reader one line;
-    a vendor that sets the label at one tab stop and the number flush right at another
-    gives it two, and the text between them is white space that was never drawn.
-    """
-
-    LABEL_RIGHT = auto()
-    LABEL_BESIDE = auto()
-    LABEL_BELOW = auto()
-    REGEX_ANCHOR = auto()
-
-
-@dataclass(frozen=True, slots=True)
-class Evidence:
-    """Where a value came from: the page and box, the label matched, the text before parsing."""
-
-    page: int
-    bbox: BBox
-    matched_label: str | None
-    strategy: Strategy
-    raw_text: str
+__all__ = [
+    "FITTED",
+    "UNIFORM",
+    "VALUE_TYPES",
+    "Charge",
+    "Check",
+    "Evidence",
+    "FieldResult",
+    "FieldValue",
+    "InvoiceResult",
+    "LineItem",
+    "Party",
+    "SecondaryAmounts",
+    "Strategy",
+    "VatSummaryRow",
+]
 
 
 @dataclass(frozen=True, slots=True)
@@ -72,51 +80,98 @@ class FieldResult:
     evidence: Evidence | None
     valid: bool
     confidence: float = 0.0
+    # The signals the confidence was made of, by name (ENGINE_SPEC §8): what each of them
+    # is worth is the fitted `calibration/weights.json`, not this record.
     confidence_breakdown: Mapping[str, float] = field(default_factory=dict)
-
-
-@dataclass(frozen=True, slots=True)
-class LineItem:
-    """One row of the invoice's table. Found as a table, so it carries no `Evidence`."""
-
-    sku: str
-    description: str
-    quantity: Decimal
-    unit_price: Decimal
-    net_amount: Decimal
+    # `fitted` where weights were fitted for this field, `uniform` where the signals were
+    # simply averaged, so a number that came from a guess does not look like one that did not.
+    confidence_source: str = UNIFORM
 
 
 @dataclass(frozen=True, slots=True)
 class InvoiceResult:
-    """Everything one invoice extracted to. `fields` always holds all ten names, in order."""
+    """Everything one invoice extracted to.
+
+    `profile_id` is `None` for a document no profile matched: there is no default
+    vocabulary to fall back on (ADR-0008), so `fields` is empty and the findings say why.
+    `document_type` is `None` for the same document, because which kind it is is read
+    with the vendor's own words for each kind.
+    """
 
     fields: Mapping[str, FieldResult]
     line_items: tuple[LineItem, ...]
     findings: tuple[Finding, ...]
-    layout_id: str
+    profile_id: str | None
+    document_type: str | None
     source_path: str
+    parties: Mapping[str, Party] = field(default_factory=dict)
+    vat_summary: tuple[VatSummaryRow, ...] = ()
+    charges: tuple[Charge, ...] = ()
+    secondary_amounts: SecondaryAmounts | None = None
+    checks: tuple[Check, ...] = ()
+
+    @property
+    def valid(self) -> bool:
+        """Derived from the findings, never set beside them (ADR-0010)."""
+        return not any(finding.severity is Severity.ERROR for finding in self.findings)
 
     def to_dict(self) -> dict[str, object]:
         return {
             "fields": {name: _field_to_dict(result) for name, result in self.fields.items()},
-            "line_items": [_line_item_to_dict(item) for item in self.line_items],
+            "parties": {name: party.to_dict() for name, party in self.parties.items()},
+            "line_items": [item.to_dict() for item in self.line_items],
+            "vat_summary": [row.to_dict() for row in self.vat_summary],
+            "charges": [charge.to_dict() for charge in self.charges],
+            "secondary_amounts": _secondary_to_dict(self.secondary_amounts),
             "findings": [finding.to_dict() for finding in self.findings],
-            "layout_id": self.layout_id,
+            "checks": [check.to_dict() for check in self.checks],
+            "profile_id": self.profile_id,
+            "document_type": self.document_type,
+            "valid": self.valid,
             "source_path": self.source_path,
         }
 
     @classmethod
     def from_dict(cls, data: Mapping[str, object]) -> InvoiceResult:
         fields = cast(Mapping[str, Mapping[str, object]], data["fields"])
-        items = cast(Sequence[Mapping[str, str]], data["line_items"])
         findings = cast(Sequence[Mapping[str, object]], data["findings"])
         return cls(
             fields={name: _field_from_dict(name, entry) for name, entry in fields.items()},
-            line_items=tuple(_line_item_from_dict(item) for item in items),
+            line_items=tuple(LineItem.from_dict(item) for item in _rows(data, "line_items")),
             findings=tuple(Finding.from_dict(entry) for entry in findings),
-            layout_id=str(data["layout_id"]),
+            profile_id=_optional_text(data["profile_id"]),
+            document_type=_optional_text(data["document_type"]),
             source_path=str(data["source_path"]),
+            parties=_parties(data),
+            vat_summary=tuple(VatSummaryRow.from_dict(row) for row in _rows(data, "vat_summary")),
+            charges=tuple(Charge.from_dict(charge) for charge in _rows(data, "charges")),
+            checks=tuple(Check.from_dict(check) for check in _rows(data, "checks")),
+            secondary_amounts=_secondary(data.get("secondary_amounts")),
         )
+
+
+def _secondary_to_dict(amounts: SecondaryAmounts | None) -> dict[str, object] | None:
+    return None if amounts is None else amounts.to_dict()
+
+
+def _secondary(raw: object) -> SecondaryAmounts | None:
+    """The echo in another currency, which most documents do not print at all."""
+    return None if raw is None else SecondaryAmounts.from_dict(cast(Mapping[str, object], raw))
+
+
+def _parties(data: Mapping[str, object]) -> dict[str, Party]:
+    found = data.get("parties")
+    entries = cast(Mapping[str, Mapping[str, object]], found if isinstance(found, dict) else {})
+    return {name: Party.from_dict(entry) for name, entry in entries.items()}
+
+
+def _rows(data: Mapping[str, object], key: str) -> Sequence[Mapping[str, object]]:
+    found = data.get(key)
+    return cast(Sequence[Mapping[str, object]], found if isinstance(found, list) else ())
+
+
+def _optional_text(raw: object) -> str | None:
+    return None if raw is None else str(raw)
 
 
 def _field_to_dict(result: FieldResult) -> dict[str, object]:
@@ -125,9 +180,10 @@ def _field_to_dict(result: FieldResult) -> dict[str, object]:
         "value": _value_to_json(result.value),
         "raw_text": result.raw_text,
         "valid": result.valid,
-        "evidence": None if evidence is None else _evidence_to_dict(evidence),
+        "evidence": None if evidence is None else evidence.to_dict(),
         "confidence": result.confidence,
         "confidence_breakdown": dict(result.confidence_breakdown),
+        "confidence_source": result.confidence_source,
     }
 
 
@@ -138,57 +194,11 @@ def _field_from_dict(name: str, data: Mapping[str, object]) -> FieldResult:
         name=name,
         value=_value_from_json(name, data["value"]),
         raw_text=None if raw_text is None else str(raw_text),
-        evidence=_optional_evidence(data["evidence"]),
+        evidence=optional(data["evidence"]),
         valid=bool(data["valid"]),
         confidence=cast(float, data.get("confidence", 0.0)),
         confidence_breakdown=dict(breakdown),
-    )
-
-
-def _optional_evidence(raw: object) -> Evidence | None:
-    return None if raw is None else _evidence_from_dict(cast(Mapping[str, object], raw))
-
-
-def _evidence_to_dict(evidence: Evidence) -> dict[str, object]:
-    box = evidence.bbox
-    return {
-        "page": evidence.page,
-        "bbox": {"x0": box.x0, "y0": box.y0, "x1": box.x1, "y1": box.y1},
-        "matched_label": evidence.matched_label,
-        "strategy": evidence.strategy.name,
-        "raw_text": evidence.raw_text,
-    }
-
-
-def _evidence_from_dict(data: Mapping[str, object]) -> Evidence:
-    box = cast(Mapping[str, float], data["bbox"])
-    label = data["matched_label"]
-    return Evidence(
-        page=cast(int, data["page"]),
-        bbox=BBox(x0=box["x0"], y0=box["y0"], x1=box["x1"], y1=box["y1"]),
-        matched_label=None if label is None else str(label),
-        strategy=Strategy[str(data["strategy"])],
-        raw_text=str(data["raw_text"]),
-    )
-
-
-def _line_item_to_dict(item: LineItem) -> dict[str, object]:
-    return {
-        "sku": item.sku,
-        "description": item.description,
-        "quantity": str(item.quantity),
-        "unit_price": str(item.unit_price),
-        "net_amount": str(item.net_amount),
-    }
-
-
-def _line_item_from_dict(data: Mapping[str, str]) -> LineItem:
-    return LineItem(
-        sku=data["sku"],
-        description=data["description"],
-        quantity=Decimal(data["quantity"]),
-        unit_price=Decimal(data["unit_price"]),
-        net_amount=Decimal(data["net_amount"]),
+        confidence_source=str(data.get("confidence_source", UNIFORM)),
     )
 
 

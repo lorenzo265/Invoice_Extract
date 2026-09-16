@@ -1,7 +1,7 @@
 {
   "schema": "forge-truth/1",
   "generator": {
-    "version": "0.2.0",
+    "version": "0.4.0",
     "seed": 7,
     "profile": "de-DE",
     "template": "tabular",
@@ -103,8 +103,8 @@
       ]
     },
     "supplier_vat_id": {
-      "value": "DE018159083",
-      "printed": "USt-IdNr.: DE018159083",
+      "value": "DE879668745",
+      "printed": "USt-IdNr.: DE879668745",
       "label": "USt-IdNr.",
       "evidence": [
         {
@@ -365,22 +365,38 @@
       "printed": null,
       "label": null,
       "evidence": []
+    },
+    "iban": {
+      "value": "DE25004743957551313735",
+      "printed": "Sturmfelsbank · IBAN DE25 0047 4395 7551 3137 35 · BIC GPTTDEA4XXX",
+      "label": "IBAN",
+      "evidence": [
+        {
+          "page": 2,
+          "bbox": [
+            50.0,
+            388.76,
+            321.01,
+            397.69
+          ]
+        }
+      ]
     }
   },
   "line_items": [
     {
       "pos": 1,
-      "sku": "SRV-ANA-H",
+      "part_number": "SRV-ANA-H",
       "description": "Analyse und Dokumentation, pro Stunde",
       "quantity": "0.5",
       "unit": "Std",
       "unit_price": "115.0000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "57.50",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -440,17 +456,17 @@
     },
     {
       "pos": 2,
-      "sku": "HX-M8-040",
+      "part_number": "HX-M8-040",
       "description": "Sechskantschraube M8 x 40, verzinkt, DIN 933",
       "quantity": "100",
       "unit": "Stk",
       "unit_price": "0.12",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "12.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -510,17 +526,17 @@
     },
     {
       "pos": 3,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API-Kontingent 10.000 Aufrufe je Monat",
       "quantity": "10",
       "unit": "Paket",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "890.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -580,17 +596,17 @@
     },
     {
       "pos": 4,
-      "sku": "SW-CLD-50",
+      "part_number": "SW-CLD-50",
       "description": "Cloud-Speicher 50 GB, Abrechnung monatlich",
       "quantity": "2",
       "unit": "Monat",
       "unit_price": "12.5000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "25.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -650,17 +666,17 @@
     },
     {
       "pos": 5,
-      "sku": "REL-24V",
+      "part_number": "REL-24V",
       "description": "Koppelrelais 24 V DC, 1 Wechsler",
       "quantity": "100",
       "unit": "Stk",
       "unit_price": "7.95",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "795.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -720,17 +736,17 @@
     },
     {
       "pos": 6,
-      "sku": "SRV-ANA-H",
+      "part_number": "SRV-ANA-H",
       "description": "Analyse und Dokumentation, pro Stunde",
       "quantity": "1.5",
       "unit": "Std",
       "unit_price": "115.0000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "172.50",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -790,17 +806,17 @@
     },
     {
       "pos": 7,
-      "sku": "SW-CLD-50",
+      "part_number": "SW-CLD-50",
       "description": "Cloud-Speicher 50 GB, Abrechnung monatlich",
       "quantity": "25",
       "unit": "Monat",
       "unit_price": "12.5000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "312.50",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -860,17 +876,17 @@
     },
     {
       "pos": 8,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API-Kontingent 10.000 Aufrufe je Monat",
       "quantity": "3",
       "unit": "Paket",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "267.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -930,17 +946,17 @@
     },
     {
       "pos": 9,
-      "sku": "ENC-IP65",
+      "part_number": "ENC-IP65",
       "description": "Verteilerkasten IP65, 300 x 200 x 120",
       "quantity": "4",
       "unit": "Stk",
       "unit_price": "45.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "182.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1000,17 +1016,17 @@
     },
     {
       "pos": 10,
-      "sku": "REL-24V",
+      "part_number": "REL-24V",
       "description": "Koppelrelais 24 V DC, 1 Wechsler",
       "quantity": "1",
       "unit": "Stk",
       "unit_price": "7.95",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "7.95",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1070,17 +1086,17 @@
     },
     {
       "pos": 11,
-      "sku": "SW-SUP-GLD",
+      "part_number": "SW-SUP-GLD",
       "description": "Supportvertrag Gold, Reaktionszeit 4 Stunden",
       "quantity": "100",
       "unit": "Jahr",
       "unit_price": "1290.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "129000.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1140,17 +1156,17 @@
     },
     {
       "pos": 12,
-      "sku": "SRV-ANA-H",
+      "part_number": "SRV-ANA-H",
       "description": "Analyse und Dokumentation, pro Stunde",
       "quantity": "12",
       "unit": "Std",
       "unit_price": "115.0000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "1380.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1210,17 +1226,17 @@
     },
     {
       "pos": 13,
-      "sku": "SRV-ANA-H",
+      "part_number": "SRV-ANA-H",
       "description": "Analyse und Dokumentation, pro Stunde",
       "quantity": "1.5",
       "unit": "Std",
       "unit_price": "115.0000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "172.50",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1280,17 +1296,17 @@
     },
     {
       "pos": 14,
-      "sku": "SRV-TRN-D",
+      "part_number": "SRV-TRN-D",
       "description": "Schulung Grundlagen, 1 Tag, bis 8 Teilnehmer",
       "quantity": "2.5",
       "unit": "Tag",
       "unit_price": "780.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "1950.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1350,17 +1366,17 @@
     },
     {
       "pos": 15,
-      "sku": "HX-M8-040",
+      "part_number": "HX-M8-040",
       "description": "Sechskantschraube M8 x 40, verzinkt, DIN 933",
       "quantity": "3",
       "unit": "Stk",
       "unit_price": "0.12",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "0.36",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1420,17 +1436,17 @@
     },
     {
       "pos": 16,
-      "sku": "SW-LIC-PRO",
+      "part_number": "SW-LIC-PRO",
       "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
       "quantity": "1.5",
       "unit": "Lizenz",
       "unit_price": "349.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "523.50",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1490,17 +1506,17 @@
     },
     {
       "pos": 17,
-      "sku": "REL-24V",
+      "part_number": "REL-24V",
       "description": "Koppelrelais 24 V DC, 1 Wechsler",
       "quantity": "40",
       "unit": "Stk",
       "unit_price": "7.95",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "318.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1560,17 +1576,17 @@
     },
     {
       "pos": 18,
-      "sku": "HX-M8-040",
+      "part_number": "HX-M8-040",
       "description": "Sechskantschraube M8 x 40, verzinkt, DIN 933",
       "quantity": "20",
       "unit": "Stk",
       "unit_price": "0.12",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "2.40",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1630,17 +1646,17 @@
     },
     {
       "pos": 19,
-      "sku": "SW-LIC-PRO",
+      "part_number": "SW-LIC-PRO",
       "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
       "quantity": "2",
       "unit": "Lizenz",
       "unit_price": "349.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "698.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1700,17 +1716,17 @@
     },
     {
       "pos": 20,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API-Kontingent 10.000 Aufrufe je Monat",
       "quantity": "3",
       "unit": "Paket",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "267.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1770,17 +1786,17 @@
     },
     {
       "pos": 21,
-      "sku": "FLT-P-200",
+      "part_number": "FLT-P-200",
       "description": "Filterpatrone P-200, Zellulose, 10 µm",
       "quantity": "3",
       "unit": "Stk",
       "unit_price": "17.40",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "19",
       "net_amount": "52.20",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1840,17 +1856,17 @@
     },
     {
       "pos": 22,
-      "sku": "SW-LIC-PRO",
+      "part_number": "SW-LIC-PRO",
       "description": "Softwarelizenz ProSuite, 1 Arbeitsplatz, 12 Monate",
       "quantity": "5",
       "unit": "Lizenz",
       "unit_price": "349.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "1745.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -1910,17 +1926,17 @@
     },
     {
       "pos": 23,
-      "sku": "REL-24V",
+      "part_number": "REL-24V",
       "description": "Koppelrelais 24 V DC, 1 Wechsler",
       "quantity": "25",
       "unit": "Stk",
       "unit_price": "7.95",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "7",
       "net_amount": "198.75",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 2,
             "bbox": [
@@ -2095,20 +2111,20 @@
   },
   "parties": {
     "supplier": {
-      "name": "Rheinwerk Industriebedarf GmbH & Co. KG",
+      "name": "Nordlicht Industriebedarf GmbH & Co. KG",
       "lines": [
-        "Gutenbergstraße 18",
-        "31860 Kassel",
+        "Am Hafen 60",
+        "91195 Leipzig",
         "Deutschland"
       ],
-      "vat_id": "DE018159083",
+      "vat_id": "DE879668745",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
             50.24,
-            316.99,
+            308.3,
             64.74
           ]
         },
@@ -2117,7 +2133,7 @@
           "bbox": [
             50.0,
             69.86,
-            130.5,
+            102.49,
             79.9
           ]
         },
@@ -2126,7 +2142,7 @@
           "bbox": [
             50.0,
             81.86,
-            104.51,
+            106.02,
             91.9
           ]
         },
@@ -2144,7 +2160,7 @@
           "bbox": [
             50.0,
             50.24,
-            316.99,
+            308.3,
             64.74
           ]
         },
@@ -2153,7 +2169,7 @@
           "bbox": [
             50.0,
             69.86,
-            130.5,
+            102.49,
             79.9
           ]
         },
@@ -2162,7 +2178,7 @@
           "bbox": [
             50.0,
             81.86,
-            104.51,
+            106.02,
             91.9
           ]
         },

@@ -9,12 +9,15 @@ from __future__ import annotations
 
 import ast
 import re
-import tomllib
 from collections.abc import Iterator
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PYPROJECT = REPO_ROOT / "pyproject.toml"
+# Two distributions are built from this one tree: the engine at the root, and the
+# generator it is proved against under `tools/forge/`. A rule about "the packaging"
+# means both, or the half it does not read is the half that ships broken.
+PYPROJECTS = (PYPROJECT, REPO_ROOT / "tools" / "forge" / "pyproject.toml")
 SRC = REPO_ROOT / "src"
 EXTRACTOR = SRC / "invoice_extractor"
 FORGE = SRC / "invoice_forge"
@@ -52,8 +55,13 @@ FENCED_CODE = re.compile(r"```.*?```", re.DOTALL)
 INLINE_CODE = re.compile(r"`[^`]*`")
 MARKDOWN_LINK = re.compile(r"\]\(([^)\s]+)")
 
+# The one table of the packaging this file reads back, and the shape of its entries.
+PACKAGE_DATA_TABLE = "[tool.setuptools.package-data]"
+DATA_ENTRY = re.compile(r"^(?P<package>\w+)\s*=\s*\[(?P<globs>[^\]]*)\]", re.MULTILINE)
+QUOTED = re.compile(r'"([^"]*)"')
+
 TEXT_SUFFIXES = frozenset({".py", ".md", ".json", ".toml", ".yml", ".yaml", ".cfg", ".txt"})
-TEXT_FILENAMES = frozenset({"Makefile", "LICENSE", ".gitignore"})
+TEXT_FILENAMES = frozenset({"Makefile", "make.ps1", "LICENSE", ".gitignore"})
 IGNORED_DIRS = frozenset(
     {".git", ".venv", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache", "build", "dist"}
 )
@@ -62,8 +70,11 @@ URL_ALLOWED_ROOTS = frozenset({"docs", ".github"})
 URL_ALLOWED_FILES = frozenset(
     {
         "README.md",
+        "CONTRIBUTING.md",
+        "tools/forge/README.md",
         ".pre-commit-config.yaml",
         "pyproject.toml",
+        "tools/forge/pyproject.toml",
         # The bundled fonts' licence is third-party text, reproduced as it must be.
         "src/invoice_forge/fonts/LICENSE",
     }
@@ -287,27 +298,52 @@ def _link_targets(document: Path) -> list[str]:
     return [target for target in found if target and "://" not in target]
 
 
+def package_data(pyproject: Path) -> dict[str, list[str]]:
+    """The `[tool.setuptools.package-data]` table of one pyproject, as a text scan.
+
+    A scan rather than a TOML parser, like every other check in this file: `tomllib` is
+    standard library only from 3.11, and this suite runs on the 3.10 floor the packaging
+    declares. The table is arrays of quoted globs, one package per entry, which is all
+    the scan reads; a table it read as empty fails `test_every_data_file_under_source_is_declared`
+    loudly rather than passing an empty wheel.
+    """
+    text = pyproject.read_text(encoding="utf-8")
+    start = text.index(PACKAGE_DATA_TABLE) + len(PACKAGE_DATA_TABLE)
+    next_table = text.find("\n[", start)
+    section = text[start : next_table if next_table >= 0 else len(text)]
+    return {
+        entry["package"]: QUOTED.findall(entry["globs"]) for entry in DATA_ENTRY.finditer(section)
+    }
+
+
+def declared_data() -> list[tuple[str, str]]:
+    """Every (package, glob) either distribution says it ships."""
+    return [
+        (package, pattern)
+        for pyproject in PYPROJECTS
+        for package, patterns in package_data(pyproject).items()
+        for pattern in patterns
+    ]
+
+
 def test_every_declared_data_file_exists() -> None:
     """A data glob that matches nothing is a file that will be missing from the wheel."""
-    config = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
-    declared = config["tool"]["setuptools"]["package-data"]
     offenders = [
         f"{package}: {pattern}"
-        for package, patterns in declared.items()
-        for pattern in patterns
+        for package, pattern in declared_data()
         if not list((SRC / package).glob(pattern))
     ]
     assert not offenders, f"package data declared but not present: {offenders}"
 
 
 def test_every_data_file_under_source_is_declared() -> None:
-    """The other direction: a JSON file inside a package that no glob ships."""
-    declared = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
+    """The other direction: a JSON file inside a package that no glob ships.
+
+    Read across both distributions, because a file is shipped by whichever one owns it:
+    the profiles and lexicons travel with the engine, the catalogues with the generator.
+    """
     packaged = {
-        path
-        for package, patterns in declared["tool"]["setuptools"]["package-data"].items()
-        for pattern in patterns
-        for path in (SRC / package).glob(pattern)
+        path for package, pattern in declared_data() for path in (SRC / package).glob(pattern)
     }
     offenders = [where(path) for path in sorted(SRC.rglob("*.json")) if path not in packaged]
     assert not offenders, f"data files that would not ship: {offenders}"
@@ -323,3 +359,47 @@ def test_dataclasses_are_frozen() -> None:
         if decorator_name(decorator) == "dataclass" and not declares_frozen(decorator)
     ]
     assert not offenders, f"dataclasses declared without frozen=True: {offenders}"
+
+
+def test_no_module_without_an_importer() -> None:
+    """Every module under `src/` is reached from somewhere (`docs/ENGINE_PLAN.md` §4).
+
+    The other two halves of that rule are held elsewhere — `tests/test_unit_registry.py`
+    for units nothing names, `tests/test_profile_contract.py` for profile keys nothing
+    reads. This is the third: a module nothing imports is code that cannot run, and the
+    only way to find out is to look for the import.
+
+    `from pkg import module` counts, which is how the loaders reach their helpers; and
+    `__init__.py` and `__main__.py` are not modules with importers but the package and
+    its entry point.
+    """
+    named = {_dotted(path): path for path in source_modules() if _is_a_module(path)}
+    reached = _imported_anywhere()
+    orphans = sorted(where(path) for name, path in named.items() if name not in reached)
+    assert not orphans, f"modules nothing imports: {orphans}"
+
+
+def _is_a_module(path: Path) -> bool:
+    return path.stem not in ("__init__", "__main__")
+
+
+def _dotted(path: Path) -> str:
+    return ".".join(path.relative_to(SRC).with_suffix("").parts)
+
+
+def _imported_anywhere() -> set[str]:
+    """Every module name any Python file in the repository imports, by either spelling."""
+    reached: set[str] = set()
+    for root in (SRC, REPO_ROOT / "tests", REPO_ROOT / "benchmarks", REPO_ROOT / "scripts"):
+        for path in python_modules(root):
+            for node in ast.walk(parse(path)):
+                reached.update(_named(node))
+    return reached
+
+
+def _named(node: ast.AST) -> set[str]:
+    if isinstance(node, ast.ImportFrom) and node.module:
+        return {node.module, *(f"{node.module}.{alias.name}" for alias in node.names)}
+    if isinstance(node, ast.Import):
+        return {alias.name for alias in node.names}
+    return set()

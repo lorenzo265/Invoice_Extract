@@ -1,0 +1,74 @@
+{
+  "id": "nl-NL",
+  "language": "nl",
+  "country": "NL",
+  "lexicon": "nl",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      ".",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy",
+    "d Month yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "21",
+      "reduced": "9",
+      "zero": "0"
+    },
+    "id_prefix": "NL",
+    "id_pattern": "\\d{9}B\\d{2}"
+  },
+  "supplier": {
+    "name": "Rietvoorde Technologie V.O.F.",
+    "aliases": [
+      "Rietvoorde"
+    ],
+    "address_lines": [
+      "Industrieweg 120",
+      "1365 JN Eindhoven",
+      "Nederland"
+    ],
+    "vat_id": "NL234565962B14"
+  },
+  "custom_fields": [
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "ENVIRONMENTAL_FEE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "saas",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

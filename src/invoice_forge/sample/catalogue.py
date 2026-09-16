@@ -25,7 +25,7 @@ from invoice_forge.jsonspec import (
 
 CATALOGUE_DIR = Path(__file__).parent / "catalogues"
 DOMAIN_NAMES: tuple[str, ...] = ("industrial", "electronics", "software", "services")
-PRODUCT_KEYS = ("sku", "description", "unit", "price")
+PRODUCT_KEYS = ("part_number", "description", "unit", "price")
 TOP_LEVEL_KEYS = ("language", "qualifiers", "domains")
 MIN_PRODUCTS = 3
 
@@ -34,7 +34,7 @@ MIN_PRODUCTS = 3
 class Product:
     """One thing a vendor sells, priced as its own catalogue prices it."""
 
-    sku: str
+    part_number: str
     description: str
     unit: str
     price: Decimal
@@ -93,7 +93,7 @@ def _product(entry: object, path: str) -> Product:
         raise SpecError(f"{path} must be an object")
     reject_unknown(entry, PRODUCT_KEYS, f"{path}.", "product key")
     return Product(
-        sku=require_text(entry, "sku", f"{path}.sku"),
+        part_number=require_text(entry, "part_number", f"{path}.part_number"),
         description=require_text(entry, "description", f"{path}.description"),
         unit=require_text(entry, "unit", f"{path}.unit"),
         price=require_decimal(entry, "price", f"{path}.price"),

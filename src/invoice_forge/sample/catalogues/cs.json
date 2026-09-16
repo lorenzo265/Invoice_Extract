@@ -11,31 +11,31 @@
   "domains": {
     "industrial": [
       {
-        "sku": "HX-M8-040",
+        "part_number": "HX-M8-040",
         "description": "Šroub se šestihrannou hlavou M8 x 40, zinkovaný, DIN 933",
         "unit": "ks",
         "price": "0.12"
       },
       {
-        "sku": "BRG-6204",
+        "part_number": "BRG-6204",
         "description": "Kuličkové ložisko 6204-2RS, oboustranně těsněné",
         "unit": "ks",
         "price": "3.85"
       },
       {
-        "sku": "BRK-ST-3",
+        "part_number": "BRK-ST-3",
         "description": "Ocelový držák 3 mm, 60 x 60 x 40, bez úpravy",
         "unit": "ks",
         "price": "2.30"
       },
       {
-        "sku": "PLT-AL-2",
+        "part_number": "PLT-AL-2",
         "description": "Hliníkový plech 2 mm, 1000 x 500, EN AW-5754",
         "unit": "ks",
         "price": "31.20"
       },
       {
-        "sku": "HSE-12-2",
+        "part_number": "HSE-12-2",
         "description": "Hydraulická hadice 12 mm, 2 m, lisované koncovky",
         "unit": "ks",
         "price": "38.0450"
@@ -43,31 +43,31 @@
     ],
     "electronics": [
       {
-        "sku": "CBL-H07-25",
+        "part_number": "CBL-H07-25",
         "description": "Kabel H07V-K 2,5 mm², černý, cívka 100 m",
         "unit": "cívka",
         "price": "48.90"
       },
       {
-        "sku": "ENC-IP65",
+        "part_number": "ENC-IP65",
         "description": "Rozvaděčová skříň IP65, 300 x 200 x 120",
         "unit": "ks",
         "price": "45.50"
       },
       {
-        "sku": "REL-24V",
+        "part_number": "REL-24V",
         "description": "Vazební relé 24 V DC, 1 přepínací kontakt",
         "unit": "ks",
         "price": "7.95"
       },
       {
-        "sku": "SNS-T-PT1",
+        "part_number": "SNS-T-PT1",
         "description": "Teplotní čidlo PT100, 3vodičové, -50 až +200 °C",
         "unit": "ks",
         "price": "22.75"
       },
       {
-        "sku": "FLT-P-200",
+        "part_number": "FLT-P-200",
         "description": "Filtrační vložka P-200, celulóza, 10 µm",
         "unit": "ks",
         "price": "17.40"
@@ -75,25 +75,25 @@
     ],
     "software": [
       {
-        "sku": "SW-LIC-PRO",
+        "part_number": "SW-LIC-PRO",
         "description": "Licence ProSuite, 1 pracoviště, 12 měsíců",
         "unit": "licence",
         "price": "349.00"
       },
       {
-        "sku": "SW-CLD-50",
+        "part_number": "SW-CLD-50",
         "description": "Cloudové úložiště 50 GB, účtováno měsíčně",
         "unit": "měsíc",
         "price": "12.5000"
       },
       {
-        "sku": "SW-SUP-GLD",
+        "part_number": "SW-SUP-GLD",
         "description": "Servisní smlouva Gold, reakce do 4 hodin",
         "unit": "rok",
         "price": "1290.00"
       },
       {
-        "sku": "SW-API-10K",
+        "part_number": "SW-API-10K",
         "description": "Balíček API, 10 000 volání měsíčně",
         "unit": "balíček",
         "price": "89.00"
@@ -101,25 +101,25 @@
     ],
     "services": [
       {
-        "sku": "SRV-INST-H",
+        "part_number": "SRV-INST-H",
         "description": "Instalace na místě, za hodinu",
         "unit": "hod.",
         "price": "95.00"
       },
       {
-        "sku": "SRV-TRN-D",
+        "part_number": "SRV-TRN-D",
         "description": "Základní školení, 1 den, až 8 účastníků",
         "unit": "den",
         "price": "780.00"
       },
       {
-        "sku": "SRV-WRT-Q",
+        "part_number": "SRV-WRT-Q",
         "description": "Údržba, čtvrtletní paušál, zařízení typu B",
         "unit": "paušál",
         "price": "245.50"
       },
       {
-        "sku": "SRV-ANA-H",
+        "part_number": "SRV-ANA-H",
         "description": "Analýza a dokumentace, za hodinu",
         "unit": "hod.",
         "price": "115.0000"

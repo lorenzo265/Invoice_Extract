@@ -1,0 +1,85 @@
+{
+  "id": "it-IT",
+  "language": "it",
+  "country": "IT",
+  "lexicon": "it",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      ".",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy",
+    "d Month yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "22",
+      "reduced": "10",
+      "zero": "0"
+    },
+    "id_prefix": "IT",
+    "id_pattern": "\\d{11}"
+  },
+  "supplier": {
+    "name": "Pietrabella Commerciale S.r.l.",
+    "aliases": [
+      "Pietrabella"
+    ],
+    "address_lines": [
+      "via delle Officine 157",
+      "42516 Verona",
+      "Italia"
+    ],
+    "vat_id": "IT40018806429"
+  },
+  "custom_fields": [
+    {
+      "name": "your_reference",
+      "labels": [
+        "@header_labels.your_reference"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    },
+    {
+      "name": "contract_number",
+      "labels": [
+        "@header_labels.contract_number"
+      ],
+      "zones": [
+        "r1c3",
+        "r1c2"
+      ],
+      "required": false
+    }
+  ],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "CONSOLIDATION_FEE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "stacked",
+      "saas",
+      "minimal"
+    ],
+    "fonts": "serif"
+  }
+}

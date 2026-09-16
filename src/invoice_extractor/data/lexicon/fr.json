@@ -1,0 +1,370 @@
+{
+  "language": "fr",
+  "document_titles": {
+    "invoice": [
+      "FACTURE",
+      "Facture"
+    ],
+    "credit_note": [
+      "AVOIR",
+      "NOTE DE CRÉDIT"
+    ]
+  },
+  "header_labels": {
+    "invoice_number": [
+      "Numéro de facture",
+      "Facture n°",
+      "N° de pièce"
+    ],
+    "invoice_date": [
+      "Date de facture",
+      "Date d'émission",
+      "Date"
+    ],
+    "due_date": [
+      "Échéance",
+      "Date d'échéance",
+      "À régler avant le"
+    ],
+    "supplier_vat_id": [
+      "N° TVA intracommunautaire",
+      "TVA intracom.",
+      "N° TVA"
+    ],
+    "customer_vat_id": [
+      "N° TVA du client",
+      "TVA client"
+    ],
+    "currency": [
+      "Devise"
+    ],
+    "supply_date": [
+      "Date de livraison",
+      "Date de prestation"
+    ],
+    "order_number": [
+      "Numéro de commande",
+      "Bon de commande",
+      "Commande n°"
+    ],
+    "customer_number": [
+      "Numéro client",
+      "Code client"
+    ],
+    "contract_number": [
+      "Numéro de contrat",
+      "Contrat n°"
+    ],
+    "our_reference": [
+      "Notre référence",
+      "Votre interlocuteur"
+    ],
+    "your_reference": [
+      "Votre référence",
+      "Votre réf."
+    ],
+    "payment_terms": [
+      "Conditions de paiement",
+      "Modalités de règlement"
+    ],
+    "credit_reference": [
+      "Facture d'origine",
+      "Facture concernée"
+    ]
+  },
+  "totals_labels": {
+    "vat_rate": [
+      "Taux de TVA",
+      "Taux",
+      "TVA %"
+    ],
+    "subtotal": [
+      "Total HT",
+      "Montant HT",
+      "Sous-total"
+    ],
+    "vat_amount": [
+      "Total TVA",
+      "Montant TVA",
+      "TVA"
+    ],
+    "total_amount": [
+      "Total TTC",
+      "Net à payer",
+      "Montant TTC"
+    ]
+  },
+  "charge_labels": {
+    "SHIPPING": [
+      "Frais de port",
+      "Transport",
+      "Frais de livraison"
+    ],
+    "ENVIRONMENTAL_FEE": [
+      "Éco-participation",
+      "Taxe environnementale"
+    ],
+    "SURCHARGE": [
+      "Majoration",
+      "Supplément petite commande"
+    ],
+    "CONSOLIDATION_FEE": [
+      "Frais de dossier",
+      "Frais de traitement"
+    ],
+    "RECYCLING_FEE": [
+      "Éco-contribution",
+      "Frais de recyclage"
+    ],
+    "ROUNDING": [
+      "Arrondi",
+      "Écart d'arrondi"
+    ]
+  },
+  "column_headers": {
+    "part_number": [
+      "Référence",
+      "Réf.",
+      "Code article"
+    ],
+    "description": [
+      "Désignation",
+      "Description",
+      "Libellé"
+    ],
+    "quantity": [
+      "Qté",
+      "Quantité"
+    ],
+    "unit_price": [
+      "Prix unitaire",
+      "P.U. HT",
+      "Prix"
+    ],
+    "net_amount": [
+      "Montant HT",
+      "Montant",
+      "Total ligne"
+    ],
+    "pos": [
+      "Pos.",
+      "Ligne",
+      "N°"
+    ],
+    "unit": [
+      "Unité",
+      "U."
+    ],
+    "discount_pct": [
+      "Remise",
+      "Remise %"
+    ],
+    "vat_rate": [
+      "TVA %",
+      "Taux TVA",
+      "Code TVA"
+    ],
+    "subscription_id": [
+      "N° d'abonnement",
+      "Identifiant service"
+    ],
+    "billing_cycle": [
+      "Périodicité",
+      "Cycle de facturation"
+    ],
+    "period": [
+      "Période",
+      "Période de service"
+    ],
+    "share": [
+      "Quote-part %",
+      "Répartition"
+    ],
+    "remaining_term": [
+      "Durée restante",
+      "Reste à courir"
+    ]
+  },
+  "vat_summary_headers": {
+    "code": [
+      "Code",
+      "Code TVA"
+    ],
+    "rate": [
+      "Taux",
+      "Taux de TVA"
+    ],
+    "base": [
+      "Base HT",
+      "Montant HT"
+    ],
+    "vat": [
+      "TVA",
+      "Montant TVA"
+    ]
+  },
+  "party_headings": {
+    "bill_to": [
+      "Facturé à",
+      "Adresse de facturation"
+    ],
+    "ship_to": [
+      "Livré à",
+      "Adresse de livraison"
+    ],
+    "mail_to": [
+      "Adresse postale",
+      "Correspondance"
+    ]
+  },
+  "trap_labels": {
+    "order_date": [
+      "Date de commande",
+      "Commandé le"
+    ],
+    "delivery_date": [
+      "Date d'expédition",
+      "Expédié le"
+    ],
+    "print_date": [
+      "Date d'impression",
+      "Imprimé le"
+    ]
+  },
+  "carry_forward": {
+    "incoming": [
+      "Report page précédente",
+      "Report"
+    ],
+    "outgoing": [
+      "Sous-total / report",
+      "À reporter"
+    ]
+  },
+  "exemption_sentences": {
+    "reverse_charge": [
+      "Autoliquidation de la TVA par le preneur."
+    ],
+    "intra_community": [
+      "Livraison intracommunautaire exonérée, art. 262 ter I du CGI."
+    ],
+    "export": [
+      "Exportation exonérée de TVA, art. 262 I du CGI."
+    ]
+  },
+  "page_numbering": [
+    "Page {page} sur {pages}",
+    "Page {page}/{pages}"
+  ],
+  "payment_terms": [
+    "Paiement à 30 jours date de facture.",
+    "Règlement à 45 jours fin de mois.",
+    "Escompte de 2 % pour paiement sous 10 jours."
+  ],
+  "legal_lines": [
+    "Nos conditions générales de vente s'appliquent à toute commande.",
+    "Les marchandises restent notre propriété jusqu'au paiement intégral.",
+    "Pénalités de retard au taux légal en vigueur."
+  ],
+  "copy_stamps": [
+    "COPIE",
+    "DUPLICATA"
+  ],
+  "section_headings": [
+    "Matériel",
+    "Prestations",
+    "Licences logicielles",
+    "Pièces détachées",
+    "Consommables"
+  ],
+  "address_placeholders": [
+    "idem adresse de facturation",
+    "voir adresse de facturation"
+  ],
+  "months": [
+    "janvier",
+    "février",
+    "mars",
+    "avril",
+    "mai",
+    "juin",
+    "juillet",
+    "août",
+    "septembre",
+    "octobre",
+    "novembre",
+    "décembre"
+  ],
+  "month_abbreviations": [
+    "janv",
+    "févr",
+    "mars",
+    "avr",
+    "mai",
+    "juin",
+    "juil",
+    "août",
+    "sept",
+    "oct",
+    "nov",
+    "déc"
+  ],
+  "diacritics": "àâçéèêëîïôùûü ÀÉÈÊÇ œ € ² °",
+  "amount_in_words": {
+    "style": "romance",
+    "units": [
+      "zéro",
+      "un",
+      "deux",
+      "trois",
+      "quatre",
+      "cinq",
+      "six",
+      "sept",
+      "huit",
+      "neuf",
+      "dix",
+      "onze",
+      "douze",
+      "treize",
+      "quatorze",
+      "quinze",
+      "seize",
+      "dix-sept",
+      "dix-huit",
+      "dix-neuf"
+    ],
+    "tens": [
+      "vingt",
+      "trente",
+      "quarante",
+      "cinquante",
+      "soixante",
+      "soixante-dix",
+      "quatre-vingt",
+      "quatre-vingt-dix"
+    ],
+    "scales": [
+      "cent",
+      "mille"
+    ],
+    "scale_many": [
+      "cents",
+      "mille"
+    ],
+    "million": [
+      "un million",
+      "millions"
+    ],
+    "scale_one": "un",
+    "joiner": "et",
+    "currency_unit": [
+      "euro",
+      "euros"
+    ],
+    "currency_fraction": [
+      "centime",
+      "centimes"
+    ]
+  }
+}

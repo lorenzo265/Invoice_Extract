@@ -9,18 +9,34 @@ from typing import Any
 
 import pytest
 
-from invoice_extractor.document.reader import BBox
+from invoice_extractor.document.model import BBox
+from invoice_extractor.domain.checks import Check
 from invoice_extractor.domain.findings import Finding, Severity
 from invoice_extractor.domain.models import (
-    VALUE_TYPES,
+    FITTED,
+    UNIFORM,
+    Charge,
     Evidence,
     FieldResult,
     InvoiceResult,
     LineItem,
+    SecondaryAmounts,
     Strategy,
 )
 
-FIELD_ORDER = tuple(VALUE_TYPES)
+# The names this test builds a result out of, in the order it builds them.
+FIELD_ORDER = (
+    "invoice_number",
+    "invoice_date",
+    "due_date",
+    "supplier_vat_id",
+    "customer_vat_id",
+    "currency",
+    "vat_rate",
+    "subtotal",
+    "vat_amount",
+    "total_amount",
+)
 BOX = BBox(400.0, 65.25, 543.39, 78.99)
 
 VALUES: dict[str, Any] = {
@@ -54,16 +70,32 @@ def populated() -> InvoiceResult:
         fields={name: found(name, value, f"{name}: {value}") for name, value in VALUES.items()},
         line_items=(
             LineItem(
-                "ACM-1001",
-                "Hex bolt M8 x 40, zinc",
-                Decimal("500"),
-                Decimal("0.12"),
-                Decimal("60.00"),
+                part_number="ACM-1001",
+                description="Hex bolt M8 x 40, zinc",
+                quantity=Decimal("500"),
+                unit_price=Decimal("0.12"),
+                net_amount=Decimal("60.00"),
             ),
         ),
         findings=(Finding(Severity.WARNING, "line_items_sum", "skipped", "subtotal"),),
-        layout_id="acme",
+        profile_id="acme",
+        document_type="invoice",
         source_path="samples/acme_invoice.pdf",
+        charges=(
+            Charge(
+                type="SHIPPING",
+                amount=Decimal("12.50"),
+                vat_rate=Decimal("20"),
+                evidence=Evidence(1, BOX, "Delivery", Strategy.BLOCK_ROW, "12.50"),
+            ),
+            Charge(type="OTHER", amount=Decimal("5.00"), declared=False),
+        ),
+        secondary_amounts=SecondaryAmounts(
+            currency="USD",
+            total_amount=Decimal("84.00"),
+            exchange_rate=Decimal("1.1200"),
+            evidence=Evidence(1, BOX, None, Strategy.BLOCK_ROW, "USD 84.00 at 1.1200"),
+        ),
     )
 
 
@@ -74,6 +106,15 @@ def serialized() -> dict[str, Any]:
 def test_invoice_result_round_trips_through_dict() -> None:
     result = populated()
     assert InvoiceResult.from_dict(result.to_dict()) == result
+
+
+def test_a_document_no_profile_matched_round_trips_with_no_vendor_and_no_kind() -> None:
+    """Both are read in the vendor's own words, so neither has a default (ADR-0008)."""
+    unread = dataclasses.replace(populated(), profile_id=None, document_type=None)
+    entry = unread.to_dict()
+    assert entry["profile_id"] is None
+    assert entry["document_type"] is None
+    assert InvoiceResult.from_dict(entry) == unread
 
 
 def test_to_dict_serializes_decimal_as_string_and_date_as_iso() -> None:
@@ -101,6 +142,37 @@ def test_from_dict_restores_value_types_by_field_name() -> None:
     assert restored.fields["invoice_number"].value == "INV-2024-0042"
 
 
+def test_a_field_says_where_the_weights_behind_its_confidence_came_from() -> None:
+    """A number that came from a guess about what matters should not look like one that did not."""
+    scored = dataclasses.replace(populated().fields["invoice_number"], confidence_source=FITTED)
+    entry = _field_to_dict_of(scored)
+    assert entry["confidence_source"] == FITTED
+    assert populated().fields["invoice_number"].confidence_source == UNIFORM
+
+
+def _field_to_dict_of(found: FieldResult) -> dict[str, object]:
+    result = dataclasses.replace(populated(), fields={"invoice_number": found})
+    entry = result.to_dict()["fields"]["invoice_number"]  # type: ignore[index]
+    assert InvoiceResult.from_dict(result.to_dict()) == result
+    return entry  # type: ignore[return-value]
+
+
+def test_a_document_whose_rules_all_ran_carries_what_they_looked_at() -> None:
+    checked = dataclasses.replace(
+        populated(), checks=(Check("dates_in_order", True, ("due_date",), "in order"),)
+    )
+    assert checked.to_dict()["checks"] == [
+        {"code": "dates_in_order", "passed": True, "fields": ["due_date"], "detail": "in order"}
+    ]
+    assert InvoiceResult.from_dict(checked.to_dict()) == checked
+
+
+def test_a_check_that_did_not_apply_round_trips_as_neither_passed_nor_failed() -> None:
+    skipped = Check("per_rate_vat_consistency", None, (), "no summary")
+    assert Check.from_dict(skipped.to_dict()) == skipped
+    assert not skipped.applied
+
+
 def test_to_dict_keeps_field_order() -> None:
     assert tuple(serialized()["fields"]) == FIELD_ORDER
 
@@ -120,12 +192,44 @@ def test_missing_field_serializes_every_key_as_null() -> None:
     ("instance", "attribute"),
     [
         (BOX, "x0"),
-        (LineItem("s", "d", Decimal(1), Decimal(1), Decimal(1)), "sku"),
+        (LineItem(part_number="s", description="d"), "part_number"),
         (FieldResult("n", None, None, None, valid=False), "value"),
         (Evidence(1, BOX, None, Strategy.LABEL_RIGHT, "raw"), "raw_text"),
-        (InvoiceResult({}, (), (), "acme", "samples/acme_invoice.pdf"), "layout_id"),
+        (InvoiceResult({}, (), (), "acme", "invoice", "x.pdf"), "profile_id"),
     ],
 )
 def test_models_are_frozen(instance: object, attribute: str) -> None:
     with pytest.raises(dataclasses.FrozenInstanceError):
         setattr(instance, attribute, "tampered")
+
+
+def test_a_charge_the_block_declared_round_trips_with_the_box_it_was_read_from() -> None:
+    charge = populated().charges[0]
+    assert Charge.from_dict(charge.to_dict()) == charge
+
+
+def test_a_charge_only_the_arithmetic_found_round_trips_without_one() -> None:
+    inferred = populated().charges[1]
+    entry = inferred.to_dict()
+    assert entry["evidence"] is None and entry["vat_rate"] is None
+    assert Charge.from_dict(entry) == inferred
+
+
+def test_the_total_said_again_in_another_currency_round_trips() -> None:
+    echo = populated().secondary_amounts
+    assert echo is not None
+    assert SecondaryAmounts.from_dict(echo.to_dict()) == echo
+
+
+def test_a_currency_echoed_with_no_amounts_round_trips_as_the_code_alone() -> None:
+    bare = SecondaryAmounts(currency="USD")
+    entry = bare.to_dict()
+    assert entry["total_amount"] is None and entry["exchange_rate"] is None
+    assert SecondaryAmounts.from_dict(entry) == bare
+
+
+def test_a_document_that_carries_no_charge_serializes_an_empty_list() -> None:
+    plain = dataclasses.replace(populated(), charges=(), secondary_amounts=None)
+    entry = plain.to_dict()
+    assert entry["charges"] == [] and entry["secondary_amounts"] is None
+    assert InvoiceResult.from_dict(entry) == plain

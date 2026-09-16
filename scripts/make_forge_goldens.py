@@ -82,6 +82,11 @@ FIXTURE_CELLS: tuple[DocumentSpec, ...] = (
     DocumentSpec("en-GB", Family.STACKED, GOLDEN_SEED, REST),
     DocumentSpec("en-GB", Family.SAAS, GOLDEN_SEED),
     DocumentSpec("sv-SE", Family.MINIMAL, GOLDEN_SEED),
+    # Several rates and no summary *table*: the vendor sets its VAT summary on the left
+    # and its totals on the right, so a stop label sits at the height of a summary line
+    # and clear across the page from it. Every `multi_rate` cell of the base corpus also
+    # turns `vat_summary_table` on, which is why nothing printed this until E7.
+    DocumentSpec("fi-FI", Family.CLASSIC, GOLDEN_SEED, (Knob.MULTI_RATE, Knob.THOUSANDS_VARIANT)),
 )
 FIXTURE_CELL = FIXTURE_CELLS[0]
 

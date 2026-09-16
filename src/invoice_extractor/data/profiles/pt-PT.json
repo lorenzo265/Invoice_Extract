@@ -1,0 +1,60 @@
+{
+  "id": "pt-PT",
+  "language": "pt",
+  "country": "PT",
+  "lexicon": "pt",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      " ",
+      ""
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy",
+    "yyyy-mm-dd"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "23",
+      "reduced": "13",
+      "zero": "0"
+    },
+    "id_prefix": "PT",
+    "id_pattern": "\\d{9}"
+  },
+  "supplier": {
+    "name": "Valdoreste Tecnologias S.A.",
+    "aliases": [
+      "Valdoreste"
+    ],
+    "address_lines": [
+      "avenida Industrial 34",
+      "3123-344 Setúbal",
+      "Portugal"
+    ],
+    "vat_id": "PT813562177"
+  },
+  "custom_fields": [],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "ENVIRONMENTAL_FEE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "minimal"
+    ],
+    "fonts": "serif"
+  }
+}

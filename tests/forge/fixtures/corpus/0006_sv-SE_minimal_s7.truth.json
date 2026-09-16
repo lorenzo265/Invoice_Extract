@@ -1,7 +1,7 @@
 {
   "schema": "forge-truth/1",
   "generator": {
-    "version": "0.2.0",
+    "version": "0.4.0",
     "seed": 7,
     "profile": "sv-SE",
     "template": "minimal",
@@ -35,7 +35,7 @@
     "invoice_date": {
       "value": "2024-06-14",
       "printed": "2024-06-14",
-      "label": "Fakturadatum",
+      "label": "Utfärdandedatum",
       "evidence": [
         {
           "page": 1,
@@ -65,16 +65,16 @@
       ]
     },
     "supplier_vat_id": {
-      "value": "SE018159083016",
-      "printed": "Momsregistreringsnummer: SE018159083016",
-      "label": "Momsregistreringsnummer",
+      "value": "SE752130495396",
+      "printed": "Momsreg.nr: SE752130495396",
+      "label": "Momsreg.nr",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
             107.86,
-            234.02,
+            175.02,
             117.9
           ]
         }
@@ -243,22 +243,28 @@
       "printed": null,
       "label": null,
       "evidence": []
+    },
+    "iban": {
+      "value": "SE5923667127684268465632",
+      "printed": null,
+      "label": null,
+      "evidence": []
     }
   },
   "line_items": [
     {
       "pos": 1,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API-paket, 10 000 anrop per månad",
       "quantity": "100",
       "unit": "paket",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "25",
       "net_amount": "8900.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -318,17 +324,17 @@
     },
     {
       "pos": 2,
-      "sku": "SRV-WRT-Q",
+      "part_number": "SRV-WRT-Q",
       "description": "Underhåll, kvartalsavgift, anläggning typ B",
       "quantity": "7.5",
       "unit": "avgift",
       "unit_price": "245.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "25",
       "net_amount": "1841.25",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -388,17 +394,17 @@
     },
     {
       "pos": 3,
-      "sku": "SW-CLD-50",
+      "part_number": "SW-CLD-50",
       "description": "Molnlagring 50 GB, faktureras månadsvis",
       "quantity": "2",
       "unit": "månad",
       "unit_price": "12.5000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "25",
       "net_amount": "25.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -458,17 +464,17 @@
     },
     {
       "pos": 4,
-      "sku": "SRV-INST-H",
+      "part_number": "SRV-INST-H",
       "description": "Installation på plats, per timme",
       "quantity": "5",
       "unit": "tim",
       "unit_price": "95.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "25",
       "net_amount": "475.00",
       "section": null,
       "cells": {
-        "sku": [
+        "part_number": [
           {
             "page": 1,
             "bbox": [
@@ -539,20 +545,20 @@
   "secondary_amounts": null,
   "parties": {
     "supplier": {
-      "name": "Norrsken Elektronik AB",
+      "name": "Norrsken Industri AB",
       "lines": [
-        "Industrivägen 142",
-        "609 13 Örebro",
+        "Hamngatan 65",
+        "447 66 Norrköping",
         "Sverige"
       ],
-      "vat_id": "SE018159083016",
+      "vat_id": "SE752130495396",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
             50.24,
-            195.81,
+            180.62,
             64.74
           ]
         },
@@ -561,7 +567,7 @@
           "bbox": [
             50.0,
             69.86,
-            121.51,
+            109.01,
             79.9
           ]
         },
@@ -570,7 +576,7 @@
           "bbox": [
             50.0,
             81.86,
-            108.0,
+            124.02,
             91.9
           ]
         },

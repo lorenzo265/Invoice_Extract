@@ -14,10 +14,19 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 
-from benchmarks.compare import DocumentScore, Outcome, Scored
-from invoice_extractor.layout.schema import LINE_ITEM_COLUMNS
+from benchmarks.compare import (
+    SCORED_CHARGE_KEYS,
+    SCORED_COLUMNS,
+    SCORED_VAT_COLUMNS,
+    SECONDARY_KEYS,
+    Counts,
+    DocumentScore,
+    Outcome,
+    Scored,
+)
 from invoice_forge.knobs import KNOB_NAMES
 
+PRECISION = 4
 BANDS: tuple[tuple[float, float], ...] = (
     (0.0, 0.2),
     (0.2, 0.4),
@@ -37,15 +46,30 @@ class Tally:
     not_covered: int = 0
     evidence_agreed: int = 0
     found_nothing: int = 0
+    # What the extractor said it was worth, added up: a band's mean predicted confidence
+    # is what the calibration error is measured against.
+    confidence: float = 0.0
 
     def add(self, scored: Scored) -> None:
         setattr(self, scored.outcome.value, getattr(self, scored.outcome.value) + 1)
         self.evidence_agreed += bool(scored.evidence_agreed)
         self.found_nothing += scored.found_nothing
+        self.confidence += scored.confidence
+
+    def count(self, counts: Counts) -> None:
+        """Add a document's worth of cells, which are counted rather than scored one by one."""
+        self.hit += counts.hit
+        self.miss += counts.miss
+        self.absent += counts.absent
 
     @property
     def scored(self) -> int:
         return self.hit + self.miss
+
+    @property
+    def predicted(self) -> float | None:
+        """What this cell's values were said to be worth, on average."""
+        return None if not self.scored else self.confidence / self.scored
 
     @property
     def hit_rate(self) -> float | None:
@@ -75,18 +99,36 @@ class Matrix:
     knob_on: dict[str, Tally] = field(default_factory=dict)
     knob_off: dict[str, Tally] = field(default_factory=dict)
     columns: dict[str, Tally] = field(default_factory=dict)
+    parties: dict[str, Tally] = field(default_factory=dict)
+    vat_columns: dict[str, Tally] = field(default_factory=dict)
+    charges: dict[str, Tally] = field(default_factory=dict)
+    secondary: dict[str, Tally] = field(default_factory=dict)
     rows_agreed: int = 0
+    vat_rows_agreed: int = 0
+    vat_documents: int = 0
+    detected: int = 0
+    document_type: Tally = field(default_factory=Tally)
     calibration: list[Tally] = field(default_factory=lambda: [Tally() for _ in BANDS])
 
     def add(self, score: DocumentScore) -> None:
         self.documents += 1
+        self.detected += score.detected
         self.rows_agreed += score.rows_expected == score.rows_found
+        self.vat_rows_agreed += score.vat_rows_expected == score.vat_rows_found
+        self.vat_documents += bool(score.vat_rows_expected)
+        self.document_type.count(_one(score.document_type))
         for scored in score.fields:
             self._add_field(score, scored)
-        for column, (hit, miss) in score.columns.items():
-            cell = self.columns.setdefault(column, Tally())
-            cell.hit += hit
-            cell.miss += miss
+        for column, counts in score.columns.items():
+            self.columns.setdefault(column, Tally()).count(counts)
+        for column, counts in score.vat_columns.items():
+            self.vat_columns.setdefault(column, Tally()).count(counts)
+        for key, counts in score.parties.items():
+            self.parties.setdefault(key, Tally()).count(counts)
+        for key, counts in score.charges.items():
+            self.charges.setdefault(key, Tally()).count(counts)
+        for key, counts in score.secondary.items():
+            self.secondary.setdefault(key, Tally()).count(counts)
 
     def _add_field(self, score: DocumentScore, scored: Scored) -> None:
         self.fields.setdefault(scored.field, Tally()).add(scored)
@@ -102,15 +144,26 @@ class Matrix:
     def to_dict(self) -> dict[str, object]:
         return {
             "documents": self.documents,
+            "detected": self.detected,
             "fields": _tallies(self.fields),
             "by_profile": {name: _tallies(row) for name, row in sorted(self.by_profile.items())},
             "by_family": {name: _tallies(row) for name, row in sorted(self.by_family.items())},
             "by_knob": _knobs(self.knob_on, self.knob_off),
             "line_items": {
                 "rows_agreed": self.rows_agreed,
-                "columns": _tallies(self.columns, LINE_ITEM_COLUMNS),
+                "columns": _tallies(self.columns, SCORED_COLUMNS),
             },
+            "vat_summary": {
+                "documents": self.vat_documents,
+                "rows_agreed": self.vat_rows_agreed,
+                "columns": _tallies(self.vat_columns, SCORED_VAT_COLUMNS),
+            },
+            "document_type": self.document_type.to_dict(),
+            "parties": _tallies(self.parties),
+            "charges": _tallies(self.charges, SCORED_CHARGE_KEYS),
+            "secondary_amounts": _tallies(self.secondary, SECONDARY_KEYS),
             "calibration": _calibration(self.calibration),
+            "expected_calibration_error": _calibration_error(self.calibration),
         }
 
 
@@ -119,6 +172,13 @@ def build(scores: Iterable[DocumentScore]) -> Matrix:
     for score in scores:
         matrix.add(score)
     return matrix
+
+
+def _one(outcome: Outcome) -> Counts:
+    """One document's document type, as the counts a tally adds up."""
+    counts = Counts()
+    counts.count(outcome)
+    return counts
 
 
 def _band(confidence: float) -> int:
@@ -140,6 +200,22 @@ def _knobs(on: Mapping[str, Tally], off: Mapping[str, Tally]) -> dict[str, objec
 
 def _calibration(bands: Sequence[Tally]) -> list[dict[str, object]]:
     return [
-        {"band": f"{low:.1f}-{min(high, 1.0):.1f}", **cell.to_dict()}
+        {"band": f"{low:.1f}-{min(high, 1.0):.1f}", "predicted": cell.predicted, **cell.to_dict()}
         for (low, high), cell in zip(BANDS, bands, strict=True)
     ]
+
+
+def _calibration_error(bands: Sequence[Tally]) -> float:
+    """How far the confidences were off, weighted by how many values each band spoke for.
+
+    The same measure the fit reports (`calibration/reliability_report.json`), computed
+    here over a whole benchmark run: what the extractor said a value was worth against how
+    often values it said that about were right.
+    """
+    scored = sum(cell.scored for cell in bands)
+    if not scored:
+        return 0.0
+    apart = sum(
+        cell.scored * abs((cell.predicted or 0.0) - (cell.hit_rate or 0.0)) for cell in bands
+    )
+    return round(apart / scored, PRECISION)

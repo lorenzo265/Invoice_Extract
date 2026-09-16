@@ -9,10 +9,10 @@ from __future__ import annotations
 
 import dataclasses
 
-import pytest
-
-from invoice_extractor.domain.models import LineItem as ExtractedItem
-from invoice_extractor.extraction.specs import FIELD_ORDER
+from invoice_extractor.domain.rows import LINE_ITEM_COLUMNS as READ_COLUMNS
+from invoice_extractor.domain.rows import LineItem as ExtractedItem
+from invoice_extractor.extraction.spec import LabelSpec
+from invoice_extractor.extraction.specs import FIELD_ORDER, SPECS
 from invoice_forge.fields import (
     EXTRA_COLUMNS,
     LABELLED_FIELDS,
@@ -20,19 +20,41 @@ from invoice_forge.fields import (
     METADATA_FIELDS,
     SCALAR_FIELDS,
     TABLE_COLUMNS,
+    TRUTH_FIELDS,
+    UNLABELLED_FIELDS,
 )
+from invoice_forge.lexicon.loader import bundled_lexicon_ids, load_lexicon
 from invoice_forge.lexicon.schema import HEADER_FIELDS, TOTALS_FIELDS
 from invoice_forge.model import Identifiers
 from invoice_forge.model.items import LineItem as ForgedItem
 
+# The names the extractor reads out of `custom_fields`, which a vendor declares when it
+# prints them, as against `fields`, which every profile declares whether it prints them or not.
+DECLARED_AS_CUSTOM = tuple(
+    spec.name for spec in SPECS if isinstance(spec, LabelSpec) and spec.source == "custom_fields"
+)
 
-def test_the_generator_writes_exactly_the_fields_the_extractor_reads() -> None:
-    assert SCALAR_FIELDS == FIELD_ORDER
+
+def test_the_extractor_reads_only_names_the_generator_writes() -> None:
+    """A spec that read a name no truth file can hold would be scored against nothing."""
+    assert set(FIELD_ORDER) <= set(TRUTH_FIELDS)
 
 
-def test_a_forged_row_carries_every_column_the_extractor_reads_from_a_row() -> None:
+def test_the_generator_writes_every_field_at_the_core_of_an_invoice() -> None:
+    """The ten a document always carries; a spec dropped from the engine would show here."""
+    assert set(SCALAR_FIELDS) <= set(FIELD_ORDER)
+
+
+def test_a_forged_row_carries_every_column_the_truth_records_a_box_for() -> None:
+    """These are the cells the corpus records; the extractor reads them and four more."""
     extracted = {field.name for field in dataclasses.fields(ExtractedItem)}
-    assert set(LINE_ITEM_COLUMNS) == extracted
+    assert set(LINE_ITEM_COLUMNS) <= extracted
+
+
+def test_every_column_the_extractor_reads_is_one_a_template_family_prints() -> None:
+    """A column no family prints would be a column nothing could ever be scored on."""
+    read = {name for name in READ_COLUMNS}
+    assert read <= set(TABLE_COLUMNS)
 
 
 def test_a_forged_row_can_answer_for_every_column_it_declares() -> None:
@@ -42,9 +64,14 @@ def test_a_forged_row_can_answer_for_every_column_it_declares() -> None:
         assert column in answerable, column
 
 
-@pytest.mark.parametrize("name", METADATA_FIELDS)
-def test_every_metadata_field_is_one_the_extractor_does_not_read_yet(name: str) -> None:
-    assert name not in FIELD_ORDER
+def test_a_custom_field_the_extractor_reads_is_one_of_the_extras_a_header_may_print() -> None:
+    """`custom_fields` is where a vendor declares its extras, so only an extra belongs there.
+
+    A value every document carries is read out of `fields`, which every profile declares;
+    a header extra no spec has learned yet the benchmark reports as `NOT_COVERED` rather
+    than as a miss.
+    """
+    assert set(DECLARED_AS_CUSTOM) <= set(METADATA_FIELDS)
 
 
 def test_the_identifiers_the_model_holds_are_metadata_fields_or_the_invoice_number() -> None:
@@ -65,11 +92,27 @@ def test_the_table_columns_are_the_read_ones_then_the_rest() -> None:
     assert len(set(TABLE_COLUMNS)) == len(TABLE_COLUMNS)
 
 
-def test_the_article_number_column_is_called_sku_in_both_packages() -> None:
-    """`part_number` was the older name for it; nothing in either package uses it."""
-    assert "sku" in LINE_ITEM_COLUMNS
-    assert "part_number" not in TABLE_COLUMNS
+def test_the_article_number_column_is_called_part_number_in_both_packages() -> None:
+    """`docs/FIELD_CATALOG.md` names it `part_number`; `sku` was the older name."""
+    assert "part_number" in LINE_ITEM_COLUMNS
+    assert "sku" not in TABLE_COLUMNS
 
 
 def test_no_name_is_declared_twice() -> None:
     assert len(set(LABELLED_FIELDS)) == len(LABELLED_FIELDS)
+
+
+def test_an_unlabelled_field_is_not_one_a_lexicon_gives_labels_for() -> None:
+    """The set that keeps the corpus still while a field is added to the truth.
+
+    `header_labels` has one entry per name of `LABELLED_FIELDS`, and the renderer draws
+    one synonym per entry per document — so a name added there changes how often the
+    generator's own random source is drawn from, and every document after the change
+    comes out different. A field the truth records but no vendor labels goes in
+    `UNLABELLED_FIELDS` instead, where it costs no draw.
+    """
+    assert not set(UNLABELLED_FIELDS) & set(LABELLED_FIELDS)
+    assert TRUTH_FIELDS == LABELLED_FIELDS + UNLABELLED_FIELDS
+    for language in bundled_lexicon_ids():
+        declared = load_lexicon(language).header_labels
+        assert not set(UNLABELLED_FIELDS) & set(declared), language

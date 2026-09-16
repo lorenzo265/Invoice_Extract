@@ -1,0 +1,276 @@
+{
+  "schema": "invoice-extractor-calibration/1",
+  "corpus": {
+    "documents": 270,
+    "values_scored": 4160
+  },
+  "expected_calibration_error": 0.004529,
+  "fields": {
+    "contract_number": {
+      "count": 95,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9897,
+          "observed": 1.0,
+          "count": 95
+        }
+      ]
+    },
+    "credit_reference": {
+      "count": 42,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9773,
+          "observed": 1.0,
+          "count": 42
+        }
+      ]
+    },
+    "currency": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "customer_number": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "customer_vat_id": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "due_date": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "iban": {
+      "count": 189,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9948,
+          "observed": 1.0,
+          "count": 189
+        }
+      ]
+    },
+    "invoice_date": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "invoice_number": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "order_number": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "our_reference": {
+      "count": 36,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9737,
+          "observed": 1.0,
+          "count": 36
+        }
+      ]
+    },
+    "payment_terms": {
+      "count": 204,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9951,
+          "observed": 1.0,
+          "count": 204
+        }
+      ]
+    },
+    "subtotal": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "supplier_vat_id": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "supply_date": {
+      "count": 204,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9951,
+          "observed": 1.0,
+          "count": 204
+        }
+      ]
+    },
+    "total_amount": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "vat_amount": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "vat_rate": {
+      "count": 270,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9963,
+          "observed": 1.0,
+          "count": 270
+        }
+      ]
+    },
+    "your_reference": {
+      "count": 150,
+      "hit_rate": 1.0,
+      "fitted": false,
+      "bands": [
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "predicted": 0.9934,
+          "observed": 1.0,
+          "count": 150
+        }
+      ]
+    }
+  }
+}

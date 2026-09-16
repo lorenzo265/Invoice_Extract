@@ -1,0 +1,58 @@
+{
+  "id": "nl-BE",
+  "language": "nl",
+  "country": "BE",
+  "lexicon": "nl",
+  "number_format": {
+    "decimal_separator": ",",
+    "thousands_separators": [
+      ".",
+      " "
+    ]
+  },
+  "date_formats": [
+    "dd/mm/yyyy"
+  ],
+  "currencies": [
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "21",
+      "reduced": "6",
+      "zero": "0"
+    },
+    "id_prefix": "BE",
+    "id_pattern": "0\\d{9}"
+  },
+  "supplier": {
+    "name": "Lindehof Handel BV",
+    "aliases": [
+      "Lindehof"
+    ],
+    "address_lines": [
+      "Fabrieksstraat 18",
+      "6013 Kortrijk",
+      "België"
+    ],
+    "vat_id": "BE0023927657"
+  },
+  "custom_fields": [],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "credit_wording",
+    "families": [
+      "classic",
+      "tabular",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}

@@ -1,6 +1,12 @@
 # ADR-0004: A vendor layout is data
 
-Status: Accepted
+Status: Superseded by [ADR-0006](0006-profiles-not-layouts.md)
+
+The decision below stands as it was taken and is not rewritten in hindsight. What
+replaced it is the unit of configuration, not the principle: a vendor is still described
+by JSON rather than by code, but the description is a *profile* — everything that varies
+between vendors, not the page geometry alone — and it lives in `profiles/*.json` read by
+`profile/`. `layouts/` and `layout/` were deleted with the change.
 
 ## Context
 

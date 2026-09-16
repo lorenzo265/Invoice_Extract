@@ -1,7 +1,7 @@
 {
   "schema": "forge-truth/1",
   "generator": {
-    "version": "0.2.0",
+    "version": "0.4.0",
     "seed": 7,
     "profile": "en-GB",
     "template": "stacked",
@@ -102,8 +102,8 @@
       ]
     },
     "supplier_vat_id": {
-      "value": "GB018159083",
-      "printed": "VAT Number: GB018159083",
+      "value": "GB312141377",
+      "printed": "VAT Number: GB312141377",
       "label": "VAT Number",
       "evidence": [
         {
@@ -421,17 +421,23 @@
           ]
         }
       ]
+    },
+    "iban": {
+      "value": "GB33RDLT01396245957117",
+      "printed": null,
+      "label": null,
+      "evidence": []
     }
   },
   "line_items": [
     {
       "pos": 1,
-      "sku": "SRV-ANA-H",
+      "part_number": "SRV-ANA-H",
       "description": "Analysis and documentation, per hour",
       "quantity": "0.5",
       "unit": "hr",
       "unit_price": "115.0000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "57.50",
       "section": null,
@@ -485,12 +491,12 @@
     },
     {
       "pos": 2,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API allowance, 10,000 calls per month",
       "quantity": "50",
       "unit": "pack",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "4450.00",
       "section": null,
@@ -544,12 +550,12 @@
     },
     {
       "pos": 3,
-      "sku": "HX-M8-040",
+      "part_number": "HX-M8-040",
       "description": "Hex bolt M8 x 40, zinc plated, DIN 933",
       "quantity": "100",
       "unit": "ea",
       "unit_price": "0.12",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "12.00",
       "section": null,
@@ -603,12 +609,12 @@
     },
     {
       "pos": 4,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API allowance, 10,000 calls per month",
       "quantity": "100",
       "unit": "pack",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "8900.00",
       "section": null,
@@ -662,12 +668,12 @@
     },
     {
       "pos": 5,
-      "sku": "SRV-WRT-Q",
+      "part_number": "SRV-WRT-Q",
       "description": "Maintenance, quarterly retainer, type B plant",
       "quantity": "7.5",
       "unit": "retainer",
       "unit_price": "245.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "1841.25",
       "section": null,
@@ -721,12 +727,12 @@
     },
     {
       "pos": 6,
-      "sku": "SW-CLD-50",
+      "part_number": "SW-CLD-50",
       "description": "Cloud storage 50 GB, billed monthly",
       "quantity": "2",
       "unit": "month",
       "unit_price": "12.5000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "25.00",
       "section": null,
@@ -780,12 +786,12 @@
     },
     {
       "pos": 7,
-      "sku": "SRV-INST-H",
+      "part_number": "SRV-INST-H",
       "description": "On-site installation, per hour",
       "quantity": "5",
       "unit": "hr",
       "unit_price": "95.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "475.00",
       "section": null,
@@ -839,12 +845,12 @@
     },
     {
       "pos": 8,
-      "sku": "ENC-IP65",
+      "part_number": "ENC-IP65",
       "description": "Enclosure IP65, 300 x 200 x 120",
       "quantity": "12",
       "unit": "ea",
       "unit_price": "45.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "546.00",
       "section": null,
@@ -898,12 +904,12 @@
     },
     {
       "pos": 9,
-      "sku": "SRV-INST-H",
+      "part_number": "SRV-INST-H",
       "description": "On-site installation, per hour",
       "quantity": "20",
       "unit": "hr",
       "unit_price": "95.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "1900.00",
       "section": null,
@@ -957,12 +963,12 @@
     },
     {
       "pos": 10,
-      "sku": "SRV-WRT-Q",
+      "part_number": "SRV-WRT-Q",
       "description": "Maintenance, quarterly retainer, type B plant",
       "quantity": "12",
       "unit": "retainer",
       "unit_price": "245.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "2946.00",
       "section": null,
@@ -1016,12 +1022,12 @@
     },
     {
       "pos": 11,
-      "sku": "SW-API-10K",
+      "part_number": "SW-API-10K",
       "description": "API allowance, 10,000 calls per month",
       "quantity": "50",
       "unit": "pack",
       "unit_price": "89.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "4450.00",
       "section": null,
@@ -1075,12 +1081,12 @@
     },
     {
       "pos": 12,
-      "sku": "SRV-TRN-D",
+      "part_number": "SRV-TRN-D",
       "description": "Foundation training, 1 day, up to 8 attendees",
       "quantity": "2",
       "unit": "day",
       "unit_price": "780.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "1560.00",
       "section": null,
@@ -1134,12 +1140,12 @@
     },
     {
       "pos": 13,
-      "sku": "ENC-IP65",
+      "part_number": "ENC-IP65",
       "description": "Enclosure IP65, 300 x 200 x 120",
       "quantity": "50",
       "unit": "ea",
       "unit_price": "45.50",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "2275.00",
       "section": null,
@@ -1193,12 +1199,12 @@
     },
     {
       "pos": 14,
-      "sku": "CBL-H07-25",
+      "part_number": "CBL-H07-25",
       "description": "Cable H07V-K 2.5 mm², black, 100 m coil",
       "quantity": "40",
       "unit": "coil",
       "unit_price": "48.90",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "1956.00",
       "section": null,
@@ -1252,12 +1258,12 @@
     },
     {
       "pos": 15,
-      "sku": "REL-24V",
+      "part_number": "REL-24V",
       "description": "Interface relay 24 V DC, 1 changeover",
       "quantity": "1",
       "unit": "ea",
       "unit_price": "7.95",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "7.95",
       "section": null,
@@ -1311,12 +1317,12 @@
     },
     {
       "pos": 16,
-      "sku": "SNS-T-PT1",
+      "part_number": "SNS-T-PT1",
       "description": "Temperature sensor PT100, 3-wire, -50 to +200 °C",
       "quantity": "10",
       "unit": "ea",
       "unit_price": "22.75",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "227.50",
       "section": null,
@@ -1370,12 +1376,12 @@
     },
     {
       "pos": 17,
-      "sku": "SW-CLD-50",
+      "part_number": "SW-CLD-50",
       "description": "Cloud storage 50 GB, billed monthly",
       "quantity": "25",
       "unit": "month",
       "unit_price": "12.5000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "312.50",
       "section": null,
@@ -1429,12 +1435,12 @@
     },
     {
       "pos": 18,
-      "sku": "PLT-AL-2",
+      "part_number": "PLT-AL-2",
       "description": "Aluminium sheet 2 mm, 1000 x 500, EN AW-5754",
       "quantity": "25",
       "unit": "ea",
       "unit_price": "31.20",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "780.00",
       "section": null,
@@ -1488,12 +1494,12 @@
     },
     {
       "pos": 19,
-      "sku": "SRV-ANA-H",
+      "part_number": "SRV-ANA-H",
       "description": "Analysis and documentation, per hour",
       "quantity": "12",
       "unit": "hr",
       "unit_price": "115.0000",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "1380.00",
       "section": null,
@@ -1547,12 +1553,12 @@
     },
     {
       "pos": 20,
-      "sku": "PLT-AL-2",
+      "part_number": "PLT-AL-2",
       "description": "Aluminium sheet 2 mm, 1000 x 500, EN AW-5754",
       "quantity": "12",
       "unit": "ea",
       "unit_price": "31.20",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "374.40",
       "section": null,
@@ -1606,12 +1612,12 @@
     },
     {
       "pos": 21,
-      "sku": "BRG-6204",
+      "part_number": "BRG-6204",
       "description": "Deep groove bearing 6204-2RS, sealed both sides",
       "quantity": "1.5",
       "unit": "ea",
       "unit_price": "3.85",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "5.78",
       "section": null,
@@ -1665,12 +1671,12 @@
     },
     {
       "pos": 22,
-      "sku": "SRV-TRN-D",
+      "part_number": "SRV-TRN-D",
       "description": "Foundation training, 1 day, up to 8 attendees",
       "quantity": "2.5",
       "unit": "day",
       "unit_price": "780.00",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "1950.00",
       "section": null,
@@ -1724,12 +1730,12 @@
     },
     {
       "pos": 23,
-      "sku": "HX-M8-040",
+      "part_number": "HX-M8-040",
       "description": "Hex bolt M8 x 40, zinc plated, DIN 933",
       "quantity": "1.5",
       "unit": "ea",
       "unit_price": "0.12",
-      "discount_percent": null,
+      "discount_pct": null,
       "vat_rate": "20",
       "net_amount": "0.18",
       "section": null,
@@ -1822,20 +1828,20 @@
   "secondary_amounts": null,
   "parties": {
     "supplier": {
-      "name": "Ashcroft Components Limited",
+      "name": "Brackenhill Trading Limited",
       "lines": [
-        "18 Harbour Street",
-        "Manchester HC8 6BS",
+        "38 Elm Close",
+        "Coventry SN7 1BZ",
         "United Kingdom"
       ],
-      "vat_id": "GB018159083",
+      "vat_id": "GB312141377",
       "evidence": [
         {
           "page": 1,
           "bbox": [
             50.0,
             50.24,
-            236.17,
+            221.0,
             64.74
           ]
         },
@@ -1844,7 +1850,7 @@
           "bbox": [
             50.0,
             69.86,
-            121.49,
+            103.49,
             79.9
           ]
         },
@@ -1853,7 +1859,7 @@
           "bbox": [
             50.0,
             81.86,
-            136.99,
+            124.97,
             91.9
           ]
         },
@@ -1871,7 +1877,7 @@
           "bbox": [
             50.0,
             50.24,
-            236.17,
+            221.0,
             64.74
           ]
         },
@@ -1880,7 +1886,7 @@
           "bbox": [
             50.0,
             69.86,
-            121.49,
+            103.49,
             79.9
           ]
         },
@@ -1889,7 +1895,7 @@
           "bbox": [
             50.0,
             81.86,
-            136.99,
+            124.97,
             91.9
           ]
         },

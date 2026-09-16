@@ -1,0 +1,60 @@
+{
+  "id": "de-CH",
+  "language": "de",
+  "country": "CH",
+  "lexicon": "de",
+  "number_format": {
+    "decimal_separator": ".",
+    "thousands_separators": [
+      "'",
+      " "
+    ]
+  },
+  "date_formats": [
+    "dd.mm.yyyy"
+  ],
+  "currencies": [
+    "CHF",
+    "EUR"
+  ],
+  "vat": {
+    "rates": {
+      "standard": "8.1",
+      "reduced": "2.6",
+      "zero": "0"
+    },
+    "id_prefix": "CHE",
+    "id_pattern": "-\\d{9}"
+  },
+  "supplier": {
+    "name": "Nordlicht Industriebedarf GmbH",
+    "aliases": [
+      "Nordlicht"
+    ],
+    "address_lines": [
+      "Industrieweg 194",
+      "8848 Lugano",
+      "Schweiz"
+    ],
+    "vat_id": "CHE-040077928"
+  },
+  "custom_fields": [],
+  "render": {
+    "address_format": {
+      "postal_code_position": "before_city",
+      "country_line": true
+    },
+    "charges_used": [
+      "SHIPPING",
+      "SURCHARGE"
+    ],
+    "prints_supply_date": true,
+    "credit_note_style": "negative_amounts",
+    "families": [
+      "classic",
+      "tabular",
+      "minimal"
+    ],
+    "fonts": "sans"
+  }
+}
