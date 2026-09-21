@@ -50,7 +50,12 @@ $DemoDocument = 'tests/forge/fixtures/corpus/0001_fr-FR_classic_s7.pdf'
 
 function Assert-Python {
     <# The interpreter on the path is new enough to install and run this project. #>
-    $reported = & python -c 'import sys; print(".".join(str(n) for n in sys.version_info[:3]))'
+    # Double quotes outside and single quotes inside, not the other way round. Windows
+    # PowerShell 5.1 wraps an argument containing spaces in double quotes on its way to a
+    # native executable without escaping the double quotes already in it, so the inner pair
+    # is eaten: python receives ..join(...) and dies on a SyntaxError before reporting
+    # anything, and the version check below becomes 'no python on the PATH'.
+    $reported = & python -c "import sys; print('.'.join(str(n) for n in sys.version_info[:3]))"
     if ($LASTEXITCODE -ne 0 -or -not $reported) {
         throw 'no python on the PATH - activate the virtual environment first'
     }
