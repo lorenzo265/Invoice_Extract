@@ -5,6 +5,16 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The vendor's own tax id is no longer read as the customer's.** A vendor prints its
+  registration under the same words the customer's sits under — `DIC:` on a Czech page, `VAT
+  Reg. No.:` in an English letterhead — and the label reads both, with the closer one winning.
+  A candidate for the customer's registration whose value is the profile's own
+  `supplier.vat_id`, compared without punctuation and without the country prefix either side
+  may leave out, is now dropped before the rankers choose (`not_the_suppliers_own`, asked for
+  by `customer_vat_id`).
+
 ## [0.5.0] — 2026-09-23
 
 ### Added

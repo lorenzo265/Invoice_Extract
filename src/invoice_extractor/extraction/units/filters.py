@@ -15,6 +15,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 from invoice_extractor.extraction.candidate import Candidate
+from invoice_extractor.extraction.units.normalizers import NOT_ALNUM, strip_label
 from invoice_extractor.profile.schema import FieldProfile, Profile
 
 
@@ -80,3 +81,35 @@ def _is_a_label(candidate: Candidate, labels: frozenset[str]) -> bool:
 def _bare(text: str) -> str:
     """A label as the page prints it, without the colon after it or the space around it."""
     return text.strip().rstrip(":").strip().casefold()
+
+
+def not_the_suppliers_own(
+    found: Sequence[Candidate], field: FieldProfile, profile: Profile
+) -> list[Candidate]:
+    """Drop the vendor's own tax id, whichever label introduced it.
+
+    A vendor prints its own registration under the same words the customer's sits under —
+    the Czech `DIC:` heads both, and an English letterhead sets `VAT Reg. No.:` beside the
+    vendor's number at the top of the page and the customer's further down — so a label
+    reads both and the closer one usually wins. The candidate whose value is the profile's
+    own `supplier.vat_id` is never the customer's, so it is dropped before the rankers are
+    asked to choose. Compared as the field will read it — the text after the label where
+    the label shares its line, as `strip_label` gives it — and bare: without punctuation,
+    and without the country prefix that one side may print and the other leave out.
+    """
+    own = _bare_id(profile.supplier.vat_id, profile.vat.id_prefix)
+    if not own:
+        return list(found)
+    return [
+        candidate
+        for candidate in found
+        if _bare_id(strip_label(candidate, profile), profile.vat.id_prefix) != own
+    ]
+
+
+def _bare_id(text: str, prefix: str) -> str:
+    """An identifier as either side may print it: alphanumerics, upper case, and without the
+    country prefix this vendor's profile declares."""
+    bare = NOT_ALNUM.sub("", text).upper()
+    head = prefix.upper()
+    return bare[len(head) :] if head and bare.startswith(head) else bare
