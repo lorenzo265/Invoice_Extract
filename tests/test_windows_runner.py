@@ -25,6 +25,12 @@ MAKEFILE = Path(__file__).resolve().parent.parent / "Makefile"
 # puts the interpreter in that position instead, which is the whole point.
 SHIM = re.compile(r"(?:^|\{)\s*(pip|pytest|mypy|ruff|pre-commit|forge|invoice-extractor)\b")
 
+# A double quote inside a single-quoted PowerShell string survives right up to the moment
+# the argument reaches a native executable: Windows PowerShell 5.1 re-quotes the command
+# line without escaping it, so python reads `print(..join(...))` and dies on a SyntaxError.
+# The other way round - double quotes outside, single inside - the argument arrives whole.
+SINGLE_QUOTED = re.compile(r"'[^']*'")
+
 # `ParseFile` reports what is wrong with a script without running a line of it.
 PARSE = """
 $errors = $null
@@ -81,3 +87,32 @@ def test_the_runner_reaches_its_tools_as_modules() -> None:
         if SHIM.search(line)
     ]
     assert not offenders, f"tools called through the Scripts shims: {offenders}"
+
+
+def runner_code_lines() -> list[tuple[int, str]]:
+    """The runner's numbered lines, with the comment-based help and the comments dropped.
+
+    An apostrophe in prose is not a PowerShell string, and reading one as if it were would
+    make the quoting check below fail on a sentence rather than on a command.
+    """
+    lines: list[tuple[int, str]] = []
+    in_help = False
+    for number, line in enumerate(RUNNER.read_text(encoding="utf-8").splitlines(), 1):
+        stripped = line.strip()
+        in_help = in_help or stripped.startswith("<#")
+        if in_help:
+            in_help = not stripped.endswith("#>")
+        elif not stripped.startswith("#"):
+            lines.append((number, stripped))
+    return lines
+
+
+def test_the_runner_never_hides_a_double_quote_inside_a_single_quoted_argument() -> None:
+    """Windows PowerShell 5.1 eats those before the native executable ever sees them."""
+    offenders = [
+        f"{number}: {line}"
+        for number, line in runner_code_lines()
+        for quoted in SINGLE_QUOTED.findall(line)
+        if '"' in quoted
+    ]
+    assert not offenders, f"quotes Windows PowerShell 5.1 will eat on the way out: {offenders}"
