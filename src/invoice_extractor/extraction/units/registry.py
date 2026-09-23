@@ -36,6 +36,7 @@ STRATEGIES: Mapping[str, Collect] = {
 FILTERS: Mapping[str, Filter] = {
     "not_a_trap": filters.not_a_trap,
     "not_a_label": filters.not_a_label,
+    "not_the_suppliers_own": filters.not_the_suppliers_own,
 }
 
 NORMALIZERS: Mapping[str, Normalizer] = {

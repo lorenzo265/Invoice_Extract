@@ -85,6 +85,7 @@ HEADER: tuple[Spec, ...] = (
         normalizer="upper_alnum",
         validator="is_vat_id",
         rankers=BY_LABEL,
+        filters=("not_a_trap", "not_a_label", "not_the_suppliers_own"),
     ),
     # The one field a page carries without a label of its own: a vendor prints its
     # account number in the run of text its bank details are, and `IBAN` is the word it
