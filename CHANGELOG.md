@@ -5,6 +5,8 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.5.1] — 2026-09-23
+
 ### Fixed
 
 - **The vendor's own tax id is no longer read as the customer's.** A vendor prints its
