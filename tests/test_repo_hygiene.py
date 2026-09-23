@@ -133,7 +133,13 @@ def numbered_lines(path: Path) -> Iterator[tuple[int, str]]:
 
 
 def where(path: Path) -> str:
-    return str(path.relative_to(REPO_ROOT))
+    """One repository-relative path, spelled with forward slashes on every OS.
+
+    `as_posix`, not `str`: Windows spells a relative path with its own separator, which
+    matches nothing in `URL_ALLOWED_FILES` and would report the files exempted there as
+    offenders on that one OS. The assertion messages read the same everywhere too.
+    """
+    return path.relative_to(REPO_ROOT).as_posix()
 
 
 def call_sites(modules: list[Path], function_name: str) -> list[str]:
@@ -261,6 +267,11 @@ def test_no_email_addresses() -> None:
         if EMAIL_PATTERN.search(path.read_text(encoding="utf-8"))
     ]
     assert not offenders, f"email addresses committed: {offenders}"
+
+
+def test_where_spells_paths_with_forward_slashes() -> None:
+    """The spelling `URL_ALLOWED_FILES` is written in, and the one `where` must return."""
+    assert where(SRC / "invoice_forge" / "fonts" / "LICENSE") == "src/invoice_forge/fonts/LICENSE"
 
 
 def test_no_urls_outside_docs() -> None:
