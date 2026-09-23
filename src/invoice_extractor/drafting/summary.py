@@ -7,6 +7,8 @@ the commands that turn the draft into a profile.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from invoice_extractor.drafting.evidence import Evidence
 from invoice_extractor.drafting.writer import Written
 
@@ -20,8 +22,8 @@ def render(evidence: Evidence, written: Written) -> str:
         [
             f"Drafted {evidence.profile_id} from {evidence.source_path}",
             RULE,
-            f"  profile    {written.profile}",
-            f"  evidence   {written.evidence}",
+            f"  profile    {_spelled(written.profile)}",
+            f"  evidence   {_spelled(written.evidence)}",
             *_supplied(written),
             "",
             _language(evidence),
@@ -37,9 +39,11 @@ def render(evidence: Evidence, written: Written) -> str:
 def _supplied(written: Written) -> list[str]:
     supplied = []
     if written.defaults is not None:
-        supplied.append(f"  defaults   {written.defaults}  (copied: the directory had none)")
+        supplied.append(
+            f"  defaults   {_spelled(written.defaults)}  (copied: the directory had none)"
+        )
     if written.lexicon is not None:
-        supplied.append(f"  lexicon    {written.lexicon}")
+        supplied.append(f"  lexicon    {_spelled(written.lexicon)}")
     return supplied
 
 
@@ -71,9 +75,20 @@ def _next(evidence: Evidence, written: Written) -> list[str]:
             f"Fill in: {', '.join(evidence.placeholders)}"
             " — the loader refuses the profile until you do."
         )
-    where = written.profile.parent
+    where = _spelled(written.profile.parent)
     steps.append(
         f"Then: profile lint {evidence.profile_id} --profiles {where}, "
         f"and extract <pdf> --profiles {where}."
     )
     return steps
+
+
+def _spelled(path: Path) -> str:
+    """One path, spelled with forward slashes on every OS.
+
+    `as_posix`, not the `str` an interpolated `Path` gives: this page is read by a
+    person, and its last lines are pasted back as commands. The source path on the
+    first line is already POSIX — `document/pymupdf_reader.py` normalizes it there —
+    so interpolating a `Path` beside it would spell one draft two ways on Windows.
+    """
+    return path.as_posix()

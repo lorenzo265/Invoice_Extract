@@ -5,6 +5,8 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-09-23
+
 ### Added
 
 - **`invoice-extractor profile draft <pdf> --out <dir>`** — the profile one document
@@ -26,6 +28,54 @@ Keep a Changelog, and this project adheres to Semantic Versioning.
   the page gave nothing for is `?`, which the loader refuses by name. Nothing is
   overwritten: a draft over an existing profile is refused, and `--id` names it
   differently. A drafting tool only — the engine never runs it (ADR-0008).
+
+### Fixed
+
+The first real invoices this engine was run on — one vendor's ERP output, in twelve
+countries — read every header field and lost the totals block, the party blocks and one
+custom field, each to a rule the synthetic corpus had never exercised. Each is fixed
+against a document built line by line in the shape the page had.
+
+- **A totals block whose labels are set flush right is read whole.** `Subtotal`, `VAT`
+  and `Total` end at the same x and start apart, `VAT` being the narrower word. The block
+  finder grouped rows by their labels' left edges within two points, so the block fell
+  apart into single rows and only `Total` survived — `subtotal` came back empty and
+  `vat_amount` was backfilled from the summary. A column is now set against an `Edge`,
+  its labels' left edges where those agree and their right edges otherwise, and a cell is
+  in the column where its matching edge is on that line (`extraction/units/totals_block.py`).
+- **A party block may stand a few lines under its heading, and may be set wholly in
+  bold.** The vendor leaves two lines of room under `Bill To:` before the customer's name,
+  and the rule that ends a block at a gap of one and a half line heights ended it before it
+  began: both parties came back with no name and no address. The first line under a
+  heading now has room of its own (`HEADING_GAP`, three heights of the heading) and the
+  gap between the block's own lines is still what ends it. The same vendor sets the whole
+  bill-to block in bold, and the reader that takes the bold run as the name took the
+  address with it; weight now names the lines only where the block has two weights in it,
+  and a block set in one leaves the first line as the name (`extraction/section.py`).
+- **A label is never a value, and `placement` leads.** The vendor sets every value at a
+  tab stop to the right of its label, so the line under `Payment Terms:` is `Payment
+  Date:`, the next label. `label_below` offered it, it reads like a sentence, and it sat
+  ten points from its label where the real value sat a hundred and ten: `payment_terms`
+  came back as the words `Payment Date:`. A new filter, `not_a_label`, drops a candidate
+  that is nothing but a label the profile declares for another field, a vendor's extra
+  or a party block — or such a label with its own value after it — and every `LabelSpec`
+  runs it after `not_a_trap`. And the profile's `placement`, which `docs/PROFILE_FORMAT.md`
+  said names the strategy that leads and which nothing read, now does: `strategies_for`
+  pools the leading strategy's candidates first, and since the rankers sort stably, it is
+  the one that wins a tie (`extraction/units/filters.py`, `extraction/spec.py`).
+- **The totals block is read from whichever page carries it.** The vendor prints a page
+  of terms after the one it adds up on, so the block finder, which read the last page
+  only, found nothing there and `subtotal` and `total_amount` came back empty on every
+  such document. Every page is now searched, and the block is the run of rows naming
+  the most components on any of them; where two pages name as much, the later one is
+  the block, because a subtotal carried forward says the same words on the page before.
+  An amount's zone is classified against the page it was drawn on rather than the last
+  (`extraction/units/totals_block.py`, `extraction/block.py`).
+- **`profile draft` spells the paths it prints one way on every OS.** Its summary
+  interpolated each `Path` it wrote as it was, so on Windows the files it names and the two
+  commands it ends with — the ones meant to be pasted back — came out with backslashes,
+  beside a source path the reader already spells with forward slashes. Every path it prints
+  is now `as_posix()` (`drafting/summary.py`).
 
 ## [0.4.0] — 2026-09-15
 

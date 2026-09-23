@@ -63,7 +63,18 @@ QUOTED = re.compile(r'"([^"]*)"')
 TEXT_SUFFIXES = frozenset({".py", ".md", ".json", ".toml", ".yml", ".yaml", ".cfg", ".txt"})
 TEXT_FILENAMES = frozenset({"Makefile", "make.ps1", "LICENSE", ".gitignore"})
 IGNORED_DIRS = frozenset(
-    {".git", ".venv", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache", "build", "dist"}
+    {
+        ".git",
+        ".venv",
+        "__pycache__",
+        ".mypy_cache",
+        ".ruff_cache",
+        ".pytest_cache",
+        "build",
+        "dist",
+        # An agent's local worktrees: whole checkouts of this repository, never part of it.
+        ".claude",
+    }
 )
 PROSE_ROOTS = ("src", "tests", "scripts", "docs")
 URL_ALLOWED_ROOTS = frozenset({"docs", ".github"})
@@ -82,7 +93,7 @@ URL_ALLOWED_FILES = frozenset(
 
 
 def walk(root: Path) -> Iterator[Path]:
-    """Every file under `root`, skipping caches, virtualenvs and build output."""
+    """Every file under `root`, skipping caches, virtualenvs, build output and local worktrees."""
     if not root.is_dir():
         return
     for entry in sorted(root.iterdir()):

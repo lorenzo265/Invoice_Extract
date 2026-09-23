@@ -123,6 +123,42 @@ def test_a_block_stops_where_the_column_stops() -> None:
     assert party.lines == ("1 Elm Close",)
 
 
+def test_a_block_may_stand_a_few_lines_under_its_heading() -> None:
+    """A vendor leaves two lines of room under `Bill To:` before the name. The room opens
+    the block; it is the gap between the lines of the block that ends it."""
+    page = document(
+        block(LEFT, 100.0, "Bill To"),
+        block(LEFT, 128.0, "Acme Systems Ltd", "1 Elm Close"),
+    )
+    party = read_party(page, bill_to(), make_profile())
+    assert party is not None
+    assert party.name == "Acme Systems Ltd"
+    assert party.lines == ("1 Elm Close",)
+
+
+def test_a_block_far_under_a_heading_is_not_that_headings_block() -> None:
+    page = document(
+        block(LEFT, 100.0, "Bill To"),
+        block(LEFT, 160.0, "Acme Systems Ltd", "1 Elm Close"),
+    )
+    party = read_party(page, bill_to(), make_profile())
+    assert party is not None
+    assert party.name is None
+    assert party.lines == ()
+
+
+def test_a_block_set_wholly_in_bold_still_has_one_name() -> None:
+    """Weight tells a name from an address only where the two differ. A vendor that sets
+    the whole block in bold has said nothing with it, and the first line is the name."""
+    page = document(
+        block(LEFT, 100.0, "Bill To", "Acme Systems Ltd", "1 Elm Close", "Leeds", bold=4)
+    )
+    party = read_party(page, bill_to(), make_profile())
+    assert party is not None
+    assert party.name == "Acme Systems Ltd"
+    assert party.lines == ("1 Elm Close", "Leeds")
+
+
 def test_a_block_reads_its_own_column_and_not_the_one_beside_it() -> None:
     page = document(
         block(LEFT, 100.0, "Bill To", "Acme Systems Ltd", "1 Elm Close"),

@@ -5,6 +5,8 @@ from __future__ import annotations
 from conftest import Entry, make_block_profile, make_component, make_document, make_profile
 from invoice_extractor.document.rows import cell_rows_of
 from invoice_extractor.extraction.units.totals_block import (
+    Edge,
+    Side,
     amounts,
     at,
     component_of,
@@ -45,14 +47,32 @@ def test_the_block_is_the_run_of_rows_that_names_the_most_components() -> None:
     )
     found = find_block(document, profile_with_block())
     assert [row.cells[0].text for row in found.rows] == ["Subtotal", "VAT", "Total"]
-    assert found.edge == 400.0
+    assert found.edge == Edge(400.0, Side.LEFT)
+
+
+def test_labels_set_flush_right_are_one_column() -> None:
+    """A vendor that ends its labels together starts them apart: `VAT` is narrower than
+    `Subtotal`, so the left edges disagree and the right edges are the column."""
+    document = make_document(
+        [
+            (1, "Subtotal", 430.0, 600.0, 460.0, 610.0),
+            (1, "100.00", 500.0, 600.0, 550.0, 610.0),
+            (1, "VAT", 448.0, 612.0, 460.0, 622.0),
+            (1, "20.00", 500.0, 612.0, 550.0, 622.0),
+            (1, "Total", 442.0, 624.0, 460.0, 634.0),
+            (1, "120.00", 500.0, 624.0, 550.0, 634.0),
+        ]
+    )
+    found = find_block(document, profile_with_block())
+    assert [row.cells[0].text for row in found.rows] == ["Subtotal", "VAT", "Total"]
+    assert found.edge == Edge(460.0, Side.RIGHT)
 
 
 def test_a_document_with_no_component_row_has_no_block() -> None:
     document = make_document([(1, "Thank you for your custom", 50.0, 700.0, 200.0, 710.0)])
     found = find_block(document, profile_with_block())
     assert found.rows == ()
-    assert found.edge == 0.0
+    assert found.edge == Edge(0.0, Side.LEFT)
 
 
 def test_the_longest_label_a_row_starts_with_names_it() -> None:
@@ -77,9 +97,16 @@ def test_only_the_cell_in_the_blocks_own_column_names_a_row() -> None:
         ]
     )
     rows = cell_rows_of(document.pages[0].lines)
-    named = component_of(rows[0], COMPONENTS, edge=400.0)
+    named = component_of(rows[0], COMPONENTS, edge=Edge(400.0, Side.LEFT))
     assert named is not None
     assert named.name == "subtotal"
+
+
+def test_a_cell_is_in_a_flush_right_column_where_it_ends_on_the_edge() -> None:
+    edge = Edge(460.0, Side.RIGHT)
+    rows = cell_rows_of(make_document(block([("Subtotal", "", 600.0)])).pages[0].lines)
+    assert edge.holds(rows[0].cells[0])
+    assert not Edge(400.0, Side.RIGHT).holds(rows[0].cells[0])
 
 
 def test_a_row_far_below_the_block_is_not_part_of_it() -> None:
@@ -92,6 +119,29 @@ def test_a_row_far_below_the_block_is_not_part_of_it() -> None:
     )
     found = find_block(document, profile_with_block())
     assert [row.cells[0].text for row in found.rows] == ["Subtotal", "VAT"]
+
+
+def test_the_block_may_be_on_a_page_before_the_last() -> None:
+    """A vendor prints its terms on a page after the one it adds up on, and a sentence
+    there that begins with `Total` names one component where the block names three."""
+    document = make_document(
+        [
+            *block([("Subtotal", "100.00", 600.0), ("VAT", "20.00", 612.0)]),
+            *block([("Total", "120.00", 624.0)]),
+            (2, "Total liability is limited to the price paid", 50.0, 100.0, 300.0, 110.0),
+        ]
+    )
+    found = find_block(document, profile_with_block())
+    assert [row.cells[0].text for row in found.rows] == ["Subtotal", "VAT", "Total"]
+    assert found.rows[0].page == 1
+
+
+def test_of_two_pages_naming_as_much_the_later_one_is_the_block() -> None:
+    """A subtotal carried forward says the same words on the page before."""
+    earlier = block([("Subtotal", "100.00", 600.0), ("Total", "100.00", 612.0)])
+    later = block([("Subtotal", "100.00", 600.0), ("Total", "120.00", 612.0)], page=2)
+    found = find_block(make_document([*earlier, *later]), profile_with_block())
+    assert found.rows[0].page == 2
 
 
 def test_the_lower_of_two_blocks_naming_as_much_wins() -> None:

@@ -34,6 +34,8 @@ def test_the_summary_names_what_was_written_and_what_was_supplied() -> None:
         read, written(Path("vendors/profiles/_defaults.json"), Path("vendors/lexicon/de.json"))
     )
     assert printed.startswith("Drafted de-DE from a.pdf")
+    assert "  profile    vendors/profiles/de-DE.json" in printed
+    assert "  evidence   vendors/drafts/de-DE.json" in printed
     assert (
         "  defaults   vendors/profiles/_defaults.json  (copied: the directory had none)" in printed
     )

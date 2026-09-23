@@ -30,6 +30,10 @@ SUPPLIER = "supplier"
 COLUMN_TOLERANCE = 2.0
 # How much of a line's height may stand between it and the line above before the block ends.
 BLOCK_GAP = 1.5
+# How much of the heading's height may stand between it and the block's first line. A
+# vendor leaves room under `Bill To:` before the name it sets there; the room opens the
+# block, and it is the gap between the block's own lines that ends it.
+HEADING_GAP = 3.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,7 +122,8 @@ def _under(
     found: list[TextPart] = []
     last = heading
     for cell in _column(rows, heading):
-        if _too_far(last, cell) or _is_one_of(cell, section.stop_labels):
+        allowed = HEADING_GAP if last is heading else BLOCK_GAP
+        if _too_far(last, cell, allowed) or _is_one_of(cell, section.stop_labels):
             break
         found.append(cell)
         last = cell
@@ -138,8 +143,9 @@ def _column(rows: Sequence[CellRow], heading: TextPart) -> list[TextPart]:
     ]
 
 
-def _too_far(last: TextPart, cell: TextPart) -> bool:
-    return cell.bbox.y0 - last.bbox.y1 > (last.bbox.y1 - last.bbox.y0) * BLOCK_GAP
+def _too_far(last: TextPart, cell: TextPart, allowed: float) -> bool:
+    """Whether more than `allowed` heights of the last line stand between it and this one."""
+    return cell.bbox.y0 - last.bbox.y1 > (last.bbox.y1 - last.bbox.y0) * allowed
 
 
 def _party(block: Block, section: SectionProfile, registration: re.Pattern[str]) -> Party:
@@ -163,11 +169,14 @@ def _name_lines(lines: Sequence[TextPart]) -> list[TextPart]:
     """The name, which a block sets in its own weight and may run over two lines.
 
     A name too wide for its column is set over two, and both are bold where the address
-    under them is not. A vendor that sets no weight at all leaves the first line, which is
-    the name in every block this reader has seen.
+    under them is not. Weight says which lines are the name only where the block has two
+    weights in it: a vendor that sets no weight at all, or the whole block in one, leaves
+    the first line, which is the name in every block this reader has seen.
     """
     bold = list(takewhile(lambda line: line.bold, lines))
-    return bold if bold else list(lines[:1])
+    if bold and len(bold) < len(lines):
+        return bold
+    return list(lines[:1])
 
 
 def _defers(rest: Sequence[TextPart], placeholders: Sequence[str]) -> bool:

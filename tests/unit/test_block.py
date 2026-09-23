@@ -50,6 +50,20 @@ def test_a_block_publishes_its_components_as_fields() -> None:
     }
 
 
+def test_a_block_on_a_page_before_the_last_is_published_from_that_page() -> None:
+    document = make_document(
+        [
+            *block([("Subtotal", "100.00"), ("Total", "120.00")]),
+            (2, "Terms and conditions of sale", 50.0, 100.0, 200.0, 110.0),
+        ]
+    )
+    found = read_totals(TOTALS, document, profile_with_block()).extractions["subtotal"]
+    assert found.field.value == Decimal("100.00")
+    assert found.field.evidence is not None
+    assert found.field.evidence.page == 1
+    assert found.zone is not None
+
+
 def test_a_published_amount_points_at_the_row_it_was_read_from() -> None:
     document = make_document(block([("Subtotal", "100.00")]))
     found = read_totals(TOTALS, document, profile_with_block()).extractions["subtotal"]
@@ -193,6 +207,42 @@ def test_a_block_in_one_currency_echoes_nothing() -> None:
         ]
     )
     assert read_block(document, profile_with_block()).secondary is None
+
+
+def test_a_block_set_flush_right_beside_a_summary_is_read_whole() -> None:
+    """The labels end together and start apart, and the VAT summary on the left of the
+    page shares their rows — the shape a vendor's ERP prints, and every row must be read."""
+    document = make_document(
+        [
+            (1, "VAT Summary", 20.0, 588.0, 80.0, 598.0),
+            (1, "EUR", 155.0, 600.0, 172.0, 610.0),
+            (1, "EUR", 226.0, 600.0, 242.0, 610.0),
+            (1, "Subtotal", 430.0, 600.0, 460.0, 610.0),
+            (1, "1,201.96", 500.0, 600.0, 550.0, 610.0),
+            (1, "VAT", 20.0, 612.0, 36.0, 622.0),
+            (1, "Delivery", 432.0, 612.0, 460.0, 622.0),
+            (1, "0.00", 500.0, 612.0, 550.0, 622.0),
+            (1, "Type", 20.0, 624.0, 40.0, 634.0),
+            (1, "VAT", 448.0, 624.0, 460.0, 634.0),
+            (1, "240.39", 500.0, 624.0, 550.0, 634.0),
+            (1, "SR", 20.0, 636.0, 32.0, 646.0),
+            (1, "20", 92.0, 636.0, 102.0, 646.0),
+            (1, "1,201.96", 141.0, 636.0, 172.0, 646.0),
+            (1, "240.39", 218.0, 636.0, 242.0, 646.0),
+            (1, "Total", 442.0, 636.0, 460.0, 646.0),
+            (1, "1,442.35", 500.0, 636.0, 550.0, 646.0),
+        ]
+    )
+    read = read_block(document, profile_with_block())
+    assert {name: found.value for name, found in read.components.items()} == {
+        "subtotal": Decimal("1201.96"),
+        "shipping": Decimal("0.00"),
+        "vat_amount": Decimal("240.39"),
+        "total_amount": Decimal("1442.35"),
+    }
+    assert [(charge.type, charge.amount) for charge in read.charges] == [
+        ("SHIPPING", Decimal("0.00"))
+    ]
 
 
 def test_a_row_whose_amount_is_not_a_number_reads_nothing() -> None:

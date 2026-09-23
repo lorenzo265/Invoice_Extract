@@ -8,8 +8,8 @@ from conftest import line, make_field_profile, make_profile
 from invoice_extractor.document.model import Zone
 from invoice_extractor.domain.models import Evidence, Strategy
 from invoice_extractor.extraction.candidate import Candidate
-from invoice_extractor.extraction.units.filters import not_a_trap
-from invoice_extractor.profile.schema import Noise
+from invoice_extractor.extraction.units.filters import not_a_label, not_a_trap
+from invoice_extractor.profile.schema import CustomFieldProfile, Noise, SectionProfile
 
 TRAPS = Noise(ignore_labels=("Order Date", "Print Date"))
 
@@ -53,3 +53,46 @@ def test_nothing_is_dropped_when_the_vendor_names_no_traps() -> None:
     field = make_field_profile(labels=("Invoice Date",))
     found = [candidate("01.02.2024", label="Order Date")]
     assert not_a_trap(found, field, make_profile()) == found
+
+
+def with_labels() -> object:
+    """A vendor that prints its values at a tab stop, so the line under a label is a label."""
+    fields = {"due_date": make_field_profile(labels=("Payment Date",))}
+    terms = CustomFieldProfile("payment_terms", make_field_profile(labels=("Payment Terms",)))
+    heading = SectionProfile(("Bill To",), (), 6, (), ())
+    return dataclasses.replace(
+        make_profile(fields=fields), custom_fields=(terms,), parties={"bill_to": heading}
+    )
+
+
+def test_a_candidate_that_is_only_another_fields_label_is_dropped() -> None:
+    """Under `Payment Terms:` the vendor prints `Payment Date:`, which introduces the next
+    value and is not this one."""
+    field = make_field_profile(labels=("Payment Terms",))
+    found = [candidate("Payment Date:", label="Payment Terms")]
+    assert not_a_label(found, field, with_labels()) == []
+
+
+def test_a_candidate_that_is_another_label_and_its_own_value_is_dropped() -> None:
+    field = make_field_profile(labels=("Payment Terms",))
+    found = [candidate("Payment Date: 30.07.2026", label="Payment Terms")]
+    assert not_a_label(found, field, with_labels()) == []
+
+
+def test_a_candidate_that_is_a_party_heading_is_dropped() -> None:
+    field = make_field_profile(labels=("Payment Terms",))
+    found = [candidate("Bill To:", label="Payment Terms")]
+    assert not_a_label(found, field, with_labels()) == []
+
+
+def test_a_candidate_this_fields_own_label_introduces_is_kept() -> None:
+    """`Terms: 30 days` is the field's own label and its value, however it was found."""
+    field = make_field_profile(labels=("Payment Terms", "Terms"))
+    found = [candidate("Terms: 30 days", label=None)]
+    assert not_a_label(found, field, with_labels()) == found
+
+
+def test_a_value_is_kept_however_much_it_resembles_a_label() -> None:
+    field = make_field_profile(labels=("Payment Terms",))
+    found = [candidate("Payment within 30 days", label="Payment Terms")]
+    assert not_a_label(found, field, with_labels()) == found
