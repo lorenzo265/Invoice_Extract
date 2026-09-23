@@ -7,6 +7,6 @@ instead of guessed at. `docs/FORGE_SPEC.md` is the design.
 
 from invoice_forge.knobs import Knob
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 __all__ = ["Knob", "__version__"]
