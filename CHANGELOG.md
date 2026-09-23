@@ -71,6 +71,11 @@ against a document built line by line in the shape the page had.
   the block, because a subtotal carried forward says the same words on the page before.
   An amount's zone is classified against the page it was drawn on rather than the last
   (`extraction/units/totals_block.py`, `extraction/block.py`).
+- **`profile draft` spells the paths it prints one way on every OS.** Its summary
+  interpolated each `Path` it wrote as it was, so on Windows the files it names and the two
+  commands it ends with — the ones meant to be pasted back — came out with backslashes,
+  beside a source path the reader already spells with forward slashes. Every path it prints
+  is now `as_posix()` (`drafting/summary.py`).
 
 ## [0.4.0] — 2026-09-15
 
